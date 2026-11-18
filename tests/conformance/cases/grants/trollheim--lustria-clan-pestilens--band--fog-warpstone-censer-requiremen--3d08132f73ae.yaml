@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-clan-pestilens/band--fog-warpstone-censer-requirement/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (B12 construction-equipment, 2026-11-18): the fragments without a
+#   censer are refused on two Heroes of the band, the fragments beside a Censer are admitted, and a kit
+#   without the fragments owes no censer.  REVIEWED still requires manual semantic review; execution_status
+#   stays UNEXECUTED.
+# AUTHORED: the conditional obligation (when_items -> required_kinds) is evidenced on both sides of the
+#   condition (see authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,83 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/trollheim/lustria-clan-pestilens/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Model (B12 2026-11-18): the KB binds this band grant as profile.equipment-restrictions with when_items
+#   [fog_warpstone_fragments] and required_kinds [weapon.censer] (special-rules.yaml, p.77 'Fog Warpstone
+#   Fragments').  profileFactsProjection turns it into a required_equipment row with its when_items;
+#   equipmentSetIssues skips the row when no carried item is a fragment and otherwise demands an item whose
+#   id, mechanic or kind is weapon.censer (the catalogue's `censer` row maps to that mechanic), answering
+#   `The equipment of ${band}/${profile} includes no ${kinds}; the printed clause obliges acquiring one.`
+#   Both items are rows of clan-pestilens-hero-equipment-list, so no offered-set refusal can stand in for
+#   the obligation.  The check runs on the declared kit (owned_item_ids), which every scenario therefore
+#   declares.
+
+# Semantic note (2026-11-18): the fog-enhancing effect of the fragments themselves is outside the duel; only
+#   the construction obligation is asserted.  The censer is owned, not wielded, in the admission so that no
+#   Censer-bearing rule prerequisite (Black Hunger) is touched.
+
+# Removal-probe expectation (2026-11-18): construction rule; construction-only is the expected verdict.
+
+# --- Authored scenarios ---
+# Derived from the KB record, the band's equipment list and the gate's message template; no engine output
+#   was consulted.
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--fog-warpstone-censer-requirement/profile.equipment-restrictions
+  id: fog-warpstone-fragments-without-a-censer-are-refused
+  # The conditional obligation: the kit carries the fragments (when_items) and no censer, so the whole-set
+  # check names the missing kind.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      owned_item_ids: [fog_warpstone_fragments]
+  expect_error: 'The equipment of lustria-clan-pestilens/plague-priest includes no weapon.censer; the printed clause obliges acquiring one.'
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--fog-warpstone-censer-requirement/profile.equipment-restrictions
+  id: a-plague-monk-with-fragments-and-no-censer-is-refused
+  # A band grant binds every member: a second Hero of the list meets the same obligation.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+      owned_item_ids: [fog_warpstone_fragments, dagger]
+  expect_error: 'The equipment of lustria-clan-pestilens/plague-monks includes no weapon.censer; the printed clause obliges acquiring one.'
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--fog-warpstone-censer-requirement/profile.equipment-restrictions
+  id: fog-warpstone-fragments-with-a-censer-are-admitted
+  # The satisfied obligation: the carried Censer resolves to weapon.censer, the required kind, so the same
+  # fragments are admitted.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      owned_item_ids: [fog_warpstone_fragments, censer]
+    second:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--fog-warpstone-censer-requirement/profile.equipment-restrictions
+  id: a-kit-without-fog-warpstone-fragments-needs-no-censer
+  # The condition: a kit without the fragments owes no censer, so the plain kit is admitted.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      owned_item_ids: [dagger]
+    second:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

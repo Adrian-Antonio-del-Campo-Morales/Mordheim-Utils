@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/snotlings-web/band--small-hands/profile.equipment-restrictions
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,37 +8,80 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/snotlings-web/special-rules.yaml
 #
-# PARTIAL: [C] no scenario is authored, and the two earlier reasons are corrected here because both
-# were false.  (i) "the declared forbids tokens match no catalogue tag the fixture could supply" is wrong:
-# sources/knowledge/catalog/items/weapons-ranged.yaml carries item rows for blunderbuss, elf_bow, handgun and
-# long_bow, the shared stage's own token reader matches a token that equals the item id (tokenForbids), so
-# "handgun" and "blunderbuss" are reachable identities; only the printed "Long Rifles" has no plain row (the
-# catalogue's rifle row is hochland_long_rifle).  (ii) "no duel build can carry them" is wrong for the same
-# reason; the build can name them.  The accurate blocker is gate order plus the recipient's own list: the
-# shared stage evaluates the offered-set gate before the printed forbids gate
-# (equipmentIssue: fixed_equipment, then `"${itemId}" is not on any equipment list of <band>/<profile>.`,
-# then `"${token}" is forbidden for <band>/<profile>.`), and none of this clause's recipient profiles has one
-# of the five named weapons on its own list - the snotling-equipment-list, the snotling-mob-equipment-list and
-# the shoota-equipment-list are recorded in
-# sources/knowledge/bands/mordheim/snotlings-web/equipment-access.yaml, and the only one of them offering a
-# named weapon is the Shoota Equipment List (crossbow, blunderbuss, pistol), whose profile the register's own
-# condition records as this clause's exception ("exception": "shoota-teams").  A build naming a named weapon
-# on a non-excepted recipient is therefore refused by the offered-set gate, which is not this clause's
-# evidence, and the clause's own token refusal cannot be reached with a legal input.  The refusal template is
-# known (`"${token}" is forbidden for ${band}/${profile}.`) and no new operator is needed.  Pending datum:
-# either a named weapon on a recipient's own list or an accepted disposition that the clause is a
-# Trading-Post/acquisition prohibition with no construction-stage input.  The KB activation binding is no
-# longer missing: the clause's source row now records scope YES / implemented YES and binds
-# profile.equipment-restrictions with forbids [long_bow, elf_bow, handgun, hochland_long_rifle,
-# blunderbuss] (checked 2026-11-16); the earlier "scope LATER / null binding" note is withdrawn.
-# REVIEWED still requires manual semantic review.
-# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; the admitted whole clause
-#   stays pending on a named input/activation datum, not on a missing operator: the printed refusal template
-#   exists and four of the five named weapons resolve to catalogue rows, but no recipient profile's own list
-#   offers one, so the offered-set gate answers first and the clause's own refusal has no legal input.
-#   REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+# AUTHORED: 3 scenarios.  Printed: 'Snotlings and the Bullied Goblin may never use Long bows, Elf Bows, Handguns,
+#   Long Rifles or Blunderbusses ... The exception is Shoota Teams'.  The binding forbids [long_bow, elf_bow,
+#   handgun, hochland_long_rifle, blunderbuss] on bullied-goblin, bigsnotz, scouts, shaman, snotling-mobs, runts
+#   and wheelo.  Per the 2026-11-18 ruling (docs/decisions/design-rulings.md, Conformance triage decisions, second
+#   batch: a category ban whose category the recipients' own lists never offer is enforced by the equipment-list
+#   gate; Proud to a Fault precedent) the identity is authored on its admission face plus the truthful list-gate
+#   refusals, with the Discrimination note below (the black-orcs Orc Boyz crossbow file is the same shape).  A
+#   profile binding publishes no construction tag (CompiledFighter.construction_tags lists compiler contracts
+#   only), so the admission face is the recipient accepted with its ordinary kit.  The earlier PARTIAL analysis is
+#   confirmed and superseded: the five tokens resolve (four to catalogue rows), the refusal template
+#   `"<token>" is forbidden for <band>/<profile>.` exists, and no legal input reaches it because the kit gate
+#   answers first with `"<item>" is not on any equipment list of <band>/<profile>.`.
+# authoring_progress: 3 authored scenario(s) in this file; the undivided identity is represented on its reachable
+#   faces. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+#
+# Discrimination note (2026-11-18): REDUNDANT with the recipients' own lists - the snotling-equipment-list, the
+#   snotling-mob-equipment-list and the Wheelo's printed kit (sources/knowledge/bands/mordheim/snotlings-web/
+#   equipment-access.yaml, profiles.yaml) offer none of the five named weapons, so a Bullied Goblin owning a long
+#   bow or a Bigsnotz owning a handgun is refused by the equipment-list gate before this binding's token is read,
+#   and the refusals below survive the rule's removal.  The printed exception (Shoota Teams, whose
+#   shoota-equipment-list does offer the blunderbuss) is unreachable: Shoota Teams are a Teamwork profile that does
+#   not compile as a single fighter (TODO.md, Teamwork: LATER).  The printed 'even if they gain an advance roll'
+#   clause is an acquisition-time fact with no duel-build input.
 
 # --- Authored scenarios ---
 
-[]  # No scenario is declared yet; the pending requirement is named above.
+- audit_id: rule/mordheim/snotlings-web/band--small-hands/profile.equipment-restrictions
+  id: a-bullied-goblin-owning-a-long-bow-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bullied-goblin
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [dagger, long_bow]
+  expect_error: '"long_bow" is not on any equipment list of snotlings-web/bullied-goblin.'
+
+- audit_id: rule/mordheim/snotlings-web/band--small-hands/profile.equipment-restrictions
+  id: a-bigsnotz-owning-a-handgun-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [dagger, handgun]
+  expect_error: '"handgun" is not on any equipment list of snotlings-web/bigsnotz.'
+
+# Admission face: the recipient with a kit its own list offers (the dagger, also the band's pointy stick) compiles.
+- audit_id: rule/mordheim/snotlings-web/band--small-hands/profile.equipment-restrictions
+  id: a-bigsnotz-with-its-ordinary-kit-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [dagger]
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [dagger]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,46 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/cursed-cavalcade/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: (2026-11-18) 2 scenarios evidence the printed "the hand holding the instrument is not
+#   available for a weapon: the Piper may use at most one one-handed weapon" as a construction bound.
+#   The record binds profile.equipment-restrictions with max_active_one_handed_weapons 1, which
+#   packages/typescript/domain/eligibility/index.ts projects as the profile's active_weapon_limit and
+#   activeWeaponIssues() refuses with "<band>/<profile> may use at most 1 one-handed weapon at a time."
+#   (the Python mirror _eligibility.js is generated from it; the boundEquipment stage runs it before the
+#   equipment-list gate).  The refusal holds two one-handed weapons the Heroes list offers (sword and
+#   hammer, catalogue mechanics weapon.sword and weapon.mace); the admission holds one.  The sibling
+#   "no double-handed weapon" half is the profile.active-weapon-restrictions binding of the same record
+#   and is authored at its own identity.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed clause and the shared stage's one-handed bound template; no engine output was consulted.
+
+- audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.equipment-restrictions
+  id: cursed-piper-with-two-one-handed-weapons-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: cursed-piper
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.mace
+  expect_error: cursed-cavalcade/cursed-piper may use at most 1 one-handed weapon at a time.
+
+# Construction is the observation: no charge is declared and the bearer is put out of action before
+# the first phase (the corpus's control shape), so the duel requests no die at all.
+- audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.equipment-restrictions
+  id: cursed-piper-with-one-one-handed-weapon-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: cursed-piper
+      main_weapon_id: weapon.sword
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.wounds: 1
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (construction set, 2026-11-18): the printed scythe-and-dagger
+#   kit admitted with the dagger and with the scythe wielded (no-armour face observed on the compiled
+#   armour_save), the refusals of a suit of armour, a helmet and a weapon outside the scythe/dagger kit,
+#   and the Augur Mark retaining the strictures.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the strictures are a construction rule, so the probe's
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the hireling kit resolver (`resolveHirelingKit`, the consumer of
+#   the catalogue-wide compiler.hireling-fixed-equipment clause) runs before the profile's
+#   profile.equipment-restrictions gate, and the Priest's printed kit is the ceremonial scythe and
+#   dagger alone.  Every forbidden item below is therefore refused as an incomplete printed kit and the
+#   stricture's own sentence ("armour is forbidden for hirelings.hired-sword.2b/
+#   hireling.hired-sword.priest-of-morr-miracle-workers") is unreachable; the refusals survive the
+#   removal of this binding, so the duplicate carrier is the kit matcher of
+#   rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment (precedent: the Haunted Mien
+#   file ...priest-of-morr-miracle-worke--45c97d805c6e.yaml and cases/mechanics/defence.wolf-pelt-cloak.yaml).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,106 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Strictures): "Priests of Morr always begin equipped with a scythe and a
+# dagger. They may only be armed with a scythe and dagger. Priests of Morr may never wear armour."  The
+# binding forbids the `armour` token.  The recipient is the printed Priest compiled through the hireling
+# route (hirelings.hired-sword.2b / hireling.hired-sword.priest-of-morr-miracle-workers) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays).  Admissions use the corpus's
+# construction-only shape (no charge, the bearer out of action before the first phase, so the duel
+# requests no die) and observe the compiled build alone: armour_save 7 is the no-armour face.  The
+# refusals use the kit-resolver fragment already asserted in cases/mechanics/defence.wolf-pelt-cloak.yaml.
+# The Haunted Mien route that lifts these strictures (ruling "Haunted Mien lifts the Priest kit
+# restriction - 2026-10-15") is evidenced in the B00 file of that Mark and is not duplicated here; the
+# same ruling keeps the strictures on an unmarked Priest and on an Augur, which the last scenario shows.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The printed kit, the ceremonial dagger in hand: no armour, so the compiled save is the 7 of a bare
+# warrior.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: the-printed-dagger-compiles-with-no-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+
+# The printed kit, the ceremonial scythe in hand (the source-qualified Strength +1, two-handed,
+# difficult-to-use weapon): the second printed armament is admitted and the save stays 7.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: the-printed-scythe-compiles-with-no-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.ceremonial-scythe
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.armour_save: 7
+
+# "Priests of Morr may never wear armour": a suit of light armour is refused at construction.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# A helmet is armour under the KB's `armour` token (the gate reads defence.helmet with the suits); it
+# is refused as well.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: a-helmet-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      defence_ids: [defence.helmet]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "They may only be armed with a scythe and dagger": a sword in the main hand is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: a-weapon-outside-scythe-and-dagger-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The Augur Mark retains the strictures (ruling of 2026-10-15: only Haunted Mien lifts them): an Augur
+# wearing light armour is refused exactly as the unmarked Priest is.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures/profile.equipment-restrictions
+  id: the-augur-keeps-the-strictures-and-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur]
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

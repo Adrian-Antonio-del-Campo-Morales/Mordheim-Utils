@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-clan-pestilens/plague-monks--equipment-restrictions/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (B12 construction-equipment, 2026-11-18): Plague Monks carrying
+#   the Rat Familiar Scroll are refused by the declared token, the same recipient with an ordinary kit is
+#   admitted, and the printed holder (the Pestilens Sorcerer) is admitted with the scroll.  REVIEWED still
+#   requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the printed reservation of the Rat Familiar Scroll is evidenced in both directions (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,68 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/trollheim/lustria-clan-pestilens/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Model (shared-rule.pestilens-rat-familiar-restriction, B12 2026-11-18): the KB binds profile.equipment-
+#   restrictions forbids [rat_familiar_scroll] on each Pestilens Hero except the Sorcerer.
+#   `rat_familiar_scroll` is a catalogue item (catalog/items/trollheim.yaml, kind trollheim-equipment) on
+#   clan-pestilens-hero-equipment-list, so the whole-set check (validateConstruction -> equipmentIssue)
+#   reaches the forbids loop and answers `"${itemId}" is forbidden for ${band}/${profile}.`  The item is a
+#   carried object with no duel mechanic, so the kit channel (owned_item_ids) is the only route that
+#   declares it; the whole-set check runs only when a kit is declared, which is why the admissions declare
+#   one too.
+
+# Removal-probe expectation (2026-11-18): construction rule; a construction-only verdict is the rule's own
+#   effect (README, Rule-removal probe).
+
+# --- Authored scenarios ---
+# Derived from the KB record, the band's equipment list and the gate's message template; no engine output
+#   was consulted.
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/plague-monks--equipment-restrictions/profile.equipment-restrictions
+  id: plague-monks-with-the-rat-familiar-scroll-is-refused
+  # The scroll is a row of the band's own hero list, so the offered-set check admits it and the profile's
+  # forbids token is what refuses the carried copy (validateConstruction over owned_item_ids).
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+      owned_item_ids: [rat_familiar_scroll]
+  expect_error: '"rat_familiar_scroll" is forbidden for lustria-clan-pestilens/plague-monks.'
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/plague-monks--equipment-restrictions/profile.equipment-restrictions
+  id: plague-monks-without-the-rat-familiar-scroll-is-accepted-at-construction
+  # The same recipient with an ordinary carried kit is admitted.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+      owned_item_ids: [dagger]
+    second:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/trollheim/lustria-clan-pestilens/plague-monks--equipment-restrictions/profile.equipment-restrictions
+  id: the-pestilens-sorcerer-is-admitted-with-the-rat-familiar-scroll
+  # The printed holder ('only a Pestilens Sorcerer can use its spell'): the Sorcerer's row carries no such
+  # token, so the same carried scroll is admitted on him.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: pestilens-sorcerer
+      owned_item_ids: [rat_familiar_scroll]
+    second:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

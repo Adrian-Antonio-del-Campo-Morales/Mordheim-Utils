@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/savage-orcs-kaz/band--kumfy-gear-combinations/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,53 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/savage-orcs-kaz/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the printed "Kumfy Gear cannot be combined with Warpaint or
+#   light armour" as a whole-kit construction refusal.  The band-wide record (applies_to band: true)
+#   binds profile.equipment-restrictions with when_items [kumfy_gear] and forbids [warpaint,
+#   light_armour, armour.light-armour]; profileFactsProjection() projects a when_items clause as
+#   conditional_equipment_forbids on every member (packages/typescript/domain/eligibility/index.ts; the
+#   Python mirror _eligibility.js is generated) and equipmentSetIssues() refuses the combination over
+#   the supplied kit with "<when_items> cannot be combined with <forbids>."  The compiler reaches that
+#   set check whenever a build supplies owned_item_ids, so the kit route carries the evidence: one
+#   refusal per printed partner (Warpaint owned beside the gear; light armour worn beside the gear),
+#   and the admission owns the gear alone.  The recipient is an ordinary Boyz (every item named sits on
+#   the band's single Savage Orc list: spear -> weapon.spear, kumfy_gear, warpaint, light_armour ->
+#   armour.light-armour).  Kumfy Gear's own 5+ save is an out_of_scope catalogue row with no duel
+#   mechanic, so the admission observes the Boyz' printed T4, not the gear.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed clause and the shared stage's combination template; no engine output was consulted.
+
+- audit_id: rule/mordheim/savage-orcs-kaz/band--kumfy-gear-combinations/profile.equipment-restrictions
+  id: kumfy-gear-beside-warpaint-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: boyz
+      main_weapon_id: weapon.spear
+      owned_item_ids: [spear, kumfy_gear, warpaint]
+  expect_error: kumfy_gear cannot be combined with warpaint/light_armour/armour.light-armour.
+
+# (The light-armour face is not evidenced: the Boyz' own list gate refuses light armour before
+# the clause can, so only the warpaint combination reaches the printed sentence.)
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).
+- audit_id: rule/mordheim/savage-orcs-kaz/band--kumfy-gear-combinations/profile.equipment-restrictions
+  id: kumfy-gear-alone-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: boyz
+      main_weapon_id: weapon.spear
+      owned_item_ids: [spear, kumfy_gear]
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.toughness: 4
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

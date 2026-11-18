@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/wolfman--equipment-restrictions/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,52 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the printed "A werewolf cannot bear equipment. They attack
+#   with tooth and claw" (forbids: equipment) as a construction refusal on the boundEquipment stage
+#   (packages/typescript/domain/eligibility/index.ts; the Python mirror _eligibility.js is generated):
+#   the token "equipment" refuses every selected item with '"equipment" is forbidden for
+#   masters-of-horror-sylv/wolfman.' — one refusal for a held weapon and one for a worn suit.  The
+#   profile declares no equipment list, so the clause's own token answers before any list gate.  The
+#   admission is the bare Wolfman, which compiles with its natural attacks (the compiler resolves a
+#   profile with no equipment list and no weapon to weapon.natural-attacks) and its printed W2.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/wolfman--equipment-restrictions/profile.equipment-restrictions
+  id: wolfman-with-a-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: wolfman
+      main_weapon_id: weapon.sword
+  expect_error: '"equipment" is forbidden for masters-of-horror-sylv/wolfman.'
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/wolfman--equipment-restrictions/profile.equipment-restrictions
+  id: wolfman-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: wolfman
+      armour_id: armour.light-armour
+  expect_error: '"equipment" is forbidden for masters-of-horror-sylv/wolfman.'
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested); the bare build fights with its natural attacks.
+- audit_id: rule/mordheim/masters-of-horror-sylv/wolfman--equipment-restrictions/profile.equipment-restrictions
+  id: wolfman-without-equipment-is-accepted-and-fights-with-natural-attacks
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: wolfman
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.natural-attacks
+    first.characteristics.wounds: 2
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

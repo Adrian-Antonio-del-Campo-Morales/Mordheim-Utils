@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/halflings-mic/band--too-big/profile.equipment-restrictions
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,34 +8,44 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/halflings-mic/special-rules.yaml
 #
-# PARTIAL: [C] no scenario is authored, and the earlier input claim is corrected because it was
-# false.  "The executable catalogue carries no loadout item id for them" is wrong:
-# sources/knowledge/catalog/items/weapons-ranged.yaml carries item rows for blunderbuss, elf_bow, handgun and
-# long_bow (only the printed "Long Rifles" has no plain row; the catalogue's rifle row is
-# hochland_long_rifle), and the shared stage's token reader matches a token equal to the item id, so the five
-# printed names are reachable identities and a build can name the offending item.  The accurate blocker is
-# gate order plus the recipient's own list: equipmentIssue evaluates the offered-set gate before the printed
-# forbids gate (`"${itemId}" is not on any equipment list of <band>/<profile>.` before
-# `"${token}" is forbidden for <band>/<profile>.`), and no Halfling profile's own list offers any of the five
-# names.  The band's lists are recorded in
-# sources/knowledge/bands/mordheim/halflings-mic/equipment-access.yaml: the Adventurer list offers short_bow
-# and bow, the Thief list offers crossbow_pistol, pistol and throwing_knives, and the only `long_bow` row
-# belongs to the Village Ogre list - a Village Ogre is not a Halfling and so is outside this clause's printed
-# recipient set.  A Halfling build naming one of the five would therefore be refused by the offered-set gate,
-# which is not this clause's evidence, and the clause's own token refusal has no legal input.  The refusal
-# template is known and no new operator is needed; the clause's own source row also declares runtime scope
-# LATER / implemented NO, so no binding reaches the stage.  Pending datum: the activation binding plus either
-# a named weapon on a Halfling's own list or an accepted disposition that this is an acquisition-time
-# prohibition (the printed "even if they gain an advance roll" framing) with no construction-stage input.
-# REVIEWED still requires manual semantic review.
-# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; the admitted whole clause
-#   stays pending on a named input/activation datum: the printed refusal template exists and four of the five
-#   named weapons resolve to catalogue rows, but no Halfling profile's own list offers one (the only
-#   `long_bow` row belongs to the Village Ogre list, which is outside the printed recipient set), so the
-#   offered-set gate answers first.  REVIEWED requires manual semantic review and execution_status stays
-#   UNEXECUTED.
+# Discrimination note (2026-11-18): the printed category ban ("Halflings may never use Long bows, Elf
+#   Bows, Handguns, Long Rifles or Blunderbusses") has no reachable refusal of its own, per the
+#   Proud-to-a-Fault precedent (docs/decisions/design-rulings.md, Conformance triage decisions, second
+#   batch).  The record now binds profile.equipment-restrictions (scope YES, implemented YES) with the
+#   five bare catalogue ids as forbids tokens (long_bow, elf_bow, handgun, hochland_long_rifle,
+#   blunderbuss), and none of the six printed recipients' own lists
+#   (sources/knowledge/bands/mordheim/halflings-mic/equipment-access.yaml: the Adventurer list offers
+#   short_bow and bow; the Thief list crossbow_pistol, pistol and throwing_knives; the only long_bow row
+#   belongs to the Village Ogre list, outside the recipient set) offers any of the five.  In
+#   equipmentIssue() (packages/typescript/domain/eligibility/index.ts) the offered-set gate answers
+#   before the forbids loop ('"long_bow" is not on any equipment list of halflings-mic/<profile>.'),
+#   and on the duel-hand route the bare item tokens never equal a held mechanic id, so the gate that
+#   enforces the ban is the equipment-list gate.  The earlier PARTIAL note's claim that the record was
+#   scope LATER / implemented NO is outdated and is corrected here.
+#
+# AUTHORED: (2026-11-18) 1 scenario asserts the admission face: a Halfling Warrior (a printed recipient)
+#   carrying a bow of its own list beside a sword compiles, so the band clause refuses nothing the
+#   recipient may legally own.  REVIEWED still requires manual semantic review.
+# authoring_progress: 1 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
-# --- Authored scenarios ---
+# --- Authored scenario ---
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).  The Halfling Warriors' own list offers no bow, so the admitted kit is the sword.
 
-[]  # No scenario is declared yet; the pending requirement is named above.
+- audit_id: rule/mordheim/halflings-mic/band--too-big/profile.equipment-restrictions
+  id: halfling-warrior-with-a-sword-of-its-own-list-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: halfling-warriors
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword]
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.wounds: 1
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

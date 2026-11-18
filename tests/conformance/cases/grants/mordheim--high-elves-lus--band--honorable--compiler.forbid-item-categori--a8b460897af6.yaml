@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/high-elves-lus/band--honorable/compiler.forbid-item-categories
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,70 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/high-elves-lus/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios.  Printed: 'High Elves can never use poison or drugs of any kind, no matter the
+#   circumstance.'  The band binding carries categories [poison, drug].  A Seaguard with a poisoned sword is refused
+#   (`poisons are forbidden for high-elves-lus/seaguard`), a Seaguard taking Crimson Shade is refused
+#   (`drugs are forbidden for high-elves-lus/seaguard`), and the control constructs the same Seaguard without them
+#   against an unaffiliated fighter carrying both.
+# authoring_progress: 3 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11, category ban): compiler.forbid-item-categories carries the printed
+#   categories as its parameter; the shared eligibility stage categoryProhibitions (index.ts, buildRestriction;
+#   mordheim_construction/restrictions.py calls it before the list gate) refuses a coated weapon when the
+#   categories include `poison` (`poisons are forbidden for <band>/<profile>`) and a drug preparation when they
+#   include `drug` (drugsForbidden == "category": `drugs are forbidden for <band>/<profile>`).  The
+#   lothern-sea-patrol-sar Honourable file is the authored precedent.  The control shows the same bearer without
+#   the item constructs while an unaffiliated fighter carrying it constructs too, so the refusal belongs to the rule,
+#   not to the item.  The opponent's Crimson Shade rolls its D3 at duel start (key `<side>.crimson-shade`, as in the
+#   authored precedent); the face is irrelevant to the construction asserted.
+# --- Authored scenarios ---
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/high-elves-lus/band--honorable/compiler.forbid-item-categories
+  id: a-seaguard-with-a-poisoned-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: seaguard
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for high-elves-lus/seaguard
+
+- audit_id: rule/mordheim/high-elves-lus/band--honorable/compiler.forbid-item-categories
+  id: a-seaguard-taking-crimson-shade-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: seaguard
+      main_weapon_id: weapon.sword
+      preparation_ids: [preparation.crimson-shade]
+  expect_error: drugs are forbidden for high-elves-lus/seaguard
+
+# Control: the Seaguard without poison or drug constructs; the unaffiliated opponent carries both and constructs too.
+- audit_id: rule/mordheim/high-elves-lus/band--honorable/compiler.forbid-item-categories
+  id: the-same-seaguard-without-poison-or-drug-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: high-elves-lus
+      profile_id: seaguard
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+      preparation_ids: [preparation.crimson-shade]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 1}
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

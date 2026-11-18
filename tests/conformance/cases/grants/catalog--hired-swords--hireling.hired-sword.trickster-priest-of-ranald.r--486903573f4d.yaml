@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.strictures/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction set, 2026-11-18): the printed stiletto
+#   (counts as a sword) admitted with the no-armour face observed on the compiled armour_save, and the
+#   refusals of a suit of armour, a helmet and a weapon outside the dagger / throwing knives / stiletto
+#   kit.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the strictures are a construction rule, so the probe's
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the hireling kit resolver (`resolveHirelingKit`, the consumer of
+#   the catalogue-wide compiler.hireling-fixed-equipment clause) runs before the profile's
+#   profile.equipment-restrictions gate, and the Trickster-Priest's printed kit is the ceremonial
+#   dagger, the throwing knives and the stiletto alone.  Every forbidden item below is therefore refused
+#   as an incomplete printed kit and the stricture's own sentence ("armour is forbidden for
+#   hirelings.hired-sword.2b/hireling.hired-sword.trickster-priest-of-ranald") is unreachable; the
+#   refusals survive the removal of this binding, so the duplicate carrier is the kit matcher of
+#   rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment (precedent: the Haunted Mien
+#   file ...priest-of-morr-miracle-worke--45c97d805c6e.yaml and cases/mechanics/defence.wolf-pelt-cloak.yaml).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,72 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Strictures): "They may only be armed with a dagger, throwing knives and a
+# stiletto (counts as a sword). Priests of Ranald may never wear armour."  The binding forbids the
+# `armour` token; the Haggle and Streetwise grant of the same sentence is campaign-only (scope NO).  The
+# recipient is the printed Trickster-Priest compiled through the hireling route
+# (hirelings.hired-sword.2b / hireling.hired-sword.trickster-priest-of-ranald) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); the kit's stiletto is the catalogue `sword` row by the
+# chapter's own equivalence (weapon.sword).  The admission uses the corpus's construction-only shape (no
+# charge, the bearer out of action before the first phase, so the duel requests no die) and observes
+# the compiled build alone: armour_save 7 is the no-armour face.  The refusals use the kit-resolver
+# fragment already asserted in cases/mechanics/defence.wolf-pelt-cloak.yaml.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The printed stiletto in hand: no armour, so the compiled save is the 7 of a bare warrior.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.strictures/profile.equipment-restrictions
+  id: the-printed-stiletto-compiles-with-no-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+
+# "Priests of Ranald may never wear armour": a suit of light armour is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.strictures/profile.equipment-restrictions
+  id: armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# A helmet is armour under the KB's `armour` token; it is refused as well.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.strictures/profile.equipment-restrictions
+  id: a-helmet-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      defence_ids: [defence.helmet]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "They may only be armed with a dagger, throwing knives and a stiletto": an axe in the main hand is
+# refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.strictures/profile.equipment-restrictions
+  id: a-weapon-outside-the-printed-kit-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.axe
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

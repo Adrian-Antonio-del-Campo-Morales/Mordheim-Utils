@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/priest-of-morr--equipment-restrictions/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,71 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/vampire-hunters-of-sylvania-lotd5/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios.  Printed: 'they may only be armed with a Dagger and a Scythe as weapons.  Priests of Morr
+#   may never wear Armour.'  The binding forbids [armour] and permits allowed_kinds [weapon.dagger, weapon.scythe].
+#   Two clauses, two faces: a light armour suit is refused by the bound-stage `armour` token
+#   (`armour is forbidden for vampire-hunters-of-sylvania-lotd5/priest-of-morr`), and a sword in the main hand is
+#   refused by the permit list, whose sentence (equipmentIssue, equipment_permits) names the selected id and the
+#   printed permits in binding order: `weapon.sword may not be carried; the printed clause admits only weapon.dagger,
+#   weapon.scythe.` (the nipponese-expedition-web Vim-to Mage file is the authored precedent).  The control is the
+#   Priest with the permitted dagger, accepted at construction.  Semantic wrinkle: the catalogue item `scythe` has no
+#   simulation mapping (catalog/mechanics/simulation-mappings.yaml), so the permitted-scythe admission cannot be
+#   built; the dagger is the reachable permitted weapon.
+# authoring_progress: 3 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11): a printed prohibition bound as profile.equipment-restrictions is
+#   evidenced as a construction refusal on the printed recipient plus the same recipient accepted without the
+#   item.  Consumer: the shared eligibility stage (packages/typescript/domain/eligibility/index.ts,
+#   buildRestriction stage boundEquipment, called by mordheim_construction/restrictions.py before the
+#   equipment-list gate), so a slot selection meets the clause's own sentence first: the `armour` token raises
+#   `armour is forbidden for <band>/<profile>`, every interpreted token (`weapons`, `equipment`) raises
+#   `"<token>" is forbidden for <band>/<profile>.` (equipmentIssue), and a printed permit list raises
+#   `<item> may not be carried; the printed clause admits only <permits>.`.  Only the stable fragment is quoted.
+# --- Authored scenarios ---
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/priest-of-morr--equipment-restrictions/profile.equipment-restrictions
+  id: priest-of-morr-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: priest-of-morr
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+  expect_error: armour is forbidden for vampire-hunters-of-sylvania-lotd5/priest-of-morr
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/priest-of-morr--equipment-restrictions/profile.equipment-restrictions
+  id: priest-of-morr-with-a-sword-is-refused-by-the-permit-list
+  fighters:
+    first:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: priest-of-morr
+      main_weapon_id: weapon.sword
+  expect_error: 'weapon.sword may not be carried; the printed clause admits only weapon.dagger, weapon.scythe.'
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/priest-of-morr--equipment-restrictions/profile.equipment-restrictions
+  id: priest-of-morr-with-the-permitted-dagger-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: priest-of-morr
+      main_weapon_id: weapon.dagger
+    second:
+      collection: mordheim
+      band_id: vampire-hunters-of-sylvania-lotd5
+      profile_id: priest-of-morr
+      main_weapon_id: weapon.dagger
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

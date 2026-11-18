@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.rule.strictures/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling construction set, B12 2026-11-18): the Druid-Priest's
+#   printed kit is admitted (compiled main weapon weapon.dagger), heavy armour and a blackpowder pistol are
+#   refused, and the rule is refused outside its profile.  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED.
+# AUTHORED: both printed strictures and the admitted kit are represented (see authoring_progress and the
+#   Discrimination note on the enforcing gate); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,86 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Model (hireling recipients, README; B12 2026-11-18): the KB binds Strictures' profile.equipment-
+#   restrictions with forbids [heavy-armour, blackpowder] (grade-2b.yaml: 'Priests of Taal may never wear
+#   heavy armour. Druid-Priests may never be equipped with blackpowder weapons.').  Recipient: the Druid-
+#   Priest compiled through the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.druid-
+#   priest-of-taal) with the fixture facts; his printed kit is the ceremonial dagger (fixed_items), so the
+#   admission omits the main weapon and observes the compiled first.main_weapon.tags.0: weapon.dagger in the
+#   construction-only shape.  The refusal outside the profile uses the Bard control and the common prefix.
+
+# Discrimination note (2026-11-18): the hireling kit resolver (resolveHirelingKit, `hireling active
+#   equipment and supplied ownership do not form a complete legal printed kit`) runs at the start of the
+#   boundEquipment stage, before the stage's heavy-armour check (`heavy armour is forbidden for ...`) and
+#   the forbids token loop (`"blackpowder" is forbidden for ...`), and it refuses any active or owned item
+#   outside the printed dagger-only kit.  The strictures' own diagnostics are therefore unreachable for this
+#   hireling and the refusals above are enforced by the kit resolver, per the Priest of Morr Haunted Mien
+#   precedent (catalog--hired-swords--hireling.hired-sword.priest-of-morr-miracle-worke--45c97d805c6e.yaml).
+#   The removal probe will report the refusals as surviving the binding's removal; that is the duplicate
+#   enforcement named here, not a missing scenario.
+
+# --- Authored scenarios ---
+# Derived from the hireling record, the printed kit, the README hireling conventions and the gate's message
+#   templates; no engine output was consulted.
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.rule.strictures/profile.equipment-restrictions
+  id: the-druid-priest-with-his-printed-kit-is-admitted
+  # The legal kit: the ceremonial dagger alone; an omitted main weapon is the kit's close-combat weapon.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.druid-priest-of-taal
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.dagger
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.rule.strictures/profile.equipment-restrictions
+  id: the-druid-priest-in-heavy-armour-is-refused
+  # The 'heavy-armour' token ('may never wear heavy armour'): heavy armour worn and owned beside the dagger.
+  # The kit resolver refuses the ownership first (see the Discrimination note).
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.druid-priest-of-taal
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      armour_id: armour.heavy-armour
+      owned_item_ids: [dagger, heavy_armour]
+  expect_error: 'hireling active equipment and supplied ownership do not form a complete legal printed kit'
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.rule.strictures/profile.equipment-restrictions
+  id: the-druid-priest-with-a-blackpowder-pistol-is-refused
+  # The 'blackpowder' token ('may never be equipped with blackpowder weapons'): a pistol in the main hand.
+  # The kit resolver refuses the ownership first.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.druid-priest-of-taal
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.pistol
+      owned_item_ids: [dagger, pistol]
+  expect_error: 'hireling active equipment and supplied ownership do not form a complete legal printed kit'
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.rule.strictures/profile.equipment-restrictions
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  # The printed strictures belong to the Druid-Priest's profile; selecting them on another hireling is
+  # refused.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.druid-priest-of-taal.rule.strictures]
+  expect_error: 'special rule is not available to hirelings.hired-sword.1b'

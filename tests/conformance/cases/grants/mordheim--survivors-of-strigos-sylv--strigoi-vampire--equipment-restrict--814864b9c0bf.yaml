@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--equipment-restrictions/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,56 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/survivors-of-strigos-sylv/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 2 scenarios.  Printed: 'A Strigoi Vampire may not wield any weapons, as it relies upon brute strength,
+#   tooth and claw.  They do not suffer from any penalties for fighting unarmed.'  The binding forbids [weapons]
+#   (and only weapons: the clause names no armour).  A sword in the main hand is refused with
+#   `"weapons" is forbidden for survivors-of-strigos-sylv/strigoi-vampire.` (the slavers-rel Hounds file is the
+#   authored precedent); the control is the weaponless Vampire accepted at construction.  The second printed
+#   sentence (no unarmed penalty) is the compiler's weaponless resolution - a profile whose clause forbids weapons
+#   fights with weapon.natural-attacks instead of the penalised empty hand - and is not re-asserted here because
+#   the compiled snapshot publishes no stable path naming the resolved main weapon.
+# authoring_progress: 2 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11): a printed prohibition bound as profile.equipment-restrictions is
+#   evidenced as a construction refusal on the printed recipient plus the same recipient accepted without the
+#   item.  Consumer: the shared eligibility stage (packages/typescript/domain/eligibility/index.ts,
+#   buildRestriction stage boundEquipment, called by mordheim_construction/restrictions.py before the
+#   equipment-list gate), so a slot selection meets the clause's own sentence first: the `armour` token raises
+#   `armour is forbidden for <band>/<profile>`, every interpreted token (`weapons`, `equipment`) raises
+#   `"<token>" is forbidden for <band>/<profile>.` (equipmentIssue), and a printed permit list raises
+#   `<item> may not be carried; the printed clause admits only <permits>.`.  Only the stable fragment is quoted.
+# --- Authored scenarios ---
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--equipment-restrictions/profile.equipment-restrictions
+  id: strigoi-vampire-with-a-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for survivors-of-strigos-sylv/strigoi-vampire.'
+
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--equipment-restrictions/profile.equipment-restrictions
+  id: strigoi-vampire-without-weapons-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+    second:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

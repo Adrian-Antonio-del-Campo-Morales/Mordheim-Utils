@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/weapon-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction set, 2026-11-18): a found axe wielded beyond the
+#   printed kit admitted (the training visible on the compiled construction tags), a second found weapon
+#   (a halberd) admitted the same way, the refusal of a suit of armour (the access is to weapons alone),
+#   and the control refusal of the same axe on a hireling without the rule.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Weapons Master is a construction rule (access, no die), so the
+#   probe's construction-only verdict - the admissions become kit refusals without the binding - is the
+#   rule's own effect (README, Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the Assassin's binding is the unscoped compiler.weapon-knowledge, which
+#   the resolver reads on its ordinary kit-matching path: an active weapon the training allows is
+#   skipped by the matcher while *supplied* ownership must still equal the printed kit, so a build that
+#   lists the found axe in owned_item_ids is refused by the kit matcher although the print says "any
+#   weapon you give an Assassin is his to keep".  Only the omitted-ownership admission is therefore
+#   asserted; the supplied-ownership face is recorded here, not evidenced.  The sibling no-blackpowder
+#   binding of the same rule ("blackpowder weapons are forbidden for ...") has its own identity.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,86 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Weapons Master): "The Assassin is a master of weapons and may use any
+# weapon he finds. You may purchase weapons for the Assassin just as you would for any other member of
+# your warband ... an Assassin will never use a blackpowder weapon".  The KB binds the access to
+# compiler.weapon-knowledge without allowed_kinds (every weapon, and the Poisoner's two coatings) and
+# the blackpowder bar to its own binding.  The recipient is the printed Imperial Assassin
+# (hirelings.hired-sword.1a / hireling.hired-sword.imperial-assassin; printed kit sword, dagger,
+# throwing knives, crossbow pistol) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays).
+# His Poisoner rule is checked before the kit (compiler.py: "Poisoner requires one shared Black Lotus or
+# Dark Venom choice before battle"), so every Assassin build declares main_poison_id poison.black-lotus;
+# Backstabber and Unstoppable Charge are duel effects and never act in the construction-only shape (no
+# charge, the bearer out of action before the first phase, so no die is requested).  The admissions
+# observe the compiled build alone: construction_tags is the sorted list of the four compiler contracts
+# his rules bind (the Poisoner choice, the catalogue-wide fixed-equipment clause, the blackpowder bar and
+# the training).  The refusals use the kit-resolver fragment already asserted in
+# cases/mechanics/defence.wolf-pelt-cloak.yaml; the control is the corpus's hireling control, the
+# grade-1b Bard, who has no such rule.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A found axe in the main hand, ownership omitted: the training admits any weapon, and the compiled
+# build carries the training among its contracts.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/weapon-access
+  id: a-found-axe-beyond-the-printed-kit-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.axe
+      main_poison_id: poison.black-lotus
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.assassin-poisoner, compiler.hireling-fixed-equipment, compiler.no-blackpowder-weapons, compiler.weapon-knowledge]
+
+# A found two-handed halberd: "any weapon he finds" is not bounded to one-handed blades.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/weapon-access
+  id: a-found-halberd-beyond-the-printed-kit-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.halberd
+      main_poison_id: poison.black-lotus
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.construction_tags: [compiler.assassin-poisoner, compiler.hireling-fixed-equipment, compiler.no-blackpowder-weapons, compiler.weapon-knowledge]
+
+# The access is to weapons: a suit of light armour outside the printed kit is refused by the kit
+# matcher even with the printed sword in hand.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/weapon-access
+  id: armour-outside-the-printed-kit-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The control: the Bard, without the rule, wielding the same axe beyond his printed kit is refused by
+# the kit matcher.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/weapon-access
+  id: the-same-found-axe-is-refused-on-a-hireling-without-the-rule
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.axe
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

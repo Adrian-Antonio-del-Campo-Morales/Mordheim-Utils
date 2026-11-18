@@ -1,6 +1,29 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.strictures/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction set, 2026-11-18): the printed dagger-and-cloak
+#   kit admitted with the no-armour face observed on the compiled armour_save, and the refusals of a suit
+#   of armour, a helmet and a non-blunt weapon.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the strictures are a construction rule, so the probe's
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the hireling kit resolver (`resolveHirelingKit`, the consumer of
+#   the catalogue-wide compiler.hireling-fixed-equipment clause) runs before the profile's
+#   profile.equipment-restrictions gate, and this Wolf Priest's printed kit is the dagger and the white
+#   wolf cloak alone.  Every forbidden item below is therefore refused as an incomplete printed kit and
+#   the stricture's own sentences ("armour is forbidden for hirelings.hired-sword.1b/
+#   hireling.hired-sword.wolf-priest-of-ulric"; the `allowed_kinds` permit "weapon.sword may not be
+#   carried; the printed clause admits only ...") are unreachable; the refusals survive the removal of
+#   this binding, so the duplicate carrier is the kit matcher of
+#   rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment (precedent: the Haunted Mien
+#   file ...priest-of-morr-miracle-worke--45c97d805c6e.yaml and cases/mechanics/defence.wolf-pelt-cloak.yaml).
+# Semantic wrinkle (2026-11-18): the binding's `allowed_kinds` (club, mace, flail, quarter-staff,
+#   dagger) prints a permission - "may only use blunt weapons, except for a dagger" - but the printed
+#   kit holds no blunt weapon and the profile has no Weapons Training, so a supplied mace is refused by
+#   the kit matcher as well; the permit is unreachable as an admission from this recipient and is not
+#   asserted.  The kit's `wolfcloak` is the KB's Middenheim hunt cloak (catalog/items/out-of-scope.yaml,
+#   shooting-only save), carried but contributing nothing in close combat, so the compiled save is 7.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +32,72 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Strictures, Town Cryer 8): "A Wolf Priest may only use blunt weapons,
+# except for a dagger, and may never wear armour; the white wolf cloak is the only garb the stricture
+# allows."  The binding forbids the `armour` token and permits the blunt kinds plus the dagger.  The
+# recipient is the printed grade-1b Wolf Priest compiled through the hireling route
+# (hirelings.hired-sword.1b / hireling.hired-sword.wolf-priest-of-ulric) with the fixture facts (WS3 S3
+# T3 W2 I5 A1; the printed Ld8 stays); its Hatred of Sigmarites is a duel effect that never fires in a
+# construction-only engagement.  The admission uses the corpus's construction-only shape (no charge,
+# the bearer out of action before the first phase, so the duel requests no die) and observes the
+# compiled build alone: armour_save 7 is the no-armour face.  The refusals use the kit-resolver
+# fragment already asserted in cases/mechanics/defence.wolf-pelt-cloak.yaml.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The printed kit, the dagger in hand and the white wolf cloak carried: no armour, so the compiled save
+# is the 7 of a bare warrior.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.strictures/profile.equipment-restrictions
+  id: the-printed-dagger-and-cloak-compile-with-no-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+
+# "may never wear armour": a suit of light armour beside the cloak is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.strictures/profile.equipment-restrictions
+  id: armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# A helmet is armour under the KB's `armour` token and outside the printed kit; it is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.strictures/profile.equipment-restrictions
+  id: a-helmet-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      defence_ids: [defence.helmet]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "may only use blunt weapons, except for a dagger": a sword in the main hand is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.strictures/profile.equipment-restrictions
+  id: a-non-blunt-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 466 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 397 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -62,6 +62,46 @@ what is pending and when it is done.
   `identity.spellcaster` (`trait_overrides: {spellcaster: true}` declares it), while
   the hired Witch Hunter binds the generic hatred of everyone. Done when the hireling
   rule binds `mechanic.burn-the-witch` and its file covers the non-spellcaster boundary.
+- **Semantic review items from the authored batches.** Authored scenarios whose evidence
+  route or reading deserves a reviewer's eye before `REVIEWED` (none blocks execution; each is
+  documented in its file): (a) the Necrarchs' Nosferatu Leader borrow is evidenced on the Danse
+  Macabre break-free test because no profile of that band can take a charged Fear test; (b) the
+  War Priestess's War-Honed first-failed-Leadership reroll is evidenced on a plain supplied
+  Leadership test because the same rule's fear immunity pre-empts fear tests; (c) the three
+  automatic-Leadership Dramatis Personae (Belandysh, Ippan Shu, Maximilian) isolate the
+  automatic pass from their psychology-immunity siblings through a supplied Danse test;
+  (d) the knocked-down Songster still sings (consumer posture reading, print silent);
+  (e) Warrior-Priest Hammer of Sigmar = Sigmarite hammer, Gwen's Knives = two daggers,
+  William's Lucky Rabbit's Foot = the trading-post item (adopted equivalences, 2026-11-18).
+  Done when a reviewer confirms or re-authors each and the files advance to `REVIEWED`.
+- **Skink Henchman Poison Application is bound but has no admitted clause.** The Lizardmen
+  (`lizardmen-lus`) rule binds `profile.equipment-restrictions` with `scope: YES` while its only
+  clause `whole` is `scope: NO`, so the backlog tool lists the identity as authorable but the
+  inventory admits no clause and refuses every scenario on it (the gate still enforces the
+  venom restriction). Done when the clause mark and the binding agree (the positive face,
+  venom on a missile weapon, has no duel representation: every Skink missile item is
+  `out_of_scope`).
+- **Profile prose `equipment_restrictions` duplicates bound rules.** The eligibility gate reads
+  the free-text `equipment_restrictions` lines of `profiles.yaml` (`index.ts`, the prose scan
+  near the profile-restriction stage) and yields "armour is forbidden" without the bound rule,
+  so the Kislevite warrior profiles, the Marauder Seer and the Necrarch Nosferatu no-armour
+  identities probe non-discriminating (dated Discrimination notes in their files). Done when
+  one source carries each printed ban (the bound rule) and the prose is descriptive only.
+- **Construction-batch wrinkles (B11/B12, 2026-11-18).** Recorded in the files, none blocking:
+  the Priest of Morr's permitted scythe has no simulation mapping (the dagger is the only
+  reachable permitted weapon); the Priestess of Shallya's same rule forbids wielding her printed
+  ceremonial dagger (`profile.active-weapon-restrictions` sibling, carried but unwieldable);
+  the pirate human mercenary access widens only the slot picker (`buildAccess`), so a
+  mercenary-pool item declared in `owned_item_ids` is refused even with the rule; the Imperial
+  Assassin's "found" weapons may be wielded but not owned (supplied ownership must equal the
+  printed kit); the hireling kit resolver pre-empts every priest stricture's own sentence (seven
+  stricture identities probe non-discriminating with dated notes); the Halfling Too Big and
+  Snotling Small Hands bans are enforced by the equipment-list gate only; the Dragon Monk's
+  shield/buckler/helmet exemption and the Wolf Priest's blunt-weapon permit have no legal
+  positive input; the Witch Doctor's compulsory headdress is judged only when `owned_item_ids`
+  is supplied; the Master of Throwing Weapons mechanic file's header still claims the binding
+  carries no parameters (it carries `max_missile_weapons`). Done when each is confirmed as the
+  intended encoding or repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -180,18 +220,16 @@ identities whose binding already has authored scenarios elsewhere.
 | B08 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
 | B09 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
 | B10 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
-| B11 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
-| B12 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
-| B13 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
-| B14 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
-| B15 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **466** | 247 | 787.5 | |
+| B11 | construction-skills-and-profile | 44 | 29 | 66 | construction 44 |
+| B12 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
+| B13 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
+| | **Total** | **397** | 181 | 684 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
-Large Target pass landed the same day). Then the model-heavy themes, which confirm the workflow on
-cheap members: construction-equipment, construction-skills-and-profile,
-survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
+Large Target pass landed the same day, and the two construction-equipment batches followed). Then
+the model-heavy themes, which confirm the workflow on cheap members:
+construction-skills-and-profile, survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
 construction and may run in parallel; the coordinator owns the shared documents (this file,

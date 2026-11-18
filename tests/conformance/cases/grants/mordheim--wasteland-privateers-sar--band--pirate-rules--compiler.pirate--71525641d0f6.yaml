@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/wasteland-privateers-sar/band--pirate-rules/compiler.pirate-human-mercenary-equipment-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,64 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/wasteland-privateers-sar/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 2 scenarios.  Wasteland Privateers, General Pirate Rules (rule_ref shared-rule.pirate-rules): the band may use the
+#   Human Mercenary equipment lists in addition to its own.  Admission: a Crew member with a spear (mercenary
+#   pool only) constructs.  Refusal: a Crew member with a flail (neither pool) is refused with
+#   `equipment is not available to wasteland-privateers-sar/crew: ['weapon.flail']`.
+# authoring_progress: 2 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11, pirate access): the band rule binds
+#   compiler.pirate-human-mercenary-equipment-access (grant: band), and the shared eligibility stage reads it in
+#   buildAccess (packages/typescript/domain/eligibility/index.ts): when the compiled contracts include it, every
+#   equipment list of the Human Mercenaries package (sources/knowledge/bands/mordheim/mercenaries/
+#   equipment-access.yaml) is added to the profile's own lists before the profileSelections stage checks each
+#   slot selection against that union and refuses what is on neither with
+#   `equipment is not available to <band>/<profile>: ['<mechanic>']`.  The admission is a Crew member carrying a
+#   spear in the main hand: `spear` is on the mercenary-equipment-lists and on none of this band's lists
+#   (pirate-, gunner-, swabbie-equipment-list), so the build constructs only through this grant.  The refusal is
+#   the same Crew member carrying a flail, an item on neither this band's lists nor any mercenary list; it meets the
+#   same gate the admission passes.  The trollheim lustria-pirates file is the authored sibling (its admission is
+#   heavy armour and its refusal the per-item kit sentence).  Wrinkle noted for review: the kit path
+#   (owned_item_ids, validateConstruction) projects only the profile's own lists plus contractEquipment, not
+#   buildAccess, so a mercenary-pool item declared as owned would be refused there even with this rule; the
+#   admission is therefore declared through the slot.  The second printed effect (the rest of the General Pirate
+#   Rules) is published scope NO / out-of-scope.construction and is not a test TODO.
+# --- Authored scenarios ---
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The spear is on the Human Mercenary list and on none of this band's lists: it constructs only through the grant.
+- audit_id: rule/mordheim/wasteland-privateers-sar/band--pirate-rules/compiler.pirate-human-mercenary-equipment-access
+  id: a-crew-member-with-a-spear-from-the-mercenary-pool-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: wasteland-privateers-sar
+      profile_id: crew
+      main_weapon_id: weapon.spear
+    second:
+      collection: mordheim
+      band_id: wasteland-privateers-sar
+      profile_id: crew
+      main_weapon_id: weapon.dagger
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# The other direction of the same gate: the flail is on no list of this band and on no Human Mercenary list.
+- audit_id: rule/mordheim/wasteland-privateers-sar/band--pirate-rules/compiler.pirate-human-mercenary-equipment-access
+  id: a-crew-member-with-an-item-on-neither-pool-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: wasteland-privateers-sar
+      profile_id: crew
+      main_weapon_id: weapon.flail
+  expect_error: "equipment is not available to wasteland-privateers-sar/crew: ['weapon.flail']"

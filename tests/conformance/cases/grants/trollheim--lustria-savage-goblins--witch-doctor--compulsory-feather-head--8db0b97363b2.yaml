@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-savage-goblins/witch-doctor--compulsory-feather-headdress/profile.equipment-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (B12 construction-equipment, 2026-11-18): a Witch Doctor kit
+#   without the Feather Headdress is refused, one with it is admitted, and a non-recipient's kit owes none.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the compulsory-item obligation is evidenced on both sides and bounded to its printed recipient
+#   (see authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,72 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/trollheim/lustria-savage-goblins/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Model (B12 2026-11-18): the KB binds profile.equipment-restrictions with required_kinds
+#   [feather_headdress] on witch-doctor (special-rules.yaml, p.97 'Feather Headdress').
+#   profileFactsProjection publishes it as a required_equipment row and equipmentSetIssues demands an item
+#   whose id, mechanic or kind is feather_headdress (the catalogue row of that id, kind trollheim-equipment,
+#   on savage-goblin-hero-equipment-list), answering `The equipment of ${band}/${profile} includes no
+#   ${kinds}; the printed clause obliges acquiring one.`  The item has no duel mechanic, so the kit channel
+#   (owned_item_ids) is the route that declares it.
+
+# Semantic note (2026-11-18): (1) the whole-set check runs only when a build declares its kit (compiler.py
+#   runs validateConstruction when owned_item_ids is supplied), so a Witch Doctor compiled without a
+#   declared kit - the band's leader scenarios - is not judged by the obligation; the scenarios here declare
+#   a kit on both sides for that reason.  (2) The second half of the sentence ('the Witch Doctor is the
+#   mandatory starting leader') and the Trackers' conditional exclusion ('unless this model somehow becomes
+#   the warband leader') are roster facts outside the duel construction and are not asserted.
+
+# Removal-probe expectation (2026-11-18): construction rule; construction-only is the expected verdict.
+
+# --- Authored scenarios ---
+# Derived from the KB record, the band's equipment list and the gate's message template; no engine output
+#   was consulted.
+
+- audit_id: rule/trollheim/lustria-savage-goblins/witch-doctor--compulsory-feather-headdress/profile.equipment-restrictions
+  id: the-witch-doctor-without-the-feather-headdress-is-refused
+  # A declared kit without the Headdress: the whole-set obligation names the missing item.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: witch-doctor
+      owned_item_ids: [dagger]
+  expect_error: 'The equipment of lustria-savage-goblins/witch-doctor includes no feather_headdress; the printed clause obliges acquiring one.'
+
+- audit_id: rule/trollheim/lustria-savage-goblins/witch-doctor--compulsory-feather-headdress/profile.equipment-restrictions
+  id: the-witch-doctor-with-the-feather-headdress-is-admitted
+  # The satisfied obligation: the Headdress is a row of the hero list and the required item itself.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: witch-doctor
+      owned_item_ids: [dagger, feather_headdress]
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: witch-doctor
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/trollheim/lustria-savage-goblins/witch-doctor--compulsory-feather-headdress/profile.equipment-restrictions
+  id: a-tracker-owes-no-feather-headdress
+  # The obligation is the Witch Doctor's (applies_to witch-doctor): a Tracker's kit without the Headdress is
+  # admitted.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [dagger]
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: witch-doctor
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
