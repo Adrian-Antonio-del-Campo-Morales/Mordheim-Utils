@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-mutant/special-rule.band--beastmen-special-skills-mutant
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction pair plus the purchase it authorises, B12
+#   construction-skills batch 2026-11-18): the Beastmen Chieftain selecting Mutant may buy one printed
+#   Possessed mutation and compiles with it (the Great Claw's own additional attack), the same Hero
+#   buying the mutation without the skill is refused by the construction gate, and a henchman of the
+#   band is refused the skill itself.  The skill's only printed content is the purchase permission
+#   ("The Beastman may buy one mutation"): its compiler contract adds nothing to the fighter and the
+#   mutation's duel effect belongs to the mutation's own identity.
+# AUTHORED: the admission with a purchased mutation, the mutation-without-the-skill refusal and the
+#   henchman refusal are declared below; REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the print says "one mutation"; the construction gate counts one Mutant
+#   selection per purchased mutation (`each purchased mutation requires <skill>`), which also yields
+#   the printed cap when the skill is taken once.  Whether a Beastman may repeat the skill (printed
+#   only for Marauder Heroes) is not decided by the KB and is not asserted here.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,5 +25,70 @@
 #
 # Clause: whole (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# --- Authored scenarios ---
+# Family model (Chaos "Mutant" special skills, construction face).  The record is a `warband_skill`
+# with `grant: selectable`, `applies_to.band: true`, no eligibility list and the compiler binding
+# `special-rule.band--beastmen-special-skills-mutant` (an empty contract).  The band's Heroes print the
+# `special` skill access the warband-skill gate reads; the henchmen print none.  The purchase the skill
+# permits is the printed Possessed mutation table ("See Mutants section on special rules"): a
+# `band--mutations-*` selection on a Beastmen build is admitted only when the Mutant skill is selected
+# with it, otherwise the construction gate refuses the purchase.  The Great Claw is the purchased
+# mutation here because its compiled consequence is a stable field: one additional attack entry
+# tagged `rule.great-claw` at Strength +1.  Fixture facts: the Chieftain's printed profile (WS 4, S 4,
+# T 4, W 1, I 4, A 1, Ld 7) with an ordinary mace; the opponent is hand-built and contributes no
+# attacks; both Hero blows are natural ones so no wound die is on the tape.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-mutant/special-rule.band--beastmen-special-skills-mutant
+  id: a-hero-with-mutant-may-buy-a-mutation-and-compiles-with-it
+  fighters:
+    first:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids: [band--beastmen-special-skills-mutant, band--mutations-great-claw]
+      main_weapon_id: weapon.mace
+    second:
+      &beastmen-mutant-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: ['rule.great-claw']
+    first.extra_attacks.0.strength_bonus: 1
+    first.characteristics.attacks: 1
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The purchase needs the skill: the same Hero buying the mutation without Mutant is refused by the
+# construction gate with its own diagnostic.
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-mutant/special-rule.band--beastmen-special-skills-mutant
+  id: a-mutation-without-the-mutant-skill-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.mace
+    second: *beastmen-mutant-opponent
+  expect_error: each purchased mutation requires band--beastmen-special-skills-mutant
+
+# The skill is a Hero's: a henchman of the band (no `special` skill access) is refused the selection.
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-mutant/special-rule.band--beastmen-special-skills-mutant
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: gor
+      special_rule_ids: [band--beastmen-special-skills-mutant]
+      main_weapon_id: weapon.mace
+    second: *beastmen-mutant-opponent
+  expect_error: "special rule is not available to beastmen-raiders/gor: band--beastmen-special-skills-mutant"

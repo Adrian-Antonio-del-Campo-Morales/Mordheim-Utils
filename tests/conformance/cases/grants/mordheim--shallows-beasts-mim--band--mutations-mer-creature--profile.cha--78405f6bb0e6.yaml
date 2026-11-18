@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/profile.characteristics
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Buccaneer selecting Mer-Creature compiles at Movement 3 (printed M4 -1), the same Buccaneer without
+#   the mutation keeps Movement 4, and the mutation is refused on a Henchman (the printed recipients are
+#   Heroes).  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the band's Aquatic Mutants rule (compiler.aquatic-mutants, authored at
+#   ...72038f9ff13b) bounds the same selection to one mutation per Hero; a single Mer-Creature on a Hero
+#   satisfies it, so no Aquatic Mutants sentence is reached here.  The Henchman refusal comes from the
+#   mutation's own `applies_to: profile_types: [hero]` through the recipients stage ("special rule is
+#   not available to <band>/<profile>"), which the compiler reaches before the Aquatic Mutants gate's
+#   own "Aquatic mutations require a Hero" sentence.  The sibling mechanic.mer-creature binding
+#   (species.aquatic tag) and the excluded terrain clause are not asserted here.  Movement is read from
+#   the printed profile (the build supplies no characteristics), so the -1 lands on the printed M4.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,54 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Mer-Creature): "when moving on land the Hero has Movement reduced by
+# one."  The binding is the mutation's profile.characteristics row (bonuses movement -1), applied by the
+# selected branch of packages/python/roster-construction/mordheim_construction/compiler.py.  The
+# recipient is the band's own Buccaneer (shallows-beasts-mim/buccaneer, a Hero printed at M4), selecting
+# the mutation through special_rule_ids; the Henchman is the band's Wreckers.  The shape is
+# construction-only (no charge, the bearer out of action before the first phase, so no die is requested)
+# and the compiled Movement is the observation.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Mer-Creature selected: the printed M4 compiles to M3.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/profile.characteristics
+  id: the-buccaneer-with-mer-creature-compiles-at-movement-3
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-mer-creature]
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.movement: 3
+
+# The control: the same Buccaneer without the mutation keeps the printed M4.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/profile.characteristics
+  id: the-same-buccaneer-without-the-mutation-keeps-movement-4
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.characteristics.movement: 4
+
+# The printed recipients are Heroes: a Wrecker (Henchman) selecting the mutation is refused.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/profile.characteristics
+  id: the-mutation-is-refused-on-a-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-mer-creature]
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers"

@@ -1,6 +1,24 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Assassin with no poison declared is refused, with a poison outside the two printed choices is
+#   refused, with an off-hand coating that differs from the main-hand choice is refused, with Dark Venom
+#   on the main hand constructs and the off-hand dagger receives the same coating (+1 Strength on both
+#   hands), and with Black Lotus constructs with the copy visible as the off hand's poison-free shadow.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Poisoner is checked before the kit (compiler.py ~352-357), so
+#   the three refusals are the rule's own effect (construction-only) and the two admissions' off-hand
+#   copy is expected to fail without the binding (the off hand would keep no coating).
+# Semantic wrinkle (2026-11-18): the compiler's sentence names "Dark Venom" while the KB mechanic is
+#   poison.black-venom (the Dark Venom item's mechanic_id); the catalogue's "Black Lotus" is
+#   poison.black-lotus.  Only the main hand's choice is read; an absent off-hand poison is filled with
+#   the same choice when an off-hand weapon is carried, and a differing one is refused.  The Assassin's
+#   Weapons Master training admits the two coatings past the kit matcher (weaponKnowledgeAllows lists
+#   them), which is why no poison needs to appear in the printed kit.  The acquisition-and-lending
+#   clause is out of scope.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +27,101 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Poisoner): "The Assassin starts each game with his weapons poisoned with
+# either Black Lotus or Dark Venom. The controlling player decides which poison the Assassin is armed
+# with before the game starts".  The binding is compiler.assassin-poisoner; compiler.py refuses with
+# "Poisoner requires one shared Black Lotus or Dark Venom choice before battle" when main_poison_id is
+# not one of {poison.black-lotus, poison.black-venom} or the off-hand poison differs, and otherwise
+# copies the choice to a carried off-hand weapon.  The recipient is the printed Imperial Assassin
+# (hirelings.hired-sword.1a / hireling.hired-sword.imperial-assassin; kit sword, dagger, throwing knives,
+# crossbow pistol) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays); the kit sword is
+# the main weapon and the kit dagger the off-hand weapon.  The admissions use the construction-only
+# shape (no charge, the bearer out of action before the first phase) and read the compiled weapon
+# effects: Dark Venom's +1 Strength (execution.yaml poison.black-venom: strength_bonus 1) appears on
+# both hands; for Black Lotus (tag only) the off hand's poison-free shadow
+# (`off_hand_without_poison`, compiled only when the off hand carries a poison) is the legible copy.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# No poison declared before battle: refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
+  id: an-assassin-without-a-poison-choice-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+  expect_error: "Poisoner requires one shared Black Lotus or Dark Venom choice before battle"
+
+# A poison outside the two printed choices (Manbane) is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
+  id: an-assassin-with-a-poison-outside-the-printed-choices-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+  expect_error: "Poisoner requires one shared Black Lotus or Dark Venom choice before battle"
+
+# One shared choice: Black Lotus on the sword with Dark Venom on the dagger is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
+  id: an-assassin-with-a-differing-off-hand-poison-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.dagger
+      main_poison_id: poison.black-lotus
+      off_poison_id: poison.black-venom
+  expect_error: "Poisoner requires one shared Black Lotus or Dark Venom choice before battle"
+
+# Dark Venom chosen on the main hand: the off-hand dagger receives the same coating (+1 Strength on both).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
+  id: dark-venom-on-the-main-hand-coats-the-off-hand-dagger-too
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.dagger
+      main_poison_id: poison.black-venom
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 1
+    first.off_hand.strength_bonus: 1
+    first.off_hand_without_poison.strength_bonus: 0
+
+# Black Lotus chosen on the main hand: the off hand carries a coating too (its poison-free shadow exists).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.poisoner/poison-choice
+  id: black-lotus-on-the-main-hand-coats-the-off-hand-dagger-too
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.dagger
+      main_poison_id: poison.black-lotus
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.main_weapon.strength_bonus: 0
+    first.main_weapon_without_poison.strength_bonus: 0
+    first.off_hand_without_poison.strength_bonus: 0
+    first.off_hand_attacks: True

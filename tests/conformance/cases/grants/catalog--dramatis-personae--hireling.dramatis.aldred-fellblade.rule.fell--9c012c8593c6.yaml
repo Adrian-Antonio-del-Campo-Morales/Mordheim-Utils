@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aldred-fellblade.rule.fellblade/compiler.aldred-fellblade
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): Aldred
+#   with his printed two-handed sword compiles a main weapon that parries and stays double-handed, a
+#   hand-built fighter with the same double-handed weapon has no parry, and Aldred with an empty hand
+#   gains none ("no parry is granted to an empty hand").  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the contract edits the compiled main-weapon effect, so the
+#   first scenario's `parry: True` is expected to fail without the binding (discriminating).
+# Semantic wrinkle (2026-11-18): the contract has no refusal of its own (compiler.py: `if
+#   "compiler.aldred-fellblade" in compiler_contracts and main_weapon_id == "weapon.double-handed-weapon":
+#   main_effect = replace(main_effect, parry=True)`), so absence is evidenced by the two controls rather
+#   than by an expect_error.  The printed "Two-handed sword" is resolved to the KB `two_handed_weapon`
+#   item (record note), whose mechanic is weapon.double-handed-weapon; the Fellblade therefore keeps the
+#   double-handed strike-last and +2 Strength of that mechanic and gains the parry alone.  Aldred's kit
+#   heavy armour and shield are left unequipped (ownership stays the printed kit).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,61 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Fellblade): "Aldred is a master with this sword and he can therefore parry
+# with it as though it was a normal sword."  The recipient is the printed Aldred Fellblade compiled
+# through the hireling route (hirelings.dramatis-personae.2b / hireling.dramatis.aldred-fellblade) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and the kit's two-handed sword in hand,
+# as the sibling Righteous Fury file (...58eba60172bb) builds him.  The shape is construction-only (no
+# charge, the bearer out of action before the first phase, so Righteous Fury and every die stay
+# unreached) and the compiled main-weapon effect is the observation.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Aldred's Fellblade: a double-handed weapon that parries.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aldred-fellblade.rule.fellblade/compiler.aldred-fellblade
+  id: aldreds-two-handed-sword-compiles-with-parry
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.aldred-fellblade
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.parry: True
+    first.main_weapon.two_handed: True
+
+# The control: the same double-handed weapon in another fighter's hands has no parry.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aldred-fellblade.rule.fellblade/compiler.aldred-fellblade
+  id: the-same-double-handed-weapon-does-not-parry-for-a-fighter-without-the-rule
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.main_weapon.parry: False
+    first.main_weapon.two_handed: True
+
+# "no parry is granted to an empty hand": Aldred unarmed gains nothing from the rule.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aldred-fellblade.rule.fellblade/compiler.aldred-fellblade
+  id: aldred-with-an-empty-hand-gains-no-parry
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.aldred-fellblade
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.main_weapon.parry: False

@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/disciples-of-maldred-mou/band--knights-feats-maldred/profile.skill-access.armour-specialist
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction admission/refusal pair, B11/B12 skill-access
+#   batch 2026-11-18): the printed recipient (questing-knights) built with the named feat through
+#   `skill_ids` compiles, and a non-knight profile of the same band (men-at-arms) declaring the same
+#   skill is refused with the shared skill-availability sentence.  Shape mirrors the AUTHORED
+#   knights-errant base identity (…knights-feats/profile.skill-access) and the Clan Mors / Clan
+#   Skryre rulebook-inheritance pairs.  REVIEWED still requires manual semantic review.
+# AUTHORED: the admission and the refusal of the named feat are declared below; REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): skill access is a construction rule, so the probe's
+#   construction-only verdict (the admission becomes a refusal without the binding) is the rule's own
+#   effect and expected per the README's Rule-removal probe section.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,47 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/disciples-of-maldred-mou/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Family model (Knights Feats, variant armour-specialist): the band record `band--knights-feats-maldred` binds
+# profile.skill-access {category: special, profile_ids: [questing-knights], skills: [skill.armour-specialist]}, one effect
+# per printed feat.  Ruling "Lancer is outside the duel scope" (2026-11-03): the Lancer entry is
+# excluded; Combat Charge, Armour Specialist and Sword Master access remain separate identities, so
+# this file evidences only skill.armour-specialist.  Ruling "A published table member may be
+# construction-only" (2026-10-21): the `skill_ids` route admits a published member; the feat's own duel
+# contract belongs to its skill identity, so both fighters are silenced and the observation is the
+# compiled build itself (the printed Attacks line of the recipient; the kit weapon is a list item of the
+# recipient's printed equipment list).  Refusal fragment: the eligibility gate's skill-availability
+# sentence (packages/typescript/domain/eligibility/index.ts, `skills are not available to <band>/<profile>`),
+# produced because the non-knight profile's access carries no `special` list that publishes the feat.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/disciples-of-maldred-mou/band--knights-feats-maldred/profile.skill-access.armour-specialist
+  id: the-armour-specialist-feat-is-admitted-to-the-questing-knight
+  fighters:
+    first:
+      collection: mordheim
+      band_id: disciples-of-maldred-mou
+      profile_id: questing-knights
+      skill_ids: [skill.armour-specialist]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  # Construction is the observation: no charge is declared and the bearer is out of action before the
+  # first phase (the corpus's construction-only shape), so the duel requests no die.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.attacks: 1
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/mordheim/disciples-of-maldred-mou/band--knights-feats-maldred/profile.skill-access.armour-specialist
+  id: a-non-knight-profile-of-the-band-is-refused-the-same-feat
+  fighters:
+    first:
+      collection: mordheim
+      band_id: disciples-of-maldred-mou
+      profile_id: men-at-arms
+      skill_ids: [skill.armour-specialist]
+      main_weapon_id: weapon.sword
+  expect_error: "skills are not available to disciples-of-maldred-mou/men-at-arms: ['skill.armour-specialist']"

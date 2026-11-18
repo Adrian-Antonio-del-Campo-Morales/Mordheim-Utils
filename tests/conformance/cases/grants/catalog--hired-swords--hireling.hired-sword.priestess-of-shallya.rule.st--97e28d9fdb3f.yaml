@@ -1,6 +1,22 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.active-weapon-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   ceremonial dagger taken into the main hand is refused, the same dagger in the off hand beside the
+#   walking staff is refused, and the printed staff in hand constructs with the dagger left in the kit.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Strictures is a construction rule (an active-weapon bar, no
+#   die), so the probe's construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the same Strictures rule also binds profile.equipment-restrictions
+#   (armour; authored at ...20f7ba5d40f1, where the kit matcher pre-empts it) and the duel-side charge
+#   bar mechanic.shallya-strictures; neither is asserted here.  The printed kit carries the ceremonial
+#   dagger and the walking staff (weapon.quarter-staff), so the kit resolver admits the dagger as owned
+#   equipment and only this binding refuses it in an active position.  A build that omits its main
+#   weapon defaults to the kit's first close-combat entry, the dagger, so the Priestess's no-options
+#   build is itself the refusal; every admission names the staff explicitly.  A sword outside the kit is
+#   the kit matcher's refusal, not this binding's, and is not repeated here.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +25,47 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Strictures): "Priestesses of Shallya always begin equipped with a walking
+# staff (counts as a staff). They may only be armed with a walking staff."  The binding forbids
+# weapon.dagger on the active positions (profile.active-weapon-restrictions, read by activeWeaponIssues
+# in packages/typescript/domain/eligibility/index.ts at the boundEquipment stage:
+# `${id} may not be used by ${band}/${profile}.`).  The recipient is the printed Priestess compiled
+# through the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.priestess-of-shallya) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays).  The admission uses the corpus's
+# construction-only shape (no charge, the bearer out of action before the first phase, so neither the
+# charge bar nor any die is reached).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The no-options build: the omitted main weapon defaults to the kit's dagger, which the stricture bars.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.active-weapon-restrictions
+  id: the-ceremonial-dagger-in-the-main-hand-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "weapon.dagger may not be used by hirelings.hired-sword.2b/hireling.hired-sword.priestess-of-shallya"
+
+# (A dagger beside the two-handed staff is refused by the hands composition before this stricture
+# can speak, so the off-hand face is not evidenced.)
+
+# The printed walking staff in hand constructs; the ceremonial dagger stays in the kit, owned but unused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.active-weapon-restrictions
+  id: the-printed-walking-staff-in-hand-compiles-with-the-dagger-left-in-the-kit
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.quarter-staff
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.off_hand_attacks: False
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

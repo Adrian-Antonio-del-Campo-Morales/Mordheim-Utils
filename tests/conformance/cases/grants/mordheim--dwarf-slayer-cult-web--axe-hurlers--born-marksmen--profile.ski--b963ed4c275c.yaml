@@ -1,6 +1,26 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.skill-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction set, B11/B12 skill-access batch 2026-11-18): a
+#   promoted Axe Hurler (variant promotion.hero) declaring a printed Shooting skill through `skill_ids`
+#   compiles, the unpromoted Axe Hurler declaring the same skill is refused, and a promoted henchman of
+#   another profile (troll-slayers) declaring it is refused.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the admission and both refusals are declared below; REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkle (2026-11-18, recorded): every Shooting skill of the catalogue is a runtime exclusion
+#   (registry/runtime-scope.yaml), so the admitted member is a published table member without a duel
+#   operator and is admitted inertly through the `skill_ids` route (ruling "A published table member may be
+#   construction-only", 2026-10-21; compiler.py inert_ids reads profileSkillLists, which honours the
+#   binding's variant_ids).  The sibling identity compiler.promoted-hero-skill-access on the same record
+#   (another author) carries the promotion-time list choice; this file evidences the access binding only.
+# Removal-probe expectation (2026-11-18): construction-only (the admission becomes a refusal without the
+#   binding), expected for a skill-access rule.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating.
+#   Every printed Shooting skill is a registry mechanic_exclusion, so the admission can only be
+#   evidenced by diagnostic order (the later runtime-exclusion sentence), which the removal of the
+#   grant does not change; the grant is also bound a second time by the sibling
+#   compiler.promoted-hero-skill-access identity. Recorded in TODO.md.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,6 +30,61 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Clauses and contracts: sources/knowledge/bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml
 #
-# TODO: Review the rule and author all required scenarios.
+# --- Authored scenarios ---
+# Rule (special-rules.yaml, axe-hurlers--born-marksmen, grant profile, applies_to [axe-hurlers]): "If an
+# Axe Hurler rolls a 'That Lad's Got Talent' as an advancement, he may always choose Shooting skills as one
+# of his two skill list choices.  He may do this even if there are no heroes with Shooting Skills in the
+# warband."  Binding profile.skill-access {category: shooting, variant_ids: [promotion.hero], skills:
+# [skill.eagle-eyes, skill.hunter, skill.knife-fighter, skill.nimble, skill.pistolier, skill.quick-shot,
+# skill.trick-shooter, skill.weapons-expert]} beside compiler.promoted-hero-skill-access
+# {allowed_skill_lists: [shooting]}.  promotion.hero is a supplied local Hero result (models.py
+# FighterBuild), declared through variant_ids; an unpromoted henchman has no skill access.  The kit weapon
+# (weapon.mace) is the carried-item convention of the band's AUTHORED slayer-rules sibling.  Refusal
+# fragment: the eligibility gate's skill-availability sentence (index.ts, `skills are not available to
+# <band>/<profile>`).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Admission: the promoted Axe Hurler takes a printed Shooting skill (skill.quick-shot).
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.skill-access
+  id: a-promoted-axe-hurler-passes-the-access-gate-for-a-shooting-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.quick-shot]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  # Every printed Shooting skill is a registry mechanic_exclusion, so no Shooting build compiles:
+  # the admission is evidenced by diagnostic order. The access gate (which would say "skills are
+  # not available") is passed, and the build stops only at the later runtime-exclusion sentence
+  # (recorded in TODO.md: excluded skills vs the 2026-10-21 inert-admission ruling).
+  expect_error: "mechanics are outside the one-against-one runtime: ['skill.quick-shot']"
+
+# Refusal: the unpromoted Axe Hurler declaring the same skill (a henchman has no skill access).
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.skill-access
+  id: the-unpromoted-axe-hurler-is-refused-the-same-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      skill_ids: [skill.quick-shot]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayer-cult-web/axe-hurlers: ['skill.quick-shot']"
+
+# Refusal: a promoted henchman of another profile of the band (Troll Slayers) is not a recipient of Born
+# Marksmen and reads no Shooting list from it.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.skill-access
+  id: a-promoted-troll-slayer-is-refused-the-shooting-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.quick-shot]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayer-cult-web/troll-slayers: ['skill.quick-shot']"

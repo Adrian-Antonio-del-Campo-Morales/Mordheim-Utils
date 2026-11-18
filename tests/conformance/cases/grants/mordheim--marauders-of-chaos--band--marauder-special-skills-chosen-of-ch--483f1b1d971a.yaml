@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-chosen-of-chaos/special-rule.band--marauder-special-skills-chosen-of-chaos
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction pair, B12 construction-skills batch
+#   2026-11-18): a Marauder Hero selecting Chosen of Chaos compiles legally and unchanged (the
+#   capability is the admitted consequence; the printed campaign maximum is advancement and the Hero
+#   equipment list the sentence grants is already every recipient's own list), and a henchman of the
+#   band is refused the selection.  Construction-only by design (design-rulings, "A published table
+#   member may be construction-only").
+# AUTHORED: the inert admission and the henchman refusal are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic note (2026-11-18): the Trading Post gates the Great Axe and the Chaos Steed on this
+#   capability (`required_rule_ids`), but the Great Axe shares the `weapon.double-handed-weapon`
+#   mechanic with the Great Weapon the Hero list already prints and the steed is outside the duel, so
+#   no build distinguishes the capability by equipment; the admission is evidenced as the legal,
+#   unchanged compile.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,51 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Family model (Marauder special skills, construction face).  The record is a `warband_skill` with
+# `grant: selectable`, `applies_to.band: true`, no eligibility list and the compiler binding
+# `special-rule.band--marauder-special-skills-chosen-of-chaos`, whose contract is empty by its own
+# comment ("the admitted construction consequence is the capability itself").  Every Hero of the band
+# prints the `special` skill access the warband-skill gate reads; the henchmen print none.  Recipient:
+# the printed Champion (WS 4, BS 3, S 4, T 3, W 1, I 4, A 1, Ld 7, no profile rules) with a sword from
+# its own Hero list; the compiled characteristics are the printed ones and no attack entry is added.
+# Neither side strikes.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-chosen-of-chaos/special-rule.band--marauder-special-skills-chosen-of-chaos
+  id: a-hero-may-select-chosen-of-chaos-and-compiles-unchanged
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--marauder-special-skills-chosen-of-chaos]
+      main_weapon_id: weapon.sword
+    second:
+      &chosen-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.characteristics.weapon_skill: 4
+    first.characteristics.strength: 4
+    first.characteristics.toughness: 3
+    first.characteristics.attacks: 1
+    first.extra_attacks: []
+    first.main_weapon.tags.0: weapon.sword
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The skill is a Hero's: a henchman of the band (no `special` skill access) is refused the selection.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-chosen-of-chaos/special-rule.band--marauder-special-skills-chosen-of-chaos
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: chaos-marauders
+      special_rule_ids: [band--marauder-special-skills-chosen-of-chaos]
+      main_weapon_id: weapon.sword
+    second: *chosen-opponent
+  expect_error: "special rule is not available to marauders-of-chaos/chaos-marauders: band--marauder-special-skills-chosen-of-chaos"

@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Sister with no Sisters special skill is refused, with one is refused, with the same skill twice is
+#   refused (distinct is printed), and with two distinct skills constructs carrying the choice contract.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Blessing of Sigmar is a construction rule (a required pair of
+#   choices, no die), so the probe's construction-only verdict is the rule's own effect (README,
+#   Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the chosen skills are the Sisters of Sigmar warband's special skills
+#   (band--special-skills-*), which the contract imports for the hireling; their own duel effects (Sign
+#   of Sigmar, Absolute Faith's Fear re-roll) belong to their identities and are never reached in the
+#   construction-only shape.  The build follows tests/construction/test_hireling_admission.py: the
+#   printed kit supplied as owned_item_ids (the Arcane Candelabrum is a deliberate dangling catalogue
+#   reference the kit matcher accepts by signature) and the Sigmarite hammer in hand.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,76 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Blessing of Sigmar): "The Sister has two of the special skills from page
+# 83 of Mordheim Rulebook."  The binding is compiler.sister-special-skills; the shared requiredInitial
+# stage (packages/typescript/domain/eligibility/index.ts) refuses unless exactly two distinct
+# `band--special-skills-*` ids are selected: "Blessing of Sigmar requires exactly two distinct Sisters
+# special skills".  The recipient is the printed Sister of Sigmar compiled through the hireling route
+# (hirelings.hired-sword.2b / hireling.hired-sword.sister-of-sigmar) with the fixture facts (WS3 S3 T3
+# W2 I5 A1; the printed Ld8 stays).  The admission uses the construction-only shape (no charge, the
+# bearer out of action before the first phase) and reads the sorted construction_tags (the choice
+# contract beside the catalogue-wide fixed-equipment clause; Candle Tree binds a defence mechanic).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# No Sisters special skill chosen: refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
+  id: a-sister-without-sisters-special-skills-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.sister-of-sigmar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [sigmarite_hammer, light_armour, blessed_water, arcane_candelabrum]
+      main_weapon_id: weapon.sigmarite-hammer
+  expect_error: "Blessing of Sigmar requires exactly two distinct Sisters special skills"
+
+# One skill: "two" is a floor.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
+  id: a-sister-with-one-sisters-special-skill-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.sister-of-sigmar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [sigmarite_hammer, light_armour, blessed_water, arcane_candelabrum]
+      main_weapon_id: weapon.sigmarite-hammer
+      special_rule_ids: [band--special-skills-sign-of-sigmar]
+  expect_error: "Blessing of Sigmar requires exactly two distinct Sisters special skills"
+
+# The same skill twice: the two must be distinct.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
+  id: a-sister-with-the-same-skill-twice-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.sister-of-sigmar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [sigmarite_hammer, light_armour, blessed_water, arcane_candelabrum]
+      main_weapon_id: weapon.sigmarite-hammer
+      special_rule_ids: [band--special-skills-sign-of-sigmar, band--special-skills-sign-of-sigmar]
+  expect_error: "Blessing of Sigmar requires exactly two distinct Sisters special skills"
+
+# Two distinct skills (Sign of Sigmar, Absolute Faith): the Sister constructs and carries the choice contract.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar/hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
+  id: a-sister-with-two-distinct-sisters-special-skills-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.sister-of-sigmar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [sigmarite_hammer, light_armour, blessed_water, arcane_candelabrum]
+      main_weapon_id: weapon.sigmarite-hammer
+      special_rule_ids: [band--special-skills-sign-of-sigmar, band--special-skills-absolute-faith]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment, compiler.sister-special-skills]
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

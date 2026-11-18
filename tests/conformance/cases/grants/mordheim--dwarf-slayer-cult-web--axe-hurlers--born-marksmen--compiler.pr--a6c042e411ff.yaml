@@ -1,6 +1,33 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/compiler.promoted-hero-skill-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   promoted Axe Hurler (variant promotion.hero) choosing a Shooting skill of the printed list is
+#   admitted, the same Axe Hurler without the promotion is refused that skill, and the promoted Axe
+#   Hurler is refused a Combat skill (the grant opens the Shooting list alone).  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): a construction rule (skill access, no die), so a
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the record binds the same printed grant twice - this
+#   compiler.promoted-hero-skill-access row (allowed_skill_lists: [shooting], read when the build is
+#   promoted) and a sibling profile.skill-access row (category shooting, variant_ids: [promotion.hero],
+#   with the eight printed skills), both opened by `bindingAppliesToBuild`/`promoted` in
+#   packages/typescript/domain/eligibility/index.ts.  The admission below is therefore expected to
+#   survive the removal of this binding alone; the duplicate carrier is the sibling profile.skill-access
+#   row of the same record.  The unpromoted refusal holds with or without the rule as well (the printed
+#   grant is conditional on the promotion).  The Combat refusal mirrors the halflings Village Ogre
+#   precedent (...69f281a8c715): a promoted Henchman has no list except through such a grant.
+# Semantic wrinkle (2026-11-18): none of the eight printed Shooting skills has a duel operator
+#   (skill.quick-shot is in the registry's mechanic_exclusions), so the admitted skill is
+#   construction-only: the compiler records it as an inert printed member and the admission is read as
+#   the construction itself.  The "two skill list choices" of the printed advancement and the thrown-
+#   only reminder are outside the admitted clause (promotion-shooting-skill-choice--scope--promotion-event).
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating.
+#   The Shooting grant is bound twice (this compiler contract and the sibling profile.skill-access
+#   with variant_ids), and every printed Shooting skill is a registry mechanic_exclusion, so the
+#   admission is evidenced by diagnostic order only. Recorded in TODO.md.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,5 +39,53 @@
 #
 # Clause: promotion-shooting-skill-choice--scope--promotion-event (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Born Marksmen): "If an Axe Hurler rolls a 'That Lad's Got Talent'
+# as an advancement, he may always choose Shooting skills as one of his two skill list choices."  The
+# recipient is the band's own Axe Hurler (dwarf-slayer-cult-web/axe-hurlers, a Henchman with no printed
+# skill list); the promotion is the supplied result `variant_ids: [promotion.hero]` the runner converts
+# into the promoted build (mordheim_core/models.py).  The admission uses the construction-only shape (no
+# charge, the bearer out of action before the first phase, so no die is requested).  Quick Shot is one
+# of the eight printed Shooting skills; Expert Swordsman is a Combat skill outside the grant.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The promoted Axe Hurler may take a Shooting skill.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/compiler.promoted-hero-skill-access
+  id: the-promoted-axe-hurler-passes-the-access-gate-for-a-shooting-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.quick-shot]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Every printed Shooting skill is a registry mechanic_exclusion, so no Shooting build compiles:
+  # the promoted access is evidenced by diagnostic order — the access gate is passed and the build
+  # stops only at the later runtime-exclusion sentence (recorded in TODO.md).
+  expect_error: "mechanics are outside the one-against-one runtime: ['skill.quick-shot']"
+
+# The same Axe Hurler without the promotion has no Shooting access.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/compiler.promoted-hero-skill-access
+  id: the-unpromoted-axe-hurler-is-refused-a-shooting-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      skill_ids: [skill.quick-shot]
+  expect_error: "skills are not available to dwarf-slayer-cult-web/axe-hurlers: ['skill.quick-shot']"
+
+# The grant opens the Shooting list alone: a Combat skill is refused to the promoted Axe Hurler.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/compiler.promoted-hero-skill-access
+  id: the-promoted-axe-hurler-is-refused-a-combat-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.expert-swordsman]
+  expect_error: "skills are not available to dwarf-slayer-cult-web/axe-hurlers: ['skill.expert-swordsman']"

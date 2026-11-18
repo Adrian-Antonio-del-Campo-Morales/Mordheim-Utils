@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 397 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 354 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -102,6 +102,21 @@ what is pending and when it is done.
   is supplied; the Master of Throwing Weapons mechanic file's header still claims the binding
   carries no parameters (it carries `max_missile_weapons`). Done when each is confirmed as the
   intended encoding or repaired.
+- **Construction-skills wrinkles (2026-11-18).** Recorded in the files, none blocking: every
+  printed Shooting skill (and every Academic skill) is a registry `mechanic_exclusion`, so a
+  skill-access grant to those categories (Dwarf Slayer Cult Born Marksmen, Emissary of Chaos
+  Tzeentch patron) can only be evidenced by diagnostic order — the compiler refuses the excluded
+  skill after the access gate instead of admitting it inertly as the 2026-10-21 ruling allows for
+  published table members; decide whether excluded table members should compile inertly. The
+  Condemned's random profile is encoded twice (the `condemned--inconsistency` binding and the
+  profile's own `source_profiles` data), as is the Born Marksmen grant (`profile.skill-access`
+  with `variant_ids` and `compiler.promoted-hero-skill-access`); the Marauder/Beastmen Mutant
+  gates count raw repeated `special_rule_ids` while the compiler applies a repeated id once and
+  the loader has no duplicate check; the Priestess of Shallya's and Priest of Verena's strictures
+  leave their printed dagger carried but unwieldable; Son of Ulric's `profile.fist` does not
+  replace the kit weapon (the build must name `weapon.fist`); the Cursed Hillman's wolf form
+  binds characteristic deltas where the print is absolute (fixture W/I drift). Done when each is
+  confirmed as the intended encoding or repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -220,16 +235,15 @@ identities whose binding already has authored scenarios elsewhere.
 | B08 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
 | B09 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
 | B10 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
-| B11 | construction-skills-and-profile | 44 | 29 | 66 | construction 44 |
-| B12 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
-| B13 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **397** | 181 | 684 | |
+| B11 | operators-hirelings | 40 | 28 | 58.5 | real profile build 24, special_rule_ids 10, skill_ids 5, construction 1 |
+| B12 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
+| | **Total** | **354** | 153 | 619.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
-Large Target pass landed the same day, and the two construction-equipment batches followed). Then
-the model-heavy themes, which confirm the workflow on cheap members:
-construction-skills-and-profile, survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
+Large Target pass landed the same day, followed by the construction-equipment and
+construction-skills-and-profile batches). Then the model-heavy themes, which confirm the workflow
+on cheap members: survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
 construction and may run in parallel; the coordinator owns the shared documents (this file,

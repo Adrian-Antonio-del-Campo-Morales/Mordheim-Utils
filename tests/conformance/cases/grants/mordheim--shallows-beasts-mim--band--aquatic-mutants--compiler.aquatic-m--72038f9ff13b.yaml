@@ -1,6 +1,22 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shallows-beasts-mim/band--aquatic-mutants/compiler.aquatic-mutants
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): a
+#   Buccaneer with two of the listed mutations is refused by the rule's own ceiling, a Buccaneer with a
+#   single mutation constructs, and a Wrecker (Henchman) with one mutation is refused.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Aquatic Mutants is a construction rule (a mutation count, no
+#   die), so the probe's construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the gate's Hero clause ("Aquatic mutations require a Hero: <band>/
+#   <profile>", the initialChoices stage) is unreachable: every listed mutation of the band record
+#   declares `applies_to: profile_types: [hero]`, so a Henchman selecting one is refused first by the
+#   recipients stage of the selected-rule loop ("special rule is not available to <band>/<profile>")
+#   and that refusal survives the removal of this binding.  The third scenario records the printed
+#   outcome with the reachable fragment; the mutation records are the duplicate carrier.  The ceiling
+#   ("a single mutation") is this rule's own sentence from the mutationLimit stage and is the
+#   discriminating refusal.  The mutations' costs are outside the duel.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +25,52 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Aquatic Mutants): "Any Hero may start the campaign with a single
+# mutation from the following gifts and mutations ... blackblood, great claw, tentacle, prehensile tail,
+# beak, electrical touch, mer-creature, suckers, or eye stalks".  The band binds compiler.aquatic-mutants
+# (grant: band); the shared mutationLimit stage (packages/typescript/domain/eligibility/index.ts) refuses
+# more than one `band--mutations-*` selection with "at most one Aquatic mutation is allowed for
+# <band>/<profile>".  The recipients are the band's own Buccaneer (Hero) and Wreckers (Henchman).  The
+# admission uses the corpus's construction-only shape (no charge, the bearer out of action before the
+# first phase, so no die is requested); Suckers is the triage-admitted carrier with no duel tags.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Two listed mutations on a Hero: "a single mutation" is a ceiling.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--aquatic-mutants/compiler.aquatic-mutants
+  id: a-buccaneer-with-two-aquatic-mutations-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-mer-creature, band--mutations-suckers]
+  expect_error: "at most one Aquatic mutation is allowed for shallows-beasts-mim/buccaneer"
+
+# A single listed mutation on a Hero constructs.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--aquatic-mutants/compiler.aquatic-mutants
+  id: a-buccaneer-with-a-single-aquatic-mutation-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-suckers]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# "Any Hero": a Wrecker (Henchman) with one mutation is refused (see the Discrimination note on the fragment).
+- audit_id: rule/mordheim/shallows-beasts-mim/band--aquatic-mutants/compiler.aquatic-mutants
+  id: a-henchman-with-an-aquatic-mutation-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-suckers]
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers"

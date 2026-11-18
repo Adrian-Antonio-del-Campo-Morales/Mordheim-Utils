@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.active-weapon-restrictions
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): a
+#   double-handed weapon in the Piper's main hand is refused, a halberd (another two-handed weapon) is
+#   refused the same way, and the Piper fielding a single one-handed hammer constructs.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Instrument Hand is a construction rule (an active-weapon bar,
+#   no die), so the probe's construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the record binds this clause as the `two-handed-weapons` token, which
+#   tokenForbids (packages/typescript/domain/eligibility/index.ts) reads as `(item.hands ?? 0) >= 2` on
+#   the catalogue facts of the active id; the gate runs at the boundEquipment stage, before the band's
+#   equipment-list gate, so the refusal is this binding's own sentence even though the Heroes list of
+#   the Cursed Cavalcade offers no double-handed weapon.  The "at most one one-handed weapon" half of the
+#   same printed sentence is the sibling profile.equipment-restrictions binding (authored at
+#   ...b7332256a7ff) and is not repeated here.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,48 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/cursed-cavalcade/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Instrument Hand): "The hand holding the instrument is not available
+# for a weapon: the Piper may use at most one one-handed weapon and no double-handed weapon."  The
+# recipient is the band's own Cursed Piper (cursed-cavalcade/cursed-piper, a Hero with the printed W1).
+# The admission uses the corpus's construction-only shape (no charge, the bearer out of action before the
+# first phase, so Danse Macabre and every die stay unreached).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A double-handed weapon fills both hands; the instrument hand is never free for it.
+- audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.active-weapon-restrictions
+  id: cursed-piper-with-a-double-handed-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: cursed-piper
+      main_weapon_id: weapon.double-handed-weapon
+  expect_error: "weapon.double-handed-weapon may not be used by cursed-cavalcade/cursed-piper"
+
+# The token is the hand count, not one named item: a halberd is refused the same way.
+- audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.active-weapon-restrictions
+  id: cursed-piper-with-a-halberd-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: cursed-piper
+      main_weapon_id: weapon.halberd
+  expect_error: "weapon.halberd may not be used by cursed-cavalcade/cursed-piper"
+
+# One one-handed hammer (catalogue mechanic weapon.mace, on the Heroes list) leaves the instrument hand free.
+- audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--instrument-hand/profile.active-weapon-restrictions
+  id: cursed-piper-with-a-single-one-handed-hammer-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: cursed-piper
+      main_weapon_id: weapon.mace
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.off_hand_attacks: False
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

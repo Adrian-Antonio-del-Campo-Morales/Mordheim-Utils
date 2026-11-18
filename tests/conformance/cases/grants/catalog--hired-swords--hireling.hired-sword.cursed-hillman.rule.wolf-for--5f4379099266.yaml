@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-discarded-kit
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Hillman selecting Wolf Form starts the duel in the werewolf state (the state flag the kit discard
+#   reads) with the form's contract on the compiled build, the same Hillman without the selection starts
+#   in man form with no such flag, and the form is refused on a hireling outside its printed profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the printed kit is "discarded ... collected after the battle", not
+#   destroyed, so the build input is the selection alone (special_rule_ids; no variant, condition or
+#   trait override) and the axe, dagger and longbow stay legal ownership: no gate refuses a weapon in
+#   wolf form, and the compiled snapshot still lists the kit's axe as the main weapon.  The discard and
+#   the -1S Bite act inside the duel: state.py sets `hillman_wolf` from the compiled construction tag
+#   `compiler.hillman-wolf-form` and equipment.py's `equipment_for_state` then replaces every carried
+#   item with natural attacks (`rule.unarmed-without-penalties`) and supplies the Bite.  The state flag
+#   is therefore the legible evidence of the form; the discarded weapon has no compiled-snapshot face.
+#   The wolf's lost cloak save is the sibling wolf-form-no-cloak trait binding and the wolf line the
+#   sibling wolf-form-stats binding (...30fedd9c41b9); neither is asserted here.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,65 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Wolf Form): "While in wolf-form the Hillman discards every garment and
+# weapon; the werewolf uses only its teeth and claws in close combat, suffers no penalties for doing so,
+# and has a bonus Bite attack resolved at -1 Strength."  The recipient is the printed Cursed Hillman
+# (hirelings.hired-sword.2a / hireling.hired-sword.cursed-hillman) with the fixture facts (WS3 S3 T3 W2
+# I5 A1; the printed Ld8 stays), selecting the form through special_rule_ids; the compiler registers the
+# binding as the contract compiler.hillman-wolf-form (contracts.py) and the sorted construction_tags of
+# the Hillman are that contract plus the catalogue-wide fixed-equipment clause.  The shape is
+# construction-only (no charge, the bearer out of action before the first phase, so Lycanthrope's wound
+# trigger and every die stay unreached); the state flag is read at initialisation.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Wolf Form selected: the compiled build carries the form's contract and the duel opens in the werewolf state.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-discarded-kit
+  id: the-hillman-in-wolf-form-opens-the-duel-in-the-werewolf-state
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hillman-wolf-form, compiler.hireling-fixed-equipment]
+  expect_initial: {first.hillman_wolf: True}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# The control: the same Hillman in man form carries no form contract and opens the duel as a man, kit in hand.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-discarded-kit
+  id: the-same-hillman-in-man-form-opens-the-duel-with-his-kit
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment]
+  expect_initial: {first.hillman_wolf: False}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Wolf Form is printed for the Cursed Hillman alone; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-discarded-kit
+  id: the-form-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

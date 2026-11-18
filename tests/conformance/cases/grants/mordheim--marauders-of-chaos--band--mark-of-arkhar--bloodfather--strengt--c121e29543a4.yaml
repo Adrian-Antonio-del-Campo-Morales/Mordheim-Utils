@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/bloodfather--strength-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction set, B11/B12 skill-access batch 2026-11-18): the
+#   marked Seer (the Bloodfather) declaring a Strength skill through `skill_ids` compiles, the unmarked
+#   Seer declaring the same skill is refused with the shared skill-availability sentence, and the Mark on
+#   a non-recipient profile (champions) is refused by the recipient gate.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the admission, the control and the non-recipient refusal are declared below; REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the probe un-selects the Mark, so the admission becomes the
+#   control's refusal: construction-only, expected for a skill-access rule.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,61 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (special-rules.yaml, band--mark-of-arkhar, grant selectable, applies_to [marauder-chieftain, seer]):
+# "A Seer with this mark becomes a Bloodfather … A Bloodfather may also take Strength skills."  Binding
+# bloodfather--strength-access = profile.skill-access {category: strength, profile_ids: [seer]}; the
+# Frenzy clause is mechanic.mark-of-arkhar (its own identity), the spell clauses are scope-NO.  The Seer
+# prints Combat, Academic and Special access.  The kit weapon (weapon.sword) and the no-armour save of 7
+# follow the band's AUTHORED seer--equipment-restrictions sibling.  The construction-only shape keeps
+# the frenzied Bloodfather silent (out of action before the first phase).  Refusal fragments: the
+# eligibility gate's skill-availability sentence (index.ts, `skills are not available to <band>/<profile>`)
+# and the recipient gate (`special rule is not available to <band>/<profile>: <rule>`).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Admission: the Bloodfather takes a Strength skill (skill.mighty-blow, a catalogue strength row).
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/bloodfather--strength-access
+  id: the-bloodfather-is-admitted-to-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: seer
+      special_rule_ids: [band--mark-of-arkhar]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  # Construction is the observation: no charge is declared and the bearer is out of action before the
+  # first phase (the corpus's construction-only shape), so the duel requests no die.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Control: the unmarked Seer declaring the same skill is refused (printed access Combat/Academic/Special).
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/bloodfather--strength-access
+  id: the-unmarked-seer-is-refused-the-same-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: seer
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.sword
+  expect_error: "skills are not available to marauders-of-chaos/seer: ['skill.mighty-blow']"
+
+# Non-recipient: the Mark is printed for the leader and the Seer; a Champion selecting it is refused.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/bloodfather--strength-access
+  id: the-mark-is-refused-on-a-non-recipient-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--mark-of-arkhar]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.sword
+  expect_error: "special rule is not available to marauders-of-chaos/champions: band--mark-of-arkhar"

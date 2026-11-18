@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/profile.skill-access
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction set, B11/B12 skill-access batch 2026-11-18): the
+#   Tzeentch Emissary's Academic access is evidenced at the eligibility gate, the control (another patron,
+#   same skill) is refused by that gate, and the patron obligation itself is refused on an Emissary with no
+#   patron.  REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded, not hidden): every Academic skill of the catalogue
+#   (catalog/skills/general.yaml: arcane-lore, battle-tongue, haggle, sorcery, streetwise, warrior-wizard,
+#   wyrdstone-hunter) is a runtime exclusion (registry/runtime-scope.yaml, mechanic_exclusions), and this
+#   binding declares a category without a printed members list, so no `skill_ids` build with an Academic
+#   skill reaches a compiled fighter: the inert-admission route of the 2026-10-21 ruling applies only to a
+#   published table member.  The admission is therefore evidenced by the diagnostic ORDER of the
+#   compiler: the eligibility gate (`skills are not available to …`, _validate_profile_selections) runs
+#   before the runtime-exclusion check (`mechanics are outside the one-against-one runtime: […]`), so an
+#   Academic skill that reaches the exclusion sentence was admitted by the access gate.  The control shows
+#   the gate sentence for the same skill under another patron.
+# Removal-probe expectation (2026-11-18): the probe un-selects the patron, so every scenario becomes the
+#   "exactly one printed patron" refusal: construction-only, expected for a skill-access rule.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,62 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.emissary-of-chaos.patron.tzeentch, grant selectable): "The
+# Tzeentch Emissary also has Academic skill access; spell casting is excluded" - bindings
+# mechanic.emissary-tzeentch (identity tags) and profile.skill-access {category: academic}.  The printed
+# Emissary access is Combat and Strength (profile skill_access).  Hireling conventions (README, Hireling
+# recipients): band hirelings.hired-sword.2a, the real profile, the fixture characteristics, the printed
+# kit's default weapon (sword) taken by omission.  An Emissary needs exactly one patron
+# (eligibility/index.ts, requiredInitial: "an Emissary of Chaos requires exactly one printed patron").
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Admission: the Tzeentch Emissary declares an Academic skill (skill.haggle).  The access gate admits it
+# (Academic is in the Tzeentch access), and the build is then refused downstream by the runtime exclusion
+# of every Academic skill - a different sentence from the access gate's, which is the evidence that the
+# gate did not refuse.  See the wrinkle in the header.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/profile.skill-access
+  id: the-tzeentch-emissary-passes-the-access-gate-with-an-academic-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+      skill_ids: [skill.haggle]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "mechanics are outside the one-against-one runtime: ['skill.haggle']"
+
+# Control: the same Emissary under another patron (Khorne) declaring the same Academic skill is refused
+# by the access gate itself - Academic is outside the printed Combat/Strength access.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/profile.skill-access
+  id: the-same-academic-skill-is-refused-under-another-patron
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.khorne]
+      skill_ids: [skill.haggle]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "skills are not available to hirelings.hired-sword.2a/hireling.hired-sword.emissary-of-chaos: ['skill.haggle']"
+
+# The patron obligation: an Emissary without a patron is refused by construction.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/profile.skill-access
+  id: an-emissary-without-a-patron-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "an Emissary of Chaos requires exactly one printed patron"
