@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 127 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 34 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -162,6 +162,22 @@ what is pending and when it is done.
   Nicodemus's staff, the Sister's holy relic, the Wolf-Priest's pelt), so they probe
   non-discriminating with dated notes. Done when each is confirmed as the intended encoding or
   repaired.
+- **Supplied-condition and band-operator wrinkles (2026-11-18).** Recorded in the files, none
+  blocking: `mechanic/condition.mouth-sewn` has an execution entry but no row in
+  `catalog/rules/conditions.yaml`, so it cannot be supplied and the duel-produced `mouth_sewn`
+  state never reaches a provider in the same duel (PARTIAL); Combat Charge's engine reading also
+  applies the Weapon Skill bonus defensively against the reply although the print says "when
+  charging"; Power Grab's compiler gate admits any Underworld Alliance duelist regardless of
+  race (the majority fact is the caller's); the Disability hero-nearby exemption is decided by
+  explicit Hero provider records even without the supplied id; `condition.poetry-inspired` and
+  `condition.goading-charge` have no compiler recipient gate; the Bull Rush body charge rolls the
+  save against the weapon's armour penetration; Deathwish selected on a Giant Slayer is inert
+  because `band--slayer-rules` already grants the immunity (printed duplicate); the Lustria Wild
+  Lunatics row is the sole `mechanic.lunatics` carrier (the Masters of Horror `lunatic` skill
+  binds other operators); `skill.axe-mastery`'s Dwarf-axe parry face and Whirling Blades are not
+  encoded; Netter and the `grant: none` producers (brewers, poetry scholars, netter, goading,
+  power grab) probe non-discriminating with dated notes. Done when each is confirmed as the
+  intended encoding or repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -271,10 +287,8 @@ identities whose binding already has authored scenarios elsewhere.
 | --- | --- | ---: | ---: | ---: | --- |
 | B00 | triage-blockers | 1 | 1 | 2 | special_rule_ids 1 |
 | B01 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
-| B02 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
-| B03 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
-| B04 | operators-band-rules | 44 | 26 | 65.5 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1, construction 1 |
-| | **Total** | **127** | 60 | 209.5 | |
+| B02 | operators-band-rules | 1 | 1 | 1.5 | construction 1 |
+| | **Total** | **34** | 13 | 65.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform

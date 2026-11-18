@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.summoned-this-turn
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,109 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 4 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "Supplied individual
+#   fact that this Malignant Spirit was released from the Requilary on the current turn. By itself it
+#   grants nothing: Violent Entry pays its +1 to hit and +1 Strength only when the bearer also charges
+#   on that turn" (sources/knowledge/catalog/rules/conditions.yaml, condition.summoned-this-turn; the
+#   execution entry carries charge_strength_bonus 1 and the hit half is read on the same first-round
+#   charge) on the printed Malignant Spirits of the Call of the Night Haint - the compiler gate "a
+#   supplied summon turn requires a Malignant Spirits recipient of the Call of the Night Haint" admits
+#   no other recipient.  The AUTHORED grant file grants/mordheim--call-of-the-night-haint-mim--
+#   malignant-spirits--violent-entry--463b29656063.yaml is the template.  Scenarios: the summoning
+#   turn's charge hits WS4 on a 3 and S4 wounds T4 on a 3 (both only with the printed +1s); the same
+#   charge without the supplied fact misses on the same 3; the bonus belongs to the charge only, so in
+#   the second round of the same duel the same 3 misses; a hand-built fixture is refused.  Removing the
+#   supplied id (the mechanic probe) turns the declared hit into a miss.  REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the duel's round-0 charge stands for the printed "charge on
+#   the turn they were summoned" (the summoning procedure is not simulated).  The Spirits cause Fear,
+#   so the charged opponent (Ld7) declares its 2D6 charged-Fear pair (3+3 passes) before the blows; the
+#   opponent is silenced so its Ethereal save is never reached.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Arithmetic: WS4 hits WS4 on 4+ (3+ with the +1); S4 wounds T4 on 4+, S5 on 3+.  The spirit declares
+# the fixture's characteristics with Weapon Skill 4 and Strength 4 so both halves sit one point short
+# without the bonus.
+
+# The summoning turn's charge carries the printed +1 to hit and +1 Strength: 3 hits and 3 wounds.
+- audit_id: mechanic/condition.summoned-this-turn
+  id: the-summoning-turns-charge-carries-the-printed-hit-and-strength-bonus
+  fighters:
+    first:
+      &summoned-spirit
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.summoned-this-turn]
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+    second:
+      &summoned-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same charge without the supplied summoning fact has no bonus, so the same 3 misses
+# WS4 and no wound die exists.
+- audit_id: mechanic/condition.summoned-this-turn
+  id: without-the-supplied-summoning-turn-the-same-charge-misses-on-a-3
+  fighters:
+    first:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+    second: *summoned-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bonus is paid in the charge only: the second round of the same duel is no longer the summoning
+# turn's charge, so the same 3 misses there.
+- audit_id: mechanic/condition.summoned-this-turn
+  id: the-bonus-belongs-to-the-charge-only-and-the-second-round-misses-on-the-same-3
+  fighters:
+    first: *summoned-spirit
+    second: *summoned-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.1.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.wounds: 2}
+    1: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The recipient gate: the summoning fact belongs to the Malignant Spirits, so a hand-built fixture is
+# refused by the compiler's own sentence.
+- audit_id: mechanic/condition.summoned-this-turn
+  id: the-supplied-summoning-turn-is-refused-outside-the-malignant-spirits
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.summoned-this-turn]
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "a supplied summon turn requires a Malignant Spirits recipient of the Call of the Night Haint"

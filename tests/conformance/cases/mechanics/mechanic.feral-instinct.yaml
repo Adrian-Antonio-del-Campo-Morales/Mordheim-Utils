@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.feral-instinct
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the turn-start
+#   Leadership test on a hand-built bearer - 3+4 passes exactly on Leadership 7, 6+2 fails and the state
+#   records it, the test belongs to the bearer's own turn only (none on the opponent's turn), and a
+#   fighter without the operator rolls no such test.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,101 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carrier: Maneaters, Sabretusks, Feral Instinct (bands/mordheim/maneaters/special-rules.yaml
+# sabretusks--feral-instinct, grant profile): at the beginning of the Ogres' turn each Sabretusk takes a
+# Leadership test; on a failure the opponent moves the beast (the band row's scope-NO movement-control
+# clause).  Consumer: modular/rounds.py ~401-406: on the bearer's own turn, while active, a local
+# Leadership test on round.<i>.<side>.feral-instinct.{0,1} whose failure is recorded as
+# state.<side>.feral_instinct_failed; the excluded consequence has no branch.  Model: the PARTIAL
+# Maneaters grant file (...e4c2895e2b4b) on the real Sabretusk; here the operator is injected through
+# skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace).  The opponent is the mace fixture
+# (WS3 S3 T3 W3 I2 A1 Ld7); every strike is a declared natural 1, so the tape holds only the test.
+# Semantic wrinkle (2026-11-18): the failure's only printed consequence is movement outside the duel,
+# so the recorded state flag is the observable; the beast still fights in the round.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The test is taken at the start of the bearer's own turn: 3+4 is exactly Leadership 7 and passes.
+- audit_id: mechanic/mechanic.feral-instinct
+  id: the-turn-start-test-is-taken-and-passes-on-the-boundary
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.feral-instinct]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.feral-instinct.0, value: 3}
+    - {key: round.0.first.feral-instinct.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.feral_instinct_failed: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One above: 6+2 fails Leadership 7 and the failure is recorded in the state; the printed consequence
+# (the opponent moves the beast) is outside the duel, so the beast still swings.
+- audit_id: mechanic/mechanic.feral-instinct
+  id: a-failed-turn-start-test-is-recorded-in-the-state
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.feral-instinct.0, value: 6}
+    - {key: round.0.first.feral-instinct.1, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.feral_instinct_failed: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "At the beginning of the Ogres' turn": round 1 is the opponent's turn, so no test is asked of the
+# bearer there (the strict tape declares none for round 1).
+- audit_id: mechanic/mechanic.feral-instinct
+  id: the-test-belongs-to-the-bearers-own-turn-only
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.feral-instinct.0, value: 3}
+    - {key: round.0.first.feral-instinct.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.feral_instinct_failed: false}
+    1: {state.first.feral_instinct_failed: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: without the operator no turn-start test exists in the tape.
+- audit_id: mechanic/mechanic.feral-instinct
+  id: without-the-operator-no-turn-start-test-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.feral_instinct_failed: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.petru-resilience
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,114 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 5 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "+1 Toughness until
+#   a 1 in own recovery ends the draught" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.petru-resilience) through the supplied condition_ids entry on the printed Petru; the
+#   compiler gate "Petru's supplied draught requires a Hero recipient" needs a Hero, so the recipient is
+#   the band's own hero profile carrying the fixture's characteristics, as in the AUTHORED strength
+#   grant file (...condition.petru-strength--dae2c9119a74.yaml).  Scenarios: the raised Toughness at
+#   duel start; the own-recovery expiry die (round.<i>.<side>.petru-resilience) keeping the draught on
+#   a 2 so the opponent's S3 fails to wound T4 on a 4, and ending it on a 1 so the same 4 wounds the
+#   base T3; the control without a draught (no recovery die, the same 4 wounds); and the non-Hero
+#   refusal.  Removing the supplied id (the mechanic probe) changes dice and observations.  REVIEWED
+#   still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the expiry die belongs to every own recovery of the battle;
+#   the duel shows the round-0 own-turn request only, and the expiry lowers the live Toughness
+#   (state.<side>.toughness), never the compiled characteristic.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+, T4 on 5+.  Petru is the active participant (its
+# own recovery) and is silenced (attacks: 0), so the tape is the recovery die followed by the
+# opponent's hit and wound.  Petru declares two Wounds so a single wound leaves it standing without an
+# injury die.
+
+# The supplied draught raises the printed Petru's Toughness by one at duel start.
+- audit_id: mechanic/condition.petru-resilience
+  id: the-resilience-draught-raises-the-affected-heroes-toughness-by-one
+  fighters:
+    first:
+      &petru-resilience-drinker
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &petru-resilience-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.toughness: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# A 2 in the drinker's own recovery keeps the draught: the opponent's S3 needs 5+ against T4, so the
+# declared 4 fails to wound.
+- audit_id: mechanic/condition.petru-resilience
+  id: a-non-expiring-recovery-die-keeps-the-draught-and-the-opponents-4-fails-against-toughness-4
+  fighters:
+    first: *petru-resilience-drinker
+    second: *petru-resilience-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-resilience, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.toughness: 4, attacks.0.hit: true, attacks.0.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The expiry: a 1 ends the draught before the blows, Toughness returns to 3 and the same 4 wounds.
+- audit_id: mechanic/condition.petru-resilience
+  id: a-recovery-die-of-one-ends-the-draught-and-the-same-4-wounds-the-base-toughness
+  fighters:
+    first: *petru-resilience-drinker
+    second: *petru-resilience-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-resilience, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.toughness: 3, attacks.0.hit: true, attacks.0.wounded: true, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical hero without a supplied draught asks for no recovery die and is wounded by
+# the same 4 at its base Toughness.
+- audit_id: mechanic/condition.petru-resilience
+  id: without-the-draught-no-recovery-die-is-asked-and-the-same-4-wounds
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *petru-resilience-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_initial: {first.toughness: 3}
+  expect_rounds:
+    0: {state.first.toughness: 3, attacks.0.hit: true, attacks.0.wounded: true, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recipient gate: a hand-built fixture declares no Hero kind and is refused by the compiler's own
+# sentence.
+- audit_id: mechanic/condition.petru-resilience
+  id: the-draught-is-refused-on-a-recipient-that-is-not-a-hero
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 7}
+  expect_error: "Petru's supplied draught requires a Hero recipient"

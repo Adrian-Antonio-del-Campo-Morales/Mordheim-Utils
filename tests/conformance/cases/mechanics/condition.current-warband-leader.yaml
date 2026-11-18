@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.current-warband-leader
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (supplied-conditions batch, 2026-11-18): a same-band comrade
+#   supplied as the current warband leader lends his Leadership at the printed six inches, the same
+#   comrade without the supplied position lends nothing, nothing is offered one step past six, and a
+#   hand-built outsider carrying the position lends nothing to a band warrior.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +13,180 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.current-warband-leader, "Current
+#   Warband Leader": "The caller supplies that this warrior is its warband's actual current leader. The
+#   position itself carries the printed Leader rule, so any warband warrior within 6 inches may use this
+#   warrior's Leadership. A band skill that widens the radius of that Leader rule widens the rule the
+#   position already carries and grants no Leader rule of its own.")
+# AUTHORED: the 4 scenarios below cover the lend, the control, the radius boundary and the same-band
+#   scoping; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the execution entry compiles the condition to the ordinary
+#   Leader tag (execution.yaml: tags [mechanic.leader-six]), so the consumer is the supplied-leader
+#   contract (modular/leadership.py, _supplied_provider and the borrow block at 232-275): same side,
+#   standing, same band.* tag, within the Leader radius.  The task brief asked for the compiler gate
+#   refusals, but no compiler gate exists for this condition (no mention in roster-construction), so any
+#   build may be supplied as the current leader; a hand-built carrier simply lends nothing because it
+#   carries no band tag (scenario 4).  The widening by a band skill (Battle Tongue -> mechanic.leader-
+#   twelve) belongs to that skill's identity.  Succession is never simulated.
+#
+# --- Authored scenarios ---
+# Supplied-leader family model (mechanics/mechanic.leader-twelve.yaml, mechanics/mechanic.own-
+# leadership.yaml): the borrower is the printed Mercenaries warriors profile (fixture Ld3); the provider
+# is a second printed Mercenaries warriors - a henchman with no Leader rule of its own - supplied as the
+# chosen current leader with fixture Ld8, standing on the borrower's side.  The vehicle is the Fear test
+# of the received charge from a hand-built fear-causer: 2d6 <= Leadership, so 4+4 = 8 passes only
+# through the borrowed 8; a standing failure leaves state.second.fear_hit_sixes true.  Both swings are
+# natural 1s.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The lend: the supplied position carries the Leader rule, so the comrade's 8 is offered at six inches
+# and the eight passes.
+- audit_id: mechanic/condition.current-warband-leader
+  id: the-supplied-current-leader-lends-his-leadership-within-six-inches
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: &cwl-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: &cwl-borrower {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: &cwl-leader
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: warriors
+          condition_ids: [condition.current-warband-leader]
+          characteristics: &cwl-leader-stats {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical comrade without the supplied position is no leader, so no borrow decision
+# is offered (the strict tape proves it) and the borrower's own 3 fails the eight.
+- audit_id: mechanic/condition.current-warband-leader
+  id: without-the-supplied-position-the-same-comrade-lends-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-fear-causer
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-borrower
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: warriors
+          characteristics: *cwl-leader-stats
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed radius: one step past six inches the position lends nothing.
+- audit_id: mechanic/condition.current-warband-leader
+  id: past-six-inches-the-supplied-position-lends-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-fear-causer
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-borrower
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: *cwl-leader
+    distances:
+      - [second, leader, 7]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "any warband warrior": a hand-built outsider supplied as a current leader belongs to no
+# band, so the Mercenaries borrower is offered nothing even at six inches.
+- audit_id: mechanic/condition.current-warband-leader
+  id: a-supplied-leader-outside-the-band-lends-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-fear-causer
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: *cwl-borrower
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          main_weapon_id: weapon.mace
+          condition_ids: [condition.current-warband-leader]
+          characteristics: *cwl-leader-stats
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

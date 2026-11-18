@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.combat-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the charging bearer
+#   gains an extra attack and hits on a 3, the extra Weapon Skill also defends against the reply in the
+#   charge round, without a charge the skill grants nothing, and the bonus ends after the first round.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the consumer applies the Weapon Skill bonus to the bearer's phase-local
+#   state for the whole charge round, so it also raises the target of the opponent's reply (the printed
+#   text says only "when charging"); the defensive face is asserted because the delivered operator reads
+#   it that way, and the semantic review may rule on it.  The feat's mounted continuation is outside
+#   the duel (design-rulings.md: Lancer is outside the duel scope; Combat Charge remains separate).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,89 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (catalog/skills/warband.yaml, Knights Feats / Combat Charge): "The character gains +1
+# Attack and +1 Weapon Skill when charging."  Consumer: modular/rounds.py ~1133-1150 (in the first
+# round, a charging bearer carrying skill.combat-charge gets weapon_skill +1 on its phase state and
+# attacks_bonus +1 on its pool) and ~1899-1902 (the Weapon Skill is restored at the round's end).
+# Fixture: hand-built bearer (WS3 S3 T3 W2 I5 A1, mace, skill_ids [skill.combat-charge]) against a
+# hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace).  WS4 against WS3 hits on 3+ (WS3 against WS3 on
+# 4+, so the 3 is the boundary); WS3 against WS4 hits on 4+; S3 wounds T3 on 4+; W3 keeps the two
+# wounds short of an injury roll.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charge: two attack dice (the printed +1 Attack) and the 3 hits (the printed +1 Weapon Skill).
+- audit_id: mechanic/skill.combat-charge
+  id: the-charge-grants-an-extra-attack-and-hits-on-a-three
+  fighters:
+    first: &cc-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.combat-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &cc-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.1.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The delivered defensive face: in the charge round the opponent's reply is rolled against WS4, so his
+# 3 misses on 4+ (both of the bearer's own dice are natural 1s).
+- audit_id: mechanic/skill.combat-charge
+  id: the-extra-weapon-skill-also-defends-in-the-charge-round
+  fighters:
+    first: *cc-bearer
+    second: *cc-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {attacks.2.hit: false, attacks.2.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "when charging": with nobody charging the bearer (higher Initiative, first to act) has one attack
+# die and his 3 misses on the ordinary 4+.
+- audit_id: mechanic/skill.combat-charge
+  id: without-a-charge-the-skill-grants-nothing
+  fighters:
+    first: *cc-bearer
+    second: *cc-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bonus belongs to the charge round only: round 0 has two dice (natural 1s), round 1 has one die
+# and its 3 misses on the restored 4+.
+- audit_id: mechanic/skill.combat-charge
+  id: the-bonus-ends-after-the-charge-round
+  fighters:
+    first: *cc-bearer
+    second: *cc-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+    1: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

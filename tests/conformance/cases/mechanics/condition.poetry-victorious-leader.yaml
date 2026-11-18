@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.poetry-victorious-leader
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-condition batch, 2026-11-18): the victorious
+#   Leader's first Leadership test of the duel is taken at +1 (a 9 passes the printed Ld 8), the same
+#   faces fail without the condition, the bonus is spent on the first test only (the same 9 fails the
+#   Leader's second test two rounds later), and the condition is refused on a non-Leader of the band
+#   and on a Hero outside the three printed bands.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,125 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.poetry-victorious-leader):
+#   "The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives +1
+#   Leadership for its first actual Leadership test this scenario.  Rerolls use that same threshold;
+#   this is not a bonus to Leadership lent to friends."  Source: Relics of the Crusades pt 2
+#   (broheim.net) p4, Scholar / Field of Scholarship / Poetry: "your leader adds +1 to his Leadership
+#   for his first leadership test in a scenario if your warband won the last battle they fought".
+# AUTHORED: the previous victory and the Poet are outside the duel; the condition is the supplied
+#   current fact declared through condition_ids on the band's printed Leader (the Emir, Ld 8, the
+#   profile the band's `emir--leader` rule applies to).  Consumers: modular/leadership.py
+#   (resolve_local_leadership) adds +1 to the bearer's own Leadership value while the
+#   `poetry-first-leadership` resource is unspent and spends it on that first test; the compiler gate
+#   (roster-construction compiler.py) refuses the condition unless band_id is ghutani-rel, muzil-rel or
+#   turjuk-rel and profile_id is emir: "victorious Poetry requires the actual Leader of its printed
+#   Araby band".  The first test is the Fear test of the charge the Leader receives; the "first test
+#   only" clause is read with a supplied Stupidity trait (trait_overrides stupidity, as the authored
+#   Barbarian Leader file does) so the Leader owes one test per own turn: round 0 at 9, round 2 at 8.
+#   Both pools are silenced in that scenario (initial_state attacks 0; the Emir's default kit blade is
+#   a weapon, so the pool stays silent) so the tape reads the Leadership dice only.  The re-roll
+#   sentence of the row needs a Fear re-roll grant the Emir does not print; recorded, not asserted.
+#   "Not lent to friends" is the leader-supply route (mechanic.leader-six), not reachable on the
+#   Leader's own test here; recorded.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Leadership arithmetic: 4+5 = 9 passes Ld 8 + 1 and fails the printed Ld 8.  The charger is the
+# hand-built fear-causing mace fixture.
+
+# The first test at +1: charged by a fear-causer, the victorious Emir passes its Fear test on a 9.
+- audit_id: mechanic/condition.poetry-victorious-leader
+  id: the-victorious-leaders-first-leadership-test-is-taken-at-plus-one
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: ghutani-rel
+      profile_id: emir
+      condition_ids: [condition.poetry-victorious-leader]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Emir, charge and faces without the supplied victory fail at the printed Ld 8,
+# so the charger's hits are clamped to sixes.
+- audit_id: mechanic/condition.poetry-victorious-leader
+  id: the-same-faces-fail-without-the-supplied-victory
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: ghutani-rel, profile_id: emir}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "First actual Leadership test" only: with a supplied Stupidity trait the Emir tests at the start
+# of each own turn.  The round-0 test passes on 9 (Ld 8 + 1); the round-2 test, the second of the
+# duel, is taken at the printed 8 and the same 9 fails it.
+- audit_id: mechanic/condition.poetry-victorious-leader
+  id: the-plus-one-is-spent-on-the-first-test-and-the-second-is-taken-at-the-printed-leadership
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ghutani-rel
+      profile_id: emir
+      condition_ids: [condition.poetry-victorious-leader]
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 5}
+    - {key: round.2.first.stupidity.0, value: 4}
+    - {key: round.2.first.stupidity.1, value: 5}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false}
+    1: {state.first.stupidity_failed: false}
+    2: {state.first.stupidity_failed: true}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The recipient is "the actual Leader": the band's own Scholar, the Poet himself, is refused the
+# condition by the compiler's own sentence.
+- audit_id: mechanic/condition.poetry-victorious-leader
+  id: a-non-leader-of-the-band-is-refused-the-condition
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ghutani-rel
+      profile_id: scholar
+      condition_ids: [condition.poetry-victorious-leader]
+  expect_error: "victorious Poetry requires the actual Leader of its printed Araby band"
+
+# The band is one of the three printed Araby bands: a Hero outside them is refused.
+- audit_id: mechanic/condition.poetry-victorious-leader
+  id: a-leader-outside-the-three-printed-bands-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: hero}
+      condition_ids: [condition.poetry-victorious-leader]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+  expect_error: "victorious Poetry requires the actual Leader of its printed Araby band"

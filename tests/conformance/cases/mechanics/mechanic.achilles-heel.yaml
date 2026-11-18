@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.achilles-heel
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the shared
+#   operator on a hand-built fighter re-admits a natural six To Wound as a critical when the required
+#   target is already six (Toughness 5 against Strength 3), the same six is an ordinary wound without
+#   the operator, and a five against the same Toughness still fails (the skill lowers no target).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,85 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Snotlings, Achilles' Heel, bands/mordheim/snotlings-web/special-rules.yaml
+# bullied-goblin--achilles-heel): "Your Snotling always causes Critical Hits on rolls of 6 (when
+# wounding) regardless of opponent's toughness.  In addition, when combined with the Stampede charge
+# attack, on any successful rolls to wound of 5+, the opponent gains no armour save."  The band row
+# is selectable and binds mechanic.achilles-heel; the Stampede half is scope NO on the band row
+# (out-of-scope.group) and its consumer (modular/attacks.py ~625, condition.stampede-active) is never
+# reached here.  Consumer of the admitted half: modular/contexts.py ~764
+# (`critical_when_needing_six=has_tag(effect, "mechanic.achilles-heel")`) read by
+# phases.resolve_wound (~558): a critical is otherwise excluded when the required target is six.
+# Model: the AUTHORED Snotlings grant file (...fe085a12f5b6) on the real Bigsnotz; here the shared
+# operator is injected through skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace),
+# whose Strength 3 needs a six against the declared Toughness 5.  The opponent is silenced
+# (attacks 0; it carries a mace, so no fist swing survives) and is unarmoured, so a mace hit asks no
+# armour die.  The critical-chart die is the evidence: the strict tape declares exactly one.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The re-admitted critical: the required To Wound target is six, the declared six wounds and - with
+# the operator - is a critical, so the chart die is requested; a result of one keeps the printed
+# damage of two.
+- audit_id: mechanic/mechanic.achilles-heel
+  id: a-natural-six-to-wound-is-a-critical-when-the-target-is-already-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.achilles-heel]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same faces without the operator are an ordinary wound; no chart die is requested.
+- audit_id: mechanic/mechanic.achilles-heel
+  id: without-the-operator-the-same-six-is-an-ordinary-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "on rolls of 6": the skill lowers no To Wound target, so a five against the same
+# Toughness 5 still fails and no chart die is requested.
+- audit_id: mechanic/mechanic.achilles-heel
+  id: a-five-against-toughness-five-still-fails-to-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.achilles-heel]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.critical: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

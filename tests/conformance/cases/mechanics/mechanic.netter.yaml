@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.netter
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 1 authored scenario (operators-band-rules batch, 2026-11-18): the mechanic on a
+#   hand-built fighter is a legal build whose round resolves exactly as without it.  Both declared clauses
+#   are scope NO, so the scenario names no clause.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenario is declared below; REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18, operators-band-rules batch): the ruling "Netter consumes a supplied
+#   victim" (design-rulings.md) keeps the net throw, the escape roll and the charge movement outside the
+#   duel and grants no net-throwing technique: the in-combat consequences belong to condition.netted (a
+#   supplied victim).  The modular duel has no caller of its `_netter` helper
+#   (modular/aftermath.py ~208-224), so the carrier tag changes no duel observable and the removal probe
+#   reports the identity non-discriminating by design, as mechanic.suckers does.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,4 +26,27 @@
 # Clause: whole (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Printed carriers: the Night Goblin special skill Netter (bands/mordheim/night-goblins-kaz/
+# special-rules.yaml band--night-goblin-special-skills-netter and the Crooked Moon / Night Goblins
+# siblings, selectable): "chuck and charge" - the goblin throws his net as a charge; a netted target
+# counts as knocked down and is hit automatically.  A hand-built fighter carrying the mechanic fights an
+# ordinary round: both blows are natural 1s and the round ends at the horizon, as it would without it.
+- audit_id: mechanic/mechanic.netter
+  id: the-mechanic-compiles-and-the-round-resolves-unchanged
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.netter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3, state.second.condition: STANDING, state.second.netted: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

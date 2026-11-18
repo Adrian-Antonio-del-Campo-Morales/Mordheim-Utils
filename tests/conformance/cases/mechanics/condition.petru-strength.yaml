@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.petru-strength
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,131 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 6 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "+1 Strength until a 1
+#   in own recovery ends the draught" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.petru-strength) through the supplied condition_ids entry on the printed Petru - the
+#   compiler gate "Petru's supplied draught requires a Hero recipient" (compile_fighter's
+#   supplied-condition checks) needs a Hero, so the recipient is the band's own hero profile carrying the
+#   fixture's characteristics, exactly as the AUTHORED grant file
+#   grants/mordheim--channel-rats-mim--petru--potions--condition.petru-strength--dae2c9119a74.yaml does.
+#   Scenarios: the raised Strength at duel start; the own-recovery expiry die (key
+#   round.<i>.<side>.petru-strength, asked only on the drinker's own turn) keeping the draught on a 2 so
+#   the raised S4 wounds T3 on a 3, and ending it on a 1 so the same 3 no longer wounds; the control
+#   without a draught (no recovery die, base Strength, same 3 fails); the non-Hero refusal; and the
+#   one-result-per-table refusal of the supplied-result resolver.  Removing the supplied id from
+#   condition_ids (the mechanic probe) changes dice and observations, so the pair discriminates.
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the printed draught lasts across the battle and its expiry
+#   die belongs to every own recovery phase; the duel shows the round-0 own-turn request only.  The
+#   expiry lowers the live Strength (state.<side>.strength), never the compiled characteristic.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+, S4 on 3+.  The opponent is silenced (attacks: 0)
+# so every die in the tape is Petru's own; Petru is the active participant so the recovery phase is
+# its own turn.  The dice are consumed in request order: recovery die, hit, wound.
+
+# The supplied draught raises the printed Petru's Strength by one at duel start.
+- audit_id: mechanic/condition.petru-strength
+  id: the-strength-draught-raises-the-affected-heroes-strength-by-one
+  fighters:
+    first:
+      &petru-strength-drinker
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &petru-strength-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# "until a 1 in own recovery ends the draught": a 2 in the drinker's own recovery keeps it, so the
+# raised S4 wounds T3 on the declared 3.
+- audit_id: mechanic/condition.petru-strength
+  id: a-non-expiring-recovery-die-keeps-the-draught-and-the-raised-strength-wounds-on-a-3
+  fighters:
+    first: *petru-strength-drinker
+    second: *petru-strength-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-strength, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.strength: 4, attacks.0.hit: true, attacks.0.wounded: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The expiry: a 1 in the drinker's own recovery ends the draught before the blows, Strength returns to
+# the base 3 and the same wound die of 3 fails (S3 vs T3 needs 4+).
+- audit_id: mechanic/condition.petru-strength
+  id: a-recovery-die-of-one-ends-the-draught-and-the-same-3-no-longer-wounds
+  fighters:
+    first: *petru-strength-drinker
+    second: *petru-strength-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-strength, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.strength: 3, attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical hero without a supplied draught asks for no recovery die, keeps the base
+# Strength and fails the same 3.
+- audit_id: mechanic/condition.petru-strength
+  id: without-the-draught-no-recovery-die-is-asked-and-the-same-3-fails-to-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *petru-strength-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_initial: {first.strength: 3}
+  expect_rounds:
+    0: {state.first.strength: 3, attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recipient gate: "a single Hero ... may chance upon the Petru"; a hand-built fixture declares no
+# Hero kind and is refused by the compiler's own sentence.
+- audit_id: mechanic/condition.petru-strength
+  id: the-draught-is-refused-on-a-recipient-that-is-not-a-hero
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 7}
+  expect_error: "Petru's supplied draught requires a Hero recipient"
+
+# One draught per table: two results of the Petru table on one build are refused by the supplied-result
+# resolver's own sentence.
+- audit_id: mechanic/condition.petru-strength
+  id: two-draughts-of-the-same-table-in-one-build-are-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-strength, condition.petru-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  expect_error: "choose only one supplied result of the same potion table"

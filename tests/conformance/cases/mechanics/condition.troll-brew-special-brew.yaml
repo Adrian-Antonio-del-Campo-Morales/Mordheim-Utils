@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.troll-brew-special-brew
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (supplied-condition batch, 2026-11-18): the compiled
+#   statline pair (Weapon Skill and Strength one higher with the Special Brew; the supplied values
+#   without it), the printed ceiling of 10, the duel boundary (the Strength 4 blow wounds Toughness 3
+#   on a 3, which fails without the brew), and the refusals on a henchman recipient and beside a
+#   second brew result.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,166 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.troll-brew-special-brew,
+#   "Special Brew"): "A 5-6 brew result raises the nominated Dwarf's Weapon Skill and Strength by one
+#   for the battle, never above 10."  Source: Karak Azgal (broheim.net) p25, Special Rules / Brewers:
+#   "5-6: Special Brew ... The warrior's Weapon Skill and Strength are both increased by +1 for the
+#   duration of the battle.  This may temporarily take the statistics above the normal racial maximum
+#   but never greater than 10."
+# AUTHORED: the pre-battle brew roll and the nomination are outside the duel; the result is the
+#   supplied current fact declared through condition_ids.  The row binds profile.characteristics
+#   (bonuses weapon_skill +1, strength +1; maximum weapon_skill 10, strength 10), which the compiler
+#   applies to the compiled statline (roster-construction compiler.py, supplied_stat_bonuses and
+#   supplied_maxima: "A printed bonus may carry its own ceiling (the Brewers' Special Brew ...)"), so
+#   the pair and the ceiling are asserted through expect_fighters; the racial maximum is deliberately
+#   exceeded (a Dwarf's WS/S maxima are below 10) and only the printed 10 binds.  The compiler gate
+#   admits any condition.troll-brew-* only on a mordheim dwarf-guildsmen-kaz Hero whose species is
+#   dwarf or unstated: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the
+#   recipient must be a Hero"; the supplied-result resolver refuses two brew results: "choose only one
+#   supplied result of the same potion table".  Wound arithmetic: S4 against T3 wounds on 3+, S3 on
+#   4+; WS4 against WS3 hits on 3+, WS3 on 4+ (the declared 4 hits either way).  In the duel scenarios
+#   the Apprentice carries the thunderer list's mace, so no dagger save is granted to its target.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Fixture: the printed Apprentice (a Hero) with the corpus fixture characteristics; the opponent is
+# the hand-built mace fixture.
+
+# The brew's content: the compiled Apprentice carries Weapon Skill 4 and Strength 4, one above the
+# supplied 3 and 3; Toughness stays 3.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: the-special-brew-raises-the-compiled-weapon-skill-and-strength-by-one
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 4
+    first.characteristics.strength: 4
+    first.characteristics.toughness: 3
+    first.characteristics.attacks: 1
+
+# The "without" half: the same Apprentice with no brew compiles at the supplied 3 and 3.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: without-the-brew-the-same-dwarf-keeps-the-supplied-weapon-skill-and-strength
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+
+# "Never greater than 10": a drinker already at 10 and 10 stays at 10 and 10.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: the-brew-never-raises-a-characteristic-above-ten
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 10, strength: 10, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 10
+    first.characteristics.strength: 10
+
+# The duel boundary: the invigorated Apprentice's Strength 4 blow wounds Toughness 3 on the declared
+# 3 (3+) and the unarmoured opponent loses the wound.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: the-strength-four-blow-wounds-toughness-three-on-a-three
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2, state.first.strength: 4, state.first.weapon_skill: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control of the blow above: without the brew the same 3 fails to wound at Strength 3 (4+), so
+# the wound belongs to the brew.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: without-the-brew-the-same-three-fails-to-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3, state.first.strength: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "The leader will allow D3 of his heroes to drink": a henchman of the same band is refused the brew
+# by the compiler's own sentence.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: a-henchman-of-the-guildsmen-is-refused-the-brew
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: labourers
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero"
+
+# One barrel is rolled per battle: two results of the brew table on one build are refused by the
+# supplied-result resolver's own sentence.
+- audit_id: mechanic/condition.troll-brew-special-brew
+  id: two-brew-results-on-one-build-are-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-special-brew, condition.troll-brew-fear-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "choose only one supplied result of the same potion table"

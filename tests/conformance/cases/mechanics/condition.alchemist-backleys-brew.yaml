@@ -1,14 +1,149 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.alchemist-backleys-brew
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied brew
+#   lowers Strength and Initiative by one and a failed start-of-own-turn Toughness test keeps the
+#   penalties; a passed test ends them that same turn and no further test is asked on the next own
+#   turn; no test is attempted on the opponent's turn (the first attempt comes on the bearer's own
+#   turn); the gate refuses a hand-built recipient.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
-# Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Governing rulings: docs/decisions/design-rulings.md (Alchemist attempts at the start of the owner's
+#   turn, 2026-10-15: "the start of each own turn, once per turn, for ... Backley's Toughness test ...
+#   No attempt occurs on the opponent's turn or after that state has been cleared. Success is effective
+#   that turn: Backley's actual Strength/Initiative penalties end")
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.alchemist-backleys-brew, "Backley's
+#   Brew": "-1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once
+#   at the start of each own turn until recovery; the source does not specify the timing.")
+# Discrimination note (2026-11-18, recorded): the band rule mad-scientist--alchemist binds this condition
+#   with `grant: none` only to name the printed rule that produces it (the game-start potion roll stays
+#   unbound); it is never a compile route.  The condition is reached through the supplied condition_ids
+#   entry these scenarios declare, which the rule-removal probe deletes from every id list, so the
+#   with/without pairs below discriminate for this mechanic identity.  TODO.md ("Printed-source checks
+#   before de-duplicating") records that the five band-level alchemist identities probe
+#   non-discriminating; the band grant files (grants/mordheim--masters-of-horror-sylv--mad-scientist--
+#   alchemist--...) carry the Petru-style note for that.
+# Compiler gate (quoted, compiler.py:1139-1142): a hand-built bearer is refused - "the Alchemist's supplied
+#   potion requires the Mad Scientist recipient" - so the real masters-of-horror-sylv/mad-scientist (a Hero
+#   that causes Fear and is immune to psychology through its printed Lunatic and Immune to Psychology
+#   grants) carries the condition; no charge is declared, so no Fear die exists.
+# AUTHORED: the 4 scenarios below cover the penalties with a failed test, the recovery and its end of
+#   attempts, the own-turn cadence and the refusal; REVIEWED still requires manual semantic review.
+#   Consumers: modular/state.py:302-315 (penalties applied once at initialization, the actually applied
+#   amount remembered) and modular/alchemy.py:18-39 (the own-turn Toughness test on the protocol die
+#   `round.<i>.<side>.alchemist-backley`, a D6 <= Toughness passing and a natural 6 always failing;
+#   success restores exactly the applied penalties and spends the state).
+# Semantic wrinkle (2026-11-18, recorded): the test reads the bearer's current Toughness (3 here, the
+#   brew does not touch it); recovery is observed through the lasting FighterState fields strength and
+#   initiative, which the harness vocabulary already carries.
+#
+# --- Authored scenarios ---
+# Fixtures: the printed Mad Scientist with fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays), mace; hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace); already engaged, no charge.  Under
+# the brew the Scientist is S2 I4: WS3 against WS3 hits on 4+, S2 wounds T3 on 5+ (S3 on 4+), so the
+# declared 4/4 pair wounds only once the penalty has ended; I4 still beats I2, so attacks.0 is his blow.
+# The test die: 3 <= T3 passes, 4 fails, 6 always fails.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The penalties stand: S2 I4 at initialization, the own-turn test fails on a 4, and the four fails to
+# wound at Strength 2.
+- audit_id: mechanic/condition.alchemist-backleys-brew
+  id: a-failed-toughness-test-keeps-the-penalties-for-the-turn
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: &bb-scientist {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &bb-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.alchemist-backley, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 2, first.initiative: 4}
+  expect_rounds:
+    0: {state.first.strength: 2, state.first.initiative: 4, attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recovery: the own-turn test passes on a 3, the penalties end that same turn (S3 I5, the same four
+# now wounds), and the next own turn (round 2) asks no further test.
+- audit_id: mechanic/condition.alchemist-backleys-brew
+  id: a-passed-toughness-test-ends-the-penalties-that-same-turn
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: *bb-scientist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *bb-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.alchemist-backley, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 2, first.initiative: 4}
+  expect_rounds:
+    0: {state.first.strength: 3, state.first.initiative: 5, attacks.0.wounded: true, state.second.wounds: 2}
+    2: {state.first.strength: 3, state.first.initiative: 5}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The cadence: supplied on the non-active side, round 0 (the opponent's turn) asks no test and the
+# penalties stand; the first attempt comes at the start of the bearer's own turn (round 1), where the
+# natural 6 fails and the penalties still stand.
+- audit_id: mechanic/condition.alchemist-backleys-brew
+  id: no-test-is-attempted-on-the-opponents-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *bb-opponent
+    second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: *bb-scientist
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.second.alchemist-backley, value: 6}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.strength: 2, state.second.initiative: 4, attacks.0.wounded: false, state.first.wounds: 3}
+    1: {state.second.strength: 2, state.second.initiative: 4}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The gate: a hand-built recipient of the supplied brew is refused with the compiler's own sentence.
+- audit_id: mechanic/condition.alchemist-backleys-brew
+  id: the-supplied-brew-is-refused-outside-the-mad-scientist
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "the Alchemist's supplied potion requires the Mad Scientist recipient"

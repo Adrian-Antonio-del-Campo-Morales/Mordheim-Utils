@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.nuttaz-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 4 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "This native Orc
+#   Nuttaz is making its actual compulsory charge against the supplied nearest visible reachable enemy.
+#   The caller supplies target qualification; no movement, visibility search or run is produced"
+#   (sources/knowledge/catalog/rules/conditions.yaml, condition.nuttaz-charge) on the printed Orc Nuttaz
+#   (black-orcs, printed W1 A1 Ld5, the Savage extra attack, the henchman list's axe) - the compiler
+#   gate "the required Nuttaz charge needs the native Orc Nuttaz" admits no other recipient.  The
+#   condition's one duel reader is the compulsory-charge check at duel start: a supplied compulsion with
+#   no declared charge is refused ("A supplied compulsory charge requires its initial in-range charging
+#   attempt"), while the same Nuttaz declared charging fights its two swings and the same Nuttaz
+#   without the fact may stand uncharging.  The fourth scenario is the recipient refusal on an Orc Boy.
+#   The grant file grants/mordheim--black-orcs--orc-nuttaz--savage--profile.equipment-restrictions--
+#   91a9e3617e6e.yaml carries the same contract on the band identity.  Removing the supplied id (the
+#   mechanic probe) lets the declined-charge case run, so the pair discriminates.  REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the fact grants no charge bonus of its own (the Nuttaz's
+#   Crazy and Savage rules are separate identities); the nearest-visible-enemy qualification is the
+#   caller's.  The Nuttaz is Crazy (automatic Leadership), so no Fear die exists even against a
+#   fear-causer, and no Animosity die is asked of it.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Every strike is a natural 1 so no wound die exists; the opponent is silenced (attacks: 0).
+
+# The required charge is declared: the Nuttaz under the supplied compulsion fights its printed Attack
+# plus the Savage extra attack.
+- audit_id: mechanic/condition.nuttaz-charge
+  id: the-nuttaz-making-its-required-charge-fights
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+      condition_ids: [condition.nuttaz-charge]
+    second:
+      &nuttaz-opponent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The compulsion: the supplied fact says the Nuttaz is actually charging, so a duel in which nobody
+# charges contradicts it and is refused at duel start.
+- audit_id: mechanic/condition.nuttaz-charge
+  id: the-supplied-compulsion-without-a-declared-charge-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+      condition_ids: [condition.nuttaz-charge]
+    second: *nuttaz-opponent
+  duel_context: {charging: [], active_participant: first}
+  expect_error: "A supplied compulsory charge requires its initial in-range charging attempt"
+
+# The control: the same Nuttaz without the supplied fact may stand uncharging and the duel runs.
+- audit_id: mechanic/condition.nuttaz-charge
+  id: without-the-supplied-compulsion-the-same-nuttaz-may-stand-uncharging
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+    second: *nuttaz-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: false, attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recipient gate: the compulsion belongs to the native Orc Nuttaz, so an Orc Boy of the same band is
+# refused by the compiler's own sentence.
+- audit_id: mechanic/condition.nuttaz-charge
+  id: the-required-nuttaz-charge-is-refused-for-an-orc-boy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-boyz
+      condition_ids: [condition.nuttaz-charge]
+  expect_error: "the required Nuttaz charge needs the native Orc Nuttaz"

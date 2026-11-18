@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.backstabber
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the +1 to hit in
+#   the first round of a supplied unseen charge, the +1 on the Injury roll, the skill without the
+#   supplied fact granting neither, and the bonus ending after the first round.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,99 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Printed text (grade-1a.yaml, Imperial Assassin / Backstabber; Silent Brotherhood special skill):
+#   "The Assassin may charge an opponent he cannot see ... If he does this, he surprises his opponent
+#   and receives a +1 to hit him with all attacks and any rolls on the injury chart are at +1.  This
+#   bonus lasts for the first round of combat only".  The unseen charge is a supplied fact
+#   (condition.unseen-charge, its own identity).  Consumers: modular/contexts.py ~526-528 (hit
+#   modifier +1 when first_round and charging and the bearer carries skill.backstabber and
+#   condition.unseen-charge) and modular/attacks.py ~804-809 (injury_bonus 1 under the same gate).
+#
+# --- Authored scenarios ---
+# Fixture: hand-built bearer (WS3 S3 T3 W2 I5 A1, mace) charging a hand-built opponent (WS3 S3 T3 I2
+# A1 Ld7, mace; W3 keeps a wound short of the injury roll, W1 reaches it).  WS3 against WS3 hits on
+# 4+ (a 3 is the boundary); S3 against T3 wounds on 4+; the injury chart prints 1-2 Knocked Down,
+# 3-4 Stunned, 5-6 Out of Action, so a declared 4 is the boundary of the +1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The +1 to hit: the 3 hits in the first round of the unseen charge.
+- audit_id: mechanic/skill.backstabber
+  id: plus-one-to-hit-in-the-first-round-of-an-unseen-charge
+  fighters:
+    first: &backstabber-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.backstabber]
+      condition_ids: [condition.unseen-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: &backstabber-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The +1 on the injury chart: a declared 4 (Stunned on the ordinary chart) becomes 5, Out of Action.
+- audit_id: mechanic/skill.backstabber
+  id: plus-one-on-the-injury-roll-takes-the-opponent-out-on-a-four
+  fighters:
+    first: *backstabber-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The skill without the supplied unseen charge: an ordinary (seen) charge gets neither bonus, so the
+# 3 misses on 4+ and, on a hit, the same 4 on the chart only Stuns.
+- audit_id: mechanic/skill.backstabber
+  id: a-seen-charge-grants-neither-bonus
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.backstabber]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "This bonus lasts for the first round of combat only": the 3 hits in round 0 (its wound die is a
+# natural 1 so the duel continues) and the same 3 misses in round 1 on the restored 4+.  In round 1
+# nobody charges, so the higher Initiative (the bearer) still strikes first.
+- audit_id: mechanic/skill.backstabber
+  id: the-bonus-ends-after-the-first-round
+  fighters:
+    first: *backstabber-bearer
+    second: *backstabber-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, state.second.wounds: 3}
+    1: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

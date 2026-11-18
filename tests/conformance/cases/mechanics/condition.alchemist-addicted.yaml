@@ -1,14 +1,195 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.alchemist-addicted
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (supplied-conditions batch, 2026-11-18): a brew attempt of
+#   6 at the start of the bearer's own turn releases him that turn (he strikes with the supplied +1 S/T)
+#   and no later attempt is asked; a failed attempt keeps him brewing and barred through the opponent's
+#   turn to his next own-turn attempt; no attempt is made on the opponent's turn; an already supplied
+#   Aberrantius Vigortia is not duplicated on release; the addicted Scientist may not be declared the
+#   charger; the gate refuses a hand-built recipient.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
-# Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Governing rulings: docs/decisions/design-rulings.md (Alchemist attempts at the start of the owner's
+#   turn, 2026-10-15: "the addicted Mad Scientist's attempt to brew a 6 ... once per turn ... No attempt
+#   occurs on the opponent's turn or after that state has been cleared ... a successful brew ends the
+#   action restriction and supplies Aberrantius Vigortia (+1 Strength and Toughness), once, without
+#   healing Wounds or duplicating an already supplied dose")
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.alchemist-addicted, "Alchemist
+#   Addiction": "The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
+#   Vigortia. By project ruling, a standing Scientist attempts once at the start of each own turn;
+#   success releases him and supplies the potion's Strength and Toughness bonus once.")
+# Discrimination note (2026-11-18, recorded): the band rule mad-scientist--alchemist binds this condition
+#   with `grant: none` only to name the printed rule that produces it (the game-start potion roll stays
+#   unbound); it is never a compile route.  The condition is reached through the supplied condition_ids
+#   entry these scenarios declare, which the rule-removal probe deletes from every id list, so the
+#   with/without pairs below discriminate for this mechanic identity.  TODO.md ("Printed-source checks
+#   before de-duplicating") records that the five band-level alchemist identities probe
+#   non-discriminating; the band grant files (grants/mordheim--masters-of-horror-sylv--mad-scientist--
+#   alchemist--...) carry the Petru-style note for that.
+# Compiler gate (quoted, compiler.py:1139-1142): a hand-built bearer is refused - "the Alchemist's supplied
+#   potion requires the Mad Scientist recipient" - so the real masters-of-horror-sylv/mad-scientist (a Hero
+#   that causes Fear and is immune to psychology through its printed Lunatic and Immune to Psychology
+#   grants) carries the condition; no charge is declared, so no Fear die exists.
+# AUTHORED: the 6 scenarios below cover the release, the failed attempt, the own-turn cadence, the
+#   no-duplication guard, the charge refusal and the recipient gate; REVIEWED still requires manual
+#   semantic review.  Consumers: modular/alchemy.py:14-50 (the protocol die `round.<i>.<side>.alchemist-
+#   brew` at the start of the bearer's own turn while standing; a 6 spends the state and adds +1 S/T
+#   unless the Vigortia tag is already carried), modular/rounds.py:1342 and 1449-1452 (an unreleased
+#   addict resolves no attack of his own) and modular/state.py:383 (an addict is not a legal charger:
+#   "Charging configuration violates Cannot Charge or Shallyan Strictures").
+#
+# --- Authored scenarios ---
+# Fixtures: the printed Mad Scientist with fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays), mace; hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace); already engaged, no charge.  WS3
+# against WS3 hits on 4+; S4 wounds T3 on 3+; no armour die exists (the S4 save modifier has no armour
+# to act on).  The Scientist strikes first (I5 over I2) whenever he strikes at all.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The release: the 6 at the start of his own turn ends the restriction that turn, supplies S4 T4 once,
+# his blow lands with Strength 4, and no brew die is asked in his next own turn (round 2).
+- audit_id: mechanic/condition.alchemist-addicted
+  id: a-brew-of-six-at-the-start-of-his-own-turn-releases-the-scientist-that-turn
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: &aa-scientist {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &aa-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.alchemist-brew, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 3, first.toughness: 3, first.wounds: 2}
+  expect_rounds:
+    0: {state.first.strength: 4, state.first.toughness: 4, state.first.wounds: 2, attacks.0.wounded: true, state.second.wounds: 2}
+    2: {state.first.strength: 4, state.first.toughness: 4}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The failed attempt: a 3 keeps him brewing - no attack of his own in his turn, none in the opponent's
+# turn either, and the next own turn (round 2) brings the next single attempt, which also fails.
+- audit_id: mechanic/condition.alchemist-addicted
+  id: a-failed-brew-keeps-the-scientist-brewing-and-barred
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: *aa-scientist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *aa-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.alchemist-brew, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.alchemist-brew, value: 2}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.strength: 3, state.first.toughness: 3, state.second.wounds: 3}
+    2: {state.first.strength: 3, state.second.wounds: 3, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The cadence: supplied on the non-active side, round 0 (the opponent's turn) holds no brew die and no
+# attack of his; the first attempt comes at the start of his own turn (round 1), the 6 releases him and
+# he strikes with Strength 4 in that same turn.
+- audit_id: mechanic/condition.alchemist-addicted
+  id: no-attempt-is-made-on-the-opponents-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *aa-opponent
+    second:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: *aa-scientist
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.second.alchemist-brew, value: 6}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.wound, value: 3}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.strength: 3, state.second.toughness: 3, state.first.wounds: 3}
+    1: {state.second.strength: 4, state.second.toughness: 4, attacks.0.wounded: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The no-duplication guard: an already supplied Aberrantius Vigortia (S4 T4 at initialization) is not
+# doubled when the release brews another dose - the Scientist stays S4 T4 and strikes.
+- audit_id: mechanic/condition.alchemist-addicted
+  id: an-already-supplied-dose-is-not-duplicated-on-release
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted, condition.alchemist-aberrantius-vigortia]
+      characteristics: *aa-scientist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *aa-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.alchemist-brew, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 4, first.toughness: 4}
+  expect_rounds:
+    0: {state.first.strength: 4, state.first.toughness: 4, attacks.0.wounded: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The addict "will stand and brew potions": declaring him the charger is refused by the duel's own
+# charge legality check (modular/state.py:383), with its own sentence.
+- audit_id: mechanic/condition.alchemist-addicted
+  id: the-addicted-scientist-may-not-be-declared-the-charger
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: *aa-scientist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *aa-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"
+
+# The gate: a hand-built recipient of the supplied addiction is refused with the compiler's own sentence.
+- audit_id: mechanic/condition.alchemist-addicted
+  id: the-supplied-addiction-is-refused-outside-the-mad-scientist
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "the Alchemist's supplied potion requires the Mad Scientist recipient"

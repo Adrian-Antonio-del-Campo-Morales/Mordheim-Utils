@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--art-of-silent-death/skill.unarmed-critical-strikes
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the printed Dragon
+#   Monk fighting bare-handed criticals on an unarmed To Wound five (his Unarmed Mastery adds the second
+#   fist attack and removes the fist penalties), a bare-handed band comrade (Shanghai'er) wounds on the
+#   same five without a critical and at the penalised Strength, and the profile rule is refused when
+#   selected on that comrade.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,82 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/pirates-of-the-cathayan-sea-sar/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carrier: Pirates of the Cathayan Sea, Dragon Monk, Art of Silent Death (grant profile, rule_ref
+# shared-rule.dragon-monk-art-of-silent-death) binding skill.unarmed-critical-strikes: the monk's unarmed
+# attacks cause critical hits on a To Wound roll of 5+.  Consumer: modular/contexts.py ~744-745 -
+# `critical_threshold = 5 if (... has_tag(effect, "skill.unarmed-critical-strikes") and weapon in
+# (weapon.fist, weapon.natural-attacks) ...) else 6`.  Model: the AUTHORED Battle Monks file
+# (...7a85e70daed5).  The recipient is the printed Dragon Monk (fixture WS3 S3 T3 W2 I5 A1, the printed
+# Ld8 stays) with main_weapon_id weapon.fist; his profile also prints Unarmed Mastery (skill.unarmed-fighting:
+# +1 Attack and no unarmed penalties while bare-handed, phases.py ~356 and ~67) and Distaste for Poison
+# (construction only).  The comrade control is the printed Shanghai'er (same band, no monk rules) with the
+# same fixture and fist.  The opponent is the unarmoured mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) whose
+# swing is a declared 1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The printed Dragon Monk: two fist attacks (Unarmed Mastery's +1), the first hits and its To Wound five is
+# a critical (chart die 2: damage 2); no armour die is asked because his unarmed penalties are removed.
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--art-of-silent-death/skill.unarmed-critical-strikes
+  id: the-printed-dragon-monk-criticals-on-an-unarmed-five
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: dragon-monk
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band comrade: a bare-handed Shanghai'er has one fist attack at Strength 2 (the five still wounds
+# Toughness 3 on 5+), the five is an ordinary wound (no chart die), and the fist grants the unarmoured
+# enemy a 6+ save (die 1 fails).
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--art-of-silent-death/skill.unarmed-critical-strikes
+  id: a-bare-handed-shanghaier-wounds-on-the-same-five-without-a-critical
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: shanghaires
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The rule is the Dragon Monk's own printed profile rule: selecting it on a Shanghai'er is refused.
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--art-of-silent-death/skill.unarmed-critical-strikes
+  id: the-rule-is-refused-on-a-shanghaier
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: shanghaires
+      main_weapon_id: weapon.fist
+      special_rule_ids: [dragon-monk--art-of-silent-death]
+    second:
+      <<: *opponent
+  expect_error: "special rule is not available to pirates-of-the-cathayan-sea-sar/shanghaires"

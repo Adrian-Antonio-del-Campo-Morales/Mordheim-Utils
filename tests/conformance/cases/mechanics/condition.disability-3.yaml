@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.disability-3
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (supplied-condition batch, 2026-11-18): the compiled
+#   stored Ballistic Skill pair (one lower with result 3; the printed 2 with a sibling result), the
+#   unchanged close-combat round (the result adjusts stored BS only), and the refusal of the result on
+#   a build without the Cripples' Disability.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,103 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-3): "Poor
+#   eyesight: minus one Ballistic Skill; no shooting action is simulated.  Permanent supplied result;
+#   no group creation or reroll."  Source: Chaos in the Streets p149, result 3.
+# AUTHORED: the ruling of 2026-10-15 reads "Poor Eyesight adjusts stored BS only; shooting, group
+#   creation and campaign progression remain excluded".  The row binds no sibling effect; its one
+#   consumer is the compiler (packages/python/roster-construction/mordheim_construction/compiler.py:
+#   `if "condition.disability-3" in supplied.condition_ids: ballistic_skill = max(0, ballistic_skill
+#   - 1)`), which reads the printed profile's BS (the Cripples print BS 2; the fixture's
+#   `characteristics` carries no Ballistic Skill) and stores the compiled `ballistic_skill`.  That
+#   stored value is the only observable of the result, asserted by pair through expect_fighters; no
+#   duel die reads it, which the unchanged melee round shows.  The recipient gate is the compiler's
+#   own ("Disability result requires a Cripple with Disability").
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile (BS 2) with the corpus fixture characteristics, armed with the
+# outcasts list's club; the opponent is the hand-built mace fixture.
+
+# The result's content: the compiled Cripple stores Ballistic Skill 1, one below the printed 2; the
+# melee characteristics stay as supplied.
+- audit_id: mechanic/condition.disability-3
+  id: the-poor-eyesight-cripple-stores-ballistic-skill-one-lower
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-3]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.ballistic_skill: 1
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+    first.characteristics.toughness: 3
+    first.characteristics.initiative: 5
+
+# The "without" half: the same Cripple carrying a sibling result (4, Sickly) stores the printed
+# Ballistic Skill 2.
+- audit_id: mechanic/condition.disability-3
+  id: a-sibling-result-leaves-the-stored-ballistic-skill-at-the-printed-two
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.ballistic_skill: 2
+
+# Stored BS only: the close-combat round reads nothing of the result - WS3 against WS3 hits on the
+# declared 4 and S3 wounds T3 on the declared 4, exactly as any uncrippled fixture would.
+- audit_id: mechanic/condition.disability-3
+  id: the-melee-round-is-unchanged-by-poor-eyesight
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-3]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2, state.first.weapon_skill: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The result is a Cripple's: on a build without the band's Disability mechanic the compiler refuses
+# it with its own sentence.
+- audit_id: mechanic/condition.disability-3
+  id: the-result-on-a-build-without-the-cripples-disability-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.disability-3]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "Disability result requires a Cripple with Disability"

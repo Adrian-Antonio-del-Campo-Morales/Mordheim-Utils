@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.ere-we-go
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the shared operator on
+#   a hand-built fighter - charging a fear-causer asks no Fear test and the charge lands, the same bearer
+#   charged by the same fear-causer is tested (the waiver is charge-conditional), and a fighter without the
+#   operator charging the fear-causer rolls the ordinary charge test.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,79 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carriers: the Orc Mob / Black Orcs / Chaos-in-the-Streets greenskin special skill 'Ere We Go!
+# (bands/mordheim/orc-mob/special-rules.yaml band--orc-special-skills-ere-we-go, selectable, rule_ref
+# shared-rule.ere-we-go): the Orc ignores Fear when charging.  Consumer: modular/psychology.py ~209-210
+# in needs_test(): `if charges[index] and has_tag(..., "mechanic.ere-we-go"): return False`, so a
+# charging bearer takes no Fear test; a charged bearer tests as usual.  Model: the AUTHORED Orc Mob grant
+# file (...2fb4c16588de) on the real Big 'Un; here the operator is injected through skill_ids on the
+# hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace).  The fear-causer is the mace fixture (WS3 S3 T3 W3
+# I2 A1 Ld7) declaring causes_fear through trait_overrides; every strike is a declared natural 1, so each
+# round reports only the Fear request under test.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charging waiver: no Fear die is asked of the charging bearer, the charge lands and both swing.
+- audit_id: mechanic/mechanic.ere-we-go
+  id: the-charging-bearer-takes-no-fear-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ere-we-go]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &fear_causer
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, state.engaged: true, state.first.fear_hit_sixes: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The waiver applies only while the bearer charges: charged by the same fear-causer he is tested, and
+# 6+6 fails his Leadership 7, clamping his strike to sixes.
+- audit_id: mechanic/mechanic.ere-we-go
+  id: the-same-bearer-still-tests-when-it-is-charged
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ere-we-go]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *fear_causer
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: true, attacks.1.hit_target: 6, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a charger without the operator rolls the ordinary charge test (3+3 passes Ld7) before
+# the charge is allowed.
+- audit_id: mechanic/mechanic.ere-we-go
+  id: without-the-operator-the-charger-rolls-the-fear-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *fear_causer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, state.engaged: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

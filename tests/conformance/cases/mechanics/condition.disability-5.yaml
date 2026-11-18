@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.disability-5
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-condition batch, 2026-11-18): the compiled
+#   Strength pair (one lower with result 5; intact with a sibling result), the duel boundary (the Weak
+#   Cripple's 4 fails to wound Toughness 3, where the sibling-result control wounds), and the refusal
+#   of the result on a build without the Cripples' Disability.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,123 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-5): "Weakness:
+#   minus one Strength.  Permanent supplied result; no group creation or reroll."  Source: Chaos in
+#   the Streets p149, result 5.
+# AUTHORED: the row's content travels in its sibling effect condition.disability-5.characteristics
+#   (profile.characteristics, strength -1) - the first triage batch's "Disability 2 and 5 were a false
+#   triage flag (their content sits in sibling effects)" - applied to the compiled statline by
+#   compiler.py's supplied_stat_bonuses and asserted by pair through expect_fighters; the mechanic
+#   tag only marks the result (modular/state.py, the `disability.5` resource).  Wound arithmetic:
+#   S2 against T3 wounds on 5+, S3 against T3 on 4+.  The recipient gate is the compiler's own
+#   ("Disability result requires a Cripple with Disability").
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile with the corpus fixture characteristics, armed with the
+# outcasts list's club; the opponent is the hand-built mace fixture.
+
+# The result's content: the compiled Cripple carries Strength 2.
+- audit_id: mechanic/condition.disability-5
+  id: the-weak-cripple-compiles-with-strength-one-lower
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-5]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.strength: 2
+    first.characteristics.toughness: 3
+    first.characteristics.weapon_skill: 3
+    first.characteristics.attacks: 1
+
+# The "without" half: the same Cripple carrying a sibling result (4, Sickly) keeps Strength 3.
+- audit_id: mechanic/condition.disability-5
+  id: a-sibling-result-leaves-strength-intact
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.strength: 3
+
+# The duel boundary: the Weak Cripple hits on the declared 4 but its Strength 2 blow fails to wound
+# Toughness 3 on the declared 4 (5+ needed).
+- audit_id: mechanic/condition.disability-5
+  id: the-weak-cripples-four-fails-to-wound-toughness-three
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-5]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3, state.first.strength: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control of the blow above: the same Cripple with a sibling result (1, Lame) keeps Strength 3
+# and the same 4 wounds (4+), so the failed wound belongs to result 5.
+- audit_id: mechanic/condition.disability-5
+  id: with-a-sibling-result-the-same-four-wounds
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-1]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2, state.first.strength: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The result is a Cripple's: on a build without the band's Disability mechanic the compiler refuses
+# it with its own sentence.
+- audit_id: mechanic/condition.disability-5
+  id: the-result-on-a-build-without-the-cripples-disability-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.disability-5]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "Disability result requires a Cripple with Disability"

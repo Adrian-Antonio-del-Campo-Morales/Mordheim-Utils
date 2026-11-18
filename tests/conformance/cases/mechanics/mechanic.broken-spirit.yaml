@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.broken-spirit
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18) on the real Slavers
+#   Eunuch, the only printed carrier: charged by a fear-causer he passes without a die while the supplied
+#   Slave Merchant stands, still passes while the Merchant is knocked down (printed "not out of action")
+#   and at a distance the print never limits (30 inches), and rolls - and can fail - his two Leadership
+#   dice once the Merchant is supplied out of action.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,127 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Slavers, Eunuchs, Broken Spirit, bands/mordheim/slavers-rel/special-rules.yaml
+# eunuchs--broken-spirit): "A Eunuch will automatically pass any Leadership test he is required to make,
+# as long as the Slave Merchant is not out of action.  A Eunuch may never become a warband leader."
+# The leader bar is the band row's scope-NO clause.  Consumer: modular/leadership.py ~206-214: while a
+# supplied nearby participant of the bearer's own side and band carries mechanic.leader-six (the Slave
+# Merchant's Leader) and is not `out`, the test returns passed before any die; the clause reads no
+# distance.  The borrow gate needs the bearer's own band tags, which a hand-built fighter does not
+# carry, so the bearer is the printed Eunuch (W1 A1 I3 Ld10) and the provider the printed Slave Merchant
+# (Leader, Ld8), supplied as a nearby local participant, as the AUTHORED grant file (...75d27f04c4fb)
+# does.  The Leadership test the duel can force on the Eunuch is the charged-fear test against a
+# hand-built fear-causer (WS3 S3 T3 W3 I10 A1 Ld7, mace); every strike is a declared natural 1.
+# Semantic wrinkle (2026-11-18): the automatic pass is read on a Fear test, the only Leadership test
+# a 1v1 round forces; the printed "any Leadership test" also covers tests outside the duel.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Merchant stands: the charged Eunuch's Fear test passes without a die (the strict tape holds no
+# fear.charged dice) and he strikes on his ordinary target.
+- audit_id: mechanic/mechanic.broken-spirit
+  id: the-charged-eunuch-passes-without-a-die-while-the-slave-merchant-stands
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: standing
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 1, state.second.condition: STANDING, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition is "not out of action": a knocked-down Merchant still grants the pass.
+- audit_id: mechanic/mechanic.broken-spirit
+  id: a-knocked-down-slave-merchant-still-grants-the-automatic-pass
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: knocked-down
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The print names no range: a Merchant thirty inches away, far outside any Leader radius, still grants
+# the pass, so the clause is not a Leadership borrow.
+- audit_id: mechanic/mechanic.broken-spirit
+  id: the-pass-reads-no-distance-to-the-slave-merchant
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: standing
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 30]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Merchant is out of action: the Eunuch rolls his own two Leadership dice; 6+6 fails even his
+# printed Leadership 10 and clamps his strike to sixes.
+- audit_id: mechanic/mechanic.broken-spirit
+  id: with-the-slave-merchant-out-of-action-the-eunuch-rolls-and-can-fail
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: slavers-rel, profile_id: eunuchs}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+    - participant_id: slave-merchant
+      side_id: second
+      condition: out
+      fighter: {collection: mordheim, band_id: slavers-rel, profile_id: slave-merchant}
+    distances: [[second, slave-merchant, 6]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, attacks.1.hit_target: 6, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

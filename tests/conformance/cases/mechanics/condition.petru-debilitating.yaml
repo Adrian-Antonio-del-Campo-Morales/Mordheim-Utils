@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.petru-debilitating
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,113 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 5 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "-1 Toughness until
+#   a 6 in own recovery clears the draught" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.petru-debilitating) through the supplied condition_ids entry on the printed Petru; the
+#   compiler gate "Petru's supplied draught requires a Hero recipient" needs a Hero, so the recipient is
+#   the band's own hero profile carrying the fixture's characteristics, as in the AUTHORED strength
+#   grant file (...condition.petru-strength--dae2c9119a74.yaml).  Scenarios: the lowered Toughness at
+#   duel start; the own-recovery clearing die (round.<i>.<side>.petru-debilitating) keeping the
+#   penalty on a 5 so the opponent's S3 wounds T2 on a 3, and clearing it on a 6 so the same 3 fails
+#   against the base T3; the control without a draught (no recovery die, the same 3 fails); and the
+#   non-Hero refusal.  Removing the supplied id (the mechanic probe) changes dice and observations.
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the clearing die belongs to every own recovery of the
+#   battle; the duel shows the round-0 own-turn request only.  The printed table calls the result
+#   "Debilitating"; the row's -1 Toughness is the whole admitted effect.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T2 on 3+, T3 on 4+.  Petru is the active participant (its
+# own recovery) and is silenced (attacks: 0), so the tape is the recovery die followed by the
+# opponent's hit and wound.  Petru declares two Wounds so a single wound leaves it standing without an
+# injury die.
+
+# The supplied draught lowers the printed Petru's Toughness by one at duel start.
+- audit_id: mechanic/condition.petru-debilitating
+  id: the-debilitating-draught-lowers-the-affected-heroes-toughness-by-one
+  fighters:
+    first:
+      &petru-debilitating-drinker
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-debilitating]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &petru-debilitating-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.toughness: 2}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# A 5 in the drinker's own recovery keeps the penalty: the opponent's S3 wounds T2 on the declared 3.
+- audit_id: mechanic/condition.petru-debilitating
+  id: a-non-clearing-recovery-die-keeps-the-penalty-and-the-opponents-3-wounds-toughness-2
+  fighters:
+    first: *petru-debilitating-drinker
+    second: *petru-debilitating-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-debilitating, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.toughness: 2, attacks.0.hit: true, attacks.0.wounded: true, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The clearing: a 6 clears the draught before the blows, Toughness returns to 3 and the same 3 fails.
+- audit_id: mechanic/condition.petru-debilitating
+  id: a-recovery-die-of-six-clears-the-draught-and-the-same-3-fails-against-the-base-toughness
+  fighters:
+    first: *petru-debilitating-drinker
+    second: *petru-debilitating-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.petru-debilitating, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.toughness: 3, attacks.0.hit: true, attacks.0.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical hero without a supplied draught asks for no recovery die and the same 3
+# fails against its base Toughness.
+- audit_id: mechanic/condition.petru-debilitating
+  id: without-the-draught-no-recovery-die-is-asked-and-the-same-3-fails-to-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *petru-debilitating-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_initial: {first.toughness: 3}
+  expect_rounds:
+    0: {state.first.toughness: 3, attacks.0.hit: true, attacks.0.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recipient gate: a hand-built fixture declares no Hero kind and is refused by the compiler's own
+# sentence.
+- audit_id: mechanic/condition.petru-debilitating
+  id: the-draught-is-refused-on-a-recipient-that-is-not-a-hero
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-debilitating]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 7}
+  expect_error: "Petru's supplied draught requires a Hero recipient"

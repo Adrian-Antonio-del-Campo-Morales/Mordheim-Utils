@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.ogre-unarmed
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the shared operator on
+#   a hand-built fist fighter - the unarmed attack keeps the printed Strength (a four wounds Toughness 3),
+#   the enemy keeps the fist's +1 armour save (a six saves the unarmoured enemy), both attacks of an A2
+#   pool are rolled, and without the operator the same fist is at -1 Strength (the four fails) and capped
+#   to one attack.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,102 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carrier: Ogre Hunting Party, Ogre Hunter, Don't Fight with Eating Knives (bands/mordheim/
+# ogre-hunting-party-web/special-rules.yaml ogre-hunter--dont-fight-with-eating-knives, grant profile):
+# "If forced to ... they will fight unarmed.  But since their physical strength the -1S penalty does not
+# apply, but the +1 enemy armour save still does.  They may make more than one unarmed attack, depending
+# on their Attacks value."  Consumers: roster compiler.py ~1310-1311 and ~1490 (a fist main weapon on a
+# bearer tagged mechanic.ogre-unarmed is the fist effect with strength_bonus 0, keeping its +1 enemy
+# save) and phases.py ~143 unarmed_attack_cap_applies (the one-attack fist cap does not apply to the
+# bearer).  Model: the AUTHORED Ogre Hunting grant file (...c04a1f1b4ea8) on the real Ogre Hunter; here
+# the operator is injected through skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A2 Ld7) fighting
+# through main_weapon_id weapon.fist.  The opponent is the unarmoured mace fixture (WS3 S3 T3 W3 I2 A1
+# Ld7), so the fist's +1 gives it a 6+ save; its swing is a declared 1.  Strength 3 wounds Toughness 3
+# on 4+, the penalised Strength 2 on 5+.  Dice order: both hit dice, then the wound and armour dice.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The waiver: the unarmed bearer wounds at its printed Strength 3 - the four lands - and the enemy's
+# fist-granted 6+ save (die 1) fails; both attack dice of the A2 pool are rolled.
+- audit_id: mechanic/mechanic.ogre-unarmed
+  id: an-unarmed-bearer-ignores-the-minus-one-strength-and-rolls-both-attacks
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.fist
+      skill_ids: [mechanic.ogre-unarmed]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2, leadership: 7}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: false, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "The +1 enemy armour save still does": the same rolls with armour die 6 save the unarmoured enemy,
+# which only a retained fist bonus allows.
+- audit_id: mechanic/mechanic.ogre-unarmed
+  id: the-enemy-keeps-the-fists-plus-one-armour-save
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed attack count: both A2 fist attacks are rolled and both miss, so nothing follows.
+- audit_id: mechanic/mechanic.ogre-unarmed
+  id: an-unarmed-bearer-resolves-its-printed-attacks-value
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the plain fist is Strength as user -1 and capped to one attack, so only one hit die is
+# rolled and the same wound face of four fails against Toughness 3 (5+ needed).
+- audit_id: mechanic/mechanic.ogre-unarmed
+  id: without-the-operator-the-fist-is-penalised-and-capped-to-one-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2, leadership: 7}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

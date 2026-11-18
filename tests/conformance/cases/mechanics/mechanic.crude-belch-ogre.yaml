@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.crude-belch-ogre
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (operators-band-rules batch, 2026-11-18): the Ogre operator on
+#   a hand-built fighter - the engaged enemy's failed Leadership test raises its To Hit target by one for
+#   the round, a passed test leaves it alone, the penalty expires with the round and the belch is not
+#   re-offered (the printed new-enemy limit in a one-against-one duel), a declined declaration requests
+#   no Leadership dice, and a fighter without the operator is offered no declaration.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,138 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Maneaters, Ogres special skills, Crude Belch, bands/mordheim/maneaters/special-rules.yaml
+# band--ogres-special-skills-crude-belch, selectable; the Ogre Hunting Party copy binds the same id): "A
+# Hero with this 'condition' may unleash his thunderous fumes on all enemies engaged in close combat.
+# Those that do not pass a Ld test suffer a -1 'to hit' modifier for the turn.  The Ogre must wait until
+# a new enemy engages him in combat before he relieves himself again."  Ruling (design-rulings.md,
+# Conformance triage 2026-11-18): "for the turn" is the duel round, and the spent resource not returning
+# carries the new-enemy limit.  Consumer: modular/rounds.py ~830-840 (decision
+# round.<i>.<side>.crude-belch-ogre while the bearer is standing and in contact and the resource is
+# unspent; the enemy's Leadership test round.<i>.<side>.crude-belch-ogre.leadership.{0,1}; a failure
+# lowers the enemy's hit_modifier for the phase), observable through attacks.<n>.hit_target.  Model: the
+# AUTHORED Maneaters grant file (...c9a3874a526e) on the real Youngbloods; here the operator is injected
+# through skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace).  The enemy is the mace
+# fixture (WS3 S3 T3 W3 I2 A1 Ld7); the bearer's own swing is a declared 1.  The Ogre Hunting Party copy's
+# halfling-operator confusion (TODO.md) is not touched here.
+# Semantic wrinkle (2026-11-18): the consumer offers the declaration on either player's combat phase
+# (the print names no timing); these tapes declare it on the bearer's own turn only.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A failed Leadership test (6+6 against Ld7) gives the engaged enemy -1 to hit for the round: its target
+# against Weapon Skill 3 rises from 4 to 5 and its declared 4 misses.
+- audit_id: mechanic/mechanic.crude-belch-ogre
+  id: a-failed-leadership-test-gives-the-engaged-enemy-minus-one-to-hit
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.crude-belch-ogre]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &enemy
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Those that do not pass a Ld test": 1+1 passes Leadership 7, so the enemy keeps its 4+ and its 4 hits
+# (the wound of 1 then fails).
+- audit_id: mechanic/mechanic.crude-belch-ogre
+  id: a-passed-leadership-test-leaves-the-enemy-to-hit-alone
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 1}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The ruling: the penalty expires with the round and the resource is spent for the duel, so no belch
+# decision is requested in round 1 and the same declared 4 hits again there.
+- audit_id: mechanic/mechanic.crude-belch-ogre
+  id: the-penalty-expires-with-the-round-and-the-belch-is-not-reoffered
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false}
+    1: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The printed "may unleash": declining the declaration requests no Leadership dice and the enemy keeps
+# its 4+; the resource is kept, so the strict tape shows the decision alone.
+- audit_id: mechanic/mechanic.crude-belch-ogre
+  id: a-declined-declaration-requests-no-leadership-test
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the operator no belch decision exists anywhere in the tape and the enemy keeps
+# its ordinary 4+.
+- audit_id: mechanic/mechanic.crude-belch-ogre
+  id: without-the-operator-no-belch-decision-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

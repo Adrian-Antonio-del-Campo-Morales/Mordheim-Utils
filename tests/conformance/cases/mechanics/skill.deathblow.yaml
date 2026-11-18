@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.deathblow
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the hand-built
+#   bearer taken out of action before his own blows is offered the Deathblow and makes the remainder
+#   of his attacks, declining it makes none, and a fighter without the skill is offered nothing.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the printed "even if he is knocked down or stunned" is not a
+#   separate boundary in the duel - the operator triggers on the bearer being Out of Action at his
+#   activation and relaxes only the standing requirement of the pool (pools.py ~300-306), so a merely
+#   Knocked Down bearer still makes no attack and is not offered the decision; recorded, not asserted.
+#   This file is the catalogue skill (catalog/skills/warband.yaml skill.deathblow), whose execution entry compiles the shared tag mechanic.deathblow read by the operator; the shared mechanic has its own file.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,90 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (catalog/skills/warband.yaml, Deathblow): "If the Hero is taken out of action in
+# hand-to-hand combat, he may immediately make the remainder of his attacks before being removed,
+# provided he has not made all of his attacks this turn; he may use this skill even if he is knocked
+# down or stunned."  Consumer: modular/rounds.py ~1448 (the phase's allocated pool is captured before
+# readiness can zero it) and ~1805-1811 (a bearer whose condition is OUT at his activation and who
+# carries mechanic.deathblow is asked `round.<i>.<side>.deathblow`; on acceptance his pool resolves
+# with the deathblow flag that relaxes the standing requirement, pools.py ~306 and attacks.py ~184).
+# Fixture: the opponent (first, WS3 S3 T3 W3 I5 A1 Ld7, mace) charges and strikes first; the bearer
+# (second, WS3 S3 T3 W1 I2 A2, mace, skill_ids [skill.deathblow]) is taken out by the opponent's
+# single blow (hit 4, wound 4, injury 5 = Out of Action on the chart's 5-6) before his own
+# activation.  WS3 against WS3 hits on 4+; S3 wounds T3 on 4+; the opponent's W3 keeps both deathblow
+# wounds short of an injury roll.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Taken out before his blows, the bearer accepts the Deathblow and makes both of his attacks.
+- audit_id: mechanic/skill.deathblow
+  id: a-bearer-taken-out-of-action-makes-the-remainder-of-his-attacks
+  fighters:
+    first: &db-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second: &db-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.deathblow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.deathblow, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.1.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {state.second.condition: OUT, attacks.1.damage: 1, attacks.2.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.injury.0, sides: 6, value: 5}
+    - {kind: decision, key: round.0.second.deathblow, value: true}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.1.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.1.wound, sides: 6, value: 4}
+
+# "may": declining the Deathblow makes no attack at all.
+- audit_id: mechanic/skill.deathblow
+  id: declining-the-deathblow-makes-no-attack
+  fighters:
+    first: *db-opponent
+    second: *db-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.deathblow, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The non-bearer control: a fighter without the skill taken out before his blows is offered nothing
+# (the strict decision tape holds none) and makes no attack.
+- audit_id: mechanic/skill.deathblow
+  id: without-the-skill-a-fighter-taken-out-makes-no-attack
+  fighters:
+    first: *db-opponent
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

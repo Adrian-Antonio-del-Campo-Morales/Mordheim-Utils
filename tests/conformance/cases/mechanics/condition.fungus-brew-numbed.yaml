@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.fungus-brew-numbed
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied Numbed
+#   brew gives an unarmoured bearer a compiled 6+ save that the armour die 6 passes and the 5 fails;
+#   worn light armour becomes 5+ (the point is added to the save); a Strength 5 blow that would sweep
+#   the save away is held at the printed 6+ floor; and without the brew the same Strength 5 blow
+#   leaves light armour no die at all.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +14,148 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.fungus-brew-numbed, "Numbed Fungus
+#   Brew": "Adds one point to armour save and that save cannot be reduced below 6+.")
+# Band-rule note (2026-11-18, recorded, Discrimination-style): the band rule shaman--fungus-brew
+#   (bands/mordheim/night-goblins-web/special-rules.yaml) binds this condition with `grant: none` only to
+#   name the printed brew that produces it; it is never a compile route - construction refuses it on the
+#   printed recipients, so the band-level identity probes `inert` (TODO.md, "Conditions and bull-charge
+#   unreachable by scenarios").  The condition is reached through the supplied condition_ids entry these
+#   scenarios declare, which the rule-removal probe deletes from every id list, so the with/without pairs
+#   below discriminate for this mechanic identity.  No compiler gate exists for the brew results (the
+#   compiler only lists them among the drug ids that Drug Immunity strips, compiler.py:859-866), so the
+#   hand-built bearers below carry the condition directly.
+# AUTHORED: the 5 scenarios below cover the added point (two boundaries and the worn-armour case), the
+#   floor and the control; REVIEWED still requires manual semantic review.  Consumer: the execution entry
+#   carries `armour_save_bonus: 1` and `armour_save_floor: 6` (execution.yaml:3838-3846); the compiler
+#   folds the bonus into the compiled armour save (compiler.py:1428) and the armour target reads the floor
+#   (modular/contexts.py:835 -> phases.armour_target, phases.py:636-640: a floor of 6 or better caps the
+#   target at the floor unless armour is ignored outright).
+# Semantic wrinkle (2026-11-18, recorded): the floor is read as a cap on the target the Strength modifier
+#   produces, so a save that no longer exists without the brew (7+, no die) becomes a 6+ die with it; a
+#   blow that ignores armour outright is not held by the floor (phases.py:636-638) and is not evidenced
+#   here.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built attacker (WS3 S3 T3 W2 I5 A1 Ld7, mace; Strength 5 in the floor scenarios) and a
+# hand-built bearer (WS3 S3 T3 W2 I2 A1 Ld7, mace).  WS3 against WS3 hits on 4+; S3 wounds T3 on 4+ and
+# S5 on 2+; the armour die saves on the compiled target (7 - 1 = 6 unarmoured, 7 - 1 - 1 = 5 in light
+# armour); Strength 5 adds -2 to the save, which without the floor is no save at all (8+).  The bearer's
+# own swing is a natural 1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The added point on an unarmoured bearer: the compiled 6+ save exists and the armour die 6 turns the
+# wound.
+- audit_id: mechanic/condition.fungus-brew-numbed
+  id: the-supplied-brew-gives-the-unarmoured-bearer-a-six-plus-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &fb-numb-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-numbed]
+      characteristics: &fb-numb-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {second.armour_save: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/condition.fungus-brew-numbed
+  id: a-five-on-the-six-plus-save-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-numb-attacker
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-numbed]
+      characteristics: *fb-numb-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The point is added to a worn save: light armour's 6+ becomes 5+ and the armour die 5 saves.
+- audit_id: mechanic/condition.fungus-brew-numbed
+  id: the-point-is-added-to-worn-light-armour
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-numb-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      condition_ids: [condition.fungus-brew-numbed]
+      characteristics: *fb-numb-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {second.armour_save: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The floor: a Strength 5 blow (-2 to the save) would leave light armour no save at all, but the brew's
+# save "cannot be reduced below 6+", so the armour die is still asked and the 6 saves.
+- audit_id: mechanic/condition.fungus-brew-numbed
+  id: a-strength-five-blow-is-held-at-the-six-plus-floor
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &fb-numb-strong-attacker {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      condition_ids: [condition.fungus-brew-numbed]
+      characteristics: *fb-numb-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the brew the same Strength 5 blow sweeps light armour's 6+ away (8+, no armour
+# die is requested) and the wound is taken; the compiled save is the armour's own 6.
+- audit_id: mechanic/condition.fungus-brew-numbed
+  id: without-the-brew-the-same-blow-leaves-light-armour-no-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-numb-strong-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: *fb-numb-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters: {second.armour_save: 6}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

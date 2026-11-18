@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (operators-band-rules batch, 2026-11-18): the printed Foole
+#   replaces his sword attack with the automatic Strength 2 Giggle Juice hit that wounds on the 5, the
+#   hit's Injury roll is at +1, the ring is spent once per battle, the Bard control is offered no spray,
+#   and the Bard selecting this profile rule is refused.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the Foole's other printed duel rules are inert in these tapes - his
+#   Unhinged (psychology immunity) meets no psychology, his starting Lightning Reflexes acts only when
+#   he is charged (he is the charger here), and his kit sword's parry is never offered because the
+#   opponent's blow is a natural 1 in every tape.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,118 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Poison Ring): "Once per battle may replace one normal close-combat
+# attack with an automatic Strength 2 Giggle Juice hit that adds +1 Injury.  The additional Nervous
+# Condition after battle is excluded."  The rule is grant: profile binding mechanic.giggle-juice-spray
+# (consumer modular/pools.py ~435-443: decision `<pool>.giggle-juice-attack.<index>` while the once-
+# per-battle resource is unspent; the accepted attack becomes an automatic hit at fixed Strength 2
+# with injury_modifier 1).  Recipient: hirelings.dramatis-personae.2a / hireling.dramatis.the-foole
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays) and the omitted main weapon
+# defaulting to his kit sword.  Opponent: hand-built (WS3 S3 T3 I2 A1 Ld7, mace, no armour; W3 keeps a
+# wound short of the injury roll, W1 reaches it).  Strength 2 wounds T3 on 5+; the chart's 2 (Knocked
+# Down) becomes 3 (Stunned).  Control: the grade-1b Bard (dagger), who has no such rule.  Refusal: the
+# Bard selecting the Foole's profile rule, refused by the compiler with the other-package fragment.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Foole's spray: no hit die, Strength 2 wounds on the 5.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
+  id: the-foole-replaces-his-attack-with-the-automatic-strength-2-giggle-juice-hit
+  fighters:
+    first: &foole
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.the-foole
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.giggle-juice-attack.0, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.giggle-juice-attack.0, value: true}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 5}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The +1 Injury on the printed recipient: a declared 2 becomes 3, Stunned.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
+  id: the-fooles-giggle-juice-injury-roll-is-at-plus-one
+  fighters:
+    first: *foole
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.giggle-juice-attack.0, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Once per battle": spent in round 0 (its wound die is a natural 1); in round 1 no spray is offered
+# and the Foole's sword rolls its hit die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
+  id: the-poison-ring-is-spent-once-per-battle
+  fighters:
+    first: *foole
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.giggle-juice-attack.0, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false}
+    1: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The hireling control: the Bard is offered no spray (the strict decision tape holds none) and his
+# dagger rolls its hit die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
+  id: the-bard-is-offered-no-spray
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A hireling of another package selecting the Foole's profile rule is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-foole.rule.poison-ring/mechanic.giggle-juice-spray
+  id: the-bard-selecting-the-fooles-rule-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [hireling.dramatis.the-foole.rule.poison-ring]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

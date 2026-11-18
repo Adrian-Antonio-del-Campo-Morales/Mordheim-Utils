@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.executioners-hood
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +9,115 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 4 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "Always frenzied
+#   even if knocked down or stunned; +1 Strength in close combat. Combat escape and multi-target
+#   movement are excluded" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.executioners-hood; the printed artefact is Magical Artefacts / Executioner's Hood,
+#   rulebook p.145, campaign.magical-artefact.executioners-hood) on hand-built fighters with the
+#   supplied condition_ids entry (the row has no compiler recipient gate; the execution entry carries
+#   the persistent-frenzy tag, frenzy and strength_bonus 1).  Scenarios: the worn hood doubles the
+#   bearer's single Attack (frenzy) and its +1 Strength lets S4 wound T3 on a 3; the control without the
+#   hood swings once and the same 3 fails at S3; the hooded bearer knocked down by an injury roll of 1
+#   stays frenzied ("even if knocked down"); an ordinarily frenzied fighter (trait_overrides frenzy)
+#   knocked down by the same blow loses its frenzy.  Removing the supplied id (the mechanic probe)
+#   changes the attack count, the wound and the kept frenzy.  REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkles (recorded, not asserted): the printed "never leaves combat and always attacks
+#   opponents in base contact until they are taken out of action" is the excluded escape and
+#   multi-target clause; the Frenzy duty to charge is not enforced by the duel for any frenzied fighter.
+#   The hood is a worn artefact supplied as a condition, not a kit item, so no equipment slot is used.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+, S4 on 3+; injury 1 is Knocked Down (a mace's
+# Concussion stuns on 2-4 only).  Hits of a side are rolled before its wounds.  The bearer carries a
+# mace so the unarmed single-swing cap does not apply.
+
+# The hood: the bearer swings twice (frenzy) and its +1 Strength wounds T3 on a 3; the second swing is a
+# natural 1.
+- audit_id: mechanic/condition.executioners-hood
+  id: the-worn-hood-doubles-the-attacks-and-adds-one-strength-in-close-combat
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.executioners-hood]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &hood-target
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_initial: {first.frenzy: true}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.0.hit: true, attacks.0.wounded: true, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the hood the same fighter swings once and the same 3 fails at S3 against T3.
+- audit_id: mechanic/condition.executioners-hood
+  id: without-the-hood-the-same-fighter-swings-once-and-the-same-3-fails-to-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *hood-target
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_initial: {first.frenzy: false}
+  expect_rounds:
+    0: {state.first.frenzy: false, attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Always frenzied even if knocked down": the hooded bearer (one Wound, silenced) is wounded and the
+# injury roll of 1 knocks it down; it stays frenzied.
+- audit_id: mechanic/condition.executioners-hood
+  id: the-hooded-bearer-knocked-down-stays-frenzied
+  fighters:
+    first:
+      &hood-striker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.executioners-hood]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN, state.second.frenzy: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: an ordinarily frenzied fighter without the hood loses its frenzy when the same blow
+# knocks it down.
+- audit_id: mechanic/condition.executioners-hood
+  id: an-ordinarily-frenzied-fighter-knocked-down-loses-its-frenzy
+  fighters:
+    first: *hood-striker
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {frenzy: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_initial: {second.frenzy: true}
+  expect_rounds:
+    0: {attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN, state.second.frenzy: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

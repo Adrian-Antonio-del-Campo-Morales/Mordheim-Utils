@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--packmasters-and-goading/condition.goading-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +8,72 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-18, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule band--packmasters-and-goading binds
+#   condition.goading-charge with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   row has no compiler recipient gate (compile_fighter's supplied-condition checks name no Moulder
+#   beast for this id), so the band rule is not observable even at construction; that is a compiler
+#   choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 2 scenarios (supplied-conditions batch, 2026-11-18) read the printed Goading result "they
+#   must attempt to Charge it" as the supplied fact that a Moulder beast's charge results from Goading,
+#   whose one duel reader is the printed Hypnotic Musk exception ("unless the charge results from
+#   Goading"): the band's own Giant Rats (printed profile, combat_traits normal_animal, fixture
+#   characteristics, printed Leadership 4, weaponless so they fight with fists) charge a hand-built Musk
+#   bearer without the round.0.<charger>.hypnotic-musk-charge Leadership die, and the same Giant Rats
+#   without the supplied fact owe the die and 4+3 = 7 fails their Leadership 4, cancelling the charge
+#   (termination_reason disengaged).  The Goading attempt, its difficulty table and the Results Chart
+#   are the deferred producer (unimplemented.skaven-of-clan-moulder-web.band.packmasters-and-goading,
+#   deferred.psychology).  REVIEWED still requires manual semantic review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Both builds compile to fists (the Giant Rats never use weapons); every strike is a natural 1 so no
+# wound die exists.  Leadership 2D6: a total at or under Leadership passes.
+
+# The goaded Giant Rats charge the Musk bearer without a Leadership die and the combat resolves.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--packmasters-and-goading/condition.goading-charge
+  id: the-goaded-moulder-beast-charges-the-musk-bearer-without-a-leadership-die
+  fighters:
+    first:
+      &goading-band-musk-bearer
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: giant-rats
+      condition_ids: [condition.goading-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.second_charged: true, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Giant Rats without the supplied Goading fact owe the Musk gate; 4+3 = 7 fails
+# their printed Leadership 4 and the charge is cancelled, so the round holds no combat dice.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--packmasters-and-goading/condition.goading-charge
+  id: without-the-goading-the-same-beast-owes-the-musk-test-and-its-charge-is-cancelled
+  fighters:
+    first: *goading-band-musk-bearer
+    second:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: giant-rats
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false, state.second_charged: false, state.failed_charges: ['second']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

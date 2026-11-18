@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.fungus-brew-belligerent
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied
+#   Belligerent brew re-rolls the bearer's first-round miss against the opposing duelist, the same miss
+#   stands without it, and a second-round miss is not re-rolled (Hatred's printed first-round limit).
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +12,93 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.fungus-brew-belligerent, "Belligerent
+#   Fungus Brew": "Hatred against the opposing warband.")
+# Band-rule note (2026-11-18, recorded, Discrimination-style): the band rule shaman--fungus-brew
+#   (bands/mordheim/night-goblins-web/special-rules.yaml) binds this condition with `grant: none` only to
+#   name the printed brew that produces it; it is never a compile route - construction refuses it on the
+#   printed recipients, so the band-level identity probes `inert` (TODO.md, "Conditions and bull-charge
+#   unreachable by scenarios").  The condition is reached through the supplied condition_ids entry these
+#   scenarios declare, which the rule-removal probe deletes from every id list, so the with/without pairs
+#   below discriminate for this mechanic identity.  No compiler gate exists for the brew results (the
+#   compiler only lists them among the drug ids that Drug Immunity strips, compiler.py:859-866), so the
+#   hand-built bearers below carry the condition directly.
+# AUTHORED: the 3 scenarios below cover the re-roll, the control and the first-round boundary; REVIEWED
+#   still requires manual semantic review.  Consumer: the execution entry compiles the condition to the
+#   shared Hatred tag (execution.yaml: tags [skill.hatred]), read by modular/contexts.py:262-263 as the
+#   first-round To Hit re-roll (`<attack>.hit.reroll`, automatic, no decision), exactly as
+#   mechanics/skill.hatred.yaml evidences it.
+# Semantic wrinkle (2026-11-18, recorded): "the opposing warband" is the single opponent of the duel, so
+#   no identity declaration is needed; the printed object of the hatred is not otherwise read.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built bearer (WS3 S3 T3 W2 I5 A1 Ld7, mace) charging a hand-built opponent (WS3 S3 T3
+# W3 I2 A1 Ld7, mace).  WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+, no armour die exists.
+# The bearer strikes first (I5 over I2), so attacks.0 is its blow in every round.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The re-roll: the first-round miss of two is taken again, the four hits and the four wounds.
+- audit_id: mechanic/condition.fungus-brew-belligerent
+  id: the-supplied-brew-rerolls-a-first-round-miss-against-the-opposing-duelist
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-belligerent]
+      characteristics: &fb-bel-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &fb-bel-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the brew the same two stands as a miss.
+- audit_id: mechanic/condition.fungus-brew-belligerent
+  id: without-the-brew-the-same-miss-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-bel-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-bel-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed Hatred boundary: only the first round of a combat is re-rolled, so the bearer's second-
+# round two stands (no re-roll die is requested).
+- audit_id: mechanic/condition.fungus-brew-belligerent
+  id: a-second-round-miss-is-not-rerolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-belligerent]
+      characteristics: *fb-bel-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-bel-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.wounds: 2}
+    1: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

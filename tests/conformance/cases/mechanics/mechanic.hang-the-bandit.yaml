@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.hang-the-bandit
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the shared operator
+#   on a hand-built fighter rerolls a first-round miss against a fighter of a declared bandit/outlaw
+#   warband (a Hochland Bandits Footpad), the same miss stands against a hand-built fighter of no such
+#   warband, and a Psychology-immune bearer is offered no reroll against the bandit.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,81 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carriers: Horned Hunters, Hang the Bandit! (bands/mordheim/horned-hunters/special-rules.yaml
+# horned-hunter--hang-the-bandit and initiates--hang-the-bandit, grant profile): "A Horned Hunter hates
+# all Bandits and Outlaws."  Consumer: modular/contexts.py ~262-265 - `hatred = first_round and
+# psychology_allowed and (... has_tag(effect, "mechanic.hang-the-bandit") and "warband-group.bandit"
+# in enemy_tags ...)`, the shared Hatred first-round hit reroll; the enemy class is the registry's
+# warband-group.bandit (sources/knowledge/registry/warband-groups.yaml: hochland-bandits,
+# outlaws-of-stirwood-forest and its redux), projected onto a compiled member of those bands.  Model:
+# the AUTHORED Horned Hunters grant file (...8d14fc49aabd); here the operator is injected through
+# skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace).  The qualifying opponent is the
+# printed Hochland Bandits Footpad with fixture characteristics (WS3 S3 T3 W3 I2 A1 Ld7) and an axe from
+# the Bandit list (no parry); its Concealment is out of runtime scope.  Its swing is a declared 1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The printed Hatred: a first-round miss (2) against the Footpad is rerolled (4 hits) and wounds.
+- audit_id: mechanic/mechanic.hang-the-bandit
+  id: a-first-round-miss-is-rerolled-against-a-bandit-warband-fighter
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hang-the-bandit]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &bandit
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: footpads
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the printed enemy class no reroll is offered: the same miss stands against a hand-built
+# fighter of no warband (the strict tape holds no reroll die).
+- audit_id: mechanic/mechanic.hang-the-bandit
+  id: the-same-miss-stands-against-a-fighter-outside-the-bandit-class
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred is Psychology: a Psychology-immune bearer gets no reroll against the same Footpad.
+- audit_id: mechanic/mechanic.hang-the-bandit
+  id: a-psychology-immune-bearer-is-offered-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hang-the-bandit, mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *bandit
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

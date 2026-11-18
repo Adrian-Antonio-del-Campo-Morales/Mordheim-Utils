@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.stupidity-exempt
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied
+#   exemption skips the stupid bearer's start-of-turn test entirely (no die), the same stupid bearer
+#   without it tests and fails, the trait route (`stupidity_exempt: true`) compiles the same exemption,
+#   and a supplied initial failure is suppressed by the exemption and stands without it.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +13,125 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.stupidity-exempt, "Nearby Exempting
+#   Hero": "The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
+#   exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel neither
+#   simulates the surrounding warband nor measures table positions.")
+# AUTHORED: the 5 scenarios below cover the skipped test, the control, the trait route and the initial
+#   failure pair; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the row names the Rat Ogre and its Skaven Hero, but the
+#   consumer is generic - any bearer of mechanic.stupidity carrying the tag passes without a die
+#   (modular/psychology.py:63) and a supplied initial failure (condition.stupidity-failed) is suppressed
+#   by it (modular/state.py:342-345); the compiler maps the trait `stupidity_exempt: true` onto the same
+#   tag (compiler.py:922).  The derivation of the exemption from a supplied nearby Hero record is the
+#   printed-band branch of psychology.py (Clan Mors, Moulder, Pristekk) and belongs to those bands' rule
+#   files (e.g. grants/mordheim--skaven-of-clan-moulder-web--rat-ogres--stupidity--...).  No compiler gate
+#   exists for the condition.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built stupid bearer (`trait_overrides: {stupidity: true}`; WS3 S3 T3 W2 I5 A1 Ld7, mace)
+# charging a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace, no fear).  The Stupidity test is 2d6 <=
+# Leadership at the start of the bearer's own turn: 6+6 fails any Leadership.  A failed test on the
+# charge round cancels the charge and the engagement (the Clan Moulder Rat Ogre precedent ends
+# `disengaged`); WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+, no armour die exists.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The exemption: the strict tape holds no stupidity die at all and the bearer's charge lands.
+- audit_id: mechanic/condition.stupidity-exempt
+  id: the-supplied-exemption-skips-the-stupidity-test-entirely
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true}
+      condition_ids: [condition.stupidity-exempt]
+      characteristics: &se-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &se-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same stupid bearer without the exemption takes the test, the two sixes fail it, the
+# charge is cancelled and no attack is resolved.
+- audit_id: mechanic/condition.stupidity-exempt
+  id: without-the-exemption-the-same-stupid-bearer-tests-and-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true}
+      characteristics: *se-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *se-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The trait route: `stupidity_exempt: true` compiles the same tag, so again no die is requested.
+- audit_id: mechanic/condition.stupidity-exempt
+  id: the-trait-route-compiles-the-same-exemption
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true, stupidity_exempt: true}
+      characteristics: *se-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *se-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A supplied initial failure (`stupidity_initial_failed`) is suppressed by the exemption at
+# initialization: the exempt bearer starts unaffected.  The opponent starts out of action so only the
+# initial state is read.
+- audit_id: mechanic/condition.stupidity-exempt
+  id: a-supplied-initial-failure-is-suppressed-by-the-exemption
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true, stupidity_initial_failed: true}
+      condition_ids: [condition.stupidity-exempt]
+      characteristics: *se-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *se-opponent
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.stupidity_failed: false}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# The pair's control: without the exemption the same supplied initial failure stands.
+- audit_id: mechanic/condition.stupidity-exempt
+  id: without-the-exemption-the-supplied-initial-failure-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true, stupidity_initial_failed: true}
+      characteristics: *se-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *se-opponent
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.stupidity_failed: true}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

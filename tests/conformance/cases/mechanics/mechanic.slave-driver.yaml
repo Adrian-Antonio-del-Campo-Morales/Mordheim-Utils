@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.slave-driver
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18) on the real Slavers
+#   Overseer supplied as a nearby provider: a slave borrower three inches away adopts his Leadership 7
+#   and passes 3+3, the same Overseer four inches away offers nothing, a scourge-armed Overseer lends at
+#   five inches, and a borrower that is not a slave is offered nothing at three inches.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,143 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed carriers: Slavers, Overseer, Slave Driver (bands/mordheim/slavers-rel/special-rules.yaml
+# overseer--slave-driver, grant profile; the Skaven of Clan Skryre Overseer binds the same id): "Any slave
+# within 3 inches may use his leadership.  If he is armed with a scourge, this increases to 6 inches."
+# Consumer: modular/leadership.py ~27-32 (`_supplied_provider`: a provider carrying mechanic.slave-driver
+# lends his own Leadership within 3 inches, 6 while he carries condition.scourge-armed or a
+# weapon.pirate-scourge) and ~239-241 (only a borrower tagged identity.slave may use him).  The provider is
+# the printed Overseer (Ld7) supplied as a nearby local participant of the borrower's side, as the
+# AUTHORED Slavers grant file (...b65229a8a1f7) does (this provider contract reads no band gate); the
+# borrower is the hand-built fixture (WS3 S3 T3 W2 I2 A1 Ld3, mace) declaring the printed recipient fact
+# trait_overrides: {slave: true}.  The Leadership test is the charged-fear test against a hand-built
+# fear-causer (WS3 S3 T3 W3 I10 A1 Ld7, mace); 3+3 passes only through the borrowed 7.  The borrow is
+# the decision round.0.second.fear.charged.leader.overseer.  Every strike is a declared 1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Within the printed three inches the slave borrows the Overseer's Leadership 7 and passes 3+3.
+- audit_id: mechanic/mechanic.slave-driver
+  id: a-supplied-overseer-at-three-inches-lends-his-leadership-to-a-slave
+  fighters:
+    first:
+      &fear_causer
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      &slave
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: slavers-rel, profile_id: overseer}
+    distances: [[second, overseer, 3]]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.overseer, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Beyond the printed three inches (four) the Overseer offers nothing: no borrow decision is requested
+# and 3+3 fails the slave's own Leadership 3.
+- audit_id: mechanic/mechanic.slave-driver
+  id: an-overseer-beyond-three-inches-supplies-nothing
+  fighters:
+    first:
+      <<: *fear_causer
+    second:
+      <<: *slave
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: slavers-rel, profile_id: overseer}
+    distances: [[second, overseer, 4]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed scourge widening: the Overseer supplied scourge-armed (trait scourge_armed, projected as
+# condition.scourge-armed) lends at five inches, inside six and outside three.
+- audit_id: mechanic/mechanic.slave-driver
+  id: a-scourge-armed-overseer-lends-his-leadership-at-five-inches
+  fighters:
+    first:
+      <<: *fear_causer
+    second:
+      <<: *slave
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: slavers-rel
+          profile_id: overseer
+          trait_overrides: {scourge_armed: true}
+    distances: [[second, overseer, 5]]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.overseer, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Any slave": a borrower that is not a slave is offered nothing at the same three inches and fails on
+# its own Leadership 3.
+- audit_id: mechanic/mechanic.slave-driver
+  id: a-borrower-that-is-not-a-slave-is-offered-nothing
+  fighters:
+    first:
+      <<: *fear_causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: slavers-rel, profile_id: overseer}
+    distances: [[second, overseer, 3]]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

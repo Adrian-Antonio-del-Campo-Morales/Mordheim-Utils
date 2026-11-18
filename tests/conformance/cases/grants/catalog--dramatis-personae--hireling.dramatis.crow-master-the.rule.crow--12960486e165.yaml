@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.crow-master-the.rule.crow-master/needle-and-thread
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, supplied-conditions batch 2026-11-18): the
+#   printed Crow Master's stunning blow sews the opponent's mouth (the lasting `mouth_sewn` state); a
+#   knock-down from the same blow sews nothing; the Bard control's identical stun sews nothing; the refusal.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +13,111 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed rule bundles four clauses under one id; this binding
+#   is Needle and Thread only.  The Mantle is the sibling binding (file ...crow--e1e77ec83067), Payment in
+#   Blood and Decay of Ages are excluded (campaign, magic).  The printed "no other enemies standing in
+#   base-to-base contact" is trivially met by the one-against-one duel.  The sewn mouth's consequences are
+#   read elsewhere: the leader half through the supplied condition.mouth-sewn on a nearby provider
+#   (mechanics/condition.mouth-sewn.yaml), the spell half is out-of-scope.magic; here the lasting
+#   FighterState field `mouth_sewn` set by the consumer (modular/attacks.py:876-879) is the observation.
+#   The Crow Master's own Mantle hit is part of his profile, so its Strength 2 wound die is declared (a 1,
+#   no wound) before his blow; the shared mechanic file (mechanics/mechanic.needle-and-thread.yaml) carries
+#   the stun/knock-down boundary on a hand-built bearer.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Crow Master compiled
+# through the hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.crow-master-the), his
+# printed rule granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays); the omitted main weapon is the kit's staff.  The opponent is hand-built (WS3 S3 T3 W1 I2 A1 Ld7,
+# mace, no armour, no helmet).  Printed text: "if Simius stuns an opponent in Hand-to-Hand combat and has
+# no other enemies standing in base-to-base contact, he sews up the mouth of his enemy."  WS3 against WS3
+# hits on 4+, S3 against T3 wounds on 4+, no armour die exists, and the single wound empties W1 so the
+# injury die is rolled: a 3 is Stunned on the printed chart (with or without a concussive weapon), a 1 is
+# Knocked Down on both.  The Crow Master strikes first (I5 over I2); a stunned or knocked-down opponent
+# makes no attack of its own.  The control is the grade-1b Bard, whose kit dagger hands the unarmoured
+# opponent the printed +1 armour save, so his blow carries a failing armour die (a 1 against the 6+).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Crow Master charges, stuns the opponent and sews its mouth.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.crow-master-the.rule.crow-master/needle-and-thread
+  id: the-crow-masters-stunning-blow-sews-the-opponents-mouth
+  fighters:
+    first:
+      &cm-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.crow-master-the
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &cm-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mantle-of-crows.wound, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.mouth_sewn: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The print says "stuns": a knock-down from the same blow sews nothing.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.crow-master-the.rule.crow-master/needle-and-thread
+  id: a-knock-down-leaves-the-mouth-unsewn
+  fighters:
+    first:
+      <<: *cm-recipient
+    second:
+      <<: *cm-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mantle-of-crows.wound, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, state.second.mouth_sewn: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) stunning the same opponent: the mouth stays unsewn; no crows die exists and the
+# dagger's +1 save gives the opponent a failing armour die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.crow-master-the.rule.crow-master/needle-and-thread
+  id: a-hireling-without-the-rule-stuns-without-sewing
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *cm-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.mouth_sewn: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.crow-master-the.rule.crow-master/needle-and-thread
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.crow-master-the.rule.crow-master]
+    second:
+      <<: *cm-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/condition.troll-brew-special-brew
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (supplied-condition batch, 2026-11-18): the nominated
+#   printed Apprentice compiles with Weapon Skill and Strength one higher under the Special Brew and
+#   at its supplied values without it, the printed ceiling of 10 holds, and a Hero of another band is
+#   refused the brew ("Only Dwarfs may drink").  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +13,107 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-18, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule band--brewers binds
+#   condition.troll-brew-special-brew with `grant: none` only to name the printed rule that produces
+#   the condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+# Rule text (band--brewers, Karak Azgal p25): "5-6: Special Brew.  A yeasty brew with plenty of body
+#   to invigorate and strengthen.  The warrior's Weapon Skill and Strength are both increased by +1 for
+#   the duration of the battle.  This may temporarily take the statistics above the normal racial
+#   maximum but never greater than 10.  Only Dwarfs may drink the brew ..."; "The leader will allow D3
+#   of his heroes to drink before a battle."
+# AUTHORED: the brew roll, the D3 nomination and the barrel are outside the duel (the rule's own
+#   unimplemented.* effect records them as out-of-scope.campaign); the 5-6 result is the supplied
+#   current fact declared through condition_ids on the nominated printed Hero.  The condition row binds
+#   profile.characteristics (weapon_skill +1, strength +1, maximum 10 each), applied to the compiled
+#   statline by roster-construction compiler.py (supplied_stat_bonuses, supplied_maxima), so the pair
+#   and the ceiling are asserted through expect_fighters.  The recipient gate is the compiler's own:
+#   "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero".
+#   The sibling mechanic file mechanics/condition.troll-brew-special-brew.yaml carries the duel wound
+#   boundary and the henchman / double-result refusals.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+# The nominated Apprentice under the Special Brew compiles at Weapon Skill 4 and Strength 4, one
+# above the supplied 3 and 3.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/condition.troll-brew-special-brew
+  id: the-dwarf-nominated-for-the-special-brew-compiles-one-weapon-skill-and-strength-higher
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 4
+    first.characteristics.strength: 4
+    first.characteristics.toughness: 3
+
+# The control: the same Apprentice without the brew row compiles at the supplied 3 and 3.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/condition.troll-brew-special-brew
+  id: without-the-brew-row-the-nominated-dwarf-keeps-its-supplied-characteristics
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+
+# "Never greater than 10": the brew on a drinker already at Weapon Skill 10 and Strength 10 leaves
+# both at 10 (the racial maximum is exceeded by design; only the printed 10 binds).
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/condition.troll-brew-special-brew
+  id: the-special-brew-never-takes-a-characteristic-above-ten
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-special-brew]
+      characteristics: {weapon_skill: 10, strength: 10, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 10
+    first.characteristics.strength: 10
+
+# "Only Dwarfs may drink the brew": a Hero of another band is refused by the compiler's own sentence.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--brewers/condition.troll-brew-special-brew
+  id: a-hero-of-another-band-is-refused-the-brew
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ghutani-rel
+      profile_id: emir
+      condition_ids: [condition.troll-brew-special-brew]
+  expect_error: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero"

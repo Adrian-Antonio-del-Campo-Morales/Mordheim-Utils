@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.troll-brew-frenzy
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-condition batch, 2026-11-18): the Troll Brew
+#   doubles the nominated Guildsmen Hero's single Attack and sets the frenzy state, the same Hero
+#   without it strikes once, the frenzied drinker takes no Fear test when charged by a fear-causer
+#   (frenzy's rulebook psychology immunity), and the brew is refused on a henchman recipient and on a
+#   Hero of another band.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,119 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.troll-brew-frenzy, "Troll
+#   Brew"): "A 3-4 brew result subjects the nominated Dwarf to frenzy for the duration of the battle."
+#   Source: Karak Azgal (broheim.net) p25, Special Rules / Brewers: "3-4: Troll Brew ... For the
+#   duration of the battle, the warrior is subject to frenzy as described in the Mordheim rulebook."
+# AUTHORED: the pre-battle brew roll and the nomination are outside the duel; the result is the
+#   supplied current fact declared through condition_ids.  The row binds trait.frenzy (value true),
+#   which the supplied-condition resolver (conditions.py) hands to the compiler as the frenzy trait;
+#   modular/state.py initializes the frenzy state from it, the attack pool doubles the supplied Attacks
+#   (the frenzied recipient doubles a supplied `attacks: 1`, declared in initial_state as the authored
+#   frenzy files do) and resolve_local_leadership passes a Psychology test for a frenzied bearer
+#   without dice.  The compiler gate (roster-construction compiler.py) admits any condition.troll-brew-*
+#   only on a mordheim dwarf-guildsmen-kaz Hero whose species is dwarf or unstated: "only a Dwarf of
+#   the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero".  The recipient
+#   is the printed Apprentice (a Hero) with the corpus fixture characteristics and its default kit
+#   blade.  The rulebook's compulsory charge and the loss of frenzy when knocked down are the shared
+#   frenzy contract (trait.frenzy's own files), not re-authored here.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+# The brew: the nominated Apprentice fights frenzied, so its single Attack is doubled - two swings
+# are requested after the charger's one and a third attack record exists.
+- audit_id: mechanic/condition.troll-brew-frenzy
+  id: the-troll-brew-doubles-the-nominated-dwarfs-single-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-frenzy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.1.hit: false, attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Apprentice without the brew is not frenzied and strikes once, so the tape
+# holds one swing of its own and the third attack record does not exist.
+- audit_id: mechanic/condition.troll-brew-frenzy
+  id: without-the-troll-brew-the-same-dwarf-strikes-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "As described in the Mordheim rulebook": a frenzied warrior is immune to Psychology, so the
+# drinker charged by a fear-causer owes no Fear die (the fear.charged test of the control route).
+- audit_id: mechanic/condition.troll-brew-frenzy
+  id: the-frenzied-drinker-takes-no-fear-test-when-charged-by-a-fear-causer
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-frenzy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.frenzy: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "The leader will allow D3 of his heroes to drink": a henchman of the same band is refused the brew
+# by the compiler's own sentence.
+- audit_id: mechanic/condition.troll-brew-frenzy
+  id: a-henchman-of-the-guildsmen-is-refused-the-brew
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: labourers
+      condition_ids: [condition.troll-brew-frenzy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero"
+
+# "Only Dwarfs may drink the brew": a Hero of another band is refused by the same gate.
+- audit_id: mechanic/condition.troll-brew-frenzy
+  id: a-hero-of-another-band-is-refused-the-brew
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ghutani-rel
+      profile_id: emir
+      condition_ids: [condition.troll-brew-frenzy]
+  expect_error: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero"
