@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.excellent-reflexes
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): a
+#   hand-built bearer of the mechanic compiles with global_effects.ward_save 5 and, after an unsaved
+#   wound, its special save die of five turns the wound while a four lets it through; a fixture
+#   without the mechanic is offered no special save die; the save is also offered against a Strength
+#   5 hit that denies every armour save (it is a special save, not an armour save).  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the shared mechanic is injected through skill_ids on a hand-built
+#   bearer, so the removal probe reports this file inert by design (the printed grant is evidenced
+#   in the Tomb Robber's own file ...7f01babd948e).  The print covers "any attack, including close
+#   combat, traps and spells"; traps and spells have no producer in a duel, so only close combat is
+#   evidenced.  The Dodge improvement to 4+ is the separate supplied fact
+#   condition.tomb-robber-dodge-known (its own mechanics file).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,104 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Town Cryer 19 p.21, Tomb Robber / Excellent Reflexes, as recorded in grade-1b.yaml):
+# "The Tomb Robber has a special 5+ save against any attack, including close combat, traps and
+# spells.  If he learns Dodge this improves to 4+."  The execution entry (execution.yaml
+# mechanic.excellent-reflexes) is an effect-set with ward_save 5 and the tag
+# mechanic.excellent-reflexes.  Compiler: the mechanic's ward_save merges into global_effects
+# (projected as global_effects.ward_save).  Engine: after a failed or absent armour save
+# modular/attacks.py ~733-747 prepares the special save; contexts.py _supplied_ward (~618-627) reads
+# the tag and keeps the ward at 5 (4 with the dodge condition); phases.py resolve_special_save
+# (~669-673) asks round.<i>.<attacker>.attack.<n>.special.ward while the ward is 6 or better and a
+# roll at or above it turns the wound.
+# Family model (the mechanics-file convention of mechanic.veskit-no-pain.yaml): the bearer is a
+# hand-built fixture (mace, WS3 S3 T3 W2 I5 A1) with the mechanic injected through skill_ids,
+# silenced (initial_state) and wearing no armour, so no armour die is asked and the special save is
+# the next request after the wound.  The attacker is a hand-built fixture (mace, WS3 S3 T3 W3 I2 A1)
+# at Strength 3 (4+ to hit, 4+ to wound; wound dice are fours, never a six) and at Strength 5 where
+# the armour denial is at stake (-2 to any armour save; wounds on 2+).  The duel is uncharged.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The compiled bearer carries the 5+ ward and the five turns the unsaved wound.
+- audit_id: mechanic/mechanic.excellent-reflexes
+  id: the-five-plus-special-save-turns-the-wound-on-five
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.excellent-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+  expect_fighters:
+    second.global_effects.ward_save: 5
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the 5+ fails and the wound lands.
+- audit_id: mechanic/mechanic.excellent-reflexes
+  id: one-face-below-the-five-plus-lets-the-wound-through
+  fighters:
+    first: *attacker
+    second: *bearer
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A special save, not an armour save: a Strength 5 hit (which would deny any 6+ armour) is still met
+# by the ward die, which holds on five.
+- audit_id: mechanic/mechanic.excellent-reflexes
+  id: the-special-save-is-still-offered-against-a-strength-five-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second: *bearer
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the mechanic no special save die is asked and the same wound lands.
+- audit_id: mechanic/mechanic.excellent-reflexes
+  id: without-the-mechanic-no-special-save-die-is-asked
+  fighters:
+    first: *attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_fighters:
+    second.global_effects.ward_save: 7
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

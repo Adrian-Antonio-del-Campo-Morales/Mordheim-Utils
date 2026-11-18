@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-stacks
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the
+#   Spiteborn carrying a shield compiles with natural_armour_stacks True and a combined 5+ (the five
+#   holds, the four is a wound), the hide alone stays a 6+ (the same five is a wound), and a fixture
+#   with a non-stacking natural 6+ and the same shield keeps the better of the two layers (6+) so its
+#   five is a wound.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the stacked step is carried inside the compiled armour_save (the
+#   hide takes one step off the worn save, compiler.py ~1442-1443) while natural_armour_save keeps
+#   the hide's own 6; phases.py armour_target then takes the better of the two.  The worn layer is an
+#   ordinary save, so an enemy Strength above 3 erodes the stacked step first (at Strength 4 shield
+#   and hide read 6+, the hide's own cap) - the print's "stacked with regular armour" and "cannot be
+#   modified beyond 6 by Strength" are satisfied, but the combined save is never better than the
+#   hide alone once Strength modifies.  Only Strength 3 is used here, where both readings agree.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,125 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/fen-guard-mim/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (fen-guard-mim/special-rules.yaml, Bark Skin): "Fen Guard have a 6+ armour save which
+# can be stacked with regular armour; it cannot be modified beyond 6 by Strength (except by weapons
+# with the Cutting Edge rule), a 'no save' result on the Critical Hit Charts negates it, and fire
+# attacks ignore this rule."  This binding is the "stacked with regular armour" half
+# (trait.natural-armour-stacks, parameters value true); the 6+ itself is the sibling
+# trait.natural-armour-save (...c715ffc7df28, whose a-shield-stacks-with-the-bark-hide scenario is the
+# same observable from the save's side), the cap the sibling trait.natural-armour-worst-save
+# (...a5c3a6ff4699) and the fire negation trait.natural-armour-negated-by-fire (...94fb7e998708).
+# Compiler: with natural_armour_stacks and a natural save of 6 or better the compiled armour_save
+# loses 7-natural steps (compiler.py ~1442-1443: shield 6+ becomes 5+, nothing worn becomes 6+) and
+# natural_armour_stacks is projected onto the CompiledFighter (~1490).  Engine: phases.py
+# armour_target (~621-634) resolves min(armour, natural) and the die round.<i>.<attacker>.attack
+# .<n>.armour is asked while the target is 6 or better.
+# Family model (the sibling file): Bark Skin is the band's own grant, witnessed through the Spiteborn
+# (printed entry without a rule of its own; T2, W2), sword in hand (a parry die follows every hit
+# and is declared a one) and a shield from the dryad equipment list where the stacking is at stake.
+# The attacker is a hand-built fixture (mace; Weapon Skill 10 and Initiative 10 are fixture facts) at
+# Strength 3, which modifies no save; Strength 3 wounds Toughness 2 on 3+.  The duel is uncharged,
+# the bearer contributes no attacks and the wound face stays below a natural six.  The non-stacking
+# control is a hand-built fixture given a natural 6+ through trait_overrides without the stacking
+# trait, carrying the same shield: two 6+ layers that do not add.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Hide and shield: the compiled combined save is 5+ and the five holds.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-stacks
+  id: the-hide-and-a-shield-combine-into-a-five-plus-and-the-five-holds
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &shielded-spiteborn
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    second.natural_armour_stacks: True
+    second.natural_armour_save: 6
+    second.armour_save: 5
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the combined save is a wound.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-stacks
+  id: one-face-below-the-combined-save-is-a-wound
+  fighters:
+    first: *attacker
+    second: *shielded-spiteborn
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The hide alone is the printed 6+: without the shield the same five is a wound.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-stacks
+  id: the-hide-alone-stays-a-six-plus-so-the-same-five-is-a-wound
+  fighters:
+    first: *attacker
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    second.armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The non-stacking control: a natural 6+ without the stacking trait and the same shield keep the
+# better of two 6+ layers, so the five is a wound where the Spiteborn's held.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-stacks
+  id: a-non-stacking-natural-six-plus-and-a-shield-do-not-add
+  fighters:
+    first: *attacker
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      trait_overrides: {natural_armour_save: 6}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    second.natural_armour_stacks: False
+    second.natural_armour_save: 6
+    second.armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

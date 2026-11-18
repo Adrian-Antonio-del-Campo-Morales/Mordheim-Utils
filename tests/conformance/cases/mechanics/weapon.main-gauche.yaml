@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.main-gauche
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios (survival-saves-and-rerolls batch, 2026-11-18): the off-hand main
+#   gauche parries (5 beats 4); its own hit grants the unarmoured enemy a 6+ save on both faces (6
+#   saves, 5 does not); the main-hand mace of the same pair grants no save; an off-hand dagger
+#   control is offered no parry.  The Estalian per-turn mode choice is the sibling mechanic
+#   (mechanic.main-gauche-modes, its own file).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,138 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 5 scenarios cover the parry with its dagger control, the +1 enemy save on both faces
+#   and its scope (the gauche's own hits only).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/weapon.main-gauche - The Nemesis Crown, Hochland Bandits (items/weapons-close-combat.yaml
+# main_gauche): "Strength: As user.  Special Rules: Parry, +1 Enemy Armour Save."  The record
+# (execution.yaml weapon.main-gauche: parry true, target_armour_bonus 1) is a one-handed weapon
+# held in the off hand (off_hand_id), which also makes it the bearer's second hand weapon: the
+# extra attack is the ordinary two-weapon rule, resolved last in the pool
+# (modular/pools.py _weapon_for_attack).  Consumer of the parry: modular/contexts.py _parry_context
+# (an off-hand parry weapon gives the capacity; phases.py resolve_parry, the die must beat the hit
+# roll).  The +1 enemy save is the ordinary target_armour_bonus of the attack's weapon.
+#
+# Expectations come from the printed entry, never from engine output.  WS3 against WS3 hits on
+# 4+; S3 wounds T3 on 4+; the unarmoured opponent has no save except the 6+ the gauche's own hit
+# grants (the mace grants none).  A bearer with Attacks 1 and two hand weapons swings twice: the
+# main-hand mace first (attack.0), the gauche last (attack.1).
+
+# The parry: the bearer defends as `second`; the attacker's hit of 4 is beaten by the gauche's
+# parry die 5, then the bearer's two swings are declared misses.
+- audit_id: mechanic/weapon.main-gauche
+  id: the-main-gauche-parries
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &mg-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.main-gauche
+      characteristics: &mg-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &mg-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The gauche's own hit grants the enemy a 6+: the mace swing misses, the gauche swing (last in the
+# pool) hits and wounds, and the 6 saves.
+- audit_id: mechanic/weapon.main-gauche
+  id: the-gauches-own-hit-grants-the-enemy-a-six-plus-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.main-gauche
+      characteristics: *mg-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *mg-defender
+  duel_context: *mg-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.first.attack.1.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.wounded: true, attacks.1.saved: true, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the granted 6+: the 5 fails and the gauche's wound lands.
+- audit_id: mechanic/weapon.main-gauche
+  id: the-granted-save-fails-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.main-gauche
+      characteristics: *mg-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *mg-defender
+  duel_context: *mg-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.first.attack.1.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.saved: false, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The +1 belongs to the gauche's hits alone: the main-hand mace of the same pair wounds with no
+# save die requested, and the gauche swing misses.
+- audit_id: mechanic/weapon.main-gauche
+  id: the-mace-hand-of-the-same-pair-grants-no-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.main-gauche
+      characteristics: *mg-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *mg-defender
+  duel_context: *mg-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Both hits of the side roll before the wound (README tape order).
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: an off-hand dagger gives the same two swings but no parry, so the identical hit
+# of 4 is offered no parry die and wounds.
+- audit_id: mechanic/weapon.main-gauche
+  id: an-off-hand-dagger-is-offered-no-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mg-attacker
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics: *mg-defender
+  duel_context: *mg-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

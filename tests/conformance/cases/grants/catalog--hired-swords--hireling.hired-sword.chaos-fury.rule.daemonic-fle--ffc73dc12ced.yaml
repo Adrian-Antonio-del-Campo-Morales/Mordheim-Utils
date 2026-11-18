@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-fury.rule.daemonic-flesh/trait.natural-armour-unmodified
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the real
+#   Chaos Fury compiles with natural_armour_unmodified True, a Strength 5 hit that would worsen any
+#   ordinary save by two leaves the printed 5+ unchanged (the five holds, the four fails), the
+#   ordinary-armour control (heavy armour 5+, natural_armour_unmodified False) has the same face
+#   worsened to 6+ by a mere Strength 4 hit so its five fails, and the rule is refused on a hireling
+#   outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,118 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Daemonic Flesh): "A 5+ base armour save is never modified and is entirely negated by
+# magical or blessed weapons and spells."  This binding is the "never modified" half
+# (trait.natural-armour-unmodified, parameters value true); the 5+ itself is the sibling
+# trait.natural-armour-save and the magical negation the sibling mechanic.daemonic-flesh, each in its
+# own file.  Ruling: design-rulings.md "Djinn's Curse respects expressly unmodifiable saves"
+# (2026-10-15) names Daemonic Flesh's unmodified 5+ among the saves that keep their face and
+# prohibit roll modifiers.  Compiler: the trait lands as natural_armour_unmodified (compiler.py ~495)
+# and is projected onto CompiledFighter.natural_armour_unmodified (~1490);
+# tests/construction/test_hireling_admission.py::test_daemonic_flesh_is_armour... asserts it.
+# Engine: phases.py armour_target (~627-630) skips the Strength penalty, the armour penetration and
+# the incoming save modifier for an unmodified natural save, where an ordinary save (and an ordinary
+# natural save) is worsened by max(0, S-3); modular/attacks.py ~696-701 rolls the daemonic save
+# unmodifiable.
+# Hireling family model (README, Hireling recipients): the recipient is the printed Chaos Fury
+# compiled through the hireling route (hirelings.hired-sword.2a / hireling.hired-sword.chaos-fury) with the fixture facts (WS3 S3 T3 W2 I5 A1;
+# the printed Ld10 stays); the kit is the innate natural attacks and the rule is granted by the
+# profile, so nothing is selected.  The opponent is the hand-built fixture (mace, WS3 T3 W3 I2 A1
+# Ld7) at Strength 5 (a mace is Strength as user: -2 to an ordinary save, Toughness 3 wounded on 2+),
+# and at Strength 4 for the ordinary-armour control (-1, so heavy armour's 5+ reads 6+; wounds on 3+).
+# The Fury causes Fear, so the charging opponent tests Fear (1+1 passes Ld7); the Fury is immune to psychology (Daemonic Mind) and is never asked.  WS3 against WS3 hits on 4+; wound dice are fours (never a six, so no critical die joins).  The
+# recipient contributes no swing (initial_state).  The ordinary control is a hand-built fixture in
+# heavy armour (5+), the same printed face delivered by worn armour; the refusal selects this rule on
+# the grade-1b Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A Strength 5 hit would turn an ordinary 5+ into 7 (no save at all); the daemon's save stays 5+ and
+# the five holds.  The compiled recipient carries the unmodifiable flag.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-fury.rule.daemonic-flesh/trait.natural-armour-unmodified
+  id: a-strength-five-hit-leaves-the-printed-five-plus-unchanged-and-the-five-holds
+  fighters:
+    first:
+      &strength-five-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &fury
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.chaos-fury
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &attacker-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    second.natural_armour_unmodified: True
+    second.natural_armour_save: 5
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unchanged face is still a 5+: the four fails against the same Strength 5 hit.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-fury.rule.daemonic-flesh/trait.natural-armour-unmodified
+  id: the-unchanged-face-is-still-a-five-plus-so-the-four-fails
+  fighters:
+    first: *strength-five-attacker
+    second: *fury
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same printed face from worn heavy armour (5+, not unmodifiable) is worsened to 6+
+# by a mere Strength 4 hit, so the five fails.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-fury.rule.daemonic-flesh/trait.natural-armour-unmodified
+  id: an-ordinary-five-plus-from-worn-armour-becomes-six-plus-under-a-strength-four-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    second.natural_armour_unmodified: False
+    second.armour_save: 5
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-fury.rule.daemonic-flesh/trait.natural-armour-unmodified
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *strength-five-attacker
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.chaos-fury.rule.daemonic-flesh]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

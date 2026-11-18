@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-worst-save
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): a
+#   Strength 6 attacker (-3 to any ordinary save) still leaves the Spiteborn's hide die at six (the
+#   six holds, the five is a wound) and the compiled bearer carries natural_armour_worst_save 6, a
+#   shielded Spiteborn under the same Strength 6 still saves on six (the cap holds the combined save
+#   as well), and a fixture with an uncapped natural 6+ (worst save 7) is offered no die at all under
+#   Strength 6.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,111 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/fen-guard-mim/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (fen-guard-mim/special-rules.yaml, Bark Skin): "... it cannot be modified beyond 6 by
+# Strength (except by weapons with the Cutting Edge rule) ..."  This binding is the cap
+# (trait.natural-armour-worst-save, parameters value 6): the Strength-modified hide is never worse
+# than a 6+.  The 6+ itself, with its own strength-cap-at-six clause (including the Cutting Edge
+# exception through the armour-penetrating axe), is the sibling trait.natural-armour-save
+# (...c715ffc7df28); the stacking is ...75fb537b4c34 and the fire negation ...94fb7e998708.
+# Compiler: the trait lands as natural_armour_worst_save (compiler.py ~495, range-checked ~795) and
+# is projected onto CompiledFighter.natural_armour_worst_save (~1490; 7 when absent).  Engine:
+# phases.py armour_target (~628-630) computes the ordinary natural save as min(natural + max(0, S-3)
+# - target bonus, natural_armour_worst_save) + armour penetration, so Strength alone never pushes
+# the hide past 6 while an armour-penetrating weapon still does; the die round.<i>.<attacker>.attack
+# .<n>.armour is asked while the target is 6 or better.
+# Family model (the sibling file): the Spiteborn (T2, W2) with a sword; a hand-built attacker (mace;
+# Weapon Skill 10 and Initiative 10 are fixture facts) at Strength 6, double the Spiteborn's Strength
+# 3, so no parry die is offered (the sibling's Strength 6 scenarios declare none); Strength 6 wounds
+# Toughness 2 on 2+.  The duel is uncharged, the bearer contributes no attacks and the wound face
+# stays below a natural six.  The uncapped control is a hand-built fixture given a natural 6+ through
+# trait_overrides without the cap trait.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A Strength 6 hit would take an ordinary 6+ to 9; the hide stays at six and the six holds.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-worst-save
+  id: a-strength-six-attacker-still-leaves-the-hide-die-at-six
+  fighters:
+    first:
+      &strength-six-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 6, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &spiteborn
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_fighters:
+    second.natural_armour_worst_save: 6
+    second.natural_armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The capped face is still a 6: the five is a wound under the same Strength 6.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-worst-save
+  id: the-capped-hide-is-still-a-six-so-the-five-is-a-wound
+  fighters:
+    first: *strength-six-attacker
+    second: *spiteborn
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# With a shield as well the Strength 6 hit worsens the worn layer past the hide, and the capped hide
+# still saves on six.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-worst-save
+  id: a-shielded-spiteborn-under-strength-six-still-saves-on-six
+  fighters:
+    first: *strength-six-attacker
+    second:
+      <<: *spiteborn
+      off_hand_id: defence.shield
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The uncapped control: a natural 6+ without the cap trait (worst save 7) is pushed to 9 by Strength
+# 6 and offered no die at all.
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-worst-save
+  id: an-uncapped-natural-six-plus-is-denied-by-the-same-strength-six
+  fighters:
+    first: *strength-six-attacker
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {natural_armour_save: 6}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_fighters:
+    second.natural_armour_worst_save: 7
+    second.natural_armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

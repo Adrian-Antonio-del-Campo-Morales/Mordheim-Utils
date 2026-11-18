@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-unmodified
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the
+#   printed Halfling Elder compiles with natural_armour_unmodified True, a Strength 5 hit that would
+#   worsen any ordinary save by two leaves the printed 6+ unchanged (the six holds, the five is a
+#   wound), a fixture whose 6+ comes from worn light armour (natural_armour_unmodified False) is
+#   offered no die at all under a mere Strength 4 hit, and the same six still saves at Strength 3 so
+#   the face is not a Strength artefact.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,108 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/halflings-mic/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (halflings-mic/special-rules.yaml, Layers of Fat): "The Halfling always has a basic
+# saving throw of 6 regardless of the enemy warrior's strength and on top of any armour he already
+# wears."  This binding is the "regardless of the enemy warrior's strength" half
+# (trait.natural-armour-unmodified, parameters value true); the 6 itself is the sibling
+# trait.natural-armour-save (...e04eb51d825c, whose regardless-of-strength clause is evidenced with
+# a Strength 6 attacker) and the "on top of any armour" the sibling trait.natural-armour-stacks
+# (...33d254a2f0a2).  Compiler: the trait lands as natural_armour_unmodified (compiler.py ~495) and
+# is projected onto CompiledFighter.natural_armour_unmodified (~1490).  Engine: phases.py
+# armour_target (~627-630) skips the Strength penalty for an unmodified natural save, where an
+# ordinary save is worsened by max(0, S-3).
+# Family model (the sibling file): the bearer is the halfling-elder of halflings-mic, which prints
+# the rule, compiled without a weapon (its empty hands) and silenced (initial_state); it keeps its
+# printed W1, so a failed save reaches the Injury die, declared a one (Knocked Down).  The attacker is
+# a hand-built fixture (mace; Weapon Skill 10 and Initiative 10 are fixture facts) at Strength 5 (-2
+# to an ordinary save; wounds Toughness 3 on 2+), Strength 4 for the ordinary-armour control (-1;
+# wounds on 3+) and Strength 3 for the no-modifier reference.  Wound dice stay below a natural six.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A Strength 5 hit would turn an ordinary 6+ into no save at all; the Elder's basic 6 is unchanged
+# and the six holds.  The compiled bearer carries the unmodifiable flag.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-unmodified
+  id: a-strength-five-hit-leaves-the-basic-six-unchanged-and-the-six-holds
+  fighters:
+    first:
+      &strength-five-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 5, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: &elder {collection: mordheim, band_id: halflings-mic, profile_id: halfling-elder}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_fighters:
+    second.natural_armour_unmodified: True
+    second.natural_armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unchanged face is still a 6: the five is a wound against the same Strength 5 hit.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-unmodified
+  id: the-unchanged-face-is-still-a-six-so-the-five-is-a-wound
+  fighters:
+    first: *strength-five-attacker
+    second: *elder
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: a fixture whose 6+ is worn light armour (not unmodifiable) is offered no die at all
+# under a mere Strength 4 hit - the modification the printed words exclude for the Elder.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-unmodified
+  id: an-ordinary-six-plus-from-worn-armour-is-denied-by-a-strength-four-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 4, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_fighters:
+    second.natural_armour_unmodified: False
+    second.armour_save: 6
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The reference: at Strength 3 (no modifier for anyone) the same six saves, so the face above is the
+# printed basic 6 and not an artefact of the attacker's Strength.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--layers-of-fat/trait.natural-armour-unmodified
+  id: the-same-six-saves-at-strength-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: *elder
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

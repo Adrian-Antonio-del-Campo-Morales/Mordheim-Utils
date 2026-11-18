@@ -1,6 +1,22 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the real Ippan Shu's +1 Initiative lets him strike first on an equal printed value
+#   with no tie die (the compiled bonus observed); his wielded fan parries a hit; the Bard control
+#   on the same values rolls the printed tie die; the fan is refused in the hand of another
+#   hireling; the rule is refused outside the printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the catalogue splits the printed Iron Fan - this profile
+#   rule binds the passive +1 Initiative (mechanic.iron-fan) because the bearer always carries the
+#   fan, while the parry is the wielded item's own mechanic (weapon.iron-fan, the kit's unique item
+#   counts_as iron_fan, a combat-equipment row mapped to weapon.iron-fan).  Naming the fan in hand
+#   (`main_weapon_id: weapon.iron-fan`) is admitted by the kit matcher through that mapping; his
+#   earlier files chose `weapon.fist` to exercise Bare-Handed Fighting instead.  The parry scenario
+#   is kit evidence of the whole printed object; the removal probe neutralising mechanic.iron-fan
+#   is expected to leave it passing.  The printed missile parry stays out of scope.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +25,105 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1c.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-1c.yaml, hireling.dramatis.grand-master-ippan-shu.rule.iron-fan, grant profile): "the
+# weapon grants him +1 Initiative and allows him to parry enemy blows" - binding mechanic.iron-fan
+# (execution.yaml initiative_bonus 1; models tests/conformance/cases/mechanics/mechanic.iron-fan.yaml
+# and weapon.iron-fan.yaml; consumer phases.py resolve_priority / first_acts_before, the tie die
+# `round.<i>.priority-tie`).  Hireling family model (README, Hireling recipients): the real Ippan Shu
+# through the hireling route (hirelings.dramatis-personae.1c / hireling.dramatis.grand-master-ippan-shu)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld10 stays) and the fan in hand.  Armed, his
+# Bare-Handed Fighting and Art of Silent Death add nothing; Immune to Psychology and automatic
+# Leadership request nothing.  The opponent is hand-built (WS3 S3 T3 W3 A1 Ld7, mace, no armour) and
+# prints Initiative 5 here - the one fact the rule reads is the equal Initiative - so the printed
+# tie die would decide without the bonus.  Dice: WS3 against WS3 hits on 4+; a parry must beat the
+# hit roll.  The control is the grade-1b Bard; the refusal selects the printed rule on the Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The +1 Initiative: on equal printed values Ippan Shu strikes first and no tie die is requested
+# (the strict tape declares none); the compiled fighter carries the bonus.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
+  id: ippan-shu-strikes-first-on-equal-printed-initiative
+  fighters:
+    first:
+      &ippan-shu-fan
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1c
+      profile_id: hireling.dramatis.grand-master-ippan-shu
+      main_weapon_id: weapon.iron-fan
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &ippan-shu-fan-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.global_effects.initiative_bonus: 1
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed parry of the wielded fan: Ippan Shu's own blow misses first, then the opponent's hit
+# of 4 is beaten by his parry die 5.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
+  id: ippan-shu-parries-with-the-fan
+  fighters:
+    first: *ippan-shu-fan
+    second: *ippan-shu-fan-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the grade-1b Bard on the same printed Initiative rolls the tie die (4 lets him act
+# first) before the two misses.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
+  id: a-hireling-without-the-rule-rolls-the-printed-tie
+  fighters:
+    first:
+      &ippan-shu-fan-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *ippan-shu-fan-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Iron Fan is Ippan Shu's unique item: wielded by a hireling of another printed kit it is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
+  id: the-fan-is-refused-in-the-hand-of-another-hireling
+  fighters:
+    first:
+      <<: *ippan-shu-fan-control
+      main_weapon_id: weapon.iron-fan
+    second: *ippan-shu-fan-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The printed grant belongs to Ippan Shu's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.grand-master-ippan-shu.rule.iron-fan/mechanic.iron-fan
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *ippan-shu-fan-control
+      special_rule_ids: [hireling.dramatis.grand-master-ippan-shu.rule.iron-fan]
+    second: *ippan-shu-fan-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.iron-fan
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (survival-saves-and-rerolls batch, 2026-11-18): the bearer's +1
+#   Initiative breaks an otherwise equal printed Initiative so he strikes first with no tie die
+#   and the compiled bonus is observed on the fighter; the control without the mechanic rolls the
+#   printed tie die on the same values; the bonus is exactly one (a bearer one point below his
+#   opponent only reaches the tie).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,98 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the +1 Initiative on the strike order (no tie die), its control
+#   (the tie die) and the exact size of the bonus.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/mechanic.iron-fan - Border Town Burning, Grand Master Ippan Shu / Iron Fan: "grants him
+# +1 Initiative and allows him to parry enemy blows".  The catalogue splits the fan: this passive
+# profile mechanic carries the +1 Initiative (execution.yaml initiative_bonus 1); the parry is the
+# wielded item's own mechanic (weapon.iron-fan, its own file).  The record is kind profile, so a
+# hand-built fighter injects it through skill_ids (the mechanic.estalian-technique precedent).
+# Consumer: packages/python/combat-engine/mordheim_combat/phases.py (resolve_priority adds
+# global_effects.initiative_bonus to the strike Initiative; first_acts_before orders the pair and
+# rolls `round.<i>.priority-tie` only when the values are equal, 4+ letting the first act).
+#
+# Expectations come from the printed sentence, never from engine output.  Both fighters print
+# Initiative 5 and neither charges, so without the bonus the printed tie die decides; with it the
+# bearer's 6 beats the 5 outright.  Every hit die is a declared natural 1, so the tape is the
+# order alone.
+
+# The +1 Initiative: on equal printed values the bearer strikes first with no tie die; the
+# compiled fighter carries the bonus.
+- audit_id: mechanic/mechanic.iron-fan
+  id: the-fan-bearer-strikes-first-on-equal-printed-initiative
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.iron-fan]
+      characteristics: &if-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &if-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: &if-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.global_effects.initiative_bonus: 1
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The control: without the mechanic the equal Initiatives roll the printed tie die (4 lets the
+# first act) before the same two misses.
+- audit_id: mechanic/mechanic.iron-fan
+  id: without-the-fan-equal-initiatives-roll-the-printed-tie
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *if-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *if-opponent
+  duel_context: *if-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The bonus is exactly one: a bearer printing Initiative 4 against 5 only reaches the tie, whose
+# die 3 lets the opponent strike first.
+- audit_id: mechanic/mechanic.iron-fan
+  id: the-bonus-is-exactly-one-point-of-initiative
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.iron-fan]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *if-opponent
+  duel_context: *if-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 3}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

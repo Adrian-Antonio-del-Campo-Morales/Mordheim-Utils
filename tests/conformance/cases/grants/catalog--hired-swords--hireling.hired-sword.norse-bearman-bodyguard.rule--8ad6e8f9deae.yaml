@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the real
+#   Bearman with his kit shield in hand compiles with a parrying shield (off_hand.parry True) and his
+#   shield parry die of five turns an enemy hit of four; a parry die equal to the hit fails and the
+#   shield's armour save is then rolled as usual (parry in addition to the save); a hand-built
+#   fighter with the same shield (off_hand.parry False) is offered no parry die; the Bard control is
+#   offered none; the rule is refused on a hireling outside its printed profile.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the execution entry of mechanic.norse-shieldmaster carries
+#   nothing but its own tag; the effect is synthesised by the compiler (compiler.py ~1348-1349 sets
+#   parry on the shield's effect when the mechanic is among the profile's rule mechanics and the
+#   shield is in hand), so the mechanic identity probes `inert` (TODO.md, "Equipment mechanics the
+#   probe cannot reach").  This rule identity filters the binding itself out of the profile's
+#   runtime bindings, which empties loadout_mechanics of the mechanic and removes the compiled
+#   parry, so the evidence below (the parry die asked or not, and off_hand.parry) relies on the
+#   compiler projection and is expected to discriminate here, not in the mechanic file.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,128 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Norse Bearman Bodyguard / Shieldmaster): "A Norse mercenary has
+# trained with a shield since childhood becoming so skilled as to repel any blow.  A Bearman
+# Bodyguard may parry with it in addition to getting a save throw."  The grant is profile; the
+# binding is mechanic.norse-shieldmaster.  Compiler: with the mechanic in the profile's rule
+# mechanics and off_hand_id defence.shield, the shield's compiled effect gains parry True
+# (compiler.py ~1348-1349), projected as off_hand.parry.  Engine: the ordinary parry route - after
+# an enemy hit the defender with a parrying hand is asked round.<i>.<attacker>.attack.<n>.parry and
+# parries when the die beats the hit die (strictly higher; a hit of six cannot be parried, nor may a
+# fighter parry an attacker of double his Strength); a failed parry continues to the wound and the
+# armour save, which the shield still supplies.
+# Hireling family model (README, Hireling recipients; the authored Bulwark file ...421c19f0912d is
+# the tape model): the recipient is the printed Bearman compiled through the hireling route
+# (hirelings.hired-sword.2b / hireling.hired-sword.norse-bearman-bodyguard) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); his omitted main weapon is the kit's axe and his kit
+# shield is carried in the hand (off_hand_id defence.shield); his kit light armour stays owned, not
+# worn.  Bulwark gives +1 to the shield's 6+ in close combat (5+), so a failed parry's armour die is
+# declared a one, failing under either reading; Drunken rolls its D6 only at the start of his own
+# turn and the opponent is the active participant here.  He contributes no swing (initial_state).
+# The attacker is hand-built (WS3 S3 T3 W3 I5 A1 Ld7, mace): 4+ to hit, 4+ to wound (fours, no
+# critical die).  The shield-without-the-rule control is a hand-built fixture with the same mace and
+# shield; the hireling control is the grade-1b Bard (dagger, no shield).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The shield parries: the compiled shield carries parry and the five beats the enemy's four.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
+  id: the-bearmans-shield-parry-die-of-five-turns-the-hit-of-four
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &bearman
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.norse-bearman-bodyguard
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &attacker-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_fighters:
+    second.off_hand.parry: True
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.parried: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A parry die equal to the hit does not beat it; the wound is rolled and the shield's armour save
+# follows (the parry is in addition to the save, which here fails on a one).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
+  id: a-parry-die-equal-to-the-hit-fails-and-the-shield-save-is-still-rolled
+  fighters:
+    first: *attacker
+    second: *bearman
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same shield without the rule does not parry: a hand-built fighter is offered no parry die, the
+# wound is rolled at once and the shield's ordinary 6+ fails on the one.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
+  id: a-shield-without-the-rule-is-offered-no-parry-die
+  fighters:
+    first: *attacker
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_fighters:
+    second.off_hand.parry: False
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The hireling control: the Bard (dagger, no shield) is offered no parry die and, wearing nothing, no
+# armour die either.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
+  id: a-hireling-without-the-rule-is-offered-no-parry-die
+  fighters:
+    first: *attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Bearman's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster/mechanic.norse-shieldmaster
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -5,7 +5,9 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 34 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 2 of 2,306 admitted identities have no scenarios (Unshakeable Faith,
+  withheld on its print; Skink Henchman Poison Application, whose clause mark and binding
+  disagree — both recorded above). The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -178,6 +180,17 @@ what is pending and when it is done.
   encoded; Netter and the `grant: none` producers (brewers, poetry scholars, netter, goading,
   power grab) probe non-discriminating with dated notes. Done when each is confirmed as the
   intended encoding or repaired.
+- **Saves-and-rerolls wrinkles (2026-11-18, last authoring wave).** Recorded in the files, none
+  blocking: the Fen Guard Bark Skin's stacked step is folded into the compiled `armour_save` and is
+  Strength-modified, and a fire attack zeroes only the natural branch (the print says fire ignores
+  the whole rule, stacking included — the fourth bark-skin fire scenario is authored from the
+  print and flags the likely engine gap); the Halfling Elder's Layers of Fat prints "regardless of
+  strength … on top of any armour" with the same folding; the Iron Fan is split between a passive
+  +1 Initiative mechanic and a parrying weapon item; the Dark Jester's Sidestepper tag is read by
+  no engine code (the confound chooser lights the dodge), so both identities probe
+  non-discriminating/inert with notes; the Tomb Robber's dodge upgrade is runtime-only (compiled
+  `ward_save` stays 5); the Cursed Hillman's wolf form encodes the lost cloak twice (trait and
+  equipment projection). Done when each is confirmed as the intended encoding or repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -286,16 +299,15 @@ identities whose binding already has authored scenarios elsewhere.
 | Batch | Theme | Ids | Model | Effort | Routes |
 | --- | --- | ---: | ---: | ---: | --- |
 | B00 | triage-blockers | 1 | 1 | 2 | special_rule_ids 1 |
-| B01 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
-| B02 | operators-band-rules | 1 | 1 | 1.5 | construction 1 |
-| | **Total** | **34** | 13 | 65.5 | |
+| B01 | operators-band-rules | 1 | 1 | 1.5 | construction 1 |
+| | **Total** | **2** | 2 | 3.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
 Large Target pass landed the same day, followed by the construction-equipment and
 construction-skills-and-profile batches, then both survival-injury-and-immunity batches, which
-closed the model-heavy themes; the psychology and hatred/frenzy themes followed). The remaining
-themes are the new-contract ones. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
+closed the model-heavy themes; the psychology, hatred/frenzy, equipment, supplied-condition and
+operator themes followed on 2026-11-18, leaving the two recorded blockers). Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
 construction and may run in parallel; the coordinator owns the shared documents (this file,

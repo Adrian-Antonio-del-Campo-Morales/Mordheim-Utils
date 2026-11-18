@@ -5,11 +5,9 @@
 #   compiler refuses it as a supplied condition ("unknown canonical condition: 'condition.mouth-sewn'")
 #   and the duel-produced mouth_sewn state (Needle and Thread) never feeds a supplied provider in the
 #   same duel. Only the unsewn control lend is declared. Recorded in TODO.md.
-# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): a supplied
-#   same-band leader carrying the sewn mouth is offered to nobody (the strict decision tape proves
-#   it), the identical leader without the fact lends his Leadership, and the fact is read on the
-#   provider only - a sewn-mouthed borrower still borrows.  REVIEWED still requires manual semantic
-#   review and execution_status stays UNEXECUTED.
+# authoring_progress: 1 declared scenario (supplied-conditions batch, 2026-11-18): the unsewn
+#   same-band leader lends his Leadership (the reachable control); the sewn faces are withheld as
+#   the PARTIAL note explains.  execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -21,8 +19,6 @@
 #   Mouth": "Supplied fact that this model's mouth was sewn shut by Needle and Thread, so it can no
 #   longer use a leader ability. The leader borrow refuses a supplied provider carrying this fact;
 #   sewing a duel opponent is the producer the duel itself can perform.")
-# AUTHORED: the 3 scenarios below cover the refused provider, the control without the fact and the
-#   provider-only reading; REVIEWED still requires manual semantic review.
 # Semantic wrinkle (2026-11-18, recorded): the printed Needle and Thread also silences spell casting
 #   (out-of-scope.magic, not bound here).  The duel's own producer (mechanic.needle-and-thread sets the
 #   lasting FighterState field `mouth_sewn` on the stunned duelist) never feeds this consumer inside the

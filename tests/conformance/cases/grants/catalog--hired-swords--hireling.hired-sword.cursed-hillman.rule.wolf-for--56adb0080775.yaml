@@ -1,6 +1,26 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-no-cloak
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the
+#   Hillman selecting Wolf Form compiles with natural_armour_save 7 (the cloak is discarded with the
+#   garments) and the werewolf is offered no armour die when wounded; the same Hillman in man form
+#   compiles with the cloak's 6 and is offered the die, which holds on six; the form is refused on a
+#   hireling outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# Discrimination note (2026-11-18): the wolf's lost cloak is encoded twice.  This binding sets the
+#   trait to 7 at construction (the selected rule's trait overwrites the profile's man-cloak 6,
+#   compiler.py ~495 after ~327), and modular/equipment.py equipment_for_state (~153-166) also forces
+#   natural_armour_save 7, armour_save 7 and helmet_save 7 on the werewolf state at runtime.  With
+#   this binding removed the duel still asks no die, so the behavioural half is expected to survive
+#   the removal probe; the compiled projection (expect_fighters natural_armour_save) is the evidence
+#   that belongs to the binding.  Whether the KB should keep a single source is a KB question, not
+#   a reason to change the declaration.
+# Semantic wrinkle (2026-11-18): the wolf's Wounds are fixture-plus-delta (W3 here, the print's W2),
+#   and its Toughness 4 reads 3 under Thin Flesh, so the Strength 3 wound is declared a five, which
+#   wounds under either Toughness.  The werewolf's pool is silenced with attacks 0, which also
+#   withholds the Bite (pools.py ~304 returns no attack for a count of zero), so the Hillman's own
+#   hit dice are never reached.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +29,87 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Wolf Form): "While in wolf-form the Hillman discards every garment and
+# weapon" - the heavy fur cloak is a garment, so the wolf carries no 6+ save; the printed wolf line
+# has no armour of its own.  This binding is wolf-form-no-cloak (trait.natural-armour-save,
+# parameters value 7); the wolf line is the sibling wolf-form-stats (...30fedd9c41b9) and the kit
+# discard with the Bite the sibling wolf-form-discarded-kit (...5f4379099266); the man form's cloak
+# is the Lycanthrope rule's man-cloak binding (...3b8956540ad9).  The form is a selectable
+# special-skill option of the Cursed Hillman chosen with special_rule_ids.  Engine: phases.py
+# armour_target (~621-634) with natural 7 and the empty armour 7 asks no round.<i>.<attacker>.attack
+# .<n>.armour die; the wolf is already transformed, so no lycanthrope die follows the lost Wound.
+# Hireling family model: the recipient is the printed Cursed Hillman (hirelings.hired-sword.2a /
+# hireling.hired-sword.cursed-hillman) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8
+# stays), selecting the form; the wolf line projects WS4 S4 T4 W3 I7 A2 over the fixture.  He is the
+# active charger (first) and contributes no swing (initial_state), so the opponent (hand-built, mace,
+# WS3 S3 T3 W3 I2 A1 Ld7) strikes as the charged side: WS3 against the wolf's WS4 hits on 4+.  The
+# control is the same Hillman without the selection (man form, cloak 6+, Toughness 3 read 2 under
+# Thin Flesh: the five wounds there too).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Wolf Form selected: the compiled werewolf has no cloak save and is offered no armour die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-no-cloak
+  id: the-werewolf-has-no-cloak-save-and-is-offered-no-armour-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: &hillman-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 5}
+  expect_fighters:
+    first.natural_armour_save: 7
+    first.armour_save: 7
+  expect_initial: {first.hillman_wolf: True}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.saved: false, attacks.0.damage: 1, state.first.wounds: 2, state.first.hillman_wolf: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Hillman in man form keeps the cloak's 6 and is offered the die, which holds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-no-cloak
+  id: the-same-hillman-in-man-form-keeps-the-cloak-and-saves-on-six
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: *hillman-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.armour, value: 6}
+  expect_fighters:
+    first.natural_armour_save: 6
+  expect_initial: {first.hillman_wolf: False}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.first.wounds: 2, state.first.hillman_wolf: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Wolf Form is printed for the Cursed Hillman alone; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-no-cloak
+  id: the-form-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

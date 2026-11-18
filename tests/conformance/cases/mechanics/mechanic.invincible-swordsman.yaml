@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.invincible-swordsman
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (survival-saves-and-rerolls batch, 2026-11-18): the bearer hits
+#   on a 2 (target 2); a 1 still misses; the control without the mechanic misses on the same 2 at
+#   the ordinary 4+; the fixed target ignores the enemy's Weapon Skill (WS6 would need 5+).
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +13,101 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 4 scenarios cover the 2+ boundary on both faces, the control and the independence from
+#   the enemy's Weapon Skill.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/mechanic.invincible-swordsman - Aenur, the Sword of Twilight (dramatis-personae/core.yaml):
+# "Aenur hits opponents on 2+ in hand-to-hand combat."  The record is kind profile, so a hand-built
+# fighter injects it through skill_ids (the mechanic.estalian-technique precedent).  Consumer:
+# packages/python/combat-engine/mordheim_combat/modular/contexts.py prepare_hit_context
+# (fixed_target 2 for a melee attack of a bearer) and phases.py resolve_hit (the fixed target
+# replaces the Weapon Skill comparison; a die below the target misses); modular/attacks.py no
+# longer requires the Weapon Skills for the hit.
+#
+# Expectations come from the printed sentence, never from engine output.  Without the mechanic WS3
+# against WS3 hits on 4+ (against WS6 on 5+); with it the target is 2 whatever the enemy prints.
+# Every wound die is a declared natural 1 so no save or injury follows; the opponent's hit die is a
+# declared natural 1.
+
+# The printed 2+: the bearer's 2 hits (target 2).
+- audit_id: mechanic/mechanic.invincible-swordsman
+  id: a-two-hits-for-the-invincible-swordsman
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      skill_ids: [mechanic.invincible-swordsman]
+      characteristics: &is-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &is-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &is-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 2, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: a 1 still misses for the swordsman.
+- audit_id: mechanic/mechanic.invincible-swordsman
+  id: a-one-still-misses-for-the-invincible-swordsman
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      skill_ids: [mechanic.invincible-swordsman]
+      characteristics: *is-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *is-opponent
+  duel_context: *is-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the mechanic the same 2 misses at the ordinary 4+.
+- audit_id: mechanic/mechanic.invincible-swordsman
+  id: the-same-two-misses-without-the-mechanic
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *is-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *is-opponent
+  duel_context: *is-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The target ignores the enemy's Weapon Skill: against WS6 (ordinarily 5+) the bearer's 2 still hits.
+- audit_id: mechanic/mechanic.invincible-swordsman
+  id: the-target-ignores-the-enemys-weapon-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      skill_ids: [mechanic.invincible-swordsman]
+      characteristics: *is-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 6, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *is-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 2, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
