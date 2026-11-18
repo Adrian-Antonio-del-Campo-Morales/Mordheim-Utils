@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.poisoned-weapons/poison.black-lotus
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): Johann's natural 6 to hit wounds automatically as Black Lotus with the optional
+#   wound die declined; the printed option of rolling the wound die for a critical (a 6 sets it);
+#   the plain-hireling control's natural 6 is followed by an ordinary wound die and no Lotus
+#   decision; the rule is refused on a hireling outside Johann's package.  REVIEWED still
+#   requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the rule binds the catalogue poison as a profile mechanic, so the
+#   recorded contract tags Johann himself with poison.black-lotus (the Nurgle Emissary precedent,
+#   ...0b960e016e90): whichever kit weapon he wields carries the Lotus guarantee, which is the
+#   printed "Johann's weapons are always coated with Black Lotus" without a per-hand coating.  His
+#   Long Daggers count as two swords (the unique item's counts_as), so weapon.sword is the hand the
+#   B12 Crimson Shade file also names; the Lotus operator itself (natural 6 wounds automatically
+#   unless the bearer rolls for a critical) is the catalogue poison's own (poison.black-lotus.yaml).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (core.yaml, hireling.dramatis.johann-the-knife.rule.poisoned-weapons, grant profile):
+# "Johann's weapons are always coated with Black Lotus" - binding poison.black-lotus.  Hireling
+# family model (README, Hireling recipients): the real Johann through the hireling route
+# (hirelings.dramatis-personae.core / hireling.dramatis.johann-the-knife) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays) and his kit sword in hand; the rule is granted by the
+# profile, so nothing is selected.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no
+# armour, so an unsaved wound requests no armour die).  The duel is uncharged, so Johann's
+# Initiative 5 strikes before the opponent's 2.  The control is the grade-1b Bard with his kit
+# dagger, compiled through the same route.  Dice: WS3 against WS3 hits on 4+, S3 wounds T3 on 4+.
+# Johann's other printed rules request nothing here: Crimson Shade is not taken (no preparation,
+# so no D3 at duel start), Knife Fighter Extraordinaire and his starting skills act on shooting or
+# movement, and his sword's parry is never offered because the opponent's declared hit is a miss.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Black Lotus: Johann's natural 6 to hit wounds automatically.  The printed critical attempt is
+# declined (lotus-critical false), so no wound die is requested and the wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.poisoned-weapons/poison.black-lotus
+  id: johanns-natural-six-to-hit-wounds-automatically-as-black-lotus
+  fighters:
+    first: &johann
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.johann-the-knife
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed choice: Johann may roll the wound die instead, hoping for a critical; the declared 6
+# sets the critical, which rolls the ordinary critical die (a 1 deals two wounds on the chart).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.poisoned-weapons/poison.black-lotus
+  id: johann-may-roll-the-wound-die-for-a-critical-and-a-six-scores-it
+  fighters:
+    first: *johann
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger): his natural 6 is an ordinary hit followed by a wound die, with no
+# Lotus decision offered; the declared 1 fails to wound.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.poisoned-weapons/poison.black-lotus
+  id: a-hireling-without-the-rule-rolls-an-ordinary-wound-die-on-a-natural-six
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Johann's profile; selecting it on a hireling of another package is
+# refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.poisoned-weapons/poison.black-lotus
+  id: the-rule-is-refused-on-a-hireling-outside-johanns-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.johann-the-knife.rule.poisoned-weapons]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   an Undead warrior charged by the real Priest tests, fails and hits only on sixes; a psychology-immune
+#   Undead charged by him still tests (and passes, so its hits are ordinary); an Undead declaring a charge
+#   against him fails the test and the charge fails; the Bard control charging the same immune Undead
+#   requests no test; the rule is refused outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,126 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Priest of Morr / Morr's Servant): "Any Undead creature declaring a charge
+# against the Priest or being charged by the Priest must pass a Leadership test or be treated as
+# suffering the effects of fear.  This ignores all the exemptions for Psychology which are normally
+# applied to Undead models."  The grant is profile; the execution entry carries the tag
+# mechanic.morrs-servant, read by packages/python/combat-engine/mordheim_combat/modular/psychology.py:
+# causes_fear (~32-34) makes the Priest a fear-causer to a nature.undead enemy, and needs_test
+# (~203-218, morrs_servant) demands the test from the Undead whenever it stands and the Priest is
+# active, bypassing Immunity to Psychology, the Undead fear exemption and the fear-causer exemption;
+# the test is resolved as a plain Leadership test (psychology=False), so no psychology waiver passes
+# it.  The model is the authored mechanics file cases/mechanics/mechanic.morrs-servant.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Priest compiled through the
+# hireling route (hirelings.hired-sword.2b / hireling.hired-sword.priest-of-morr-miracle-workers) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays); his omitted main weapon is the kit's
+# first close-combat weapon, the ceremonial dagger (its printed 6+ save for the target never comes up:
+# every Priest attack below is a natural 1).  His other printed rules request nothing here (Strictures
+# forbid armour, Loner/Prayers/Protected by Morr are outside the duel, no Mark is selected).  The Undead
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares creature_kind undead; the second
+# one adds Immunity to Psychology through skill_ids (mechanic.psychology-immunity).  The control is
+# the grade-1b Bard (dagger) compiled through the same route.  A 2D6 Leadership test of 5+4 fails
+# Ld7 and 3+3 passes it; a warrior who failed a Fear test hits only on sixes (fear_hit_sixes).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Charged by the Priest, the Undead must test despite being Undead: 5+4 fails Ld7, so its five misses
+# where a WS3-against-WS3 four would ordinarily hit.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
+  id: an-undead-charged-by-the-priest-tests-fails-and-hits-only-on-sixes
+  fighters:
+    first:
+      &priest
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &undead
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &priest-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 5}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True, attacks.1.hit_target: 6, attacks.1.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "This ignores all the exemptions for Psychology": the same Undead carrying Immunity to Psychology still
+# tests; 3+3 passes Ld7, so its ordinary four hits and wounds the Priest.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
+  id: a-psychology-immune-undead-charged-by-the-priest-still-tests
+  fighters:
+    first: *priest
+    second:
+      &immune-undead
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *priest-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.1.hit_target: 4, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Any Undead creature declaring a charge against the Priest": the charging Undead tests before contact;
+# 5+4 fails Ld7 and the charge fails, so no blow is struck and the duel disengages.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
+  id: an-undead-that-fails-the-test-when-charging-the-priest-fails-its-charge
+  fighters:
+    first: *priest
+    second: *undead
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.engaged: False, state.failed_charges: ['second']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The control: the Bard charging the same psychology-immune Undead causes it no fear, so the tape holds
+# no Leadership die and the Undead's four hits on its ordinary target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
+  id: a-hireling-without-the-rule-makes-the-undead-test-nothing
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *immune-undead
+  duel_context: *priest-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.1.hit_target: 4, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Priest's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant/mechanic.morrs-servant
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant]
+    second: *undead
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

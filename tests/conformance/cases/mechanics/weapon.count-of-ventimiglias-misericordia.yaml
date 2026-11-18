@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 scenarios pin the printed artefact chart on a hand-built bearer:
+#   injury 1 and 3 are Stunned (the ordinary chart knocks down on 1), injury 4 is Out
+#   of Action (the ordinary chart stuns), an Undead victim with No Pain is Knocked
+#   Down "as normal" on the 1, the sword treatment is shown by a parry die, and the
+#   ordinary sword control knocks down on the same 1.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,148 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 6 scenarios cover the artefact chart at three faces, the Undead
+#   knock-down, the sword parry and the ordinary-sword control.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/weapon.count-of-ventimiglias-misericordia - the Magical Artefacts Table's
+# Count of Ventimiglia's Misericordia (mordheimer.net, Campaigns / Income): "Treated
+# as a sword. Opponents wounded by it are stunned on a result of 1-3 (Undead are
+# knocked down as normal) and put out of action on a 4-6."  The execution entry
+# carries the sword tag (parry) and the consumer moves both chart edges: Stunned
+# from 1, Out of Action from 4 (modular/contexts.py, _injury_context).  The Undead
+# parenthesis is their own No Pain turning the Stunned result into Knocked Down,
+# so the Undead victim declares both creature_kind undead and skill.ignore-pain.
+#
+# Expectations come from the printed text, never from engine output.  The
+# ordinary chart prints 1-2 Knocked Down, 3-4 Stunned, 5-6 Out of Action, so the
+# dice 1 and 4 are the two faces where the artefact chart differs.  Strength 3
+# against Toughness 3 wounds on a 4+; the victim has one Wound so the first wound
+# reaches the chart.
+
+# The artefact chart's lower face: the injury die 1 is Stunned, not Knocked Down.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: misericordia-injury-1-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.count-of-ventimiglias-misericordia
+      characteristics: &cm-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &cm-victim-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &cm-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The end of the printed Stunned band: the 3 is still Stunned.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: misericordia-injury-3-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.count-of-ventimiglias-misericordia
+      characteristics: *cm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *cm-victim-w1
+  duel_context: *cm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The start of the printed Out of Action band: the 4 (Stunned on the ordinary
+# chart) takes the victim out and ends the duel.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: misericordia-injury-4-is-out-of-action
+  fighters:
+    first:
+      main_weapon_id: weapon.count-of-ventimiglias-misericordia
+      characteristics: *cm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *cm-victim-w1
+  duel_context: *cm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# "Undead are knocked down as normal": the Undead victim's own No Pain turns the
+# artefact's Stunned 1 into Knocked Down.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: an-undead-victim-with-no-pain-is-knocked-down-on-the-stunned-face
+  fighters:
+    first:
+      main_weapon_id: weapon.count-of-ventimiglias-misericordia
+      characteristics: *cm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain]
+      trait_overrides: {creature_kind: undead}
+      characteristics: *cm-victim-w1
+  duel_context: *cm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Treated as a sword": the bearer is hit on a 4 and the misericordia's parry die 5
+# beats it, so no wound die is reached.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: misericordia-parries-as-a-sword
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.count-of-ventimiglias-misericordia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *cm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The ordinary sword control: the identical injury die 1 is Knocked Down on the
+# printed chart, so the Stunned 1 is the artefact's own.
+- audit_id: mechanic/weapon.count-of-ventimiglias-misericordia
+  id: an-ordinary-sword-knocks-down-on-the-same-die
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *cm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *cm-victim-w1
+  duel_context: *cm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

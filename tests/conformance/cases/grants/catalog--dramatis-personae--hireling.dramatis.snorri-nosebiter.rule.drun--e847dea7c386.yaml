@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   each supplied drinking result on the real Snorri - 2 (WS and S -1 compiled, a three misses WS2), 3
+#   (no effect: the fixture stands and the ordinary blow lands), 4 (both fighters in contact at -1 to
+#   hit: the equal-skill fours miss), 5 (+1 S compiled, S4 wounds T3 on a three), 6 (Frenzy: the pool
+#   doubles), 1 (refused: he is absent from the battle) - and the rule refused outside its printed
+#   profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,167 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Snorri Nosebiter / Drunk): "Roll a D6 on the following table [...]:
+# 1 - [...] he has forgotten to turn up.  2 - His WS and S are both reduced by -1.  3 - No effect.
+# 4 - Any model friend or foe, fighting within 2" of Snorri is at -1 to hit.  5 - Snorri gains +1
+# strength.  6 - Snorri is subject to frenzy."  The grant is profile; the execution entry carries the
+# tag mechanic.snorri-drunk, consumed at compile time by
+# packages/python/roster-construction/mordheim_construction/compiler.py (~1259-1276): the pre-battle
+# result is a supplied fact (trait_overrides snorri_drunk_result, 2-6; a 1 is refused by name), 2
+# lowers the compiled WS and S, 4 tags condition.snorri-stench (contexts.py ~542-546: -1 to hit for
+# both fighters in contact), 5 raises the compiled S, 6 tags condition.snorri-frenzy with frenzy.  The
+# model is the authored mechanics file cases/mechanics/mechanic.snorri-drunk.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Snorri compiled through the
+# hireling route (hirelings.dramatis-personae.2b / hireling.dramatis.snorri-nosebiter) with his printed
+# kit supplied (owned_item_ids dwarf_axe + hammer, the hammer declared as his canonical mace main
+# weapon) and the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays).  His Slayer Rules are
+# Psychology immunity and an armour ban; his Lucky 5+ ward is requested only when he is wounded, and
+# every enemy blow below misses, so no ward die appears.  He charges a hand-built opponent (WS3 S3 T3
+# W3 I2 A1 Ld7, mace).  The compiled consequences are read on the fighter snapshot (expect_fighters)
+# and in the duel.  Dice: WS3 against WS3 hits on 4+ (WS2 against WS2 too), S3 against T3 wounds on
+# 4+, S4 on 3+; no sixes.  The refusal selects the printed rule on the grade-1b Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Result 2: the compiled Weapon Skill and Strength are one lower, and a three that WS3 would hit with
+# against WS2 misses at WS2 against WS2.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-two-lowers-snorri-s-weapon-skill-and-strength
+  fighters:
+    first:
+      &snorri
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.snorri-nosebiter
+      owned_item_ids: [dwarf_axe, hammer]
+      main_weapon_id: weapon.mace
+      trait_overrides: {snorri_drunk_result: 2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &snorri-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.characteristics.weapon_skill: 2
+    first.characteristics.strength: 2
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 3: no effect - the fixture compiles unchanged and the ordinary four hits and wounds.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-three-changes-nothing
+  fighters:
+    first:
+      <<: *snorri
+      trait_overrides: {snorri_drunk_result: 3}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *snorri-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+    first.global_effects.frenzy: False
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.damage: 1, state.first.frenzy: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 4: "any model friend or foe, fighting within 2" of Snorri is at -1 to hit" - both fighters in
+# contact need 5, so each equal-skill four misses.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-four-penalises-every-fighter-in-contact
+  fighters:
+    first:
+      <<: *snorri
+      trait_overrides: {snorri_drunk_result: 4}
+    second: *opponent
+  duel_context: *snorri-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, attacks.1.hit_target: 5, attacks.1.hit: False,
+        state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 5: the compiled Strength is 4, so a three wounds Toughness 3 where S3 would need a four.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-five-adds-one-strength
+  fighters:
+    first:
+      <<: *snorri
+      trait_overrides: {snorri_drunk_result: 5}
+    second: *opponent
+  duel_context: *snorri-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.characteristics.strength: 4
+    first.characteristics.weapon_skill: 3
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 6: Frenzy for the battle (the table overrides his Slayer Psychology immunity), doubling the
+# supplied Attacks 1 into two; the pool rolls both To Hit dice before its To Wound dice.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-six-grants-the-printed-frenzy
+  fighters:
+    first:
+      <<: *snorri
+      trait_overrides: {snorri_drunk_result: 6}
+    second: *opponent
+  duel_context: *snorri-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.global_effects.frenzy: True
+  expect_rounds:
+    0: {state.first.frenzy: True, attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 1: "he has forgotten to turn up" is not a state a duel participant can hold; the supplied
+# result is refused by name.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: a-supplied-one-is-outside-the-duel
+  fighters:
+    first:
+      <<: *snorri
+      trait_overrides: {snorri_drunk_result: 1}
+    second: *opponent
+  expect_error: "drinking result 2-6"
+
+# The printed grant belongs to Snorri's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.drunk/mechanic.snorri-drunk
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.snorri-nosebiter.rule.drunk]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

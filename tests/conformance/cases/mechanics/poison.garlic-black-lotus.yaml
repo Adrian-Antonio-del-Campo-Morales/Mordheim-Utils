@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/poison.garlic-black-lotus
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios pin the garlic coating on a hand-built bearer: against
+#   a Vampire the natural 6 to hit wounds automatically when the optional die is
+#   declined, the optional die of 5 leaves a normal wound and the 6 scores the
+#   critical (the Black Lotus model); against a non-Vampire the same natural 6 only
+#   reaches the ordinary wound die and a 1 fails.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,121 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 4 scenarios cover the Black Lotus behaviour against a Vampire (three
+#   faces of the optional die) and its absence against anyone else.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/poison.garlic-black-lotus - Countess Marianna Chevaux's Garlic-Coated
+# Weapons (Town Cryer 22): "Against Vampires only, the coating acts as Black Lotus:
+# a natural 6 to hit guarantees the wound, keeping the ordinary critical attempt
+# and saves."  The execution entry carries the tags poison.black-lotus and
+# poison.vampires-only; the consumer (mordheim_combat/phases.py,
+# black_lotus_wounds) applies the Lotus operator only when the defender carries
+# species.vampire, which the hand-built opponent declares through
+# trait_overrides: {vampire: true}.  The coating is supplied on main_poison_id.
+#
+# Expectations come from the printed text and the Black Lotus model, never from
+# engine output.  A natural 6 to hit against a Vampire already wounds; the
+# declaration `round.0.first.attack.0.lotus-critical` decides whether the optional
+# wound die is taken.  Declining it leaves the automatic wound with no die at all;
+# taking it on a 5 leaves a normal wound and only a 6 sets the critical, which
+# then rolls the ordinary critical and injury dice.  Against a non-Vampire no
+# declaration is asked and the ordinary wound die (S3 vs T3, 4+) decides.
+
+# Against a Vampire the natural six wounds automatically when the optional die is
+# declined: no wound die is requested.
+- audit_id: mechanic/poison.garlic-black-lotus
+  id: against-a-vampire-the-natural-six-wounds-automatically
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.garlic-black-lotus
+      characteristics: &gl-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true}
+      characteristics: &gl-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &gl-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The optional die is taken and shows a 5: a normal wound, no critical.
+- audit_id: mechanic/poison.garlic-black-lotus
+  id: against-a-vampire-the-optional-die-of-five-leaves-a-normal-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.garlic-black-lotus
+      characteristics: *gl-attacker
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true}
+      characteristics: *gl-defender
+  duel_context: *gl-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The optional die shows a 6: the ordinary critical attempt is kept and scores,
+# rolling the critical die and two injury dice against the one-Wound Vampire.
+- audit_id: mechanic/poison.garlic-black-lotus
+  id: against-a-vampire-the-optional-die-of-six-scores-the-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.garlic-black-lotus
+      characteristics: *gl-attacker
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true}
+      characteristics: {<<: *gl-defender, wounds: 1}
+  duel_context: *gl-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Against Vampires only": the same natural six against an ordinary opponent asks
+# no Lotus declaration and only reaches the ordinary wound die, which fails on a 1.
+- audit_id: mechanic/poison.garlic-black-lotus
+  id: against-a-non-vampire-the-natural-six-needs-the-ordinary-wound-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.garlic-black-lotus
+      characteristics: *gl-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *gl-defender
+  duel_context: *gl-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

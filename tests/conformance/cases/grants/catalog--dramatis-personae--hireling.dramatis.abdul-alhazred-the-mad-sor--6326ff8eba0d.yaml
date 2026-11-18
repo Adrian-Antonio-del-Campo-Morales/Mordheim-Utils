@@ -1,6 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, equipment-items batch
+#   2026-11-18): an Undead enemy must pass Leadership before attacking the real Abdul (a
+#   failure blocks the turn's blows); a pass reaches his 4+ Ward, which holds on the 4 and
+#   fails on the 3 (the compiled ward_save is 4); the Bard control is attacked by the same
+#   Undead with no test and no ward; the Eye is refused on a hireling outside Abdul's
+#   printed kit.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the kit's Eye is owned, not worn, until declared
+#   (defence_ids: [defence.eye-pendant], the unique item wielded by its mechanic id).  Abdul's
+#   own Psychology immunity is irrelevant to the gate - the ruling makes the attacker test
+#   and the restriction is not Psychology; his Sorcery is excluded from the duel.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +21,114 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-1b.yaml, hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant, grant
+# none - the Eye is his unique item): "Uses the source Undead Leadership restriction and 4+ Ward
+# save" - binding defence.eye-pendant; design ruling 2026-10-15 (the attacker tests once before its
+# attacks each combat turn, a failure blocks that turn's attacks, no retained success, the Ward uses
+# the ordinary pipeline).  Hireling family model (README, Hireling recipients): the real Abdul
+# through the hireling route (hirelings.dramatis-personae.1b) with the fixture facts (WS3 S3 T3 W2
+# I5 A1; printed Ld8 stays), his kit dagger by default and the Eye worn through defence_ids; he is
+# silenced (attacks 0) so the only dice are the enemy's.  The enemy is hand-built (WS3 S3 T3 W3 I2
+# A1 Ld7, mace) and declares creature_kind undead; it charges.  Ld7 fails on 5+4 and passes on 3+3;
+# WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+.  The control is the grade-1b Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Undead enemy fails its Leadership (9 against Ld7): its blows are blocked and Abdul is untouched.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
+  id: an-undead-enemy-that-fails-leadership-cannot-attack-the-real-abdul
+  fighters:
+    first:
+      &eye-undead-enemy
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &eye-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer
+      defence_ids: [defence.eye-pendant]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 5}
+    - {key: round.0.first.eye-pendant.1, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Undead enemy passes (6): its attack proceeds and the 4+ Ward holds on the 4.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
+  id: an-undead-enemy-that-passes-attacks-into-the-real-abduls-ward
+  fighters:
+    first: *eye-undead-enemy
+    second: *eye-recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 3}
+    - {key: round.0.first.eye-pendant.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.global_effects.ward_save: 4
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the Ward: the 3 is not a 4+ and the wound is taken.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
+  id: one-face-below-the-real-abduls-ward-is-not-enough
+  fighters:
+    first: *eye-undead-enemy
+    second: *eye-recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 3}
+    - {key: round.0.first.eye-pendant.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, dagger): the same Undead enemy attacks without a Leadership test and the
+# wound lands with no special save requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
+  id: the-same-undead-enemy-attacks-a-hireling-without-the-eye-untested
+  fighters:
+    first: *eye-undead-enemy
+    second:
+      &eye-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Eye is Abdul's unique item: worn by a hireling of another printed kit it is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant/defence.eye-pendant
+  id: the-eye-pendant-is-refused-on-a-hireling-outside-abduls-kit
+  fighters:
+    first: *eye-undead-enemy
+    second:
+      <<: *eye-control
+      defence_ids: [defence.eye-pendant]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer/trait.perfect-killer
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): the
+#   printed Dijin Katal's sword wound against heavy armour takes the save one face past the ordinary 5+ (a
+#   five fails); the Bard's identical sword wound is saved by the same five; the refusal.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the KB record reads "Uses source Perfect Killer rule"; the binding
+#   is the trait (compiler.py:1241 `armour_penetration=1`, read by modular/contexts.py ~830 as one more point
+#   of armour modification on every attack), i.e. the Dark Elf skill's printed "-1 to enemy armour saves".
+#   His kit is two swords and Dark Venom (the sword is named, as the sibling Kindred Hatred file does; the
+#   hireling kit resolver fills no off hand, so one attack is on the tape) plus the Druchii Assassin's Cloak,
+#   whose printed rule is source-blocked (design ruling, first triage batch) and contributes nothing.  His
+#   Strike to Injure needs an Injury roll and Dark Venom a critical or Injury, neither reached; Lightning
+#   Reflexes concerns his being charged and he charges here.  The Bard control carries a sword in its own
+#   printed kit, so the same weapon serves both.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,74 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Dijin Katal compiled
+# through the hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.dijin-katal-the-renegade-assassin),
+# his printed rule granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays); a kit sword is named.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1, mace, heavy armour 5+)
+# with its attacks silenced.  Arithmetic (Strength 3 and a sword modify nothing): heavy 5+ becomes 6+ under
+# Perfect Killer's extra -1, so a declared five separates the recipient (fails) from the Bard (saves).  Hits
+# are fours (4+), wounds fours (S3 vs T3 on 4+, never a six).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Against heavy armour Dijin's sword wound is saved only on a six: the five fails and the wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer/trait.perfect-killer
+  id: dijin-katals-extra-penalty-takes-the-heavy-armour-save-past-five
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.dijin-katal-the-renegade-assassin
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &armoured
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard's identical sword wound against the same heavy armour is saved by the same five.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer/trait.perfect-killer
+  id: a-hireling-without-the-rule-sees-the-same-five-save
+  fighters:
+    first:
+      &bard
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *armoured
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer/trait.perfect-killer
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *bard
+      special_rule_ids: [hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat/material.dark-elf-blade
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (hireling family model, see below): the real
+#   Innominatus's kit axe carries the blade (expect_fighters) and its Wicked Edge stuns
+#   on the injury die 2; its Critical Damage +1 turns a critical die 2 into the
+#   armour-ignoring band so no save die is asked where the Bard control's identical
+#   critical die 2 still rolls (and makes) the save; the refusal.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,129 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1c.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the scenarios of the hireling family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17; equipment batch 2026-11-18).  The recipient is
+# the printed hireling profile compiled through the hireling route (band_id
+# hirelings.dramatis-personae.1c, profile_id hireling.dramatis.innominatus-the-tilean-
+# gladiator); the printed item rule is granted by the profile itself, so the build
+# selects nothing.  Design ruling 2026-11-17 (first triage batch): a unique item that
+# is a printed catalogue upgrade binds that upgrade's mechanic, so the Dark Elf Blade
+# binds material.dark-elf-blade, which the profile grant lays on the kit's first
+# close-combat weapon, the dwarf axe (omitted main weapon; no main_material_id is
+# declared).  Physical characteristics are the fixture facts (WS3 S3 T3 W2 I5 A1); the
+# printed Ld8 stays.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace).  The
+# control is the grade-1b Bard with his kit dagger.
+#
+# Printed upgrade (Dark Elves, Lustria): "Critical Damage: when rolling on the
+# critical hit chart a Dark Elf blade will add +1 to the result. Wicked Edge: a roll
+# of 2-4 on the injury table is a Stunned result."  The basic critical chart's bands
+# are 1-2 (two wounds), 3-4 (two wounds, no armour save), 5-6 (two wounds, no save,
+# +2 injury): a critical die 2 with the blade is a 3 and ignores the armour save.
+# S3 vs T3 wounds on a 4+ and a 6 is the critical.  Heavy armour (5+) worsened by the
+# dwarf axe's own -1 is a 6+ save, so an ordinary critical 2 would ask the armour die
+# the blade's 3 skips; the Bard's dagger grants that same heavy-armoured target a
+# 4+ save, so his critical die 2 asks the armour die and the 4 makes it.
+#
+# Companion printed rules of the same profile, declared by name: Death Without a
+# Face (causes fear) makes the charged opponent test for Fear (3+3 passes Ld7);
+# Grizzled Veteran (psychology immunity) removes his own tests; the dwarf axe's parry
+# only rolls when he is hit.
+
+# The recipient charges a one-Wound opponent: the Fear test passes and the Wicked
+# Edge stuns on the injury die 2 (the dwarf axe alone would knock down); the
+# compiled kit axe carries the blade's critical bonus and Concussion-like edge.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat/material.dark-elf-blade
+  id: innominatus-blade-stuns-on-the-injury-die-2
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1c
+      profile_id: hireling.dramatis.innominatus-the-tilean-gladiator
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &recipient-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Death Without a Face: the charged opponent's Fear test, passed.
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_fighters:
+    first.main_weapon.critical_injury_bonus: 1
+    first.main_weapon.concussion: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Critical Damage +1: the wound die 6 is a critical, the critical die 2 reads as 3
+# and ignores the heavy-armoured opponent's save, so no armour die is asked; two
+# wounds take him to zero and the injury die 1 leaves him Knocked Down.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat/material.dark-elf-blade
+  id: innominatus-blade-adds-one-to-the-critical-die-and-skips-the-save
+  fighters:
+    first: *recipient
+    second:
+      &armoured-opponent
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *recipient-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.saved: false, attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger) scores the same critical die 2 on the same
+# heavy-armoured opponent: without the +1 it stays in the 1-2 band, the armour die
+# is asked (dagger-aided 4+) and the 4 saves both wounds.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat/material.dark-elf-blade
+  id: a-hireling-without-the-blade-still-rolls-the-save-on-the-same-critical-die
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *armoured-opponent
+  duel_context: *recipient-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed item rule belongs to the recipient's profile; selecting it on another
+# hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat/material.dark-elf-blade
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade.rule.combat]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

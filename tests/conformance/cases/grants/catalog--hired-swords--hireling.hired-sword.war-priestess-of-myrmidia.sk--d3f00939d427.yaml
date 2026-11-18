@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend/mechanic.myrmidia-eagle-friend
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real War-Priestess with the selected mark fights with her eagle as a separate strike-first
+#   Strength 3 attack resolved in its own pool before her dagger; the eagle's Strength 3 (not hers) is
+#   what the wound die meets; the same profile without the selection requests no eagle die; the mark is
+#   refused outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,115 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, War-Priestess of Myrmidia / Eagle Friend): "The Priestess gains an eagle
+# companion each time she acquires this mark.  Eagles are weapons she directs: in close combat they
+# strike first, use her Weapon Skill, and each successful attack inflicts a Strength 3 hit.  Eagles
+# cannot be attacked or slain [...]  Their 24-inch shooting attack and post-battle return/loss are
+# outside the resolved melee duel."  The grant is selectable (special_skill_rule_ids); the execution
+# entry carries the tag mechanic.myrmidia-eagle-friend, which the compiler (compiler.py ~1357-1359)
+# turns into one extra-attack weapon tagged rule.eagle-friend (fixed Strength 3, strike-first
+# priority) per eagle (eagle_friends, default one); rounds.py (~1623-1654) resolves each eagle as its
+# own pool keyed round.<i>.<side>.eagle.<n>.attack.0 before the bearer's hand weapon, and contexts.py
+# (~180) pins its Strength to 3.  The model is the authored mechanics file
+# cases/mechanics/mechanic.myrmidia-eagle-friend.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed War-Priestess compiled through
+# the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.war-priestess-of-myrmidia) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays); the mark is selected with
+# special_rule_ids on the real profile, and the unselected control is the same profile without it.
+# Her omitted main weapon is the kit's ceremonial dagger (its 6+ save for the target never comes up:
+# her own dagger attacks below are natural 1s; the eagle's hit is its own weapon and carries no dagger
+# bonus).  Her War-Honed is Fear immunity plus a first-failed-Leadership re-roll, and no Leadership
+# test occurs here.  Nobody charges, so the order is the eagle's strike-first, then her I5, then the
+# I2 opponent.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace).  Dice: the eagle uses her
+# WS3 against WS3 (4+) and its Strength 3 wounds T3 on 4+; fours, no critical die.
+# Semantic note: the multiple-marks face ("each time she acquires this mark", eagle_friends > 1) is not
+#   evidenced here; the engine inserts a second same-side eagle pool ahead of the first, so the
+#   ordering of eagle.0/eagle.1 dice would be an engine reading, not a printed one.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# With the selected mark the eagle strikes first in its own pool: its four hits on her Weapon Skill,
+# its Strength 3 four wounds, and only then does her own dagger swing (and miss).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend/mechanic.myrmidia-eagle-friend
+  id: the-priestess-s-eagle-strikes-first-as-its-own-strength-three-attack
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend]
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &nobody-charges {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eagle.0.attack.0.hit, value: 4}
+    - {key: round.0.first.eagle.0.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: true, attacks.0.damage: 1, attacks.1.hit: false,
+        attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.eagle.0.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.eagle.0.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# "Each successful attack inflicts a Strength 3 hit": the eagle's wound die is Strength 3 against
+# Toughness 3 (4+), so a three fails even though the eagle hit; the Priestess's own blow then misses.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend/mechanic.myrmidia-eagle-friend
+  id: the-eagle-s-hit-wounds-at-strength-three
+  fighters:
+    first: *recipient
+    second: *opponent
+  duel_context: *nobody-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eagle.0.attack.0.hit, value: 4}
+    - {key: round.0.first.eagle.0.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Priestess without the selected mark: no eagle pool exists, so the strict tape holds no
+# eagle die and the round is the two ordinary attacks.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend/mechanic.myrmidia-eagle-friend
+  id: the-same-priestess-without-the-mark-makes-no-eagle-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *nobody-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mark is printed for the War-Priestess; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend/mechanic.myrmidia-eagle-friend
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

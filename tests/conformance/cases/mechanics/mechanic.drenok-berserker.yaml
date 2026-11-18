@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.drenok-berserker
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 scenarios pin the ruling's continuation test: the first
+#   reduction to zero Wounds asks a 4+ in place of the Injury roll (4 stands fighting
+#   at zero Wounds, 3 is Out of Action), no Wound is restored, a second wound in the
+#   same turn asks no further die, the next player turn asks a fresh 4+ (4 keeps him
+#   fighting, 3 takes him Out), and the control without the mechanic rolls the
+#   ordinary Injury die.  The bearer is hand-built with the mechanic injected through
+#   skill_ids, so the removal probe reports this shared mechanic file inert by design;
+#   the real Drenok is evidenced in his rule file.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,168 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 6 scenarios cover the first-crossing 4+ pair, the unrestored Wound
+#   and same-turn cover, the next-turn renewal pair and the ordinary-Injury
+#   control.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/mechanic.drenok-berserker - Drenok Johansen's Berserker (Town Cryer 15
+# p27).  Design ruling 2026-10-15 ("Drenok's Berserker is not the Slayer skill"):
+# a first reduction to zero Wounds requires 4+ to stand fighting this turn, with a
+# fresh roll every subsequent player turn while still at zero; failure means Out
+# of Action.  It restores no Wound and grants no charging hit bonus.  A successful
+# roll covers further ordinary wound damage in that same turn.  The roll is a
+# continuation test, not a save: the wound is taken and no Injury die is rolled.
+#
+# Expectations come from the ruling, never from engine output.  The bearer has one
+# Wound so the first wound crosses to zero.  The consumer asks the first-crossing
+# die as `round.<i>.<side>.attack.<n>.drenok-berserker` in place of the Injury die
+# (packages/python/combat-engine/mordheim_combat/modular/attacks.py) and the
+# renewal die as `round.<i>.<side>.drenok-berserker` at the start of every later
+# round while the bearer still fights at zero (modular/rounds.py).  The strict
+# tape is consumed in request order: all hits of a side before its wounds.
+
+# The first crossing to zero: the hit lands, the wound is taken (no save, no
+# Injury die) and the 4 keeps the bearer standing and fighting at zero Wounds; his
+# own attack is still requested afterwards.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: the-first-reduction-to-zero-stands-fighting-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &db-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drenok-berserker]
+      characteristics: &db-bearer-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &db-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the 3 fails the continuation test and the bearer is Out of
+# Action without an Injury die.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: a-three-on-the-first-crossing-is-out-of-action
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *db-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drenok-berserker]
+      characteristics: *db-bearer-w1
+  duel_context: *db-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# No Wound is restored and the success covers the rest of the turn: the attacker's
+# second wound of the same turn asks no second die, and the bearer stays standing
+# at zero Wounds.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: a-second-wound-in-the-same-turn-asks-no-further-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drenok-berserker]
+      characteristics: *db-bearer-w1
+  duel_context: *db-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The next player turn asks a fresh 4+ before any attack: the 4 keeps the bearer
+# fighting at zero Wounds through a second round.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: the-next-turn-asks-a-fresh-four-plus-and-passes
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *db-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drenok-berserker]
+      characteristics: *db-bearer-w1
+  duel_context: *db-charging-first
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.drenok-berserker, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+    1: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The renewal fails: the 3 at the start of the next turn takes the bearer Out of
+# Action before any attack of that turn is rolled.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: a-failed-renewal-on-the-next-turn-is-out-of-action
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *db-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drenok-berserker]
+      characteristics: *db-bearer-w1
+  duel_context: *db-charging-first
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.drenok-berserker, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {termination_reason: second_out}
+
+# The control: without the mechanic the same wound rolls the ordinary Injury die
+# and the 1 leaves the fighter Knocked Down; no continuation die is requested.
+- audit_id: mechanic/mechanic.drenok-berserker
+  id: without-the-mechanic-the-ordinary-injury-die-is-rolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *db-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *db-bearer-w1
+  duel_context: *db-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

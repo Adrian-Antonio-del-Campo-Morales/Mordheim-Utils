@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/armour.attlas-plate-mail
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (equipment-items batch, 2026-11-18) pin the printed 4+ save
+#   on both faces of its boundary (the die 4 saves, the 3 is one face short) together with the
+#   extra Wound the suit grants (compiled wounds 3 from a fixture 2, observed through
+#   expect_fighters and expect_initial), and a heavy-armour control on the same wearer whose
+#   compiled save is 5 and whose Wounds stay 2.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The execution entry carries only its tag; the 4+ save, gromril material and +1 Wound come from
+#   the catalogue item/compiler projection the probe does not substitute (TODO.md: equipment
+#   mechanics the probe cannot reach), so the entry's neutralisation changes nothing (inert).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the printed 4+ save boundary pair, the +1 Wound the suit
+#   carries while worn, and the heavy-armour control on the same wearer.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/armour.attlas-plate-mail - Karak Azgal p.70, Runic Artefacts: Att'la's Plate
+# Mail, a gromril suit with a 4+ armour save that also grants its wearer +1 Wound.  The
+# armours-family record carries `base_save: 4`; the compiler folds the printed extra Wound
+# into the compiled profile as a stat bonus of the worn item and tags the suit gromril
+# (material.gromril), a material fact that only another rule's operator reads.
+#
+# Expectations come from the printed artefact entry, never from engine output.  The suit is
+# worn through `armour_id`; the attacker is Strength 3, so no save modifier applies and the
+# armour die 4 is the printed boundary.  The fixture wearer has 2 Wounds, so the compiled
+# profile shows 3 and the duel starts at 3.
+
+# The printed save on its own face, and the extra Wound on the compiled wearer.
+- audit_id: mechanic/armour.attlas-plate-mail
+  id: attlas-plate-mail-saves-on-four-and-grants-one-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &apm-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.attlas-plate-mail
+      characteristics: &apm-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &apm-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {second.wounds: 3}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_fighters:
+    second.armour_save: 4
+    second.characteristics.wounds: 3
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 3 is not a 4+, the wound is taken, and the
+# wearer drops from the granted 3 Wounds to 2.
+- audit_id: mechanic/armour.attlas-plate-mail
+  id: attlas-plate-mail-does-not-save-on-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *apm-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.attlas-plate-mail
+      characteristics: *apm-defender
+  duel_context: *apm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same wearer in ordinary heavy armour (printed 5+) keeps the fixture's
+# 2 Wounds, and the identical die 4 is one face short of the 5+.  The pair isolates both
+# of Att'la's printed quantities.
+- audit_id: mechanic/armour.attlas-plate-mail
+  id: heavy-armour-on-the-same-wearer-saves-on-five-and-grants-no-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *apm-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: *apm-defender
+  duel_context: *apm-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {second.wounds: 2}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_fighters:
+    second.armour_save: 5
+    second.characteristics.wounds: 2
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

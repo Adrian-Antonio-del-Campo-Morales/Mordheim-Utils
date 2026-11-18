@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 210 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 127 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -145,6 +145,23 @@ what is pending and when it is done.
   effect-set (the +1 cannot be isolated) and the Tzeentch patron compiles identity tags only;
   Hypnotic Gaze's KB eligibility still lists the Lahmia vampire (open defect above). Done when each
   is confirmed as the intended encoding or repaired.
+- **Equipment and hireling-operator wrinkles (2026-11-18).** Recorded in the files, none blocking:
+  Herb Lore heals only while the duel is not engaged and the harness ends an unengaged duel before
+  a round resolves, so its two identities stay PARTIAL (a harness gap: no disengaged-but-continuing
+  round); the engine carries an unbound `mechanic.darting-steel` parry operator (`contexts.py`)
+  with no KB record while the Duellist binds only `trait.counts-as-buckler`; the Druchii Sea
+  Dragon Cloak prints a +1 overlay combinable with light armour while the Q128 ruling fixes the
+  shared cloak as an armour choice (two different encodings); `armour.wizard-robe` encodes only a
+  6+ save and the printed casting permission is not modelled; `species.black-orc` has no
+  `trait_overrides` producer; the Dark Elf Blade material and Marianna's garlic coating are laid
+  on the kit weapon by profile grants, so `main_material_id`/`main_poison_id` cannot be declared
+  on those hirelings; Belandysh cannot be silenced (`require_characteristics` rolls his Attacks);
+  the Misericordia's "Undead knocked down as normal" needs the victim's own No Pain; the Eagle
+  Friend's second eagle strikes before the first (die order is an engine reading); several
+  hireling item rules only name a catalogue item the kit already wields (Diestro's rapier,
+  Nicodemus's staff, the Sister's holy relic, the Wolf-Priest's pelt), so they probe
+  non-discriminating with dated notes. Done when each is confirmed as the intended encoding or
+  repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -256,11 +273,8 @@ identities whose binding already has authored scenarios elsewhere.
 | B01 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
 | B02 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
 | B03 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
-| B04 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
-| B05 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
-| B06 | operators-hirelings | 40 | 28 | 58.5 | real profile build 24, special_rule_ids 10, skill_ids 5, construction 1 |
-| B07 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **210** | 94 | 376.5 | |
+| B04 | operators-band-rules | 44 | 26 | 65.5 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1, construction 1 |
+| | **Total** | **127** | 60 | 209.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform

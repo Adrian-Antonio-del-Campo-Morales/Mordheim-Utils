@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/defence.eye-pendant
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 scenarios pin the Eye's two printed halves on a hand-built wearer
+#   (equipment-items batch 2026-11-18): the 4+ Ward on both faces (the ward die 4 saves,
+#   the 3 is one face short; the compiled ward_save is 4); an Undead attacker tests
+#   Leadership once before its attacks and a failure blocks that turn's blows; a pass lets
+#   the attack through to the Ward; a living attacker tests nothing; the test is repeated
+#   each combat turn with no retained success.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,171 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 6 scenarios cover the 4+ ward boundary pair, the Undead attacker's
+#   per-turn Leadership gate on both outcomes, the living-attacker absence and
+#   the no-retained-success repetition; the real Abdul is evidenced in his rule
+#   file.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/defence.eye-pendant - Khemri Dramatis Personae p.16, Abdul Alhazred's
+# Eye Pendant: a 4+ Ward, and any Undead warrior wishing to attack the bearer
+# must pass a Leadership test.  Design ruling 2026-10-15 ("Eye Pendant: the
+# attacking Undead tests"): the attacker tests once before its attacks in each
+# combat turn; a failure blocks that turn's attacks without cancelling contact,
+# charge or defence; there is no retained success; it is an attack restriction,
+# not Psychology; the Ward uses the ordinary pipeline.  Execution: ward_save 4
+# plus the tag read by the round's charm block (rounds.py: the Undead target's
+# Leadership is resolved on round.<i>.<attacker side>.eye-pendant.{0,1} and a
+# failure sets charm_attack_blocked for the turn).  The Eye is worn gear through
+# defence_ids; the Undead attacker declares trait_overrides creature_kind undead.
+#
+# Expectations come from the printed text and the ruling, never from engine
+# output.  Ld7 fails on 5+4 = 9 and passes on 3+3 = 6.  The wearer is silenced
+# (attacks 0) in the gate scenarios so the attacker's dice are the only tape.
+
+# The 4+ Ward on its own face: the ward die 4 turns the wound after the hit and
+# wound have landed.
+- audit_id: mechanic/defence.eye-pendant
+  id: the-eye-pendant-wards-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ep-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: &ep-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &ep-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.global_effects.ward_save: 4
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 3 is not a 4+ and the wound is taken.
+- audit_id: mechanic/defence.eye-pendant
+  id: one-face-below-the-eye-pendant-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ep-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: *ep-defender
+  duel_context: *ep-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An Undead attacker tests Leadership before its attacks: 5+4 fails Ld7, the
+# turn's blows are blocked (no hit die is requested) and the wearer is untouched.
+- audit_id: mechanic/defence.eye-pendant
+  id: an-undead-attacker-that-fails-leadership-cannot-attack-the-wearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: &ep-undead-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: *ep-defender
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ep-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 5}
+    - {key: round.0.first.eye-pendant.1, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Undead attacker passes (3+3): its attack proceeds and the wound then
+# meets the ordinary 4+ Ward, which holds on the 4.
+- audit_id: mechanic/defence.eye-pendant
+  id: an-undead-attacker-that-passes-leadership-attacks-into-the-ward
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: *ep-undead-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: *ep-defender
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ep-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 3}
+    - {key: round.0.first.eye-pendant.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A living attacker tests nothing: the identical setup without the Undead nature
+# requests no Leadership dice and the attack goes straight to the Ward.
+- audit_id: mechanic/defence.eye-pendant
+  id: a-living-attacker-is-not-tested-by-the-eye
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ep-undead-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: *ep-defender
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ep-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 3}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No retained success: the Undead attacker that passed in the first turn (and
+# missed) is tested again in the second and the failure blocks that turn.
+- audit_id: mechanic/defence.eye-pendant
+  id: the-undead-attacker-tests-again-each-combat-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: *ep-undead-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.eye-pendant]
+      characteristics: *ep-defender
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ep-charging-first
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.eye-pendant.0, value: 3}
+    - {key: round.0.first.eye-pendant.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.eye-pendant.0, value: 5}
+    - {key: round.1.first.eye-pendant.1, value: 4}
+  expect_rounds:
+    0: {state.first.charm_attack_blocked: false, attacks.0.hit: false, state.second.wounds: 2}
+    1: {state.first.charm_attack_blocked: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

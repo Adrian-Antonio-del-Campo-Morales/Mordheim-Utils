@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.gromril-hammer
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios pin the printed Gromril armour penetration at its
+#   save boundary on a hand-built bearer (heavy armour's 5+ becomes 6+: the armour die
+#   5 fails, the 6 still holds, and the same 5 saves against an ordinary mace), the
+#   hammer's Concussion band (injury 2 is Stunned), and the real Runesmith Journeyman
+#   compiled through the hireling route with his unique hammer (expect_fighters).
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,136 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 5 scenarios cover the -1 save boundary pair with its mace control,
+#   the Concussion band and the real Runesmith's compiled hammer.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/weapon.gromril-hammer - the Runesmith Journeyman's Gromril Hammer
+# (Nemesis Crown supplement): "A hammer with Gromril armour penetration, with the
+# normal Concussion rule."  The execution entry carries concussion, armour_penetration
+# 1 and the tags weapon.mace and material.gromril; the printed Gromril material
+# "has an extra -1 save modifier".
+#
+# Expectations come from the printed text, never from engine output.  Heavy armour
+# saves on a 5+; a Strength 3 bearer adds no modifier of his own, so the hammer's
+# -1 makes the target a 6+: the armour die 5 is the boundary (it saves against the
+# ordinary mace control, fails against the hammer) and the 6 still holds.  The
+# Concussion band is pinned at its start: the injury die 2 (Knocked Down on the
+# ordinary chart) is Stunned.
+
+# The printed -1 at its boundary: heavy armour's 5 no longer saves.
+- audit_id: mechanic/weapon.gromril-hammer
+  id: gromril-hammer-worsens-the-save-by-one
+  fighters:
+    first:
+      main_weapon_id: weapon.gromril-hammer
+      characteristics: &gh-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &gh-armoured {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &gh-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The worsened save still holds on its new face: the 6 saves.
+- audit_id: mechanic/weapon.gromril-hammer
+  id: the-worsened-save-still-holds-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.gromril-hammer
+      characteristics: *gh-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: *gh-armoured
+  duel_context: *gh-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mace control: the identical armour die 5 saves against an ordinary mace, so
+# the point of penetration is the hammer's own.
+- audit_id: mechanic/weapon.gromril-hammer
+  id: the-same-armour-die-saves-against-an-ordinary-mace
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gh-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: *gh-armoured
+  duel_context: *gh-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The normal Concussion rule: against an unarmoured one-Wound victim the injury die
+# 2 is Stunned.
+- audit_id: mechanic/weapon.gromril-hammer
+  id: gromril-hammer-injury-2-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.gromril-hammer
+      characteristics: *gh-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *gh-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The real Runesmith Journeyman (Nemesis Crown; hireling route, fixture
+# characteristics, printed Ld9 stays) wields his unique hammer by its mechanic id:
+# the compiled main weapon shows the Gromril penetration and Concussion.  His kit
+# heavy armour is owned, not worn; Hard to Kill and Hard Head only read his own
+# injuries, and the Runesmith rune use is a pre-battle matter that requests nothing
+# here.  Both declared hit dice miss.
+- audit_id: mechanic/weapon.gromril-hammer
+  id: the-real-runesmith-compiles-his-unique-hammer
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.runesmith-journeyman
+      main_weapon_id: weapon.gromril-hammer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.main_weapon.armour_penetration: 1
+    first.main_weapon.concussion: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

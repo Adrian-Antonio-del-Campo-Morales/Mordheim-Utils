@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (hireling family model, see below): the real Sister's
+#   Arcane Candelabrum counts as a holy relic, so her first required Leadership test
+#   (the Fear test at the charge) is passed with no die and the single relic use is
+#   spent; the Bard control rolls the same Fear test and a failed total cancels the
+#   charge; the refusal.  The printed brazier-iron / lantern treatment and the capture
+#   of a mutant taken out are the rule's non-duel half (reason out-of-scope.movement)
+#   and are not evidenced.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The holy relic's fear resource is carried by the owned catalogue item (defence.holy-relic) the kit
+#   supplies; the candle-tree binding only names it, so filtering the binding leaves the relic.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the scenarios of the hireling family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17; equipment batch 2026-11-18).  The recipient is
+# the printed hireling profile compiled through the hireling route (band_id
+# hirelings.hired-sword.2b, profile_id hireling.hired-sword.sister-of-sigmar); the
+# printed rule is granted by the profile itself, so nothing is selected for it.  Her
+# build is the admitted one (tests/construction/test_hireling_admission.py): the
+# printed kit is owned (sigmarite_hammer, light_armour, blessed_water,
+# arcane_candelabrum), the Sigmarite hammer is in hand, and Blessing of Sigmar's two
+# distinct Sisters special skills are selected (Sign of Sigmar, Absolute Faith) so the
+# profile constructs; neither requests a die here (Sign of Sigmar reads an Undead or
+# Possessed opponent, Absolute Faith's Fear re-roll has no failed test to re-roll).
+# Physical characteristics are the fixture facts (WS3 S3 T3 W2 I5 A1); the printed Ld8
+# stays.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the
+# one fact the relic reads, trait_overrides: {causes_fear: true}.  The control is the
+# grade-1b Bard with his kit dagger.
+#
+# Printed rule (Mutiny in Marienburg Specialists p4): "Arcane Candelabrum counts as a
+# holy relic, brazier iron and lantern that is used one-handed."  The admitted duel
+# binding is defence.holy-relic: "automatically pass the first Leadership test he is
+# required to make in the game" (mechanic/defence.holy-relic model).  The auto-pass
+# consumes no die, so the strict tape would fail if a Fear die were requested; the
+# spent-resource set `leadership.holy-relic` is the observable that the single use
+# happened.  A charger's failed Fear test cancels the charge (termination disengaged).
+
+# The Sister charges a fear-causer: her first required Leadership test is the Fear
+# test at the charge, auto-passed with no die; the relic's single use is spent and
+# the duel proceeds to the (missed) attacks.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic
+  id: the-sisters-candelabrum-passes-her-first-leadership-test-without-a-die
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.sister-of-sigmar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [sigmarite_hammer, light_armour, blessed_water, arcane_candelabrum]
+      main_weapon_id: weapon.sigmarite-hammer
+      special_rule_ids: [band--special-skills-sign-of-sigmar, band--special-skills-absolute-faith]
+    second:
+      &fear-causer
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &recipient-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.resources_spent: [leadership.holy-relic], state.first.condition: STANDING, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger) charges the same fear-causer: the Fear test is
+# rolled, the total of twelve fails Leadership 7 and the charge is cancelled before
+# any attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic
+  id: a-hireling-without-the-relic-rolls-the-same-fear-test
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *fear-causer
+  duel_context: *recipient-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.first.resources_spent: [], state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed grant belongs to the recipient's profile; selecting it on another
+# hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.sister-of-sigmar.rule.candle-tree]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

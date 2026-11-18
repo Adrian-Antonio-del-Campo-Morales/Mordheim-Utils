@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/armour.mage-robes
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios pin the printed 6+ armour save on a hand-built wearer
+#   (the armour die 6 saves, the 5 is one face short, the compiled armour_save observed
+#   alongside) and the printed "cannot combine with any other piece of armour" as a
+#   refusal of a helmet worn with the robes.  The printed spellcasting clause is
+#   outside the duel.  The execution entry carries nothing but its own tag (the save
+#   comes from the armour catalogue's base_save), so the removal probe reports this
+#   identity inert by design (README, Rule-removal probe).  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The execution entry carries only its tag; the 6+ save comes from the catalogue base_save the
+#   probe does not substitute (TODO.md: equipment mechanics the probe cannot reach) — inert.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,80 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the printed 6+ boundary pair and the
+#   no-other-armour refusal.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/armour.mage-robes - the Khemri Mage Robes (Khemri p61 / Trollheim
+# catalogue): "the robe grants its bearer a 6+ armour save and cannot combine its
+# effects with any other piece of armour", and the robes do not prevent casting.
+# The armour family row carries base_save 6 (close-combat.yaml) and the robes are
+# worn through armour_id; the loadout gate refuses any other armour piece,
+# helmets included (tests/construction/test_wardrobe_variants.py reads the same
+# printed paragraph: no helmet is excepted).
+#
+# Expectations come from the printed text, never from engine output.  With no
+# other armour the compiled save is exactly the printed 6+, so the armour die 6 is
+# the boundary; the attacker's Strength 3 adds no modifier.
+
+# The printed save on its own face.
+- audit_id: mechanic/armour.mage-robes
+  id: mage-robes-save-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &mr-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.mage-robes
+      characteristics: &mr-wearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &mr-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/armour.mage-robes
+  id: mage-robes-do-not-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mr-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.mage-robes
+      characteristics: *mr-wearer
+  duel_context: *mr-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Cannot combine its effects with any other piece of armour": a helmet worn with
+# the robes is refused by construction.
+- audit_id: mechanic/armour.mage-robes
+  id: mage-robes-refuse-any-other-piece-of-armour
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mr-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.mage-robes
+      defence_ids: [defence.helmet]
+      characteristics: *mr-wearer
+  expect_error: "armour.mage-robes cannot be combined with any other armour"

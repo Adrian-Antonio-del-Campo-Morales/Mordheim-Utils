@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Whaler's single wound on the Shallows Beasts Buccaneer carrying the Mer-Creature mutation is
+#   doubled; the same wound on a hand-built opponent declaring the aquatic fact is doubled too; the same
+#   Buccaneer without the mutation loses one Wound; the Bard control wounds the Mer-Creature once; the
+#   rule is refused outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,131 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Whaler / Marine Hunter): "Whalers grow accustomed to hunting marine
+# beasts.  Double any wounds inflicted to aquatic models."  The grant is profile; the mechanic's
+# execution entry carries the tag mechanic.marine-hunter, read by
+# packages/python/combat-engine/mordheim_combat/modular/attacks.py (~762-764): the damage of an
+# ordinary wound is doubled when the attacker is tagged mechanic.marine-hunter and the defender is
+# tagged species.aquatic.  The aquatic fact reaches a defender either through the Mer-Creature
+# mutation (mechanic.mer-creature, whose execution entry carries species.aquatic; the Shallows
+# Beasts band file ...0c71905a4cab is the authored model) or through the supplied trait
+# `aquatic: true` (compiler.py ~1022).  The model is the authored mechanics file
+# cases/mechanics/mechanic.marine-hunter.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Whaler compiled through the
+# hireling route (hirelings.hired-sword.2b / hireling.hired-sword.whaler) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); his omitted main weapon is the printed kit's first
+# close-combat weapon, the spear (strike first, which only confirms the charger's order here).  His
+# other printed rules: Hardened is Fear immunity (no opponent here causes Fear), Harpooner and
+# Whalebone Carver are outside the duel.  The aquatic opponent is the Shallows Beasts Buccaneer
+# (a printed Hero) who selects the Mer-Creature mutation through special_rule_ids and carries a club
+# with the fixture W3 so a doubled wound leaves him standing; he contributes no swing
+# (initial_state).  The second aquatic opponent is hand-built and declares the fact directly.  The
+# control is the grade-1b Bard (dagger; kit light armour owned, not worn): his dagger grants its
+# target the printed 6+ save, so one armour die is declared after the wound.  Dice: WS3 against WS3
+# hits on 4+, S3 against T3 wounds on 4+ (fours, no critical die).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The real Whaler's single spear wound on the Mer-Creature is doubled: three Wounds become one.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
+  id: whalers-wound-on-the-mer-creature-buccaneer-is-doubled
+  fighters:
+    first:
+      &whaler
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.whaler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &mer-creature-buccaneer
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-mer-creature]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &whaler-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The aquatic fact supplied directly on a hand-built opponent: the same wound is doubled as well.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
+  id: whalers-wound-on-a-supplied-aquatic-opponent-is-doubled
+  fighters:
+    first: *whaler
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {aquatic: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *whaler-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Buccaneer without the mutation is not aquatic: the Whaler's wound costs one.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
+  id: a-buccaneer-without-the-mutation-takes-one-wound-from-the-whaler
+  fighters:
+    first: *whaler
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *whaler-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard, compiled through the same route without Marine Hunter, wounds the
+# Mer-Creature once (his dagger grants the Buccaneer a 6+ save, which the declared 1 fails).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
+  id: a-hireling-without-the-rule-wounds-the-mer-creature-once
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *mer-creature-buccaneer
+  initial_state: {second: {attacks: 0}}
+  duel_context: *whaler-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # The dagger's printed 6+ save for its target fails on 1.
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Whaler's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.whaler.rule.marine-hunter/mechanic.marine-hunter
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.whaler.rule.marine-hunter]
+    second: *mer-creature-buccaneer
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

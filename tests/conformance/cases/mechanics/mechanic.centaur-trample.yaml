@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.centaur-trample
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (equipment-items batch, 2026-11-18) pin the printed Trample on a
+#   hand-built bearer: one additional natural attack beside the printed pool (two hit dice where
+#   the control rolls one, and the compiled extra attack carries the natural-attack identity), and
+#   its independence from the hand weapon (a Horseman's Hammer bearer's own strike wounds at
+#   Strength 4 on a 3 while the trample's identical 3 fails at the bearer's own Strength 3).
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,92 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the added natural attack, its freedom from weapon bonuses and
+#   the one-attack control.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/mechanic.centaur-trample - Border Town Burning, Chaos Centaur special rules: "one
+# additional natural attack, separate from the printed A1, which receives no weapon bonuses or
+# penalties".  The compiler adds the trample to the bearer's independent extra attacks as a
+# natural attack (tags weapon.natural-attacks, rule.trample), resolved by the ordinary pool after
+# the hand-weapon strikes at the bearer's own Strength.
+#
+# Expectations come from the printed rule, never from engine output.  The mechanic is injected
+# on a hand-built bearer through skill_ids.  WS3 against WS3 hits on 4+; S3 wounds T3 on 4+ and
+# S4 on 3+.  The strict tape consumes all hits of a side before its wounds.
+
+# One additional attack: the charging bearer rolls two hit dice (both declared misses) where an
+# ordinary warrior rolls one; the compiled extra attack is the natural trample.
+- audit_id: mechanic/mechanic.centaur-trample
+  id: trample-adds-one-natural-attack-to-the-pool
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.centaur-trample]
+      characteristics: &ct-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ct-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: &ct-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.wounds: 2}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.trample]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# No weapon bonuses: the bearer's Horseman's Hammer (+1 Strength, no strike-last) wounds on the
+# 3 at Strength 4, while the trample's identical 3 is one face short of the bearer's own
+# Strength 3 target.
+- audit_id: mechanic/mechanic.centaur-trample
+  id: the-trample-takes-no-bonus-from-the-hand-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.horsemans-hammer
+      skill_ids: [mechanic.centaur-trample]
+      characteristics: *ct-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ct-defender
+  duel_context: *ct-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.wounded: false, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bearer without the mechanic rolls the printed single attack.
+- audit_id: mechanic/mechanic.centaur-trample
+  id: without-trample-the-pool-is-the-printed-single-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ct-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ct-defender
+  duel_context: *ct-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

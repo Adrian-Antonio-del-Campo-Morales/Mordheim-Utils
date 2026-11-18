@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/preparation.elven-wine
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (equipment-items batch, 2026-11-18) evidence the printed
+#   Fear immunity of a warrior who drank Elven Wine before the battle: charged by a
+#   Fear-causer he is not tested (no Fear die is requested and his ordinary 4 hits), charging
+#   a Fear-causer he takes no charge test, and the same warrior without the wine is tested
+#   and fails.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# Semantic wrinkle (2026-11-18): the print restricts the wine to a Shadow Warrior (or High
+#   Elf) warband that drinks it before the battle; that is a roster permission the duel
+#   vocabulary does not carry, so the preparation is declared on a hand-built fighter through
+#   preparation_ids and the scenarios evidence the in-duel effect only.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,87 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the skipped charged test, the skipped charge test and the
+#   tested control without the wine.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/preparation.elven-wine - Shadow Warrior equipment list (mordheimer.net) and
+# Lustria p.113: a warband that drinks Elven Wine before a battle is immune to Fear for
+# the whole battle.  The record is a duel-start preparation carrying the shared
+# mechanic.fear-immunity, so the family model of mechanic.fear-immunity.yaml applies.
+#
+# Expectations come from the printed entry, never from engine output.  The opponent is a
+# hand-built Fear-causer (trait_overrides causes_fear).  Fear: the charged side tests with
+# round.0.<side>.fear.charged.{0,1}, the charger with .fear.charge.{0,1}; a 2D6 of 5+4 fails
+# Leadership 7.  The immune drinker's ordinary 4 hits, the positive evidence that no failed
+# test reduced him to hitting on sixes.
+
+# Charged by a Fear-causer, the drinker is not tested: the tape carries no Fear die and his
+# 4 hits normally.
+- audit_id: mechanic/preparation.elven-wine
+  id: the-elven-wine-drinker-is-not-tested-for-fear-when-charged
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: &ew-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.elven-wine]
+      characteristics: &ew-drinker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &ew-charged-by-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Charging a Fear-causer, the drinker takes no charge test: contact is made and the
+# charger strikes first.
+- audit_id: mechanic/preparation.elven-wine
+  id: the-elven-wine-drinker-charges-a-fear-causer-without-a-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *ew-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.elven-wine]
+      characteristics: *ew-drinker
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.second_charged: true, state.first.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same warrior without the wine is tested when charged, and 5+4 fails
+# Leadership 7, so he hits only on sixes.
+- audit_id: mechanic/preparation.elven-wine
+  id: without-the-wine-the-charged-fear-test-is-rolled-and-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *ew-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ew-drinker
+  duel_context: *ew-charged-by-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, attacks.1.hit: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

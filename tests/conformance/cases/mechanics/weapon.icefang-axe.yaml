@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.icefang-axe
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 7 scenarios pin the printed double-handed profile (+2 Strength at
+#   its wound boundary, strike-last by request order), the printed Parry (a parry die
+#   appears and blocks a lower hit) and the printed +1 to injury rolls (the die 2 that
+#   is Knocked Down on the ordinary chart is Stunned, the 4 is Out of Action), plus the
+#   real Drenok compiled through the hireling route with the axe (expect_fighters).
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,193 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 7 scenarios cover the +2 Strength boundary, the strike-last order,
+#   the parry, the +1 injury shift at two chart edges and the real Drenok's
+#   compiled axe.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/weapon.icefang-axe - Drenok Johansen's Axe of Icefang (Town Cryer 15
+# p27): "Double-handed weapon, with Parry and +1 to injury rolls."  Design ruling
+# 2026-10-15: Icefang is the printed double-handed weapon plus Parry and +1 injury,
+# not two stacked weapon profiles.  The execution entry carries strength_bonus 2,
+# two_handed, priority -1 (strike last), parry and injury_modifier 1.
+#
+# Expectations come from the printed text and the ruling, never from engine
+# output.  S3 +2 = S5 against T3 wounds on a 2+, so the wound die 2 is the
+# boundary and the 1 is one face short.  Neither fighter charges, so only the
+# printed strike-last tier sends the ordinary mace first despite the bearer's
+# higher Initiative (the double-handed-weapon model), and the defender's attack
+# is therefore attacks.0.  The injury chart prints 1-2 Knocked Down, 3-4 Stunned,
+# 5-6 Out of Action: with +1 the die 2 becomes 3 (Stunned) and the die 4 becomes 5
+# (Out of Action); the die 1 becomes 2 and stays Knocked Down.  The axe has no
+# Concussion, so those shifts are the +1's own.
+
+# The printed +2 Strength at its boundary; the injury die 1 (+1 = 2) stays Knocked
+# Down, the lower edge of the shifted chart.
+- audit_id: mechanic/weapon.icefang-axe
+  id: icefang-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: &ia-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ia-defender-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &ia-no-charge {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 2
+    first.main_weapon.two_handed: true
+    first.main_weapon.parry: true
+    first.main_weapon.injury_modifier: 1
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the boosted wound target: the 1 fails even at Strength 5.
+- audit_id: mechanic/weapon.icefang-axe
+  id: one-face-below-the-boosted-strength-does-not-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: *ia-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ia-defender-w2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *ia-no-charge
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed double-handed strike-last: without a charge the lower-Initiative
+# mace resolves before the axe, and the request order shows it.
+- audit_id: mechanic/weapon.icefang-axe
+  id: icefang-strikes-after-an-ordinary-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: *ia-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ia-defender-w2
+  duel_context: *ia-no-charge
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The printed Parry: the mace hits the bearer on a 4 and the axe's parry die 5
+# beats it, so no wound die is reached.  An ordinary double-handed weapon has no
+# parry and would request no such die.
+- audit_id: mechanic/weapon.icefang-axe
+  id: icefang-parries-a-lower-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: *ia-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ia-defender-w2
+  duel_context: *ia-no-charge
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed +1 to injury rolls at the Stunned edge: the die 2 (Knocked Down on
+# the ordinary chart) becomes 3 and the victim is Stunned.
+- audit_id: mechanic/weapon.icefang-axe
+  id: icefang-injury-2-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: *ia-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ia-defender-w1
+  duel_context: *ia-no-charge
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same +1 at the Out of Action edge: the die 4 (Stunned on the ordinary chart)
+# becomes 5 and the victim is taken out, ending the duel.
+- audit_id: mechanic/weapon.icefang-axe
+  id: icefang-injury-4-is-out-of-action
+  fighters:
+    first:
+      main_weapon_id: weapon.icefang-axe
+      characteristics: *ia-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ia-defender-w1
+  duel_context: *ia-no-charge
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The real Drenok (hireling route, fixture characteristics, printed Ld8 stays)
+# wields his printed axe by its mechanic id: the compiled main weapon shows the
+# printed double-handed profile plus Parry and the +1 injury modifier.  He
+# charges, so Fearsome makes the opponent test for Fear (3+3 passes Ld7); his
+# printed Strongman lifts the strike-last tier (the double-handed-weapon
+# exception), so the charger resolves first.  Both declared hit dice miss.
+- audit_id: mechanic/weapon.icefang-axe
+  id: the-real-drenok-compiles-his-printed-axe
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+      main_weapon_id: weapon.icefang-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Fearsome: the charged opponent's Fear test, passed.
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 2
+    first.main_weapon.two_handed: true
+    first.main_weapon.parry: true
+    first.main_weapon.injury_modifier: 1
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

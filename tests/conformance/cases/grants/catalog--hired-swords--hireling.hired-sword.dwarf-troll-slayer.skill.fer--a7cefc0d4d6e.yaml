@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Troll Slayer with the selected skill declares the charge, doubling his pool to two attacks at
+#   -1 to hit (a five hits, a four misses); declining the declaration keeps one attack at the ordinary
+#   target; without a charge no declaration is requested; the same profile without the selection makes
+#   one ordinary attack when charging; the skill is refused outside its printed profile.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,121 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/core.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed skill (Slayer special skills, Ferocious Charge): the Slayer "may" double his Attacks on the
+# turn he charges and "suffers" -1 to hit that turn.  The Troll Slayer's selectable skill binds the
+# shared mechanic skill.ferocious-charge; its execution entry carries that tag, read by
+# packages/python/combat-engine/mordheim_combat/modular/rounds.py (~1307-1322: the charging round asks
+# the decision round.<i>.<side>.ferocious-charge; declining strips the tag for that round) and
+# contexts.py (~571: -1 to hit on the first charging round while the tag is carried; the doubled pool
+# follows the tag).  The model is the authored mechanics file cases/mechanics/skill.ferocious-charge.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Troll Slayer compiled through
+# the hireling route (hirelings.hired-sword.core / hireling.hired-sword.dwarf-troll-slayer) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld9 stays); his omitted main weapon is the kit's
+# first option, an axe (its armour penetration meets no armour here).  His other printed rules:
+# Deathwish is Psychology immunity, Hard to Kill and Hard Head read only his own Injury roll, and he is
+# never wounded on these tapes.  The skill is selected with special_rule_ids on the real profile; the
+# unselected control is the same profile without it; the refusal selects the skill on the grade-1b
+# Bard.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace); his reply is a natural 1.  Dice:
+# WS3 against WS3 hits on 4+ (5+ under the -1), S3 against T3 wounds on 4+; the doubled pool rolls both
+# To Hit dice before its To Wound dice.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The declared Ferocious Charge: two attacks at 5+, so the five hits and wounds while the four misses.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
+  id: the-charging-slayer-declares-the-skill-and-doubles-his-pool-at-minus-one
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.dwarf-troll-slayer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge]
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &slayer-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.ferocious-charge, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: True, attacks.0.damage: 1, attacks.1.hit_target: 5,
+        attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "May": declining the declaration keeps the ordinary single attack at 4+, so the four hits.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
+  id: declining-the-declaration-keeps-one-attack-at-the-ordinary-target
+  fighters:
+    first: *recipient
+    second: *opponent
+  duel_context: *slayer-charges
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.ferocious-charge, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.damage: 1, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The skill is for the turn he charges: with no charge the declaration is never requested and the
+# single attack keeps its ordinary target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
+  id: without-a-charge-no-declaration-is-requested
+  fighters:
+    first: *recipient
+    second: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.damage: 1, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Troll Slayer without the selection charges with one ordinary attack and no declaration.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
+  id: the-same-slayer-without-the-skill-charges-with-one-ordinary-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.dwarf-troll-slayer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *slayer-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.damage: 1, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The skill is printed for the Troll Slayer; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge/skill.ferocious-charge
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

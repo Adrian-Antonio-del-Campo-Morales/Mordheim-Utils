@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   a charging enemy needs 5 instead of 4 to hit the real Bog Hunter (the four misses); the five still
+#   hits (the penalty is one face); the penalty also binds the enemy striking back when the Bog Hunter
+#   is the charger; the Bard control is hit by the same four; the rule is refused outside its printed
+#   profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,109 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Bog Hunter / Unholy Stink): "The Bog hunter is covered in a thick layer
+# of dung, the smell is so distracting that all enemies are at -1 to hit the Bog hunter in close
+# combat."  The grant is profile; the execution entry carries the tag mechanic.unholy-stink, read by
+# packages/python/combat-engine/mordheim_combat/modular/contexts.py (~552-553): every melee attack
+# against the tagged defender takes -1 to hit.  The model is the authored mechanics file
+# cases/mechanics/mechanic.unholy-stink.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Bog Hunter compiled through
+# the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.bog-hunter) with the fixture
+# facts (WS3 S3 T3 W2 I5 A1; the printed Ld6 stays); his omitted main weapon is the kit's first
+# close-combat weapon, the beastlash (Strength -1, cannot be parried), and his kit toughened leathers
+# are owned, not worn, so a wound on him meets no save.  His other printed rules (Gopher, Fenland
+# Strider) are outside the duel; his starting skills Streetwise and Haggle too.  The enemy is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace).  The control is the grade-1b Bard (dagger).  Dice: WS3
+# against WS3 hits on 4+ (5+ under the -1), S3 against T3 wounds on 4+ (fours, no critical die).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charging enemy's four is one short of the 5 the stench demands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
+  id: an-enemy-needs-five-to-hit-the-bog-hunter
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &bog-hunter
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.bog-hunter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &attacker-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The penalty is exactly one face: a five hits and the wound lands on the unarmoured Bog Hunter.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
+  id: a-five-still-hits-the-bog-hunter
+  fighters:
+    first: *attacker
+    second: *bog-hunter
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "All enemies": when the Bog Hunter charges, the enemy striking back is penalised just the same (his
+# own beastlash blow is a natural 1).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
+  id: the-enemy-striking-back-at-the-charging-bog-hunter-is-penalised-too
+  fighters:
+    first: *bog-hunter
+    second: *attacker
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    # The kit beastlash's Whipcrack adds a charge attack; both hits roll before the reply.
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.2.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard, compiled through the same route without the stench, is hit by the same four.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
+  id: a-hireling-without-the-rule-is-hit-by-the-same-four
+  fighters:
+    first: *attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Bog Hunter's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bog-hunter.rule.unholy-stink/mechanic.unholy-stink
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.bog-hunter.rule.unholy-stink]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

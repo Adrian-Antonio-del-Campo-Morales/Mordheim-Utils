@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/poison.reptile-venom
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios pin the coating's two printed halves on a hand-built
+#   bearer (equipment-items batch 2026-11-18): the +1 Strength at its wound boundary (a 3
+#   wounds T3 with the venom, the same 3 fails with the bare mace) and the withheld save
+#   modifier (a 5 still saves a 5+ suit against the venomed S3 bearer, while a printed
+#   S4 attacker without the coating pushes the same suit to 6+ and the 5 fails).
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,5 +18,118 @@
 #
 # Clause: whole (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: 4 scenarios cover the +1 Strength wound boundary with its bare-mace
+#   control and the withheld -1 save modifier with its printed-S4 control.
+# Semantic wrinkle (2026-11-18, recorded): the Lizardmen print (Lustria, Skink
+#   henchmen) sells the venom "for their missile weapons"; that purchase
+#   restriction is construction of the Skink group and the shooting half is
+#   outside the duel, so the catalogue clause `whole` is out of scope while the
+#   mechanic itself (execution.yaml: strength_bonus 1, armour_strength_modifier
+#   -1) is implemented.  A hand-built bearer coats a close-combat mace through
+#   main_poison_id - the same channel the Tears of Shallaya file uses for Black
+#   Venom - so the duel effect of the coating is what these scenarios evidence.
+#   If the kit resolver ever refuses a melee coating for hand-built fighters
+#   the file must return to PARTIAL naming that refusal.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/poison.reptile-venom - "This adds +1 to the Strength of the weapon but
+# does not grant the -1 save modifier."  Execution: strength_bonus 1 and
+# armour_strength_modifier -1, so the wound roll uses S+1 while the armour
+# modifier is read from S (the printed Strength, no penalty at S3).
+#
+# Expectations come from the printed text, never from engine output.  S3 +1 =
+# S4 against T3 wounds on a 3+, so the wound die 3 is the boundary.  A heavy
+# armour suit saves on 5+; an ordinary S4 blow would push it to 6+, the venom's
+# S4 does not, so the armour die 5 is the save boundary.
+
+# The printed +1 Strength at its boundary: the wound die 3 reaches the S4 target
+# against T3 and the injury 1 leaves the single-wound defender Knocked Down.
+- audit_id: mechanic/poison.reptile-venom
+  id: reptile-venom-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.reptile-venom
+      characteristics: &rv-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &rv-defender-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &rv-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bare-mace control: the identical wound die 3 is one face below the
+# unboosted S3 target against T3, so the point of Strength is the coating's own.
+- audit_id: mechanic/poison.reptile-venom
+  id: the-same-wound-die-fails-without-the-venom
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *rv-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *rv-defender-w1
+  duel_context: *rv-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The withheld save modifier: the venomed bearer wounds as S4 (the 3 wounds) but
+# the heavy armour keeps its printed 5+, so the armour die 5 holds.
+- audit_id: mechanic/poison.reptile-venom
+  id: reptile-venom-does-not-grant-the-save-modifier
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.reptile-venom
+      characteristics: *rv-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &rv-defender-w2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *rv-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed-Strength control: a bearer whose own profile prints S4 wounds on the
+# same 3 but carries the ordinary -1 save modifier, so the identical armour die 5
+# is one face short of the 6+ the suit now needs.
+- audit_id: mechanic/poison.reptile-venom
+  id: an-ordinary-strength-four-blow-does-modify-the-same-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: *rv-defender-w2
+  duel_context: *rv-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

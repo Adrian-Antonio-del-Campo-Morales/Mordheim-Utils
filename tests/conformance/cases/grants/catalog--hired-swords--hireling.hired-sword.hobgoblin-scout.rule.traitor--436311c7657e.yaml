@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): an
+#   opposing Orc's first-round miss against the printed Hobgoblin Scout is re-rolled; an opposing Goblin's
+#   likewise; a human opponent's miss stands; the same Orc gets no re-roll against the Bard control; the
+#   refusal.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed Traitor is read the other way round from an ordinary
+#   Hatred - the Scout carries the mark and the OPPOSING greenskin receives the first-round re-roll
+#   (modular/contexts.py `_hit_reroll`, defender-side `mechanic.greenskin-traitor`).  The printed Black Orc
+#   member has no supplied-fact producer (compiler.py `species` admits orc and goblin only) and is not
+#   evidenced; the campaign clause ("hiring other greenskin hired swords is prohibited") is outside the duel.
+#   The Scout's own combat_traits species is goblin; the consumer reads only the opponent's species, so the
+#   Scout's own kind plays no part.  His kit's short bow is out of scope and his shield is owned, not worn,
+#   so a mace wound lands with no save die (the sibling Loner file records the same silent kit).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,118 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Hobgoblin Scout compiled
+# through the hireling route (hirelings.hired-sword.1c / hireling.hired-sword.hobgoblin-scout), its printed
+# rule granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld6 stays); the
+# kit dagger is named.  Because the rule acts on the opponent, the Scout is the charged side here and the
+# hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace) declares the one fact the clause reads (species).
+# Printed text: "Opposing Orcs, Goblins and Black Orcs hate the Hobgoblin Scout".  Dice: the opponent's
+# natural 2 misses (4+), the Hatred re-roll of 4 hits, S3 wounds T3 on a 4, no save; the Scout's own dagger
+# swing is a declared natural 1.  The control is the grade-1b Bard as the charged side: a hireling without
+# any such mark, against whom the same Orc is offered no re-roll.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# An opposing Orc charges the Scout: its 2 misses, the printed hatred re-roll is requested, 4 hits, 4 wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
+  id: an-opposing-orcs-first-round-miss-against-the-hobgoblin-scout-is-rerolled
+  fighters:
+    first:
+      &orc
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: orc}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.hobgoblin-scout
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opposing Goblin is the second printed hater.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
+  id: an-opposing-goblins-first-round-miss-against-the-hobgoblin-scout-is-rerolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *recipient
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human opponent is outside the printed haters: its miss stands, no re-roll is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
+  id: a-human-opponents-miss-against-the-hobgoblin-scout-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *recipient
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Orc charging the Bard (a hireling without the mark) is offered no re-roll.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
+  id: the-same-orc-gets-no-reroll-against-a-hireling-without-the-rule
+  fighters:
+    first:
+      <<: *orc
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.traitor/mechanic.greenskin-traitor
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.hobgoblin-scout.rule.traitor]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

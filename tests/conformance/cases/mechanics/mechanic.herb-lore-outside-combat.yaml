@@ -1,6 +1,24 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.herb-lore-outside-combat
-# authoring_status: TODO
+# authoring_status: PARTIAL
+# authoring_progress: 2 authored scenarios (operators-hirelings batch, 2026-11-18): the engaged bearer at a
+#   lost wound is never offered the healing request ("cannot heal while in close combat"), and the same
+#   fixture carrying the unrestricted mechanic.herb-lore IS offered it in the identical phase, so the
+#   withheld request is this carrier's own gate.  The healing face itself is not representable (blocker
+#   below).  REVIEWED still requires manual semantic review.
+# PARTIAL: the printed heal "on 4+ in Recovery ... cannot heal while in close combat" has a consumer
+#   (modular/rounds.py:431-438: `(has_tag(..., "mechanic.herb-lore") or not state.engaged and has_tag(...,
+#   "mechanic.herb-lore-outside-combat")) and decisions.choose(f"round.{i}.{label}.herb-lore")`), but its
+#   positive branch requires `not state.engaged` at the start of the bearer's turn, and no executed round
+#   of the 1v1 harness is ever in that state: `tests/conformance/execution/runner.py::_termination` returns
+#   "disengaged" whenever `state.engaged` is false and `execute_case` breaks before resolving a round, while
+#   inside a round the recovery step (rounds.py:431) precedes `resolve_fear` (rounds.py:728), the only
+#   in-round producer of a failed charge.  The "outside combat" healing therefore has no reachable
+#   observation; only the in-combat denial is evidenced.  A removal of this mechanic leaves the denial
+#   scenario unchanged, so the probe will report it non-discriminating by design.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The heal is offered only while the duel is not engaged, and the harness ends an unengaged duel
+#   before a round resolves, so no tape reaches the healing face (PARTIAL; harness gap in TODO.md).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +27,58 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Operator model: at the start of the active fighter's own turn a bearer below its maximum Wounds is offered
+# `round.N.<label>.herb-lore` (decision, then a die; 4+ restores one wound).  The unrestricted mechanic.herb-lore
+# offers it always; this carrier offers it only when the duel is not engaged.  The bearer is a hand-built
+# fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace) starting at one of its two wounds (initial_state), the opponent the
+# hand-built fixture (WS3 S3 T3 W3 I2 A1 Ld7, mace); neither charges, so the duel is engaged from the start
+# and both swings are declared natural 1s.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Engaged, the bearer at a lost wound is offered nothing: the tape holds only the two swings and the wound
+# stays lost.
+- audit_id: mechanic/mechanic.herb-lore-outside-combat
+  id: the-engaged-bearer-is-never-offered-the-healing-request
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.herb-lore-outside-combat]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same fixture carrying the unrestricted Herb Lore is offered the request in the identical
+# engaged phase and a four restores the wound - the withheld request above is this carrier's own gate.
+- audit_id: mechanic/mechanic.herb-lore-outside-combat
+  id: the-unrestricted-herb-lore-is-offered-in-the-same-engaged-phase
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.herb-lore]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *opponent
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.first.herb-lore, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

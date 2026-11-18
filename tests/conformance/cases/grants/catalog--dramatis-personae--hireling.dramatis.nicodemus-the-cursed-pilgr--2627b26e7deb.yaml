@@ -1,6 +1,25 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the two-handed Enormous Wizard's Staff parries like a buckler and compiles as a
+#   two-handed club with parry (expect_fighters); the same grip is a club (Concussion turns an
+#   injury of 2 into Stunned); the printed left-hand grip is an ordinary club without the parry
+#   (the alternate weapon.club profile of the unique item); the plain-hireling control's dagger
+#   offers no parry; the rule is refused outside Nicodemus's package.  REVIEWED still requires
+#   manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the printed one-handed grip is conditional on the Sword of Rezhebel
+#   spell occupying his right hand; spells are outside the duel (out-of-scope.magic), so the club
+#   grip is declared directly as the unique item's alternate mechanic (items/weapons-close-combat.yaml
+#   enormous_wizards_staff: mechanic_id weapon.wizards-staff, alternate_mechanic_ids [weapon.club]),
+#   which the hireling kit resolver admits for the unique object.  "Parry as if armed with a
+#   buckler" is carried as the staff's own parry flag (the same parry die as a sword's); no
+#   buckler-specific grammar is printed beyond the parry itself.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The staff's duel profile is carried by the catalogue item mapping (weapon.wizards-staff) that the
+#   kit wields; the rule binding only names it, so filtering the binding leaves the wielded item.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +28,119 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-1a.yaml, hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff, grant
+# profile): "The staff may be used two-handed, counting as a Club and allowing Nicodemus to parry as
+# if armed with a buckler, or in his left hand as a normal Club while the Sword of Rezhebel spell
+# occupies his right hand" - binding weapon.wizards-staff (two-handed, Concussion, parry; model
+# mechanics/weapon.wizards-staff.yaml).  Hireling family model (README, Hireling recipients): the
+# real Nicodemus through the hireling route (hirelings.dramatis-personae.1a /
+# hireling.dramatis.nicodemus-the-cursed-pilgrim) with the fixture facts (WS3 S3 T3 W2 I5 A1; the
+# printed Ld8 stays) and the unique staff named in hand under each printed grip.  The opponent is
+# hand-built (WS3 S3 T3 I2 A1 Ld7, mace; W3, or W1 where the Injury roll is the observable).  The
+# duels are uncharged: Nicodemus's Fearsome skill causes Fear, and only a charge requests a Fear
+# test, so none is declared; his Initiative 5 strikes before the opponent's 2.  The control is the
+# grade-1b Bard with his kit dagger.  Dice: WS3 against WS3 hits on 4+, S3 wounds T3 on 4+; the
+# parry die must beat the hit roll.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Two-handed: Nicodemus's own strike misses first, then the staff's parry die 5 beats the hit
+# landed on a 4; the compiled staff is a two-handed club that parries.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
+  id: the-two-handed-staff-parries-like-a-buckler
+  fighters:
+    first: &nicodemus-two-handed
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1a
+      profile_id: hireling.dramatis.nicodemus-the-cursed-pilgrim
+      main_weapon_id: weapon.wizards-staff
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_fighters:
+    first.main_weapon.two_handed: true
+    first.main_weapon.parry: true
+    first.main_weapon.concussion: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Two-handed, counting as a Club: the ordinary chart's Knocked Down of 2 becomes Stunned.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
+  id: the-two-handed-staff-is-a-club-whose-concussion-stuns-on-two
+  fighters:
+    first: *nicodemus-two-handed
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The left-hand grip: an ordinary one-handed Club with Concussion and no parry, so the same hit on
+# a 4 is offered no parry die and wounds Nicodemus.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
+  id: the-left-hand-grip-is-an-ordinary-club-without-the-parry
+  fighters:
+    first:
+      <<: *nicodemus-two-handed
+      main_weapon_id: weapon.club
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.parried: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_fighters:
+    first.main_weapon.two_handed: false
+    first.main_weapon.parry: false
+    first.main_weapon.concussion: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger): no parry is offered in the same setup and the wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
+  id: a-hireling-without-the-rule-is-offered-no-parry
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.parried: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Nicodemus's profile; selecting it on a hireling of another package is
+# refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff/weapon.wizards-staff
+  id: the-rule-is-refused-on-a-hireling-outside-nicodemuss-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

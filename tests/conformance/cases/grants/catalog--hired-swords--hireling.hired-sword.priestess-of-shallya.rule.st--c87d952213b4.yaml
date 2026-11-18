@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Priestess charging an unqualified opponent is refused at initialization; her charge against
+#   a Carnival of Chaos warrior is the printed permission and resolves; charged by an unqualified enemy
+#   she is not refused and fights back; the Bard control charges the same unqualified opponent freely;
+#   the rule is refused outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,117 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Priestess of Shallya / Strictures): "Followers of Shallya may only charge
+# in hand-to-hand combat against warriors from a Carnival of Chaos warband or other servants of Onogal
+# the Fly Lord."  This binding is the charge clause (the kit and armour clauses are the sibling
+# profile.active-weapon-restrictions / profile.equipment-restrictions identities, ...97e28d9fdb3f and
+# ...20f7ba5d40f1).  The grant is profile; the execution entry carries the tag
+# mechanic.shallya-strictures, read by packages/python/combat-engine/mordheim_combat/modular/state.py
+# (~381-386): a declared charge by the tagged fighter is refused at duel initialization unless the
+# opponent is tagged band.carnival-of-chaos or identity.onogal-follower; being charged is untouched.
+# The model is the authored mechanics file cases/mechanics/mechanic.shallya-strictures.yaml.  The
+# design ruling "Shallya healing does not permit self-healing" (2026-10-05) keeps Mercy and Healing
+# Hands out of the duel, so nothing heals on these tapes.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Priestess compiled through the
+# hireling route (hirelings.hired-sword.2b / hireling.hired-sword.priestess-of-shallya) with the fixture
+# facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and her printed walking staff named explicitly
+# (main_weapon_id weapon.quarter-staff: two-handed, parry, +1 Initiative) because the kit's dagger is
+# forbidden in hand by her own sibling stricture.  Every enemy blow at her below is a natural 1, so her
+# staff's parry is never requested.  The unqualified opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace); the qualified one is a Carnival of Chaos Brethren (collection mordheim, band carnival-of-chaos)
+# with the same fixture, whose band tag the executor reads.  The control is the grade-1b Bard (dagger).
+# Dice: WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+ (fours, no critical die).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Priestess declares a charge against a warrior who is neither Carnival of Chaos nor a follower of
+# Onogal: the printed permission is absent and the duel is refused instead of resolving the charge.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
+  id: the-priestess-s-charge-against-an-unqualified-opponent-is-refused
+  fighters:
+    first:
+      &priestess
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      main_weapon_id: weapon.quarter-staff
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &unqualified
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"
+
+# The same charge against a Carnival of Chaos warrior is the printed exception: the duel initializes
+# and her staff blow lands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
+  id: the-priestess-s-charge-against-a-carnival-of-chaos-warrior-is-permitted
+  fighters:
+    first: *priestess
+    second:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: brethren
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The clause restricts her charges only: charged by an unqualified enemy she is not refused and strikes
+# back normally (the charger's miss is the ledger's first attack, her blow the second).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
+  id: being-charged-by-an-unqualified-enemy-is-not-refused-and-she-fights-back
+  fighters:
+    first: *priestess
+    second: *unqualified
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: False, state.second_charged: True, attacks.1.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard, compiled through the same route without the strictures, charges the same
+# unqualified opponent and the duel simply resolves.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
+  id: a-hireling-without-the-rule-charges-the-same-opponent-freely
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *unqualified
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Priestess's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/mechanic.shallya-strictures
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.priestess-of-shallya.rule.strictures]
+    second: *unqualified
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

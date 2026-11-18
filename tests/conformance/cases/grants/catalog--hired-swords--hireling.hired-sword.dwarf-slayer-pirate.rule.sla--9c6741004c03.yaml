@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate/mechanic.festooned-with-pistols
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the Slayer Pirate who fires his kit pistol in the opening round keeps it in hand as
+#   a club in the second (the 4 wounds at his own Strength 3); the retained club carries Concussion
+#   (an injury of 2 is Stunned); a pistol bearer without the rule loses the spent pistol and fights
+#   with fists (the identical 4 does not wound); the rule is refused outside the Pirate's profile.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Binding note (2026-11-18): the Slayer Pirate rule binds several effects (psychology immunity, Hard to
+#   Kill, concussion immunity, Festooned with Pistols); this file evidences only the Festooned with
+#   Pistols (mechanic.festooned-with-pistols) binding.  The refusal necessarily names the whole rule,
+#   since a rule is selected as one id.
+# Control note (2026-11-18): the grade-1b Bard's printed kit holds no pistol, and an active item outside
+#   the printed kit is refused by the kit resolver, so the control is a hand-built pistol bearer with the
+#   same fixture facts rather than the Bard.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,102 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate, grant profile):
+# the source Slayer/Pirate rules, whose Festooned with Pistols clause keeps a fired pistol in hand as
+# a club in the rounds after the opening shot - binding mechanic.festooned-with-pistols (model
+# mechanics/mechanic.festooned-with-pistols.yaml).  Hireling family model (README, Hireling
+# recipients): the real Slayer Pirate through the hireling route (hirelings.hired-sword.2a /
+# hireling.hired-sword.dwarf-slayer-pirate) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed
+# Ld9 stays) and his kit pistol named in hand (the kit lists the sword first, so the firearm must be
+# named; pistols fire in close combat; the sword and superior blackpowder stay owned, not held, so
+# no parry die is offered and no Strength bonus reaches the shot).  The Pirate charges, so his
+# opening-round shot is the first die (a declared miss), and his Initiative 5 strikes first in the
+# second round.  The opponent is hand-built (WS3 S3 T3 I2 A1 Ld7, mace; W3, or W1 where the Injury
+# roll is the observable); its declared hits are misses, so the Pirate's sibling bindings (Hard to
+# Kill, concussion immunity, psychology immunity) request nothing.  Dice: WS3 against WS3 hits on
+# 4+; the club's Strength 3 wounds Toughness 3 on 4+ where a fist's Strength 2 needs 5+; the club's
+# Concussion turns an Injury roll of 2 into Stunned.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Pirate fires in the opening round and keeps the spent pistol as a club: his second-round 4
+# wounds at his own Strength.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate/mechanic.festooned-with-pistols
+  id: the-slayer-pirate-keeps-his-spent-pistol-as-a-club
+  fighters:
+    first: &pirate
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.dwarf-slayer-pirate
+      main_weapon_id: weapon.pistol
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &pirate-charges {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+    1: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The retained club carries Concussion: the second-round Injury roll of 2 is Stunned.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate/mechanic.festooned-with-pistols
+  id: the-slayer-pirates-pistol-club-carries-concussion
+  fighters:
+    first: *pirate
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *pirate-charges
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    1: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control (a hand-built pistol bearer, see the control note): without the rule the spent pistol
+# is gone and the second-round 4 is one face short of the fist's Strength 2 target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate/mechanic.festooned-with-pistols
+  id: a-pistol-bearer-without-the-rule-loses-the-spent-pistol-and-fights-with-fists
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *pirate-charges
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    1: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate/mechanic.festooned-with-pistols
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

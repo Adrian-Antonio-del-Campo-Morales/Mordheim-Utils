@@ -1,6 +1,22 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/defence.sea-dragon-cloak-druchii
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (equipment-items batch, 2026-11-18) pin the printed Druchii
+#   variant: alone it is a 6+ close-combat save (the die 6 saves, the 5 is one face short),
+#   and it combines with light armour (compiled 5+, the die 5 saves) and with a shield
+#   (compiled 5+) with no penalty, each compiled quantity observed through expect_fighters.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Semantic wrinkle (2026-11-18): Q128 (design-rulings.md, "Sea Dragon Cloak is armour") fixes
+#   the shared cloak (defence.sea-dragon-cloak) as an armour CHOICE at a constant 5+ in close
+#   combat, and the compiler carries that branch (armour_save_bonus 2 on a base of 5, the
+#   armour-choice refusal).  The Druchii row prints a different object: "+1 to the wearer's
+#   save in close combat, or a 6+ if he has none, combinable with shield and light armour
+#   with no penalty".  The KB keeps it as its own mechanic (execution.yaml: armour_save_bonus 1
+#   on the fighter), it does not share the shared cloak's compiler branch, and the eligibility
+#   gate (cloakArmourRestriction) exempts it from the armour-choice refusal by name; this
+#   file evidences the printed Druchii overlay, not Q128's armour-choice semantics, and both
+#   carry the same `defence_ids` family slot.  The printed +2 against shooting is outside
+#   the duel (the shared cloak's `shooting-outside-the-duel` clause).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +25,113 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 4 scenarios cover the 6+ save of the cloak alone on both faces and its printed
+#   combination with light armour and with a shield.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/defence.sea-dragon-cloak-druchii - Druchii special equipment (items/druchii-
+# equipment.yaml): the cloak's scales give +1 to the wearer's armour save in close combat,
+# or a 6+ save if he has none, and it may be combined with other pieces of armour.
+#
+# Expectations come from the printed row, never from engine output.  The cloak is worn
+# through `defence_ids`; the attacker is Strength 3 so no modifier applies.  Alone: 7 - 1 =
+# a 6+; over light armour (printed 6+): 6 - 1 = a 5+; with a shield (+1): 7 - 1 - 1 = a 5+.
+
+# The cloak alone: a 6+ save from nothing, on its one saving face.
+- audit_id: mechanic/defence.sea-dragon-cloak-druchii
+  id: the-druchii-cloak-alone-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &sdd-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.sea-dragon-cloak-druchii]
+      characteristics: &sdd-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &sdd-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the 6+: the 5 fails and the wound is taken.
+- audit_id: mechanic/defence.sea-dragon-cloak-druchii
+  id: the-druchii-cloak-alone-does-not-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *sdd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.sea-dragon-cloak-druchii]
+      characteristics: *sdd-defender
+  duel_context: *sdd-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed combination with light armour (6+): the cloak's +1 composes a 5+, so the
+# 5 that failed alone now saves, and the compiled quantity is 5.
+- audit_id: mechanic/defence.sea-dragon-cloak-druchii
+  id: the-druchii-cloak-adds-one-point-to-light-armour
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *sdd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      defence_ids: [defence.sea-dragon-cloak-druchii]
+      characteristics: *sdd-defender
+  duel_context: *sdd-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 5
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed combination with a shield: the shield's +1 and the cloak's +1 compose a 5+
+# from no suit at all, with no penalty for the pairing.
+- audit_id: mechanic/defence.sea-dragon-cloak-druchii
+  id: the-druchii-cloak-combines-with-a-shield-without-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *sdd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      defence_ids: [defence.sea-dragon-cloak-druchii]
+      characteristics: *sdd-defender
+  duel_context: *sdd-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 5
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

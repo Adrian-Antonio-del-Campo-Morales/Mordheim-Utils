@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/armour.chaos-armour
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios pin the printed 4+ armour save on a hand-built wearer
+#   (equipment-items batch 2026-11-18): the armour die 4 saves an S3 wound, the 3 is one
+#   face short, and an S4 blow pushes the suit to 5+ through the ordinary modifier (the 4
+#   that held now fails); the compiled armour_save is observed alongside.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,92 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the 4+ boundary pair and the ordinary Strength
+#   modifier on a hand-built wearer; the real carriers (Belandysh, the Emissary
+#   of Chaos) are evidenced in their own rule files.
+# Discrimination note (2026-11-18): the execution entry carries nothing but its
+#   own tag; the 4+ is the armours family's base_save (close-combat.yaml), which
+#   the rule-removal probe does not substitute, so these scenarios are expected
+#   to report `inert` under neutralisation.  The movement penalty the trading
+#   post attaches to heavy suits is not printed for Chaos armour and is outside
+#   the duel in any case.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# mechanic/armour.chaos-armour - Border Town Burning, Spoils of War p.45: Chaos
+# Armour, a 4+ armour save (the Emissary of Chaos print: "The printed Chaos
+# Armour provides a 4+ armour save").  It is ordinary body armour worn through
+# armour_id, so the Strength modifier applies as it does to any suit.
+#
+# Expectations come from the printed text, never from engine output.  With no
+# other armour the compiled save is exactly the printed 4+, so the armour die 4
+# is the boundary; an S4 blow carries -1 and the same 4 fails.
+
+# The printed save on its own face.
+- audit_id: mechanic/armour.chaos-armour
+  id: chaos-armour-saves-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ca-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.chaos-armour
+      characteristics: &ca-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &ca-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 4
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 3 is not a 4+ and the wound is taken.
+- audit_id: mechanic/armour.chaos-armour
+  id: chaos-armour-does-not-save-on-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ca-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.chaos-armour
+      characteristics: *ca-defender
+  duel_context: *ca-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Ordinary armour: an S4 blow carries the -1 save modifier, so the 4 that held
+# against S3 is now one face short of the 5+.
+- audit_id: mechanic/armour.chaos-armour
+  id: a-strength-four-blow-pushes-chaos-armour-to-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.chaos-armour
+      characteristics: *ca-defender
+  duel_context: *ca-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
