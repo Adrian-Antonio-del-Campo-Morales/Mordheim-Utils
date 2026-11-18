@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.songster
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (songster family model, 2026-11-18): a friendly warrior
+#   beside a supplied Songster rerolls its failed charged Fear test and passes only at the printed
+#   +1; the accepted second result when the reroll fails as well; the provider one inch beyond the
+#   canonical six-inch radius, offering nothing; a knocked-down provider still granting the reroll;
+#   and an out-of-action provider granting nothing.  The family models are the authored
+#   sea-ghosts-mim minstrels--songster file and the William Schakestange grant file (the same
+#   mechanic.songster binding).  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the songster family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,193 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# The canonical Songster print (Sea Ghosts, Henchmen / 0-3 Minstrels / Songster): "Any friendly
+# model within 6\" of the warrior may re-roll any failed Leadership test with a +1 to Leadership".
+# The provider is a hand-built fixture that injects the shared mechanic through skill_ids on the
+# nearby-participant build (legal: a hand-built build passes no profile skill-list gate), the
+# nearby-provider route the model files use with real profiles.  The clause qualifies the
+# recipient, not the singer: the songster check in modular/leadership.py (_supplied_provider)
+# runs before the same-warband band-tag gate, so the gift is cross-band and reaches a hand-built
+# recipient, and the provider grants it while he is not out of action - a Knocked Down Songster
+# still sings, because the print requires nothing of his posture.  The recipient is hand-built
+# (Ld6, mace) and the enemy is a hand-built fear-causer that charges it, so the test under
+# evidence is the recipient's charged Fear test: 6+6 fails Ld6, the declared choice takes the one
+# offered reroll, and a reroll of 3+4 = 7 passes only at the printed +1 (Ld6+1).  Every declared
+# attack die is a natural 1, a miss.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# 6+6 fails Ld6; the declared reroll of 3+4 = 7 passes only at the printed +1, so the recipient's
+# hits are not clamped to sixes.
+- audit_id: mechanic/mechanic.songster
+  id: a-nearby-songster-grants-the-failed-test-a-reroll-at-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: &songster-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &songster-recipient {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: &songster-provider
+          main_weapon_id: weapon.mace
+          skill_ids: [mechanic.songster]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    distances:
+      - [second, songster, 4]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The reroll is a single second attempt: 4+4 = 8 fails even at the printed +1 and the second
+# result stands.
+- audit_id: mechanic/mechanic.songster
+  id: the-second-result-stands-when-the-reroll-fails-even-at-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *songster-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *songster-recipient
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: *songster-provider
+    distances:
+      - [second, songster, 4]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 4}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the canonical six-inch radius no reroll is offered at all, which the strict decision tape
+# itself proves.
+- audit_id: mechanic/mechanic.songster
+  id: a-songster-beyond-the-printed-radius-offers-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *songster-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *songster-recipient
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: *songster-provider
+    distances:
+      - [second, songster, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The print requires nothing of the singer's posture, so a Knocked Down Songster still grants the
+# reroll (only his being out of action ends the song).
+- audit_id: mechanic/mechanic.songster
+  id: a-knocked-down-songster-still-grants-the-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *songster-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *songster-recipient
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: knocked-down
+        fighter: *songster-provider
+    distances:
+      - [second, songster, 4]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An out-of-action Songster grants nothing: the same failing dice stand with no reroll decision
+# offered.
+- audit_id: mechanic/mechanic.songster
+  id: an-out-of-action-songster-grants-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *songster-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *songster-recipient
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: out
+        fighter: *songster-provider
+    distances:
+      - [second, songster, 4]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

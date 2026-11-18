@@ -1,6 +1,9 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-six clause carries 6 authored scenarios for the
+#   printed supplied-leader contract. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +12,249 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed Dark Majesty power is a selectable von Carstein vampiric power
+#   whose provider build selects it with special_rule_ids; its printed supplied-leader
+#   contract carries 6 scenarios: a same-band borrower that adopts the supplied
+#   Leadership for its own required test at the printed increased twelve inches and
+#   passes with it; the same borrower declining the optional use; the supplied provider
+#   one inch beyond the printed increased radius; a provider that is not standing; the
+#   same provider supplied on the opposing side; and a profile of another bloodline
+#   whose selection of the power is refused.  Twelve inches is the discriminating
+#   distance: it is beyond the vampire's own printed six-inch Leader radius, so only
+#   the selected power offers the borrow there (the 6-to-12 range increase itself is
+#   the sibling identity .../band--von-carstein-power-dark-majesty/mechanic.leader-
+#   twelve, authored in its own file).  The borrower's own Leadership test is the Fear
+#   test of the charge it receives, whose printed consequence for a failure is
+#   explicit in state.second.fear_hit_sixes.  The printed Rout re-roll clause of the
+#   power is outside the admitted runtime scope.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The supplied provider is the band's printed von-carstein-vampire (printed Leadership
+# 8) selecting the Dark Majesty power row; the borrower is the band's printed dreg
+# profile, a living same-band warrior with no printed psychology rule of his own.
+# Declared fixture facts: both the borrower and the supplied provider carry the fixture
+# characteristics weapon_skill 3, strength 3, toughness 3, wounds 2, initiative 5,
+# attacks 1; the borrower's Leadership is pinned at the fixture value 7 (printed 7) so
+# the borrowed value stays separable, and the vampire keeps his printed Leadership 8.
+# The borrower's dagger is from the band's own undead equipment list.  The dice
+# 4+4 = 8 fail the borrower's pinned Leadership 7 and pass the vampire's printed
+# Leadership 8.
+
+# The charged borrower fails against its own pinned Leadership and passes with the
+# supplied vampire's printed value at the printed increased twelve inches, so the
+# charge it received leaves it unclamped.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: a-supplied-leader-at-twelve-inches-lends-his-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The use is optional: the same dice are tested against the borrower's own pinned
+# Leadership when it declines, so the received charge clamps its hits.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: declining-the-supplied-leader-keeps-the-borrowers-own-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the printed increased radius no use is offered at all, which the strict
+# decision tape itself proves.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: a-leader-beyond-the-printed-radius-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 13.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed provider must be in action; a knocked-down vampire lends
+# nothing.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: a-supplied-leader-that-is-not-standing-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: knocked-down
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed leader lends to his own warband only, so the same selected provider
+# supplied on the opposing side supplies nothing.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: a-supplied-leader-on-the-other-side-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dreg
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: chaos-streets-undead-bloodlines
+          profile_id: von-carstein-vampire
+          special_rule_ids: [band--von-carstein-power-dark-majesty]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Dark Majesty is a von Carstein bloodline power: a vampire of another bloodline
+# selecting the row is refused by the compiler, which evidences the absent recipient.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-six
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      special_rule_ids: [band--von-carstein-power-dark-majesty]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to chaos-streets-undead-bloodlines/lahmia-vampire"

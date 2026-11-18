@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.bear-handler-nearby
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the undivided supplied condition carries 4 authored scenarios derived from its
+#   catalogue row (sources/knowledge/catalog/rules/conditions.yaml: "The Trained Bear has its actual
+#   friendly Bear Tamer within 6 inches. This exempts Stupidity; an Out of Action Tamer does not
+#   qualify."): the declared condition waives the native bear's Stupidity without a die, the bear
+#   without it tests and fails its own Leadership, an explicit contradicting Tamer record takes
+#   precedence over the bare condition, and a recipient outside the native Trained Bear is refused
+#   by the compiler's supplied-condition gate.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +16,103 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml
+#
+# AUTHORED: the condition is the caller's declared fact that the qualified Tamer stands within the
+#   printed six inches, supplied through condition_ids on the native Kislevite Trained Bear (any
+#   other recipient is refused).  When explicit nearby Bear Handler records are supplied as well,
+#   those records decide and a contradicting bare condition is not read.  Dice: 2d6 <= Leadership
+#   passes, so the declared 3+4=7 fails the bear's own printed 6 whenever the waiver does not hold;
+#   a held waiver rolls no stupidity die at all.  The bear's printed Fearsome makes the charged
+#   opponent (Leadership 7) take its own Fear test, declared 1+1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The supplied condition waives the native bear's Stupidity: no stupidity die may be requested, the
+# charge stands, the opponent tests Fear and the bear's attacks resolve.
+- audit_id: mechanic/condition.bear-handler-nearby
+  id: the-supplied-nearby-tamer-condition-waives-the-bears-stupidity
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      condition_ids: [condition.bear-handler-nearby]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bear without the condition and with no supplied Tamer tests its own printed
+# Leadership 6, the declared 3+4=7 fails and the compulsory consequence cancels the charge.
+- audit_id: mechanic/condition.bear-handler-nearby
+  id: without-the-condition-the-bear-tests-its-own-leadership
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Precedence of explicit records: the condition is declared, but the real Bear Tamer is also
+# supplied as an explicit nearby record eight inches away.  The contradicting explicit record
+# decides, so the waiver does not hold and the bear fails on its own value.
+- audit_id: mechanic/condition.bear-handler-nearby
+  id: an-explicit-tamer-record-beyond-six-overrides-the-bare-condition
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      condition_ids: [condition.bear-handler-nearby]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, bear-tamer, 8]],
+    nearby: [{participant_id: bear-tamer, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: bear-tamer}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The condition names the native Trained Bear; any other recipient is refused by the compiler's own
+# supplied-condition gate, so an absent recipient is evidenced as a refusal.
+- audit_id: mechanic/condition.bear-handler-nearby
+  id: a-recipient-outside-the-native-trained-bear-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: warriors
+      condition_ids: [condition.bear-handler-nearby]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "the nearby Bear Tamer waiver requires the native Trained Bear"

@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.marks-of-ranald
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios: the boundary pair of the unmodifiable 6+ duck (a 6
+#   discards the hit before any wound die, a 5 lets it through), and a declared magical attack
+#   still ducked (the print reads "regardless of strength or source (including magical attacks)",
+#   the opposite of the Ethereal exception).  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,78 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
-
-[]  # Empty scenario list: this file contributes no test or coverage.
+#
+# --- Authored scenarios ---
+# mechanic/mechanic.marks-of-ranald ("Ranald's Duck") - authored from the printed Mark of Ranald
+# clause on the Trickster-Priest (Liber Malefic p8): "he ducks past any hits on a 6+ regardless of
+# strength or source (including magical attacks) - an unmodifiable roll made before critical hit
+# effects are determined".  The adopted ruling "Djinn's Curse respects expressly unmodifiable
+# saves - 2026-10-15" names this 6+ as expressly unmodifiable.  The duck intercepts the hit like
+# the ethereal save, so a discarded hit never rolls a wound, a critical or a later ward.  The
+# bearer is hand-built with the shared mechanic injected through skill_ids (an effect-set,
+# passive, fighter execution entry - the same injection route the ethereal and
+# automatic-leadership files use); the real Trickster-Priest recipient is evidenced in his own
+# rule file.  Both fighters WS3/S3/T3/W2/A1 with maces, so the hit faces 4+ and a let-through
+# wound faces 4+; the duck's key follows the attack it answers.
+- audit_id: mechanic/mechanic.marks-of-ranald
+  id: a-six-ducks-past-the-hit-before-any-wound-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &marks-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &marks-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      skill_ids: [mechanic.marks-of-ranald]
+  duel_context: &marks-context {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # The unmodifiable 6+ duck is rolled on the hit itself; no wound die follows a 6.
+    - {key: round.0.first.attack.0.marks-of-ranald, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the printed threshold does not duck: the attack continues into its wound roll.
+- audit_id: mechanic/mechanic.marks-of-ranald
+  id: a-five-does-not-duck-and-the-wound-is-rolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *marks-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *marks-bearer
+      skill_ids: [mechanic.marks-of-ranald]
+  duel_context: *marks-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.marks-of-ranald, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# "Including magical attacks": unlike the Ethereal save, a declared magical attack is still ducked.
+- audit_id: mechanic/mechanic.marks-of-ranald
+  id: a-magical-attack-is-still-ducked-on-a-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *marks-attacker
+      trait_overrides: {magical_attacks: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *marks-bearer
+      skill_ids: [mechanic.marks-of-ranald]
+  duel_context: *marks-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.marks-of-ranald, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

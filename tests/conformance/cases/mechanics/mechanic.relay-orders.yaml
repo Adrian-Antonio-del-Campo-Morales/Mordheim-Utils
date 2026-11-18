@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.relay-orders
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 3 authored scenarios derived from the printed
+#   Adjutant rule (House Guard, Sealed City p.4: the Adjutant relays his leader's Leadership to
+#   friends within six inches, as long as he himself is able to use it) through the real House Guard
+#   trio: the relay lends the Commander's Leadership 8 - never the Adjutant's own 6 - and offers
+#   nothing when the Adjutant stands beyond his leader's own radius or the recipient beyond the
+#   relay's six inches.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,120 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the flag marks a two-hop relay provider.  A hand-built borrower cannot reach the
+#   shared-band gate of the supplied-provider contract (it carries no band tag), so the real House
+#   Guard profiles of the rule's own band are used, exactly as the AUTHORED adjutant--relay-orders
+#   file does: the recipient is the printed guards profile (Leadership 7, house fact supplied), the
+#   relayed leader the printed commander (Leader, Leadership 8) and the carrier the printed adjutant
+#   (Leadership 6), each a same-side supplied participant with declared distance rows.  The declared
+#   distances separate the relay from a direct leader radius: the recipient stands ten inches from
+#   the Commander - outside the Commander's own six - and four inches from the Adjutant.  The vehicle
+#   is the recipient's supplied Stupidity test.  Dice: 2d6 <= Leadership passes, so the declared
+#   4+4=8 passes only through the relayed 8 and fails both the recipient's 7 and the Adjutant's own
+#   6, which keeps visible that the Adjutant never lends his own value.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The relay itself: the Adjutant four inches from the recipient relays the Commander's Leadership 8
+# (the Commander stands five inches from the Adjutant, inside the Commander's own radius), so the
+# declared eight passes and the charge and its attack stand.
+- audit_id: mechanic/mechanic.relay-orders
+  id: the-relay-lends-the-leaders-value-not-the-adjutants-own
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 10], [first, adjutant, 4], [commander, adjutant, 5]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  decisions:
+    - {key: round.0.first.stupidity.leader.adjutant, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed precondition: an Adjutant who cannot use his leader's Leadership (the Commander stands
+# eight inches from him, past the Commander's own six) relays nothing, so no borrow is offered at
+# all and the recipient's own Leadership 7 fails the identical eight, cancelling the charge.
+- audit_id: mechanic/mechanic.relay-orders
+  id: an-adjutant-beyond-his-leaders-radius-relays-nothing
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 10], [first, adjutant, 4], [commander, adjutant, 8]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The relay's own printed six inches: a recipient ten inches from the Adjutant is outside the relay,
+# so the same supplied pair lends nothing and the declared eight fails on the recipient's own 7.
+- audit_id: mechanic/mechanic.relay-orders
+  id: beyond-six-inches-the-relay-does-not-reach
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, main_weapon_id: weapon.mace, trait_overrides: {stupidity: true, house_guard_house: halcon}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 12], [first, adjutant, 10], [commander, adjutant, 5]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

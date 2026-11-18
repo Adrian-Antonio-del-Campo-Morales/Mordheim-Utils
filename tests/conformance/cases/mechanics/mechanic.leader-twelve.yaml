@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.leader-twelve
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 2 authored scenarios derived from the printed
+#   Reikland sentence ("the range of his Leader ability is increased to 12\"") through the real
+#   carrier pair the Reikland band grant delivers it to: a same-band borrower adopts the supplied
+#   Reikland Captain's Leadership at exactly twelve inches and nothing is offered past twelve, which
+#   the strict decision tape proves against the ordinary six-inch default.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the flag widens a Leader's printed radius to twelve inches.  A hand-built borrower
+#   cannot reach the shared-band gate of the supplied-leader contract (it carries no band tag), so
+#   the real Reikland pair of the band grant is used, exactly as the AUTHORED
+#   band--reikland-command-radius files do: the borrower is the printed Mercenaries warriors profile
+#   and the provider the printed mercenary-captain, whose own Leader rule plus the band grant carry
+#   the flag; both Leadership values are supplied fixture facts (8 for the captain, 3 for the
+#   borrower).  The vehicle is the Fear test of the received charge from a hand-built fear-causer,
+#   whose printed failure consequence is state.second.fear_hit_sixes.  Dice: 2d6 <= Leadership
+#   passes, so the declared 4+4=8 passes only through the borrowed 8.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# At exactly twelve inches the widened radius offers the borrow: the captain's Leadership 8 is the
+# one tested, the declared eight passes and the received charge leaves the borrower unclamped.
+- audit_id: mechanic/mechanic.leader-twelve
+  id: the-twelve-inch-radius-offers-the-borrow-at-twelve
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One step past the printed twelve nothing is offered at all - a wrongly offered borrow would
+# request an undeclared leader decision - so the borrower's own Leadership 3 fails the identical
+# eight and the received charge clamps its hits to sixes.
+- audit_id: mechanic/mechanic.leader-twelve
+  id: past-twelve-inches-the-borrow-is-not-offered
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 13.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

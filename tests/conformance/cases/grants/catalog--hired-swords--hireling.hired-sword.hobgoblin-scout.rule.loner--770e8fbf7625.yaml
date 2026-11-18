@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.loner/mechanic.own-leadership
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-leader family model, 2026-11-18): the real
+#   Hobgoblin Scout beside a valid supplied same-package warband leader is offered no borrow
+#   decision at all and fails on his own printed Ld6; the control, a package comrade without
+#   Loner, is offered the decision in the same setup and passes with the borrowed Leadership; and
+#   the refusal outside the profile.  The printed "never counts as All Alone and may operate
+#   independently" half is the rule's excluded group clause (out-of-scope.movement) and is not
+#   asserted.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the supplied-leader family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,113 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# The print (Border Town Burning, Hobgoblin Scout / Loner): "The Scout may never use the warband
+# leader's Leadership for any tests."  The Scout is the printed hireling profile compiled through
+# the hireling route (hirelings.hired-sword.1c / hireling.hired-sword.hobgoblin-scout) with the
+# fixture facts (WS3 S3 T3 W2 I2 A1; his printed Ld6 stays) and his omitted main weapon is the
+# kit dagger (his short bow and owned shield are silent).  The supplied warband leader is a
+# same-package comrade (the grade-1c Ninja, printed Ld8, whose own rules are all outside the
+# duel) carrying the supplied chosen-leader fact condition.current-warband-leader - the
+# hireling-package comrade pattern of the authored knight-of-the-white-wolf pride file.  The
+# enemy is a hand-built fear-causer that charges the Scout, so the test under evidence is the
+# charged Fear test: 4+4 = 8 fails the Scout's own Ld6 and would pass the supplied Ld8, and the
+# printed consequence of the standing failure is explicit in state.second.fear_hit_sixes.  Every
+# declared attack die is a natural 1, a miss.
+# Consumer: modular/leadership.py - mechanic.own-leadership on the tested fighter excludes the
+# whole supplied-leader borrow block, so no leader decision is ever offered to the Scout.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Scout: no borrow decision is offered at all beside the valid supplied leader - the strict
+# decision tape itself proves it - so the failed test stands on his own printed Leadership 6.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.loner/mechanic.own-leadership
+  id: the-loner-never-uses-the-supplied-warband-leaders-leadership
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: &loner-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.hobgoblin-scout
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: &loner-leader
+          collection: mordheim
+          band_id: hirelings.hired-sword.1c
+          profile_id: hireling.hired-sword.ninja
+          condition_ids: [condition.current-warband-leader]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a package comrade without Loner (the grade-1c Grave Robber, printed Ld6) in the
+# Scout's place is offered the borrow decision and the same dice pass with the borrowed Ld8, so
+# the suppression is the Scout's rule and not the setup.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.loner/mechanic.own-leadership
+  id: a-package-comrade-without-loner-is-offered-the-borrow
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *loner-fear-causer
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.grave-robber
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: *loner-leader
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Scout's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.hobgoblin-scout.rule.loner/mechanic.own-leadership
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.hobgoblin-scout.rule.loner]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

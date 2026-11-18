@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.adventurer-barbarian-leader
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-condition model, 2026-11-18): the native
+#   Barbarian supplied as the chosen warband leader still lends the dim-witted effective 7 to a
+#   member within six inches (the supplied fact stacks once with the rule's own innate leader-six
+#   grant, the Large Target precedent of the 2026-11-18 rulings); the chosen leader's own
+#   Leadership test stays at his printed 10, the condition row's second sentence; and the
+#   condition supplied on any other build is refused by its construction gate.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the supplied-condition model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -8,7 +17,101 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Record: sources/knowledge/catalog/rules/conditions.yaml
+#
+# --- Authored scenarios ---
+# The condition row (conditions.yaml): "This native Adventurer Barbarian is the actual chosen
+# warband Leader.  Dim-witted changes only his Leadership lent to friends within 6 inches, not
+# his own Leadership."  It is a supplied current fact declared through condition_ids.  Consumers:
+# its execution entry compiles the ordinary six-inch leader supply (mechanic.leader-six) onto the
+# Barbarian, and the compiler gate (roster-construction compiler.py) admits it only on the native
+# adventurers-kaz Barbarian.  The Barbarian's own Dim-witted rule already grants the supply
+# innately (grant: profile), so the supplied fact stacks once and changes nothing he lends - the
+# printed effective 7 stays (modular/leadership.py caps the lent value of a dim-witted provider)
+# - while his OWN tests keep his printed Leadership 10.  Builds mirror the authored leader-six
+# sibling of the KAZ rule: the printed elf (Ld8) and Barbarian (Ld10, Frenzy, unarmed - the fist
+# grants the printed 6+ save but every declared attack die here is a natural 1, a miss).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The chosen-leader fact supplied explicitly: the Barbarian still lends the dim-witted effective
+# 7 within six inches - 4+4 = 8 fails it - so the supplied condition stacks harmlessly with the
+# rule's innate supply.
+- audit_id: mechanic/condition.adventurer-barbarian-leader
+  id: the-supplied-chosen-leader-still-lends-the-dim-witted-seven
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, barbarian-leader, 6]]
+    nearby:
+      - participant_id: barbarian-leader
+        side_id: first
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: adventurers-kaz
+          profile_id: barbarian
+          condition_ids: [condition.adventurer-barbarian-leader]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.barbarian-leader, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# "Not his own Leadership": the chosen leader's own charged Fear test is taken at his printed 10
+# - 4+5 = 9 passes, though the dim-witted effective 7 would have failed it.  His printed Frenzy
+# would skip the Psychology test entirely, so it is supplied as already lapsed (a Frenzied
+# warrior who has been Knocked Down ceases to be Frenzied), a lasting FighterState fact.
+- audit_id: mechanic/condition.adventurer-barbarian-leader
+  id: the-chosen-leaders-own-leadership-is-not-the-dim-witted-seven
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: barbarian
+      condition_ids: [condition.adventurer-barbarian-leader]
+  initial_state: {second: {frenzy: false}}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied fact is gated to its native bearer: on any other build the compiler refuses it by
+# name.
+- audit_id: mechanic/condition.adventurer-barbarian-leader
+  id: the-condition-is-refused-on-any-build-but-the-native-barbarian
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      condition_ids: [condition.adventurer-barbarian-leader]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  expect_error: "the chosen Barbarian Leader must be the native Adventurer Barbarian"

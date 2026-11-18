@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.bear-handler
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 4 authored scenarios derived from the printed
+#   Kislevite Bear Handler rule ("will automatically pass its stupidity tests when within 6\" of the
+#   Bear Tamer") and the Trained rule's "It may use the Bear Tamer's leadership if within 6\" of him":
+#   2 read the provider flag through the real Kislevite pair (the flagged Tamer waives the bear's
+#   Stupidity, an unflagged same-band Kislevite does not), and 2 read the Leadership lending the flag
+#   qualifies a provider for (within six inches the handler decision lends his value, at seven it is
+#   never offered).  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,128 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: this flag marks the qualified provider (the Bear Tamer).  Its two printed consequences
+#   are read at their boundaries: the Stupidity waiver of a bear-handler recipient holds only for a
+#   same-side provider that carries this flag, and a handler-only animal's Leadership test may use a
+#   flagged provider's own value within six inches through the strict handler decision
+#   (`<key>.handler.<participant_id>`).  The provider's identity, side, condition and distance are
+#   caller-supplied duel facts.  Dice: a Leadership test passes when 2d6 <= the tested value, so the
+#   declared 3+4=7 separates the provider's Leadership 7 from the recipients' own 6 and 3.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The real Kislevite pair: the printed Trained Bear (Leadership 6, its Trained rule carries the
+# recipient flag) charges while the band's real Bear Tamer - whose Bear Handler rule carries this
+# provider flag - stands four inches away, so the Stupidity test is automatically passed and no
+# stupidity die may be requested.  The bear's printed Fearsome makes the charged opponent take its
+# own Fear test (1+1 passes against Leadership 7), and the bear's attacks resolve.
+- audit_id: mechanic/mechanic.bear-handler
+  id: a-flagged-bear-tamer-within-six-inches-waives-the-bears-stupidity
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, bear-tamer, 4]],
+    nearby: [{participant_id: bear-tamer, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: bear-tamer}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The flag, not mere same-band presence, qualifies the provider: a Kislevite warrior without the
+# Bear Handler rule stands at the same four inches and waives nothing, so the bear tests its own
+# printed Leadership 6, the declared 3+4=7 fails and the compulsory consequence cancels the charge.
+- audit_id: mechanic/mechanic.bear-handler
+  id: a-kislevite-without-the-handler-flag-waives-nothing
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, warrior, 4]],
+    nearby: [{participant_id: warrior, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: warriors}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The lending face of the flag: a handler-only animal (canonical mechanic.handler-leadership on the
+# bearer, own Leadership 3) may use a flagged provider's own Leadership 7 within six inches through
+# the declared handler decision, so the same 3+4=7 passes and the charge and attack stand.
+- audit_id: mechanic/mechanic.bear-handler
+  id: a-supplied-bear-handler-lends-his-leadership-within-six-inches
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 6]],
+    nearby: [{participant_id: handler, side_id: first, condition: standing,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  decisions:
+    - {key: round.0.first.stupidity.handler.handler, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed six-inch boundary of the lending: the same flagged provider at seven inches is never
+# offered at all - a wrongly offered handler decision would be an undeclared decision and fail the
+# strict tape - so the animal's own Leadership 3 fails the identical seven and the charge is
+# cancelled.
+- audit_id: mechanic/mechanic.bear-handler
+  id: beyond-six-inches-the-bear-handler-lends-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 7]],
+    nearby: [{participant_id: handler, side_id: first, condition: standing,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald/mechanic.marks-of-ranald
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): the selected Mark
+#   ducks a hit on the unmodifiable 6+ (with no Ranald's Luck pip offered on it), a 5 lets the
+#   wound through, the same Priest without the selection is hit without any duck request, and the
+#   refusal outside the printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,92 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
-
-[]  # Empty scenario list: this file contributes no test or coverage.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Trickster-Priest of Ranald
+# compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.trickster-priest-of-ranald) with the fixture facts (WS3 S3 T3 W2 I5 A1; the
+# printed Ld7 stays); the Mark of Ranald is a selectable printed rule, so the recipient selects it
+# through special_rule_ids and the control is the same profile without the selection.  The printed
+# kit's first close-combat weapon (the ceremonial dagger) is the default and the Priest is
+# silenced (attacks 0), so his only roll is the duck itself.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace) and charges; the Priest wears no armour (Strictures), so a
+# let-through wound rolls no save.  The selected rule also grants Ranald's Luck (the sibling
+# identity): the duck is the expressly unmodifiable 6+ named by the Djinn's Curse ruling
+# (2026-10-15), so the tape declares no ranalds-luck pip decision on it - the strict absence is
+# part of the assertion.  The refusal selects the printed rule on the grade-1b Bard.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald/mechanic.marks-of-ranald
+  id: the-priest-ducks-a-hit-on-the-unmodifiable-six
+  fighters:
+    first:
+      &duck-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald]
+    second:
+      &duck-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: &duck-context {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    # The duck is rolled on the hit itself; the unspent Ranald's Luck pip is never offered on this
+    # unmodifiable roll, so the tape declares no decision at all.
+    - {key: round.0.second.attack.0.marks-of-ranald, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the printed threshold does not duck: the wound is rolled and lands (no armour).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald/mechanic.marks-of-ranald
+  id: a-five-lets-the-wound-through
+  fighters:
+    first: *duck-recipient
+    second: *duck-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: *duck-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.marks-of-ranald, value: 5}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control is the same profile without the selection: the same hit requests no duck at all.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald/mechanic.marks-of-ranald
+  id: the-same-priest-without-the-mark-is-hit-without-a-duck-request
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.trickster-priest-of-ranald
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *duck-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: *duck-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The Mark is printed for the Trickster-Priest; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald/mechanic.marks-of-ranald
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

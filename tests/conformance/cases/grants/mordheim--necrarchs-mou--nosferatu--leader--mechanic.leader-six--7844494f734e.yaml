@@ -1,6 +1,9 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-six clause carries 5 authored scenarios for the
+#   printed supplied-leader contract. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +12,240 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/necrarchs-mou/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed supplied-leader contract of this leader profile carries
+#   5 scenarios: a same-band borrower that adopts the supplied Leadership for its own
+#   required test and passes with it; the same borrower declining the optional use; a
+#   supplied leader one inch beyond the printed radius; a supplied leader that is not
+#   standing; and the same profile supplied on the opposing side.
+#   Band exception: NO profile of this band can take a charged Fear test - every
+#   profile either causes Fear itself (Abomination, Defiled, Banshee; a fear-causer
+#   takes no Fear test) or carries the printed Undead psychology immunity (Skeleton,
+#   Wight, and the Nosferatu himself).  The borrower's own Leadership test is instead
+#   the break-free test of a supplied Danse Macabre controlled state (a declared
+#   initial condition with an authored corpus precedent in rule/mordheim/cursed-
+#   cavalcade/cursed-piper--danse-macabre/condition.danse-macabre-controlled); the
+#   printed Leader rule lends the Nosferatu's Leadership to any Leadership test.  The
+#   printed consequence of the failed test is explicit in
+#   state.second.danse_macabre_controlled and in the held warrior's empty attack share.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed defiled profile and the leader is the printed
+# nosferatu profile (printed Leadership 9), whose printed borrow radius is 6 inches.
+# Declared fixture facts: both the borrower and the supplied leader carry the fixture
+# characteristics weapon_skill 3, strength 3, toughness 3, wounds 2, initiative 5,
+# attacks 1; the borrower's Leadership is pinned at the fixture value 7 (printed 6) so
+# the borrowed value stays separable, and the leader keeps his printed Leadership 9.
+# The borrower's dagger is from the band's own defiled equipment list, and the supplied
+# Danse Macabre controlled state is a declared fixture condition.  The dice 4+4 = 8
+# fail the borrower's pinned Leadership 7 and pass the leader's printed Leadership 9.
+# (The Defiled's own printed Absolute Faith rule - use the Nosferatu's Leadership on
+# line of sight - is recorded out of the admitted runtime scope and binds nothing here.)
+
+# The held borrower fails the break-free test against its own pinned Leadership and
+# passes with the supplied leader's printed value, so the state clears and the freed
+# warrior resumes attacking (both misses are declared).
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
+  id: a-supplied-leader-at-six-inches-lends-his-leadership
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: defiled
+      condition_ids: [condition.danse-macabre-controlled]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    # The break-free test runs at the start of the controlled warrior's own
+    # turn (the cursed-cavalcade model), so the held borrower is active.
+    active_participant: second
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: necrarchs-mou
+          profile_id: nosferatu
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 9}
+    distances:
+      - [second, leader, 6]
+  decisions:
+    - {key: round.0.second.danse-macabre.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.danse-macabre.0, value: 4}
+    - {key: round.0.second.danse-macabre.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.danse_macabre_controlled: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The use is optional: the same dice are tested against the borrower's own pinned
+# Leadership when it declines, so the warrior keeps dancing and its share of the
+# round's attack pool is zero - the only attack die in the tape is the opponent's.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
+  id: declining-the-supplied-leader-keeps-the-borrowers-own-leadership
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: defiled
+      condition_ids: [condition.danse-macabre-controlled]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    # The break-free test runs at the start of the controlled warrior's own
+    # turn (the cursed-cavalcade model), so the held borrower is active.
+    active_participant: second
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: necrarchs-mou
+          profile_id: nosferatu
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 9}
+    distances:
+      - [second, leader, 6]
+  decisions:
+    - {key: round.0.second.danse-macabre.leader.leader, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.danse-macabre.0, value: 4}
+    - {key: round.0.second.danse-macabre.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.danse_macabre_controlled: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the printed radius no use is offered at all, which the strict
+# decision tape itself proves.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
+  id: a-leader-beyond-the-printed-radius-supplies-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: defiled
+      condition_ids: [condition.danse-macabre-controlled]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    # The break-free test runs at the start of the controlled warrior's own
+    # turn (the cursed-cavalcade model), so the held borrower is active.
+    active_participant: second
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: necrarchs-mou
+          profile_id: nosferatu
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 9}
+    distances:
+      - [second, leader, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.danse-macabre.0, value: 4}
+    - {key: round.0.second.danse-macabre.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.danse_macabre_controlled: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed provider must be in action; a knocked-down leader lends
+# nothing.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
+  id: a-supplied-leader-that-is-not-standing-supplies-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: defiled
+      condition_ids: [condition.danse-macabre-controlled]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    # The break-free test runs at the start of the controlled warrior's own
+    # turn (the cursed-cavalcade model), so the held borrower is active.
+    active_participant: second
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: knocked-down
+        fighter:
+          collection: mordheim
+          band_id: necrarchs-mou
+          profile_id: nosferatu
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 9}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.danse-macabre.0, value: 4}
+    - {key: round.0.second.danse-macabre.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.danse_macabre_controlled: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed leader lends to his own warband only, so the same profile
+# supplied on the opposing side supplies nothing.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--leader/mechanic.leader-six
+  id: a-supplied-leader-on-the-other-side-supplies-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: defiled
+      condition_ids: [condition.danse-macabre-controlled]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    # The break-free test runs at the start of the controlled warrior's own
+    # turn (the cursed-cavalcade model), so the held borrower is active.
+    active_participant: second
+    nearby:
+      - participant_id: leader
+        side_id: first
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: necrarchs-mou
+          profile_id: nosferatu
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 9}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.danse-macabre.0, value: 4}
+    - {key: round.0.second.danse-macabre.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING, state.second.danse_macabre_controlled: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

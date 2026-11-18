@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 517 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 466 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -173,24 +173,24 @@ identities whose binding already has authored scenarios elsewhere.
 | B01 | psy-tests-and-enemy-effects | 24 | 14 | 36 | skill_ids 14, real profile build 10 |
 | B02 | hatred-frenzy-and-charge-rages-1 | 25 | 3 | 49 | skill_ids 14, real profile build 7, special_rule_ids 4 |
 | B03 | hatred-frenzy-and-charge-rages-2 | 27 | 7 | 48 | skill_ids 12, real profile build 12, special_rule_ids 2, condition_ids 1 |
-| B04 | leadership | 51 | 33 | 66 | real profile build 27, skill_ids 16, special_rule_ids 6, condition_ids 2 |
-| B05 | survival-injury-and-immunity-1 | 34 | 18 | 55 | real profile build 22, skill_ids 9, special_rule_ids 3 |
-| B06 | survival-injury-and-immunity-2 | 34 | 17 | 55 | real profile build 20, skill_ids 7, special_rule_ids 5, equipment slot 2 |
-| B07 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
-| B08 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
-| B09 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
-| B10 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
-| B11 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
-| B12 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
-| B13 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
-| B14 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
-| B15 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
-| B16 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **517** | 280 | 853.5 | |
+| B04 | survival-injury-and-immunity-1 | 34 | 18 | 55 | real profile build 22, skill_ids 9, special_rule_ids 3 |
+| B05 | survival-injury-and-immunity-2 | 34 | 17 | 55 | real profile build 20, skill_ids 7, special_rule_ids 5, equipment slot 2 |
+| B06 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
+| B07 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
+| B08 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
+| B09 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
+| B10 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
+| B11 | construction-equipment-1 | 35 | 34 | 52.5 | construction 35 |
+| B12 | construction-equipment-2 | 35 | 33 | 52.5 | construction 35 |
+| B13 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
+| B14 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
+| B15 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
+| | **Total** | **466** | 247 | 787.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
-Unshakeable Faith identity withheld on its print). Then the model-heavy themes, which confirm the workflow on
-cheap members: leadership, construction-equipment, construction-skills-and-profile,
+Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
+Large Target pass landed the same day). Then the model-heavy themes, which confirm the workflow on
+cheap members: construction-equipment, construction-skills-and-profile,
 survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by

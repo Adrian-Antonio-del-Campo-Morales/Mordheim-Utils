@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.dim-witted-leader
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (dim-witted supplied-leader model, 2026-11-18,
+#   mirroring the authored leader-six sibling of this same printed rule,
+#   ...--mechanic.leader-six--0d5450a0cf7a.yaml): inside the printed six inches the real
+#   Barbarian lends the printed effective 7, not his own printed 10, so a total of 8 fails;
+#   declining the offer keeps the member's own printed 8, which that same total passes; one inch
+#   beyond the printed radius nothing is offered; and the refusal outside the printed profile.
+#   The Rout half of the printed sentence is the rule's excluded group clause
+#   (out-of-scope.group) and is not asserted.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the dim-witted supplied-leader model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,143 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/adventurers-kaz/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# The printed rule: "If the Barbarian is the warband's leader then he has an effective Leadership
+# of 7 for warband members within 6\" and Rout tests" (special-rules.yaml, barbarian--dim-witted,
+# grant: profile; its sibling effect mechanic.leader-six is the supply itself and carries its own
+# authored file).  This identity is the dim-witted cap the rule adds to that supply: the value
+# lent is the printed effective 7 rather than the Barbarian's own printed Leadership 10
+# (consumer: modular/leadership.py, where a supplied leader-six provider carrying
+# mechanic.dim-witted-leader lends 7 and supplies the printed six-inch radius).  The builds
+# mirror the authored leader-six sibling: the borrower is the band's printed elf (profiles.yaml:
+# WS4 S3 T3 W1 I5 A1 Ld8) with its required Stupidity supplied as a trait, the provider is the
+# printed Barbarian as a nearby same-band participant, and the test under evidence is the elf's
+# Stupidity test on its charge.  4+4 = 8 fails the borrowed effective 7 and passes both the elf's
+# own 8 and the Barbarian's 10, so the printed cap is the only thing the failure can show.  The
+# elf fights with its neutral fist, which still grants the opponent the printed 6+ save.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Inside the printed six inches the declared borrow tests the effective 7: the total of 8 fails
+# and the charge is cancelled, though both the member's own 8 and the Barbarian's printed 10
+# would have passed it.
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.dim-witted-leader
+  id: the-barbarian-lends-the-printed-effective-seven-not-his-own-ten
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &dimwit-rule-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, barbarian-leader, 6]]
+    nearby:
+      - participant_id: barbarian-leader
+        side_id: first
+        condition: standing
+        fighter: &dimwit-rule-barbarian {collection: mordheim, band_id: adventurers-kaz, profile_id: barbarian}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.barbarian-leader, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The borrow is optional, and the dim-witted 7 is below the member's own value: declining it
+# tests the same total of 8 against the elf's own printed 8, which passes, and the charge strikes
+# home.
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.dim-witted-leader
+  id: declining-the-effective-seven-keeps-the-members-own-eight
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dimwit-rule-opponent
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, barbarian-leader, 6]]
+    nearby:
+      - participant_id: barbarian-leader
+        side_id: first
+        condition: standing
+        fighter: *dimwit-rule-barbarian
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.barbarian-leader, value: false}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One inch beyond the printed six inches nothing is offered at all - the strict decision tape
+# itself proves it - and the member tests at its own printed 8.
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.dim-witted-leader
+  id: beyond-the-printed-six-inches-the-barbarian-supplies-nothing
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dimwit-rule-opponent
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, barbarian-leader, 7.0]]
+    nearby:
+      - participant_id: barbarian-leader
+        side_id: first
+        condition: standing
+        fighter: *dimwit-rule-barbarian
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed rule belongs to the Barbarian's profile; selecting it on another profile of the
+# band is refused by the eligibility gate.
+- audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.dim-witted-leader
+  id: the-rule-is-refused-on-another-profile-of-the-band
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: elf
+      special_rule_ids: [barbarian--dim-witted]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dimwit-rule-opponent
+  expect_error: "special rule is not available to adventurers-kaz/elf"

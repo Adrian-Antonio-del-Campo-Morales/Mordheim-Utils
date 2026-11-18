@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed/mechanic.first-failed-leadership-reroll
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): the first failed
+#   Leadership test of the battle re-rolled once and passed (on a supplied non-Fear Leadership
+#   test, since her own printed Fear immunity removes every Fear test before it can fail), the
+#   spent opportunity not reopening at a later failure (a three-round tape), the Bard control
+#   failing a charged Fear test with no re-roll offered, and the refusal outside the printed
+#   profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the charged Fear test the family model usually rolls cannot
+#   evidence this binding on the bearer - the same printed War-Honed rule's sibling binding
+#   (mechanic.fear-immunity, authored in its own file ...5aba88db58e2) passes every Fear test
+#   before a die is thrown, so no Fear test of hers can ever fail.  The printed re-roll reads "her
+#   first failed Leadership test of every battle", so the bearer scenarios supply the Danse
+#   Macabre control state, whose plain Leadership test follows the shared Leadership contract.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,110 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
-
-[]  # Empty scenario list: this file contributes no test or coverage.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed War-Priestess of Myrmidia
+# compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.war-priestess-of-myrmidia) with the fixture facts (WS3 S3 T3 W2 I5 A1; the
+# printed Ld8 stays); War-Honed is granted by the profile itself, so the build selects nothing.
+# The supplied Danse Macabre control state demands a plain Leadership test at the start of her
+# active turn; against Ld8 the declared 5+4=9 fails and a re-rolled 4+4=8 passes.  The failure
+# spends the once-per-battle `leadership.first-failed` resource whether or not the re-roll is
+# taken, and a re-roll is never re-rolled.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace) and silenced where only the tests are observed.  The control is the grade-1b Bard charged
+# by a Fear-causer: his failed test stands with no re-roll declaration.  The refusal selects the
+# printed rule on that control.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed/mechanic.first-failed-leadership-reroll
+  id: the-first-failed-leadership-test-is-rerolled-once-and-passes
+  fighters:
+    first:
+      &honed-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      condition_ids: [condition.danse-macabre-controlled]
+    second:
+      &honed-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.danse-macabre.reroll, value: true}
+  rolls:
+    # 5+4=9 fails the printed Ld8 and opens the once-per-battle opportunity.
+    - {key: round.0.first.danse-macabre.0, value: 5}
+    - {key: round.0.first.danse-macabre.1, value: 4}
+    # The accepted re-roll passes: 4+4=8 meets Ld8, so the Priestess is freed and fights on.
+    - {key: round.0.first.danse-macabre.reroll.0, value: 4}
+    - {key: round.0.first.danse-macabre.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: False, state.first.resources_spent: ['leadership.first-failed'], state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The opportunity is once per battle: after the first failure spent it (and its re-roll failed
+# too), a later failure of the same test is offered no re-roll - the tape's silence on round 2 is
+# the assertion.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed/mechanic.first-failed-leadership-reroll
+  id: a-later-failure-is-not-offered-the-spent-reroll
+  fighters:
+    first: *honed-recipient
+    second: *honed-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  decisions:
+    - {key: round.0.first.danse-macabre.reroll, value: true}
+  rolls:
+    # Round 0: 6+6 fails Ld8; the accepted re-roll of 6+6 fails too, so she stays controlled.
+    - {key: round.0.first.danse-macabre.0, value: 6}
+    - {key: round.0.first.danse-macabre.1, value: 6}
+    - {key: round.0.first.danse-macabre.reroll.0, value: 6}
+    - {key: round.0.first.danse-macabre.reroll.1, value: 6}
+    # Round 1 belongs to the silenced opponent and requests nothing.  Round 2: the test returns on
+    # her turn, 6+6 fails again, and no re-roll declaration is requested - the resource is spent.
+    - {key: round.2.first.danse-macabre.0, value: 6}
+    - {key: round.2.first.danse-macabre.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first.danse_macabre_controlled: True, state.first.resources_spent: ['leadership.first-failed']}
+    2: {attacks: [], state.first.danse_macabre_controlled: True, state.first.resources_spent: ['leadership.first-failed']}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+# The control (Bard, Ld7) charged by a Fear-causer fails 5+4 and the failure simply stands: no
+# re-roll declaration is requested without the rule.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed/mechanic.first-failed-leadership-reroll
+  id: a-hireling-without-the-rule-is-offered-no-reroll-on-its-failed-fear-test
+  fighters:
+    first:
+      &honed-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed/mechanic.first-failed-leadership-reroll
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *honed-control
+      special_rule_ids: [hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"
