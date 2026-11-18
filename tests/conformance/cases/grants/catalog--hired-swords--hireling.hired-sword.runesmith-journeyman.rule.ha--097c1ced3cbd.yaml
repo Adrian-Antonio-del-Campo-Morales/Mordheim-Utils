@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.runesmith-journeyman.rule.hard-head/trait.concussion-immune
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, injury-table face, see below): a mace's
+#   Injury total of two leaves the recipient Knocked Down (the club/mace Concussion conversion to Stunned
+#   is suppressed); a genuine Stunned total of three still Stuns him (the immunity is not immunity to
+#   being Stunned); the plain-hireling control is Stunned by the same two; the grant is refused outside
+#   its profile.  REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED
+#   until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,94 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), injury-table face (survival-injury-and-immunity batch,
+# 2026-11-18).  The recipient is the printed hireling profile, compiled through the hireling route
+# (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its printed rule is granted by
+# the profile itself, so the build selects nothing.  Its physical characteristics are supplied as
+# fixture facts (WS3 S3 T3 I5 A1) with wounds: 1 so the first wound reaches the Injury roll, while its
+# printed Leadership stays in place; the main weapon is omitted (the printed kit's own) and the bearer is
+# silenced with attacks: 0, so the tape holds only the opponent's dice.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace) and charges so it strikes first; it declares the hit (WS3 on WS3: 4),
+# the wound (S3 on T3: 4, below the critical six) and the Injury die under test.  The control is a plain
+# hireling without any injury rule - the grade-1b Bard - compiled through the same route with the same
+# fixture, so the ordinary chart is shown without the rule.  The refusal selects the printed rule on
+# that control through special_rule_ids: a profile-granted rule is not available elsewhere.
+# Recipient's other printed rules: kit heavy armour is owned, not worn (no armour die); the unique Gromril Hammer is the kit's close-combat weapon (the bearer never swings); Hate Orcs and Goblins is the bearer's own re-roll, silenced here.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The injury chart turns a total of two into Knocked Down; a mace's Concussion rule raises 2-4 to Stunned
+# (phases.injury_condition: `concussion and not concussion_immune and 2 <= total <= 4`).  On this bearer
+# the mace no longer converts the two.  A two is Knocked Down on the ordinary chart and on the Dwarf
+# Hard to Kill chart alike, so the sibling Hard to Kill grant cannot decide this scenario.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.runesmith-journeyman.rule.hard-head/trait.concussion-immune
+  id: a-mace-no-longer-converts-a-two-into-a-stun-on-the-runesmith-journeyman
+  fighters:
+    first: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.runesmith-journeyman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: &bearer-silent {second: {attacks: 0}}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A genuine Stunned total (three is Stunned on both charts) still Stuns the bearer: the immunity
+# suppresses the club/mace conversion only.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.runesmith-journeyman.rule.hard-head/trait.concussion-immune
+  id: a-genuine-stunned-total-still-stuns-the-runesmith-journeyman
+  fighters:
+    first: *opponent
+    second: *recipient
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) takes the same mace two and the Concussion rule Stuns him.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.runesmith-journeyman.rule.hard-head/trait.concussion-immune
+  id: the-same-mace-still-converts-a-two-on-a-hireling-without-the-rule
+  fighters:
+    first: *opponent
+    second: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.runesmith-journeyman.rule.hard-head/trait.concussion-immune
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.runesmith-journeyman.rule.hard-head]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

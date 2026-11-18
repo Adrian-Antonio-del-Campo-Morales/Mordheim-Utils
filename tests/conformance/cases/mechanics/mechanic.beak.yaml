@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.beak
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the Beak
+#   compiles as one additional natural bite that resolves after both warriors' weapon attacks,
+#   including a double-handed weapon, at the bearer's own Strength with no unarmed penalty; a fighter
+#   without the mechanic compiles no bite.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +13,72 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed mutation (Mutiny in Marienburg p.162, Beak: "Unless it already possesses a
+#   bite, gains one additional close-combat bite at own Strength with no unarmed penalty. Always
+#   strikes after double-handed weapons, regardless of charge") is the tag mechanic.beak, which the
+#   engine itself never reads (mordheim_combat/kernel.py lists it among the catalogue tags with no
+#   engine read); its effect is projected at compile time
+#   (packages/python/roster-construction/mordheim_construction/compiler.py, the extra_attacks
+#   projection): a bearer whose extra attacks hold no bite gains an EffectSet tagged
+#   weapon.natural-attacks + rule.strikes-last-bite, and that tag schedules the bite as the separate
+#   final event round.<r>.<owner>.last-bite.attack.0.* at priority tier -2
+#   (modular/rounds.py), below a double-handed weapon's strike-last tier -1.  weapon.natural-attacks
+#   carries no Strength or armour modifier, so the bite wounds at the bearer's own Strength (a fist
+#   would be -1).  The "unless it already possesses a bite" clause is the compiler's check for an
+#   existing rule.bite-attack / rule.strikes-last-bite entry and is not evidenced on a hand-built
+#   fixture; the removal probe reports this skill_ids injection inert by design.
+#
+# Fixtures.  The bearer is hand-built (WS3 S4 T3 W2 I4 A1, mace) with the mechanic injected through
+# skill_ids; the opponent is hand-built (WS3 S3 T3 W3 I2 A1) with a double-handed weapon (strikes
+# last).  The bearer's own swing (ordinary tier, Initiative 4) comes first, the double-handed weapon
+# (tier -1) second and the bite (tier -2) last: the tape is consumed in request order, so the key
+# order is itself the evidence.  WS3 against WS3 hits on 4+; the bite's wound die of 3 wounds T3 at the
+# bearer's Strength 4 (3+) and would fail at a fist's Strength 3 (4+); no die is a natural six; the two
+# weapon swings are declared natural ones so the bearer survives the Strength 5 double-handed blow.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: mechanic/mechanic.beak
+  id: the-beak-adds-a-bite-at-own-strength-that-strikes-after-a-double-handed-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.beak]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &two-handed-opponent
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.last-bite.attack.0.hit, value: 4}
+    # 3 wounds at the bearer's own Strength 4 (3+); an unarmed Strength 3 would have needed a 4.
+    - {key: round.0.first.last-bite.attack.0.wound, value: 3}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.strikes-last-bite]
+    first.characteristics.attacks: 1
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/mechanic.beak
+  id: without-the-mechanic-no-bite-is-compiled-or-struck
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *two-handed-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks: []
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

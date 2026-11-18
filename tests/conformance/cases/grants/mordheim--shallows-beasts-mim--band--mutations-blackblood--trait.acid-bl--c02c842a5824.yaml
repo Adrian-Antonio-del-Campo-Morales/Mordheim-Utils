@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-blackblood/trait.acid-blood
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the wound the Buccaneer with
+#   Blackblood loses answers with the printed Strength 3 hit, the same wound without the mutation
+#   costs the attacker nothing, the reaction is no critical on a natural six, and the mutation is
+#   refused on a Henchman.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,107 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (shared-rule.mutations-blackblood through special-rules.yaml, Blackblood): "If the
+# model loses a wound in close combat, anyone in base contact with the model suffers a Strength 3
+# hit (no critical hits)."  The binding is trait.acid-blood (value true), read by
+# modular/aftermath.py ~64-80: each close-combat wound the bearer loses answers with an automatic,
+# unparriable Strength 3 hit on the attacker, tagged effect.no-critical, resolved as a hit (ruling
+# "Fire and other synthetic hits are hits": the attacker keeps its real defences; the attacker here
+# is unarmoured, so the reaction asks only its wound die round.<i>.<attacker>.attack.<n>.acid-blood.<k>.wound).
+# The model follows the Cult of the Possessed twin (...0dff9f669885): the bearer is the band's
+# Buccaneer (a printed Hero) selecting the mutation through special_rule_ids (one mutation per Hero
+# under Aquatic Mutants), carrying a club from the heroes' list and the fixture facts (WS3 S3 T3 W3
+# I2 A1) so the dice math is fixed; the attacker is hand-built (mace, WS3 S3 T3 I5 A1) at three
+# Wounds, or four where the critical boundary is pinned.  The bearer's own swing is a natural one.
+# The control is the same Buccaneer without the mutation; the refusal is a Wrecker (Henchman).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# An unsaved close-combat wound on the bearer answers with the printed Strength 3 hit: its four
+# wounds the Toughness 3 attacker and costs it one Wound.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-blackblood/trait.acid-blood
+  id: an-unsaved-wound-on-the-mutated-hero-answers-with-the-printed-strength-three-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-blackblood]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.acid-blood.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical wound on the same Buccaneer without the mutation asks for no reaction
+# die and leaves the attacker's Wounds untouched.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-blackblood/trait.acid-blood
+  id: the-same-wound-without-the-mutation-costs-the-attacker-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "(no critical hits)": the core critical rule makes a natural six on a wound roll a
+# critical wound when the required target is below six; this Strength 3 hit against Toughness 3
+# needs a four, so the reaction's six is the candidate.  The attacker stands at four Wounds: a
+# critical's two damage would leave it on two, the printed denial leaves it on three.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-blackblood/trait.acid-blood
+  id: the-reactive-hit-is-no-critical-even-on-a-natural-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-blackblood]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.acid-blood.0.wound, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are Heroes: a Wrecker (Henchman) selecting the mutation is refused.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-blackblood/trait.acid-blood
+  id: the-mutation-is-refused-on-a-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-blackblood]
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers"

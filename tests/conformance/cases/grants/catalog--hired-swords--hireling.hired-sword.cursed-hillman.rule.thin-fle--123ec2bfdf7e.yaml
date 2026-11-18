@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.thin-flesh/thin-flesh
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): a wound die of three wounds
+#   the man-form Hillman in hand-to-hand combat (Strength 3 against a Toughness counted as 2); a two
+#   still fails at the lowered threshold; the plain-hireling control is not wounded by the same three;
+#   the grant is refused outside its profile.  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the print's "His Toughness is otherwise unchanged outside close combat"
+#   is the shooting half (out-of-scope.shooting for the duel).  The Hillman's own Lycanthrope rule adds
+#   two requests to every wound he takes in man form: the fur cloak's 6+ save in close combat
+#   (trait.natural-armour-save 6, the `.armour` die) and the transformation die (`.lycanthrope.<n>`,
+#   4+ turns him into the wolf and skips the Injury roll); both are declared below with failing values
+#   so the wound stands on the man profile.  In wolf form the printed T4 line applies and the -1 still
+#   reads from the same tag; that interaction belongs to the Lycanthrope identities.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,93 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), wound face (survival-injury-and-immunity batch, 2026-11-18).
+# The recipient is the printed Cursed Hillman (hirelings.hired-sword.2a / hireling.hired-sword.cursed-
+# hillman), compiled through the hireling route; Thin Flesh is a `grant: profile` rule binding the
+# shared mechanic rule.thin-flesh, so the build selects nothing, and the selectable Wolf Form is left
+# unselected (man form, kit axe in hand, cloak worn as a trait).  Printed text: "he counts as having -1
+# Toughness in hand-to-hand combat."  Its physical characteristics are supplied as fixture facts (WS3 S3
+# T3 W2 I5 A1; two wounds keep the wounded Hillman standing so no Injury die follows) while its printed
+# Leadership stays in place; the bearer is silenced with attacks: 0.  The opponent is hand-built (WS3 S3
+# T3 W3 I2 A1 Ld7, mace) and charges so it strikes first, declaring the hit (WS3 on WS3: 4) and the wound
+# die under test; the wound chart gives Strength 3 a four against Toughness 3 and a three against
+# Toughness 2.  When the three wounds, the Hillman's cloak save (6+; a declared 3 fails) and his
+# transformation die (4+; a declared 1 keeps the man form) are requested before the wound is applied.
+# The control is a plain hireling without the rule - the grade-1b Bard - compiled through the same route
+# with the same fixture, so the same three fails against Toughness 3.  The refusal selects the printed
+# rule on that control through special_rule_ids: a profile-granted rule is not available elsewhere.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A three wounds the man-form Hillman: Strength 3 against a Toughness counted as 2; the cloak save and
+# the transformation die both fail, so he loses one wound and stays a standing man.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.thin-flesh/thin-flesh
+  id: a-three-wounds-the-cursed-hillman-in-hand-to-hand-combat
+  fighters:
+    first: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: &bearer-silent {second: {attacks: 0}}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 3}          # Lycanthrope: the fur cloak's 6+ save in close combat fails
+    - {key: round.0.first.attack.0.lycanthrope.0, value: 1}   # Lycanthrope: the 4+ transformation die fails, the man profile stands
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING, state.second.hillman_wolf: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary below: a two still fails even at the lowered threshold, so neither the cloak nor the
+# transformation die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.thin-flesh/thin-flesh
+  id: a-two-still-fails-to-wound-the-cursed-hillman
+  fighters:
+    first: *opponent
+    second: *recipient
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard): the same three against Toughness 3 fails to wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.thin-flesh/thin-flesh
+  id: a-hireling-without-the-rule-is-not-wounded-by-the-same-three
+  fighters:
+    first: *opponent
+    second: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.thin-flesh/thin-flesh
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.thin-flesh]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

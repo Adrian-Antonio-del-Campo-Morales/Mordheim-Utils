@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.fighting-undead
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a Vampire
+#   attacking the bearer re-rolls a missed hit in the first round and not in the second, a non-Vampire
+#   attacker is granted no re-roll, a Vampire attacking a fighter without the mechanic is granted none,
+#   and the grant reaches a Vampire that is immune to psychology.  REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,106 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the record (Town Cryer 22, Revenge is Eternal / Marianna / Fighting Undead) is the
+#   recorded contract in packages/python/combat-engine/mordheim_combat/modular/contexts.py (the hit
+#   re-roll predicate, "imposed_hatred"): the mechanic is carried by the DEFENDER and gives an attacker
+#   tagged species.vampire the first-round Hatred re-roll of failed hits against her; the engine's
+#   comment records that the source's express grant to all Vampires is retained even though Vampires
+#   are ordinarily immune to psychology, exactly like Kindred Hatred, and that no other Undead receives
+#   it.  Semantic wrinkle: the KB effect text is the stub "Uses the source anti-Undead rule", so the
+#   direction of the rule (Vampires hate her, not a bonus for her against the Undead) is taken from
+#   the consumer and should be confirmed against the Town Cryer print at review.  The re-roll is a die
+#   (round.<r>.<side>.attack.<n>.hit.reroll), not a decision, requested after a failed hit.
+#
+# Fixtures.  The attacker is hand-built (WS3 S3 T3 W3 I5 A1, mace) and declares the one fact the rule
+# reads, trait_overrides {vampire: true} (the species.vampire identity); the bearer is hand-built
+# (WS3 S3 T3 W3 I2 A1, mace) with the mechanic injected through skill_ids (shared mechanic file: the
+# removal probe reports it inert by design).  WS3 against WS3 hits on 4+, a 2 misses and a re-rolled 4
+# hits; Strength 3 wounds T3 on 4+ with no critical face; nobody wears armour; the bearer's own blows
+# are declared natural ones.  The higher Initiative of the attacker makes its blow attacks.0.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: mechanic/mechanic.fighting-undead
+  id: a-vampire-attacking-the-bearer-rerolls-a-missed-hit-in-the-first-round-only
+  fighters:
+    first:
+      &vampire
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fighting-undead]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    # Second round: the same miss stands, no re-roll is requested.
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 2}
+    1: {attacks.0.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The grant reads the attacker's identity: a fighter that is not a Vampire is given no re-roll.
+- audit_id: mechanic/mechanic.fighting-undead
+  id: an-attacker-that-is-not-a-vampire-gets-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second: *bearer
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The grant is the bearer's: the same Vampire attacking a fighter without the mechanic re-rolls nothing.
+- audit_id: mechanic/mechanic.fighting-undead
+  id: without-the-mechanic-the-vampire-gets-no-reroll
+  fighters:
+    first: *vampire
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Vampires are ordinarily immune to psychology; the source's express grant still reaches an immune one.
+- audit_id: mechanic/mechanic.fighting-undead
+  id: the-reroll-reaches-a-vampire-that-is-immune-to-psychology
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      trait_overrides: {vampire: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second: *bearer
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

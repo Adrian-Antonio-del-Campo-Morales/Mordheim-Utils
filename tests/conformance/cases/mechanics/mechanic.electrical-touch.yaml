@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.electrical-touch
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the
+#   forfeited attack becomes an automatic jolt that wounds and then recharges for D3 rounds; the jolt is
+#   fixed Strength 3, not the bearer's; against metal armour it is Strength 5 and the armour is
+#   ignored; the jolt strikes at +1 Initiative ahead of an opponent of equal Initiative; declining the
+#   forfeit keeps the ordinary attack; a fighter without the mechanic is offered no forfeit.  REVIEWED
+#   still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,153 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed mutation (Mutiny in Marienburg p.162, Electrical Touch: "May forfeit one
+#   close-combat attack to jolt at +1 Initiative: automatic Strength 3 hit, ignores all armour;
+#   Strength 5 against metal armour. Recharge D3 turns after use") is the tag mechanic.electrical-touch
+#   read by packages/python/combat-engine/mordheim_combat/modular/rounds.py: a standing, ungrappled
+#   bearer whose recharge has elapsed is asked, per ordinary attack, the decision
+#   round.<r>.<side>.electrical-touch.forfeit.<n>; a true answer removes that attack and inserts the
+#   jolt event round.<r>.<side>.electrical-touch (pools.py electrical_touch_weapon: automatic hit, no
+#   hit die, fixed_strength 3 or 5 when the target carries condition.metal-armour, ignore_armour) at
+#   the bearer's Initiative +1; after the jolt resolves the owner rolls the recharge
+#   round.<r>.<side>.electrical-touch.recharge on a three-sided die and the jolt is unavailable until
+#   round r + result.  The jolt's wound and injury dice follow the labelled key
+#   round.<r>.<side>.electrical-touch.attack.0.*.  Design ruling "Fire and other synthetic hits are
+#   hits": the jolt is a hit with neutral offensive effects and the victim keeps real defences other
+#   than armour.  condition.metal-armour is compiled from a worn metal armour (heavy armour here).
+#   The removal probe reports this skill_ids injection inert by design.
+#
+# Fixtures.  The bearer is hand-built (WS3 S4 T3 W2 I4 A1, mace) with the mechanic injected through
+# skill_ids; the opponent is hand-built (WS3 S3 T3 W3 I2 A1, mace), in heavy armour (5+, metal) where
+# stated, or at Initiative 4 for the priority face.  The jolt (Initiative 4+1) precedes the opponent's
+# blow; the forfeited ordinary attack requests no die.  Fixed Strength 3 wounds T3 on 4+ (the bearer's
+# own Strength 4 would need 3+); Strength 5 wounds on 2+; no wound die is a natural six; the opponent's
+# blows are declared natural ones.  The strict tape and the strict decision list reject an undeclared
+# request, so an absent forfeit decision or an absent tie die is itself the assertion.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: mechanic/mechanic.electrical-touch
+  id: the-forfeited-attack-becomes-an-automatic-jolt-that-recharges-for-d3-rounds
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.electrical-touch]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    # Automatic hit: no hit die.  4 wounds T3 at the fixed Strength 3.
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 4}
+    # Recharge D3 = 2: the jolt is unavailable in round 1, so no forfeit decision is asked there.
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The jolt is Strength 3 whatever the bearer's own Strength: a 3 fails to wound T3 (4+ needed) where
+# the bearer's Strength 4 mace would have wounded on 3+.
+- audit_id: mechanic/mechanic.electrical-touch
+  id: the-jolt-is-fixed-strength-3-not-the-bearers-strength
+  fighters:
+    first: *bearer
+    second: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 3}
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Against a target in metal armour the jolt is Strength 5 (the same 3 now wounds on 2+) and the
+# heavy armour's 5+ save is ignored: no armour die is requested.
+- audit_id: mechanic/mechanic.electrical-touch
+  id: against-metal-armour-the-jolt-is-strength-5-and-ignores-the-armour
+  fighters:
+    first: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 3}
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# +1 Initiative: against an opponent of equal Initiative 4 the jolt (Initiative 5) strikes first and no
+# priority tie die is requested for it.
+- audit_id: mechanic/mechanic.electrical-touch
+  id: the-jolt-strikes-at-plus-one-initiative-ahead-of-an-equal-initiative-opponent
+  fighters:
+    first: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 4, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 4}
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Declining the forfeit keeps the ordinary attack and requests no jolt or recharge die.
+- audit_id: mechanic/mechanic.electrical-touch
+  id: declining-the-forfeit-keeps-the-ordinary-attack
+  fighters:
+    first: *bearer
+    second: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/mechanic.electrical-touch
+  id: without-the-mechanic-no-forfeit-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

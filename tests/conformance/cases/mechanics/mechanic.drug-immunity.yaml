@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.drug-immunity
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (drug-immunity family model, 2026-11-18): a hand-built bearer
+#   carrying the mechanic through skill_ids and Crimson Shade in preparation_ids keeps its printed
+#   Initiative and rolls no D3, while the same bearer without the mechanic rolls the D3 and gains it;
+#   the same pair with Mad Cap Mushrooms shows the Frenzy flag suppressed and present.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: both drug facets the duel can read (a rolled bonus and a duel-start flag) are declared with
+#   their controls; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,118 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+#
+# Drug-immunity family model: the shared mechanic (record: catalog/mechanics/close-combat.yaml, Drug
+# Immunity, from the Clockworkers' "Constructs are unaffected by poison or drugs"; execution.yaml
+# binds the passive tag mechanic.drug-immunity) is injected on a hand-built living fighter through
+# `skill_ids`, so no band or undead clause interferes (the compiler also makes Crimson Shade and Mad
+# Cap inert on undead and possessed bearers, which is why the bearers here are ordinary hand-built
+# fighters).  Two drugs cover the two kinds of change a drug makes to the duel: Crimson Shade ("+D3
+# Initiative, +1 Movement and Strength", catalog/items/combat-equipment.yaml) is a rolled bonus, so
+# the suppressed change is both the missing D3 request and the unchanged Initiative; Mad Cap
+# Mushrooms grant Frenzy at duel start, so the suppressed change is the frenzy flag.  The attacker
+# is the hand-built fixture (WS10 S8 I10) declaring a miss, the bearer is silenced (`attacks: 0`; a
+# frenzied doubled pool of 0 stays 0), so each tape holds the attacker's single miss plus, on the
+# controls only, the drug's own die.
+# Consumer read (never executed): roster-construction compiler.py, `drug_ids` / "mechanic.drug-
+# immunity" (lines 859-866): when the compiled fighter's global ids carry mechanic.drug-immunity,
+# every drug id (preparation.crimson-shade, preparation.mandrake-root, preparation.mad-cap-
+# mushrooms, preparation.head-splitter-mushrooms and the six Fungus Brew conditions) is removed from
+# the global and innate id lists BEFORE the execution effects are applied, so the drug's EffectSet
+# never reaches the fighter: no duel-start tag, bonus or flag, and no drug die is requested (Crimson
+# Shade's +D3 Initiative, modular/state.py `<side>.crimson-shade` with sides 3, is rolled only when
+# the tag is present).  The bearer carries the drug in `preparation_ids` (the channel the authored
+# clockworkers-sc construct files use), and the construction gate only refuses a drug where a band
+# rule forbids the category or the profile's own restriction forbids the item.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Crimson Shade on the immune bearer: the drug is stripped at compilation, so no D3 is requested and
+# the Initiative stays the printed 2 (the absence of the `second.crimson-shade` request is asserted
+# by the strict tape).
+- audit_id: mechanic/mechanic.drug-immunity
+  id: crimson-shade-does-not-reach-the-immune-bearer-and-rolls-no-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drug-immunity]
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.initiative: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.initiative: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bearer without the mechanic rolls the D3 at duel start (declared 2) and
+# starts at Initiative 4.
+- audit_id: mechanic/mechanic.drug-immunity
+  id: the-same-crimson-shade-reaches-a-bearer-without-the-immunity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.initiative: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.initiative: 4, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Mad Cap Mushrooms on the immune bearer: the duel-start Frenzy never lands.
+- audit_id: mechanic/mechanic.drug-immunity
+  id: mad-cap-mushrooms-do-not-frenzy-the-immune-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.drug-immunity]
+      preparation_ids: [preparation.mad-cap-mushrooms]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.frenzy: False}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.frenzy: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bearer without the mechanic is frenzied from initialisation.
+- audit_id: mechanic/mechanic.drug-immunity
+  id: the-same-mad-cap-mushrooms-frenzy-a-bearer-without-the-immunity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mad-cap-mushrooms]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.frenzy: True}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.frenzy: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

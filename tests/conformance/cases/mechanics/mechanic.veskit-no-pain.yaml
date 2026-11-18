@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.veskit-no-pain
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the
+#   Knocked Down and the Stunned faces of the Injury table are both ignored by the bearer, an Out of
+#   Action face still removes him, the bearer left standing at zero Wounds rolls on the table again at
+#   the next wound and is only removed by that later Out of Action, and the same Stunned face stuns a
+#   fighter without the mechanic.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,120 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the scenarios below are declared from the printed rule ("ignores Knocked Down and Stunned
+#   injury results and remains until his last Wound is lost"; Sigmund Spindle's print adds "must lose
+#   his last Wound AND receive an Out of Action Injury result to be removed") and the recorded contract
+#   (packages/python/combat-engine/mordheim_combat/modular/attacks.py, the post-table replacement: any
+#   aggregated Injury condition other than Out of Action becomes Standing, before the helmet / Thick
+#   Skull reaction).  Unlike ordinary No Pain (skill.ignore-pain, Stunned -> Knocked Down) this
+#   mechanic removes both prone results; the Out of Action face is untouched.  The execution entry also
+#   carries mechanic.pain-immunity (grapple immunity), which belongs to the Gaoler's grapple identity
+#   and is not evidenced here.
+#
+# Family model (the skill.ignore-pain mechanics file and the Cairn Wraith No Pain file).  The attacker
+# is the stronger hand-built fixture (WS10 S8 I10, mace): it hits WS3 on 3+, wounds T3 on 2+ with no
+# critical face declared, and its Strength makes the bearer's parry ineligible, so the tape is hit,
+# wound and the Injury die.  The bearer is hand-built with the mechanic injected through skill_ids
+# (this is the shared mechanic file, so the removal probe reports it inert by design), has one Wound
+# so the first wound reaches the Injury table, and contributes no attack of its own (initial_state).
+# Injury faces: 1-2 Knocked Down, 3-4 Stunned, 5-6 Out of Action on the printed table.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: mechanic/mechanic.veskit-no-pain
+  id: a-knocked-down-result-is-ignored-and-the-bearer-stays-standing
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.veskit-no-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/mechanic.veskit-no-pain
+  id: a-stunned-result-is-ignored-and-the-bearer-stays-standing
+  fighters:
+    first: *strong-attacker
+    second: *bearer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Out of Action face is not a prone result: the bearer is removed like anyone else.
+- audit_id: mechanic/mechanic.veskit-no-pain
+  id: an-out-of-action-result-still-removes-the-bearer
+  fighters:
+    first: *strong-attacker
+    second: *bearer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# "Remains until his last Wound is lost" / "losing that Wound alone is not automatic removal": at zero
+# Wounds the standing bearer takes a further wound in the next round, rolls on the Injury table again
+# and is removed only by that later Out of Action face.
+- audit_id: mechanic/mechanic.veskit-no-pain
+  id: at-zero-wounds-the-standing-bearer-is-removed-only-by-a-later-out-of-action
+  fighters:
+    first: *strong-attacker
+    second: *bearer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 5}
+    - {key: round.1.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+    1: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 2, termination_reason: second_out}
+
+- audit_id: mechanic/mechanic.veskit-no-pain
+  id: without-the-mechanic-the-same-stunned-result-stuns
+  fighters:
+    first: *strong-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

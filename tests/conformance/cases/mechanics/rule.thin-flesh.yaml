@@ -1,6 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/rule.thin-flesh
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a wound die of
+#   three wounds the bearer in hand-to-hand combat (Strength 3 against a Toughness counted as 2), a two
+#   still fails at the lowered threshold, and the same three fails against the same fighter without the
+#   rule (Strength 3 against Toughness 3 needs a four).  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the boundary pair and the control are declared below; REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkle (2026-11-18): the print's "His Toughness is otherwise unchanged outside close combat"
+#   is the shooting half of the rule (out-of-scope.shooting for the duel); the consumer applies the -1
+#   only to a melee attack's wound roll (contexts.prepare_wound_context: `toughness - int(melee_attack
+#   and has_tag(..., "rule.thin-flesh"))`), and the compiled Toughness characteristic itself is left
+#   untouched (the Cursed Hillman wolf-form-stats file already observes the unchanged compiled T).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +21,70 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (Cursed Hillman, Fanatic Online 49, carried by grade-2a.yaml): "he counts as having -1
+# Toughness in hand-to-hand combat."  The mechanic's execution entry is an effect-set carrying the tag
+# `rule.thin-flesh`; the wound chart gives Strength 3 a four against Toughness 3 and a three against
+# Toughness 2, so the three is the face the rule changes and the two is the face it leaves failing.
+# The bearer is hand-built with the fixture (WS3 S3 T3 W2 I2 A1, mace) and the mechanic injected through
+# skill_ids; two wounds keep the wounded bearer standing so no save or Injury die follows (a wound at
+# T3 W2 reaches no Injury roll).  The opponent is the family's hand-built attacker (WS3 S3 T3 W2 I5 A1,
+# mace) and charges so it strikes first, declaring the hit (WS3 on WS3: 4) and the wound die under test;
+# when the wound fails the bearer swings back and its blow is declared as a natural miss.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A three wounds the bearer: Strength 3 against a Toughness counted as 2.
+- audit_id: mechanic/rule.thin-flesh
+  id: a-three-wounds-the-bearer-in-hand-to-hand-combat
+  fighters:
+    first: &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.thin-flesh]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &attacker-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary below: a two still fails even at the lowered threshold.
+- audit_id: mechanic/rule.thin-flesh
+  id: a-two-still-fails-to-wound-the-bearer
+  fighters:
+    first: *attacker
+    second: *bearer
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same three against the same fighter without the rule fails (Strength 3 against
+# Toughness 3 needs a four).
+- audit_id: mechanic/rule.thin-flesh
+  id: the-same-three-fails-against-the-fighter-without-the-rule
+  fighters:
+    first: *attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.integrated-warplock-pistols/weapon.veskit-claws
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, survival-injury-and-immunity batch
+#   2026-11-18): Veskit's printed kit compiles to the integrated claws, which wound at fixed Strength 5
+#   with a total -3 save modifier; a failed parry with the claws is re-rolled; the plain-hireling
+#   control's dagger lets the same armour die save; the rule is refused outside its printed profile.
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,110 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed rule ("Both Eshin Fighting Claws have integral Warplock Pistols. In close combat
+#   Veskit uses fixed Strength 5 with a total -3 armour-save modifier. The extra Attack is already
+#   included in his printed A4. The claws retain their parry and failed-parry reroll under the adopted
+#   paired-claw convention; shooting is excluded") binds weapon.veskit-claws (fixed_strength 5,
+#   armour_penetration 1, parry, two_handed, weapon.fighting-claws).  Veskit's only printed kit item is
+#   the unique Integrated Fighting Claws, mapped to this weapon
+#   (sources/knowledge/catalog/mechanics/simulation-mappings.yaml), so an omitted main weapon is the
+#   claws.  Consumers: phases.py armour_target (Strength penalty plus armour penetration) and the parry
+#   context in modular/contexts.py (weapon.fighting-claws re-rolls a failed parry).  The printed extra
+#   Attack is the profile's A4, replaced here by the fixture A1 and not a separate effect.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed profile compiled through the
+# hireling route (hirelings.dramatis-personae.core / hireling.dramatis.veskit) with the fixture
+# characteristics (WS3 S3 T3 W2 I5 A1) and no main weapon named.  The opponent is hand-built (WS3 S3 T3
+# W3 I2 A1, mace) in Gromril armour (4+) with a shield: a 3+ save that the claws worsen to 6+ while the
+# control's dagger improves it to 2+.  WS3 against WS3 hits on 4+; fixed Strength 5 wounds T3 on 2+;
+# no wound die is a natural six.  Veskit's other printed rules add no die while he strikes: psychology
+# immunity and the 3+ Metallic Body only act when he is tested or wounded, and in the parry scenario
+# the parry succeeds before any save.  The control is the grade-1b Bard (dagger) with the same fixture.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.integrated-warplock-pistols/weapon.veskit-claws
+  id: veskits-kit-compiles-to-the-claws-that-wound-at-strength-5-with-a-minus-3-save-modifier
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.veskit
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &armoured-opponent
+      main_weapon_id: weapon.mace
+      armour_id: armour.gromril-armour
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # 3 wounds at the fixed Strength 5 (2+); the fixture Strength 3 would have needed a 4.
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # 3+ save, -2 for Strength 5 and -1 for the claws: a 6 is needed and the 5 fails.
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_fighters:
+    first.main_weapon.fixed_strength: 5
+    first.main_weapon.armour_penetration: 1
+    first.main_weapon.parry: True
+    first.main_weapon.two_handed: True
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The paired-claw convention: Veskit's failed parry is re-rolled and the 5 beats the hit die of 4, so no
+# wound, Metallic Body save or Injury die follows.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.integrated-warplock-pistols/weapon.veskit-claws
+  id: veskits-failed-parry-with-the-claws-is-rerolled
+  fighters:
+    first: *recipient
+    second: *armoured-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 2}
+    - {key: round.0.second.attack.0.parry.reroll, value: 5}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, dagger) hits and wounds the same opponent (Strength 3, 4+), and the identical
+# armour die of 5 saves: a dagger carries no penalty and even grants the target +1 (2+).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.integrated-warplock-pistols/weapon.veskit-claws
+  id: a-hireling-without-the-claws-lets-the-same-armour-die-save
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *armoured-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Veskit's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.integrated-warplock-pistols/weapon.veskit-claws
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.veskit.rule.integrated-warplock-pistols]
+    second: *armoured-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

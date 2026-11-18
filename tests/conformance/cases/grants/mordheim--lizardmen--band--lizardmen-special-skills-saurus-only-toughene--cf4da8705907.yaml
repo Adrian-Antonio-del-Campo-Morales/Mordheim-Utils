@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/lizardmen/band--lizardmen-special-skills-saurus-only-toughened-hide/skill.hard-to-kill
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the printed
+#   Saurus Hero selecting Toughened Hide is only Stunned by a five on the Injury chart, the same Saurus
+#   without the selection is taken out by the same five, and a Skink Hero of the band is refused the
+#   Saurus-only skill.  REVIEWED still requires manual semantic review; execution_status stays
+#   UNEXECUTED until the suite runs.
+# AUTHORED: the boundary, the unselected control and the recipients refusal are declared below;
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,77 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/lizardmen/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Family model (Hard to Kill, selectable band skill).  The record is a `warband_skill` with
+# `grant: selectable`, `eligibility: [saurus-totem-warrior]` and the binding `skill.hard-to-kill` (shared
+# rule Toughened Hide, mordheimer.net, Lizardmen special skills / Saurus Only / Toughened Hide): the Saurus "is treated as having the Dwarf Hard to Kill rule", whose
+# chart is 1-2 Knocked Down, 3-5 Stunned, 6 Out of Action against the ordinary 5-6 Out of Action.  The
+# eligibility list names the band's Saurus Hero only, so the recipients gate refuses every other profile
+# with `special rule is not available to <band>/<profile>`.
+# Fixture facts: the Saurus is supplied the corpus characteristics (WS3 S3 T3 I2 A1, printed Ld8) with
+# wounds: 1 so the first wound reaches the Injury roll; its equipment list has no mace, so it carries an
+# axe (no declared die depends on it).  The opponent is hand-built (WS3 S3 T3 W2 I5 A1, mace) and charges,
+# declaring the hit (4), the wound (4, below the critical six) and the Injury die under test.  The band's
+# Scaly Skin gives the Saurus a natural 5+ save (compiler.lizardmen-scaly-skin, unmodified by S3), so the
+# armour die is requested and declared as a failing four before the Injury die.  A Saurus at zero wounds
+# is Stunned or Out and never swings back, so its printed bite adds no die.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/lizardmen/band--lizardmen-special-skills-saurus-only-toughened-hide/skill.hard-to-kill
+  id: a-five-only-stuns-the-saurus-with-toughened-hide
+  fighters:
+    first: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &recipient
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--lizardmen-special-skills-saurus-only-toughened-hide]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 8}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Saurus without the selection takes the same five on the ordinary chart.
+- audit_id: rule/mordheim/lizardmen/band--lizardmen-special-skills-saurus-only-toughened-hide/skill.hard-to-kill
+  id: the-same-five-takes-the-saurus-out-without-the-skill
+  fighters:
+    first: *opponent
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 8}
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed recipients are the Saurus Heroes: a Skink Hero of the same band is refused the selection.
+- audit_id: rule/mordheim/lizardmen/band--lizardmen-special-skills-saurus-only-toughened-hide/skill.hard-to-kill
+  id: a-skink-hero-of-the-band-is-refused-the-saurus-only-skill
+  fighters:
+    first: *opponent
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-great-crests
+      special_rule_ids: [band--lizardmen-special-skills-saurus-only-toughened-hide]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 8}
+  expect_error: "special rule is not available to lizardmen/skink-great-crests"

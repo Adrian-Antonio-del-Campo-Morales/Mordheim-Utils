@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/necrarchs-mou/nosferatu--immune-to-poisons/trait.poison-immune
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (poison-immunity family model, band form, 2026-11-18): a
+#   Nightshade-coated mace wounds the printed bearer and the poisoned-wound Initiative rider is
+#   suppressed; a hand-built control with the bearer's printed line suffers the rider under the same
+#   tape; and another profile of the band selecting the rule is refused.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the scenarios of the family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,84 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/necrarchs-mou/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+#
+# Poison-immunity family model (the authored necrarchs-the-soul-stealers-lotd1 and call-of-the-
+# night-haint-mim files of this directory): Nightshade is the one admitted poison whose consequence
+# is a state change on the warrior it wounds (one unsaved wound lowers Initiative by one, carried as
+# the lasting initiative_penalty field; modular/attacks.py reads `poison.nightshade` on the attack
+# and skips the rider when the defender's global effects carry `poison_immune` / poison_immunity,
+# compiled from the trait by roster-construction compiler.py), so it is the rider the printed
+# immunity must suppress: the coated mace wounds the bearer as any mace would, and the penalty never
+# lands.  The attacker's Weapon Skill 10, Strength 8 and Initiative 10 are hand-built fixture facts,
+# not profile values; its higher Initiative with no charge declared lets it strike first, and the
+# bearer declares no attack of its own.  The control is a hand-built fighter carrying the bearer's
+# printed characteristic line without the grant, under the same tape, so the only difference between
+# the two scenarios is the immunity.  The refusal selects the printed profile rule on another
+# profile of the band (not selectable: `special rule is not available to <band>`).
+# Printed clause (Mousillon Necrarchs p.4, Nosferatu special rules): Immune to Poisons, shared with
+# the band's drug-and-poison immunity (the drug half is the sibling mechanic.drug-immunity
+# identity). Profile facts read: Leader, Wizard and Necrolore (no spell is selected, nothing is
+# cast), Tattered Mind, Fear and Immune to Psychology (no die without a charge), No Pain (injury
+# roll only), and "He will never wear armour" (no armour die).  The omitted main weapon is the free
+# dagger of his equipment list (no parry), silenced by `attacks: 0`.  S8 v T4 wounds on 2+ (a 4 is
+# no critical); the printed W2 keeps him standing (2 -> 1) so no injury die is requested.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The coated mace wounds the bearer (printed WS4 BS4 S4 T4 W2 I5 A2 Ld9): the declared 4 hits, the declared
+# 4 wounds at S8 (no critical six), the printed Wounds drop to 1 and no injury die is requested, and the
+# poisoned-wound Initiative penalty is suppressed: initiative_penalty stays 0.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--immune-to-poisons/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: necrarchs-mou, profile_id: nosferatu}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built fighter carrying the bearer's printed line without the grant takes the
+# same wound under the same tape and suffers the rider (initiative_penalty 1).
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--immune-to-poisons/trait.poison-immune
+  id: a-fighter-without-the-immunity-suffers-the-nightshade-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2, leadership: 9}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the nosferatu profile (`applies_to.profile_ids`), not selectable:
+# another profile of the band selecting it is refused.
+- audit_id: rule/mordheim/necrarchs-mou/nosferatu--immune-to-poisons/trait.poison-immune
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      special_rule_ids: [nosferatu--immune-to-poisons]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to necrarchs-mou"

@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, survival-injury-and-immunity batch
+#   2026-11-18): Sigmund ignores a Knocked Down and a Stunned Injury result, an Out of Action result
+#   removes him, at zero Wounds he is removed only by a later Out of Action face (the printed "losing
+#   that Wound alone is not automatic removal"), the plain-hireling control is Stunned by the same face,
+#   and the rule is refused outside its printed profile.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,141 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: the printed rule ("Ignores Knocked Down and Stunned Injury results. He must lose his last
+#   Wound AND receive an Out of Action Injury result to be removed; losing that Wound alone is not
+#   automatic removal") is a profile grant of mechanic.veskit-no-pain, whose contract replaces any
+#   aggregated Injury condition other than Out of Action with Standing
+#   (packages/python/combat-engine/mordheim_combat/modular/attacks.py).
+#
+# Hireling family model (P0, 2026-11-17) in the Cairn Wraith No Pain shape.  The recipient is the
+# printed profile compiled through the hireling route (hirelings.dramatis-personae.2a /
+# hireling.dramatis.sigmund-spindle-the-harvester-of-flesh) with the fixture characteristics
+# (WS3 S3 T3 I5 A1) and wounds 1 so the first wound reaches the Injury table; it contributes no attack
+# of its own (initial_state attacks 0, which his printed Frenzy doubles to nothing).  The attacker is
+# the stronger hand-built fixture (WS10 S8 I10, mace): 3+ to hit, 2+ to wound with no critical face.
+# Sigmund's other printed abilities on this tape: Step Aside is a 5+ special save against every close
+# combat wound, so one ward die (round.0.first.attack.0.special.ward) is declared and fails on 1 after
+# the wound; his scythe has no parry; Causes Fear only tests a charging attacker and nobody charges;
+# Lightning Reflexes and Dodge need his own strike or a missile.  The control is the grade-1b Bard
+# (dagger; kit armour owned, not worn) with the same fixture; the refusal selects the rule on the Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: sigmund-spindle-ignores-a-stunned-result-and-stays-standing
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    # Step Aside (printed starting skill): the 5+ special save fails.
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: sigmund-spindle-ignores-a-knocked-down-result-and-stays-standing
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Last Wound lost AND an Out of Action result: he is removed.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: an-out-of-action-result-with-his-last-wound-removes-sigmund-spindle
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# "Losing that Wound alone is not automatic removal": at zero Wounds he still stands, the next wound
+# rolls on the Injury table again, and only that later Out of Action face removes him.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: at-zero-wounds-sigmund-spindle-is-removed-only-by-a-later-out-of-action
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 5}
+    - {key: round.1.first.attack.0.special.ward, value: 1}
+    - {key: round.1.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+    1: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 2, termination_reason: second_out}
+
+# The control (Bard) takes the same face of three and is Stunned (no Step Aside die: it has no such skill).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: a-hireling-without-the-rule-is-stunned-by-the-same-result
+  fighters:
+    first: *strong-attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Sigmund Spindle's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain/mechanic.veskit-no-pain
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *strong-attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"
