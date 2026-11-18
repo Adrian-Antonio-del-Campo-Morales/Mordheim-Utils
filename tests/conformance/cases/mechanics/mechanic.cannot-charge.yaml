@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.cannot-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios derived from the recovered printed text (Crazed
+#   Firestarter, 2026-11-18 ruling in docs/decisions/design-rulings.md: "he will move but never
+#   run or charge. If he is attacked he will fight back normally") and the authored operator
+#   model cases/mechanics/mechanic.shallya-strictures.yaml, which shares the same
+#   initialization gate.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,77 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios cover the printed ban and its printed frontier: an explicit charge by
+#   the bearer is refused at duel initialization (the Shallya-strictures diagnostic family); a
+#   bearer attacked by an explicit enemy charge "fights back normally" and his own blow lands;
+#   and when no charge facts are supplied the engine may not attribute the charge to the bearer,
+#   so the opponent charges automatically with NO duel.charge die rolled - the tape's complete
+#   consumption makes the absent die assertive.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The printed "never run or charge": a declared charge by the bearer is a configuration the
+# rule forbids, so the duel is refused at initialization instead of resolving it (the shared
+# gate of modular/state.py names both rules it guards).
+- audit_id: mechanic/mechanic.cannot-charge
+  id: an-explicit-charge-by-the-bearer-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cannot-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"
+
+# The printed "if he is attacked he will fight back normally": the enemy's explicit charge is
+# not refused, and the bearer's own attack still resolves (hit 4, wound 4, damage 1).  The
+# charging enemy opens the round, so his miss is the first attack of the ledger and the
+# bearer's blow is the second.
+- audit_id: mechanic/mechanic.cannot-charge
+  id: the-bearer-attacked-fights-back-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cannot-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No charge facts are supplied, so initialization decides the charge itself: the bearer may
+# never be sampled as the charger, so the opponent charges automatically and NO duel.charge die
+# is rolled (modular/state.py samples only legal initial chargers).  The strict tape carries no
+# duel.charge key, and complete consumption makes that absence assertive; the bearer still
+# fights back normally.
+- audit_id: mechanic/mechanic.cannot-charge
+  id: the-opponent-charges-automatically-without-a-charge-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cannot-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_initial: {initial_charge_flags: [false, true]}
+  expect_rounds:
+    0: {state.first_charged: false, state.second_charged: true, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

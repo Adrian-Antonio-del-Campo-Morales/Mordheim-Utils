@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/mechanic.haunted-mien
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction set, 2026-11-18): the Black Guardsman's
+#   admission of a sword and heavy armour outside the Priest strictures (observed on the compiled
+#   armour_save), the control refusal of the same kit without the selection, the mutual exclusion
+#   with the Augur Mark, and the refusal outside the profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Haunted Mien is a construction rule - its printed effect
+#   is to lift the Priest's strictures and open skill lists, not to change a duel die - so the
+#   probe's construction-only verdict (the admission build becomes a refusal without the selection)
+#   is the rule's own effect and expected per the README's Rule-removal probe section.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,89 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Contract fixed by the ruling "Haunted Mien lifts the Priest kit restriction - 2026-10-15"
+# (docs/decisions/design-rulings.md): a selected Haunted Mien is the Black Guard career, mutually
+# exclusive with Augur; Ignoring Strictures lifts both the armour prohibition and the exclusive
+# scythe/dagger kit, using the ordinary human Mercenary Equipment List for the newly available basic
+# equipment; an explicitly supplied current kit must contain the physical copies actually wielded,
+# so the admission build supplies them through owned_item_ids.  The recipient is the printed Priest
+# of Morr profile compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.priest-of-morr-miracle-workers) with the fixture facts (WS3 S3 T3 W2 I5 A1;
+# the printed Ld8 stays), selecting the Mark through special_rule_ids.  The admission is observed on
+# the compiled build alone (expect_fighters: heavy armour's printed 5+ basic save), with the corpus's
+# construction-only shape: no charge and the bearer out of action before the first phase, so the
+# duel requests no die.  The refusals use the corpus expect_error contract; the kit fragment is the
+# resolver diagnostic already asserted in cases/mechanics/defence.wolf-pelt-cloak.yaml (the kit
+# resolver runs before the profile's armour ban, so the stricture's own diagnostic is unreachable).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Black Guardsman: Haunted Mien selected, a sword wielded and heavy armour worn, both supplied
+# as owned physical copies from the ordinary human Mercenary Equipment List.  The compiled fighter
+# carries heavy armour's printed 5+ basic save.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/mechanic.haunted-mien
+  id: the-black-guardsman-wears-heavy-armour-and-wields-a-sword
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien]
+      main_weapon_id: weapon.sword
+      armour_id: armour.heavy-armour
+      owned_item_ids: [sword, heavy_armour]
+    second: {}
+  # Construction is the observation: no charge is declared and the bearer is put out of action
+  # before the first phase (the corpus's control shape), so the duel requests no die at all.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 5
+
+# The control: the same kit without the selection is refused by the kit resolver (the Priest's
+# printed kit is the ceremonial scythe and dagger, and the strictures stand).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/mechanic.haunted-mien
+  id: the-same-kit-without-the-mark-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      armour_id: armour.heavy-armour
+      owned_item_ids: [sword, heavy_armour]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# Only one Mark of Morr can be chosen: Augur and Haunted Mien selected together are refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/mechanic.haunted-mien
+  id: augur-and-haunted-mien-together-are-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      special_rule_ids:
+        - hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur
+        - hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien
+  expect_error: "a Priest of Morr may choose only one Mark: Augur or Haunted Mien"
+
+# The Mark is printed for the Priest of Morr; selecting it on a hireling of another package is
+# refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/mechanic.haunted-mien
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

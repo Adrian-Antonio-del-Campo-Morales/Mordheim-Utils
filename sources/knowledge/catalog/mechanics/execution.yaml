@@ -128,6 +128,33 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: weapon.horsemans-hammer
+  handler: effect-set
+  parameters:
+    # Printed Strength: as user +1 and Two-handed; the print carries no
+    # strike-last, so no priority penalty. The mounted Cavalry Charge +1 is
+    # outside the duel (deferred.mounts).
+    strength_bonus: 1
+    two_handed: true
+    tags:
+    - weapon.horsemans-hammer
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.rolling-pin
+  handler: effect-set
+  parameters:
+    # Printed: a cudgel (club) in close combat, plus +1 Strength for the
+    # reinforced iron center.
+    concussion: true
+    strength_bonus: 1
+    tags:
+    - weapon.rolling-pin
+    - weapon.club
+    - weapon.mace
+  trigger: attack
+  application: attack
+  stacking: stack
 - id: weapon.stone-axe
   handler: effect-set
   parameters:
@@ -4305,6 +4332,42 @@ mechanics:
   parameters:
     tags: [defence.sabertooth-hide]
     armour_save_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.bio-armour
+  handler: effect-set
+  parameters:
+    tags: [defence.bio-armour]
+    # Printed 4+ armour save of the part-mechanical body.
+    armour_save_bonus: 3
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.plate-armour
+  handler: effect-set
+  parameters:
+    tags: [defence.plate-armour]
+    # Printed 4+ armour save; the -1 Movement is outside the duel.
+    armour_save_bonus: 3
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.spiral
+  handler: effect-set
+  parameters:
+    tags: [defence.spiral]
+    # Printed 5+ save that cannot be reduced by anything, carried as a ward.
+    ward_save: 5
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.triskele
+  handler: effect-set
+  parameters:
+    tags: [defence.triskele]
+    # Printed 4+ save that cannot be reduced by anything, carried as a ward.
+    ward_save: 4
   trigger: passive
   application: fighter
   stacking: once

@@ -456,6 +456,9 @@ profiles:
     kind: fixed
     value: 25
   equipment:
+    # "Jaws and claws!": the printed equipment line arms the Rat Ogre with its
+    # own natural attacks, not with a hand weapon.
+    innate_weapon_id: weapon.natural-attacks
     unique_equipment:
     - id: hireling.hired-sword.clan-skryre-rat-ogre.item.warpfire-thrower
       name: Integrated Warpfire Thrower
@@ -466,11 +469,35 @@ profiles:
     - id: hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour
       name: Bio-Mechanical Armour
       save: 4+
+      rules:
+      - hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour
       name_i18n:
         es: Armadura Biomecánica
   skill_access: []
   starting_skill_ids: []
   rules:
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour
+    name: Bio-Mechanical Armour
+    effect: >-
+      The part-mechanical body of the Rat Ogre is very hardy and confers a 4+ armour save.
+    effect_i18n:
+      es: >-
+        El cuerpo parcialmente mecánico del Ogro Rata es muy resistente y confiere una salvación por
+        armadura de 4+.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      # The save is a property of the body itself, not removable gear, so the
+      # profile grants it innately.
+      grant: profile
+      effects:
+      - id: defence.bio-armour
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: defence.bio-armour
+    name_i18n:
+      es: Armadura Biomecánica
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.large
     name: Large
     effect: Counts as a large target.
@@ -2949,6 +2976,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.thief.item.thiefs-cloak
       name: Thief's Cloak
+      # The same-named catalogue cloak (spotting distance doubled when hidden)
+      # is the canonical object; hiding is outside the duel.
+      counts_as: thiefs_cloak
       name_i18n:
         es: Capa del Ladrón
   skill_access:
@@ -3124,6 +3154,10 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.warrior-priest-of-sigmar.item.hammer-of-sigmar
       name: Hammer of Sigmar
+      # Adopted equivalence (2026-11-18, design ruling): the priest's holy
+      # warhammer is the canonical Sigmarite hammer; the print names no
+      # further property of its own.
+      counts_as: sigmarite_hammer
       name_i18n:
         es: Martillo de Sigmar
   skill_access:

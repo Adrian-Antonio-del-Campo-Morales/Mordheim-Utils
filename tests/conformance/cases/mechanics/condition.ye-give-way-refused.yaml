@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.ye-give-way-refused
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (2026-11-18): the supplied refusal turns the bearer's 4+ into
+#   a 5+ in melee (a 4 misses), a 5 still hits (the penalty is exactly one), the control without the
+#   condition hits on the same 4, and a non-Hero recipient is refused with the compiler's own sentence.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +13,99 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.ye-give-way-refused):
+#   "The Hero who refused a prior challenge has -1 to hit in melee until the end of the game,
+#   non-cumulative. Supplied prior result; no challenge or group combat is simulated."
+# AUTHORED: the condition is a supplied prior result declared through condition_ids (the documented
+#   supplied-condition channel, as condition.impetuous-charge does); the challenge itself is never
+#   simulated.  The recipient gate is the compiler's supplied-condition check
+#   (packages/python/roster-construction/mordheim_construction/compiler.py, compile_fighter), which
+#   requires a Hero (`fighter_kind == "hero"`), so the hand-built bearer carries
+#   trait_overrides: {fighter_kind: hero}.  The reader applies the -1 to the bearer's own melee hit
+#   rolls only (packages/python/combat-engine/mordheim_combat/modular/contexts.py, hit-context
+#   projection); "until the end of the game" exceeds the one-round horizon and stays a lasting fact
+#   of the supplied condition.  Non-cumulative: the printed modifier is bounded by the boundary pair
+#   below (a 4 misses, a 5 hits, so the penalty is exactly one); the condition is a presence fact
+#   read once per attack, and no authored model declares the same condition twice, so cumulativity
+#   is not declarable from this corpus.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Fixture arithmetic: WS3 against WS3 hits on 4+; the printed -1 makes the target a 5, so a 4 misses
+# and a 5 still hits.  Both sides are hand-built fixtures (W2 keeps every failure short of an injury
+# roll) and the opponent's own swing is a scripted miss.
+
+# The refusal boundary: the bearer's 4, a hit under the normal rules, misses under the printed -1.
+- audit_id: mechanic/condition.ye-give-way-refused
+  id: the-refused-heroes-four-misses-in-melee
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.hit_target: 5, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The penalty is exactly one, as printed: a 5 still hits through the refusal and the blow lands.
+- audit_id: mechanic/condition.ye-give-way-refused
+  id: a-five-still-hits-through-the-refusal
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 5, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical Hero without the supplied refusal hits on the same 4, so the missed 4
+# above is attributable to the condition and not to the build shape.
+- audit_id: mechanic/condition.ye-give-way-refused
+  id: without-the-supplied-refusal-the-same-four-hits
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipient is "the Hero who refused": a non-Hero recipient of the supplied refusal is
+# refused by the compiler's own supplied-condition gate.
+- audit_id: mechanic/condition.ye-give-way-refused
+  id: a-non-hero-recipient-of-the-refusal-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "Ye Give Way refusal requires the challenged Hero recipient"

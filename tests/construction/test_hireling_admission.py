@@ -105,8 +105,13 @@ def test_the_resolved_clauses_admit_the_previously_refused_profiles():
     # The printed kit itself now resolves: the Bo is its mapped first weapon
     # and the Ninja Robe carries its own printed equivalences.
     assert "weapon.bo" in gnoblar.main_weapon.tags
-    with pytest.raises(ValueError, match="canonical combat mapping"):
-        compile_hireling("hireling.dramatis.dark-emissary")
+    # The Dark Emissary's staff is the excluded casting bonus and the Spiral a
+    # worn 5+ icon, so the printed kit resolves and the unarmed caster compiles;
+    # the ward reaches the duel only on the actually worn icon.
+    emissary = compile_hireling("hireling.dramatis.dark-emissary",
+                                defence_ids=("defence.spiral",))
+    assert "weapon.fist" in emissary.main_weapon.tags
+    assert emissary.global_effects.ward_save == 5
 
 
 def test_the_bone_goliath_intrinsic_clauses_now_reach_the_duel():
@@ -307,8 +312,11 @@ def test_trait_carriers_that_stay_out_are_refused_for_a_named_reason():
     for carrier in ("hireling.hired-sword.witch", "hireling.hired-sword.swordsmith"):
         with pytest.raises(ValueError, match="intrinsic duel clauses are pending"):
             compile_hireling(carrier)
-    with pytest.raises(ValueError, match="hireling unique equipment needs a canonical combat mapping"):
-        compile_hireling("hireling.hired-sword.halfling-knight")
+    # The Halfling Knight's printed Cavalry Spear is the canonical Spear (its
+    # mounted cavalry bonus stays deferred with the Hound), so the profile is
+    # admitted on its printed kit.
+    knight = compile_hireling("hireling.hired-sword.halfling-knight")
+    assert "weapon.sword" in knight.main_weapon.tags
 
 
 # --- the supplied profile input a printed rule demands ------------------------
@@ -341,10 +349,13 @@ def test_a_blocked_equivalence_names_its_own_blocker():
                               defence_ids=("defence.sabertooth-hide",))
     assert "weapon.icefang-axe" in drenok.main_weapon.tags
     assert "weapon.double-handed-weapon" in drenok.main_weapon.tags
-    # The Halfling Knight's printed Cavalry Spear still has no canonical combat
-    # mapping, so the incomplete equivalence names its own blocker.
-    with pytest.raises(ValueError, match="hireling unique equipment needs a canonical combat mapping"):
+    # The Halfling Knight's Cavalry Spear counts as the canonical Spear; a
+    # lance is not a piece of his printed kit, so the kit matcher refuses it
+    # instead of substituting a mounted weapon.
+    with pytest.raises(ValueError, match="complete legal printed kit"):
         compile_hireling("hireling.hired-sword.halfling-knight", main_weapon_id="weapon.lance")
+    knight = compile_hireling("hireling.hired-sword.halfling-knight", main_weapon_id="weapon.spear")
+    assert "weapon.spear" in knight.main_weapon.tags
 
 
 def test_a_printed_drinking_result_outside_the_table_is_refused():
@@ -371,9 +382,10 @@ def test_an_inequivalent_unique_weapon_triggers_a_named_blocker():
         compile_hireling("hireling.hired-sword.grave-warden",
                          owned_item_ids=("shovel", "toughened_leathers", "wheelbarrow"),
                          main_weapon_id="weapon.axe")
-    # The member unique equipment of the Dark Emissary (staff, spiral) declares no
-    # combat equivalence, so the kit itself is the named blocker.
-    with pytest.raises(ValueError, match="canonical combat mapping"):
+    # The Dark Emissary's staff and Spiral resolve (an excluded casting bonus
+    # and a worn ward), but an axe is no part of his printed kit, so the kit
+    # itself stays the named blocker instead of inventing a weapon.
+    with pytest.raises(ValueError, match="complete legal printed kit"):
         compile_hireling("hireling.dramatis.dark-emissary",
                          owned_item_ids=("hireling.dramatis.dark-emissary.item.staff-of-darkness",
                                          "hireling.dramatis.dark-emissary.item.spiral"),

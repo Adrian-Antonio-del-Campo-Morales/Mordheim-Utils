@@ -247,16 +247,57 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.dark-emissary.item.staff-of-darkness
       name: Staff of Darkness
+      rules:
+      - hireling.dramatis.dark-emissary.rule.staff-of-darkness
       name_i18n:
         es: Bastón de Oscuridad
     - id: hireling.dramatis.dark-emissary.item.spiral
       name: Spiral
       save: 5+ unmodifiable
+      rules:
+      - hireling.dramatis.dark-emissary.rule.the-spiral
       name_i18n:
         es: Espiral
   skill_access: []
   starting_skill_ids: []
   rules:
+  - id: hireling.dramatis.dark-emissary.rule.staff-of-darkness
+    name: Staff of Darkness
+    effect: +1 to his casting roll.
+    effect_i18n:
+      es: +1 a su tirada de lanzamiento de hechizos.
+    name_i18n:
+      es: Bastón de Oscuridad
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: staff-of-darkness-casting
+        scope: 'NO'
+        binding: null
+        reason: out-of-scope.magic
+  - id: hireling.dramatis.dark-emissary.rule.the-spiral
+    name: The Spiral
+    effect: >-
+      A symbol of the Dark Master. It is a potent icon that protects the wearer from harm. It grants
+      the Dark Emissary a 5+ save that cannot be reduced by anything.
+    effect_i18n:
+      es: >-
+        Un símbolo del Amo Oscuro. Es un icono poderoso que protege a su portador del daño. Concede
+        al Emisario Oscuro una salvación de 5+ que no puede ser reducida por nada.
+    name_i18n:
+      es: La Espiral
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: none
+      effects:
+      - id: defence.spiral
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: defence.spiral
   - id: hireling.dramatis.dark-emissary.rule.wizard
     name: Wizard
     effect: Knows four spells from the Lore of Darkness.
@@ -1295,16 +1336,64 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.truthsayer.item.staff-of-light
       name: Staff of Light
+      # The print says the staff "also counts as a Halberd"; its dispel face
+      # is the excluded clause of the rule below.
+      counts_as: halberd
+      rules:
+      - hireling.dramatis.truthsayer.rule.staff-of-light
       name_i18n:
         es: Bastón de Luz
     - id: hireling.dramatis.truthsayer.item.triskele
       name: Triskele
       save: 4+ unmodifiable
+      rules:
+      - hireling.dramatis.truthsayer.rule.the-triskele
       name_i18n:
         es: Triskele
   skill_access: []
   starting_skill_ids: []
   rules:
+  - id: hireling.dramatis.truthsayer.rule.staff-of-light
+    name: Staff of Light
+    effect: >-
+      The staff can dispel a single enemy spell per turn on a roll of 4+. The staff also counts as a
+      Halberd.
+    effect_i18n:
+      es: >-
+        El bastón puede dispersar un único hechizo enemigo por turno con una tirada de 4+. El bastón
+        también cuenta como una Alabarda.
+    name_i18n:
+      es: Bastón de Luz
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: staff-of-light-dispel
+        scope: 'NO'
+        binding: null
+        reason: out-of-scope.magic
+  - id: hireling.dramatis.truthsayer.rule.the-triskele
+    name: The Triskele
+    effect: >-
+      The symbol of the Truthsayer's office, this icon protects them from harm with its benevolent
+      energies granting the Truthsayer a 4+ save, which cannot be reduced by anything.
+    effect_i18n:
+      es: >-
+        El símbolo del cargo del Decidor de Verdades, este icono lo protege del daño con sus energías
+        benévolas, concediéndole una salvación de 4+ que no puede ser reducida por nada.
+    name_i18n:
+      es: El Triskele
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: none
+      effects:
+      - id: defence.triskele
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: defence.triskele
   - id: hireling.dramatis.truthsayer.rule.wizard
     name: Wizard
     effect: Knows three spells from the Lore of Light.

@@ -200,6 +200,15 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.busty-gwen.item.knives
       name: Knives
+      # Adopted equivalence (2026-11-18, design ruling): the print names
+      # "Knives" with no rule of their own; a kitchen knife is a canonical
+      # dagger (kitchen_knife precedent), and the plural supplies two.
+      counts_as:
+        item_id: dagger
+        context: rules
+        quantity:
+          kind: fixed
+          value: 2
       name_i18n:
         es: Cuchillos
     - id: hireling.dramatis.busty-gwen.item.rolling-pin
@@ -925,6 +934,10 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot
       name: Lucky Rabbit's Foot
+      # The print carries it as flavour ("superstitious actors..."); the
+      # canonical object is the trading-post Rabbit's Foot, whose one battle
+      # reroll the catalogue keeps out of the duel scope.
+      counts_as: rabbits_foot
       name_i18n:
         es: Pata de Conejo de la Suerte
   skill_access: []

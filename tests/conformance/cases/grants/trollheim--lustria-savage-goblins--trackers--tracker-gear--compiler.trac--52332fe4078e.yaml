@@ -1,7 +1,9 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear
 # authoring_status: PARTIAL
-# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; clauses still pending or unrepresentable in this file: ['whole'].  Re-derived: the contract's own diagnostic IS established - packages/python/roster-construction/mordheim_construction/_eligibility.js profileTail emits `Trackers must begin with Rope and Hook and Bolas`, and the printed kit is already declared as that profile's fixed_equipment (sources/knowledge/bands/trollheim/lustria-savage-goblins/profiles.yaml: rope_hook, bolas), so every build of the printed profile satisfies it and no tape can exhibit the refusal; the no-sale/replacement half is campaign data outside the duel.  Pending: a build surface that can withhold or override a profile's fixed kit.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: 1 authored scenario (the admission face); the refusal face stays withheld
+#   with the blocker narrowed below.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,11 +12,36 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the refused configuration is genuinely undeclarable, not unwritten: the printed
-# profile's fixed_equipment already contains the two required items (sources/knowledge/bands/trollheim/
-# lustria-savage-goblins/profiles.yaml: rope_hook, bolas) and the executor exposes no surface that can
-# withhold or override a profile's fixed kit, so every buildable Tape satisfies the contract and its
-# acceptance would evidence nothing this clause owns; the campaign no-sale/replacement half is outside the
-# duel.  No scenario is declared for the clause. The contract's own refusal is `Trackers must begin with Rope and Hook and Bolas`, but the Trackers profile already prints those two items as fixed_equipment, so a conforming build is the only build the corpus can declare and its acceptance proves nothing the clause owns; the campaign no-sale/replacement half is excluded. Pending: a build surface that can withhold a profile's fixed kit.
+# PARTIAL: the admission face is authored - the compiled Tracker carries the rule's
+#   construction tag, observed through expect_fighters (first.construction_tags), the channel
+#   the authored quick-reload sibling of gunnery-school-of-nuln established.  The refusal half
+#   stays withheld: the gate's own diagnostic ("Trackers must begin with Rope and Hook and
+#   Bolas", packages/typescript/domain/eligibility/index.ts:1847) reads the profile's own
+#   fixed_equipment (sources/knowledge/bands/trollheim/lustria-savage-goblins/profiles.yaml:
+#   rope_hook, bolas), so every declarable Tracker build already satisfies it and no build
+#   input can make it fire; it stays withheld until a build surface can withhold or override a
+#   profile's fixed kit.  The no-sale/replacement clause of the printed sentence is campaign
+#   behaviour outside the duel.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenario ---
+# The admission face: the printed Tracker build (the same build as the authored sibling
+# trollheim--lustria-savage-goblins--trackers--equipment-restrictions--pro--7b941b366f89.yaml)
+# compiles with the rule's construction tag; the duel itself is closed immediately so the
+# compiled snapshot is the observation.
+- audit_id: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear
+  id: the-tracker-compiles-with-the-tracker-gear-construction-tag
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+  duel_context: {charging: [], active_participant: first}
+  initial_state:
+    first: {condition: OUT}
+  expect_fighters:
+    first.construction_tags: [compiler.tracker-gear]
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

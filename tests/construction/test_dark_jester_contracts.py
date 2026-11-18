@@ -126,12 +126,13 @@ def test_canonical_bindings_and_honest_admission():
         package = packages[band]
         record = next(p for p in package.profiles if p['id'] == profile)
         assert mechanic in _profile_rule_mechanics(package, record)
-    # The bonus is bound, but the printed cavalry spear still has no
-    # canonical item mapping. Do not silently substitute an ordinary spear.
-    with pytest.raises(ValueError, match='unique equipment needs a canonical combat mapping'):
-        compile_fighter(FighterBuild('mordheim',
-            band_id='hirelings.hired-sword.2a', profile_id='hireling.hired-sword.halfling-knight',
-            main_weapon_id='weapon.sword'))
+    # The printed Cavalry Spear is the canonical Spear (2026-11-18): its
+    # mounted cavalry bonus stays deferred with the Hound, so the Knight now
+    # compiles on his printed kit and the Slay bonus stays independently bound.
+    knight = compile_fighter(FighterBuild('mordheim',
+        band_id='hirelings.hired-sword.2a', profile_id='hireling.hired-sword.halfling-knight',
+        main_weapon_id='weapon.sword'))
+    assert 'rule.slay-large-creature' in knight.global_effects.tags
     # The intrinsic clauses of three carriers now resolve, so they compile
     # through their printed kits instead of being refused for a pending clause.
     crow = compile_fighter(FighterBuild('mordheim',

@@ -865,6 +865,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.ninja.item.smoke-bomb
       name: Smoke Bomb
+      # The printed kit links the trading-post Smoke Bomb itself; its
+      # escape/detonation procedure is outside the duel.
+      counts_as: smoke_bomb
       name_i18n:
         es: Bomba de Humo
   skill_access: []
@@ -963,10 +966,17 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.pyromaniac.item.fireworks
       name: Fireworks
+      # The fireworks are the rockets of the printed Rockets rule (artillery
+      # dice, fire on 4+), excluded as shooting; the item carries no duel use.
+      rules:
+      - hireling.hired-sword.pyromaniac.rule.rockets
       name_i18n:
         es: Fuegos Artificiales
     - id: hireling.hired-sword.pyromaniac.item.firecrackers
       name: Firecrackers
+      # The printed kit links the trading-post Firecrackers themselves
+      # (animal/mount panic, thrown in the shooting phase; outside the duel).
+      counts_as: firecrackers
       name_i18n:
         es: Petardos
   skill_access:
@@ -975,10 +985,15 @@ profiles:
   rules:
   - id: hireling.hired-sword.pyromaniac.rule.crazed-firestarter
     name: Crazed Firestarter
-    effect: Uses source pyromania rule.
+    effect: >-
+      The Pyromaniac loves nothing more than the lights and sparks of his fireworks. Each turn he
+      either starts one of his rockets or throws some of his firecrackers at hostile animals.
+      Therefore he will move but never run or charge. If he is attacked he will fight back normally.
     effect_i18n:
       es: >-
-        Usa la regla de piromanía de la fuente.
+        El Piromaníaco no ama nada más que las luces y chispas de sus fuegos artificiales. Cada
+        turno enciende uno de sus cohetes o lanza algunos de sus petardos a los animales hostiles.
+        Por tanto, se moverá pero nunca correrá ni cargará. Si es atacado, luchará con normalidad.
     name_i18n:
       es: Piromaníaco Enajenado
     runtime:
@@ -993,10 +1008,15 @@ profiles:
           id: mechanic.cannot-charge
   - id: hireling.hired-sword.pyromaniac.rule.rockets
     name: Rockets
-    effect: Uses source rocket rule.
+    effect: >-
+      In every shooting phase the Pyromaniac starts one rocket; artillery and scatter dice drive its
+      flight. Anything hit suffers an automatic Strength 4 hit and is set on fire on a roll of 4+; a
+      misfire detonates on the fireworks table.
     effect_i18n:
       es: >-
-        Usa la regla de cohetes de la fuente.
+        En cada fase de disparo el Piromaníaco enciende un cohete; los dados de artillería y de
+        dispersión dirigen su vuelo. Todo lo alcanzado sufre un impacto automático de Fuerza 4 y se
+        incendia con un 4+; un fallo detona en la tabla de fuegos artificiales.
     name_i18n:
       es: Cohetes
     runtime:

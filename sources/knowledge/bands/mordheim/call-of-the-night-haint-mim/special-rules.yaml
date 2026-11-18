@@ -1473,15 +1473,20 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: poltergeists--no-pain
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
+    # The profile's own Incorporeal ("do not roll for injury; it is
+    # immediately taken out of action", bound as trait.injury-profile 2)
+    # removes the Injury roll the Stunned-to-Knocked-Down conversion acts on,
+    # so No Pain can never apply to a Poltergeist. Covering identity:
+    # rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/
+    # trait.injury-profile (triage ruling, 2026-11-18).
     - id: skill.ignore-pain
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: skill.ignore-pain
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: No Pain
   source:
     manual: broheim.net

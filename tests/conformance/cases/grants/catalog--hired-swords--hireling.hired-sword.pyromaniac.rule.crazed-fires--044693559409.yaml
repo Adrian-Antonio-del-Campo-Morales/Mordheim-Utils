@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.pyromaniac.rule.crazed-firestarter/mechanic.cannot-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios on the real Pyromaniac, which now compiles (the
+#   2026-11-18 rulings in docs/decisions/design-rulings.md recover the printed text - "he will
+#   move but never run or charge. If he is attacked he will fight back normally" - and adopt
+#   that a hireling kit without a close-combat weapon fights unarmed: the printed kit is
+#   fireworks and firecrackers only, so the Pyromaniac fights with weapon.fist and no main
+#   weapon is declared).  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,85 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# AUTHORED: 3 scenarios per the hireling family model and the authored operator model
+#   cases/mechanics/mechanic.shallya-strictures.yaml (same initialization gate): with no charge
+#   facts supplied, the opponent charges automatically and NO duel.charge die is rolled, while
+#   the Bard control under the same tape does roll the charge die; the attacked Pyromaniac
+#   "fights back normally" and his unarmed fist attack resolves to damage; and an explicit
+#   charge declared for the Pyromaniac is refused at initialization.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The recipient is the printed grade-1c Pyromaniac (band_id hirelings.hired-sword.1c), compiled
+# through the hireling route with the fixture characteristics (the printed Ld7 stays); its
+# printed rule is granted by the profile itself, so nothing is selected.  No main weapon is
+# declared: the printed kit holds no close-combat weapon, so he fights unarmed with weapon.fist.
+# With no charge facts supplied, the rule forbids sampling him as the charger, so the opponent
+# charges automatically and the tape carries no duel.charge die (complete consumption makes the
+# absence assertive).  The charger's miss opens the ledger; the Pyromaniac's fist (S3-1=2 vs T3
+# wounds on 5+, and the unarmed hit grants the unarmoured target the printed 6+ save, which the
+# 1 fails - see cases/mechanics/weapon.fist.yaml) lands for 1 damage: he fights back normally.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.pyromaniac.rule.crazed-firestarter/mechanic.cannot-charge
+  id: the-opponent-auto-charges-and-the-pyromaniac-fights-back-with-his-fist
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.pyromaniac
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_initial: {initial_charge_flags: [false, true]}
+  expect_rounds:
+    0: {state.first_charged: false, state.second_charged: true,
+        attacks.1.hit: true, attacks.1.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the grade-1b Bard (no movement rule) against the same opponent with no charge
+# facts supplied.  Both sides may charge, so initialization DOES roll the duel.charge die (a 4
+# makes the Bard the charger), which is the request the Pyromaniac's rule removes.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.pyromaniac.rule.crazed-firestarter/mechanic.cannot-charge
+  id: the-bard-control-rolls-the-charge-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  maximum_rounds: 1
+  rolls:
+    - {key: duel.charge, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "never run or charge" as a refusal: an explicit charge declared for the
+# Pyromaniac is a configuration the rule forbids, so the duel is refused at initialization
+# (the Shallya-strictures diagnostic family of the shared gate).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.pyromaniac.rule.crazed-firestarter/mechanic.cannot-charge
+  id: an-explicit-charge-by-the-pyromaniac-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.pyromaniac
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charging configuration violates Cannot Charge or Shallyan Strictures"

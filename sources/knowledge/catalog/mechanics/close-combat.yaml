@@ -1706,6 +1706,43 @@ weapons:
     url: https://mordheimer.net/docs/campaigns/income
   name_i18n:
     es: La Misericordia del Conde de Ventimiglia
+- id: weapon.horsemans-hammer
+  name: Horseman's Hammer
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Horseman's Hammer
+  # Printed close-combat profile: Strength as user +1, Two-handed (no shield,
+  # buckler or additional weapon in close combat; a carried shield keeps its
+  # +1 save against shooting only). The weapon prints no strike-last. The
+  # mounted Cavalry Charge bonus (+1 Strength when a model on a steed charges)
+  # stays outside the duel (deferred.mounts).
+  rules_source_url: https://www.broheim.net/downloads/rules/Empire%20In%20Flames.pdf
+  source_refs:
+  - manual: empire-in-flames
+    printed_page: 16
+    section: Trading Post / Horseman's Hammer
+    url: https://www.broheim.net/downloads/rules/Empire%20In%20Flames.pdf
+  name_i18n:
+    es: Martillo de Jinete
+- id: weapon.rolling-pin
+  name: Rolling Pin
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Rolling Pin
+  # Printed: "treat the rolling pin as a cudgel in close combat. In addition,
+  # it was hand made by Gwen herself, with a reinforced iron center; add +1 S".
+  rules_source_url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen / Rolling Pin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  name_i18n:
+    es: Rodillo de Amasar
 armours:
 - id: armour.no-armour
   name: No Armour
@@ -2116,6 +2153,51 @@ defences:
     printed_page: 16
     section: Khemri Dramatis Personae / Abdul Alhazred / Eye Pendant
     url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
+- id: defence.bio-armour
+  name: Bio-Mechanical Armour
+  name_i18n: {es: Armadura Biomecánica}
+  engine_option: Bio-Mechanical Armour
+  # "The part-mechanical body of the Rat Ogre is very hardy and confers a 4+
+  # armour save." An ordinary 4+ melee armour save, like the Sabertooth Hide's 6+.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Clan Skryre Rat Ogre
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: defence.plate-armour
+  name: Plate Armour (Imperial Tactician)
+  name_i18n: {es: Armadura de Placas (Táctico Imperial)}
+  engine_option: Plate Armour
+  # Printed "plate armour (4+ save, -1M)": the 4+ is an ordinary armour save;
+  # the movement penalty is outside the duel.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Imperial Tactician
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: defence.spiral
+  name: The Spiral
+  name_i18n: {es: La Espiral}
+  engine_option: The Spiral
+  # Printed 5+ save "that cannot be reduced by anything": carried as a ward
+  # save. The only general save reducer, Djinn's Curse, is recorded in TODO.md
+  # as not yet respecting this printed unmodifiable face.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Dark Emissary / The Spiral
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: defence.triskele
+  name: The Triskele
+  name_i18n: {es: El Triskele}
+  engine_option: The Triskele
+  # Printed 4+ save "which cannot be reduced by anything": carried as a ward
+  # save, with the same Djinn's Curse caveat as defence.spiral.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Truthsayer / The Triskele
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
 materials:
 - id: material.normal
   name: Normal

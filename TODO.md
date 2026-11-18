@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 547 of 2,263 admitted identities have no scenarios. The division
+- **Authoring backlog.** 517 of 2,271 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -30,18 +30,32 @@ what is pending and when it is done.
   `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
   exemption, though the broadsword has no penalty to remove. Done when the three
   branches read the two-handed case only.
-- **Hireling profiles that do not compile.** Fifteen in-scope hireling profiles are refused by
-  the construction layer for want of KB data, so every identity they carry waits in triage
-  (`backlog_batches.py` detects them live). A unique kit item needs a canonical combat
-  mapping (a catalogue item and mechanic, like the Sabertooth Hide, or `counts_as`, or a
-  resolved rule): `clan-skryre-rat-ogre` (bio-armour, a printed 4+ save), `roadwarden`
-  (horsemans-hammer), `warrior-priest-of-sigmar` (hammer-of-sigmar), `knight-of-the-white-wolf`
-  (huge-hammer), `imperial-tactician` (two-handed-sword), `halfling-knight` (cavalry-spear),
-  `thief` (thiefs-cloak), `ninja` (smoke-bomb), `pyromaniac` (fireworks), and the Dramatis
-  Personae `dark-emissary` (staff-of-darkness), `truthsayer` (staff-of-light), `busty-gwen`
-  (knives) and `william-schakestange-master-bard` (lucky-rabbits-foot); `fire-eater` and
-  `holy-man` fail the printed-kit matcher with no options. Done when each profile compiles
-  through `band_id: hirelings.<kind>.<grade>`.
+- **Spiral and Triskele unmodifiable faces vs Djinn's Curse.** The Dark Emissary's Spiral
+  (5+) and the Truthsayer's Triskele (4+) print saves "that cannot be reduced by anything"
+  and are carried as ordinary wards (`defence.spiral`, `defence.triskele`); the only general
+  reducer, Djinn's Curse, still worsens them because the modular respect-check
+  (`contexts.py`, `intrinsic_djinn`) is Djinn-specific and `EffectSet` has no
+  unmodifiable-ward field. Done when the 2026-10-15 Djinn ruling's "expressly unmodifiable"
+  respect extends to these printed faces (and its optimized ports), or the composition is
+  ruled unreachable.
+- **Wall of Steel's stance is not a KB record.** The printed two-handed choice is carried by
+  the hard-coded build variant `stance.wall-of-steel` (compiler and TS gate); the bound
+  `mechanic.wall-of-steel` tag is read by the gate only, so the mechanic's entry probes
+  inert (a dated Discrimination note records it). Done when the stance is a declared KB
+  variant and the compiler reads the mechanic, or the current carrier is ruled canonical.
+- **"Counts as a large target" is bound inconsistently.** The Clan Skryre Rat Ogre, Ogre
+  Bodyguard and Ogre Slave Master bind `condition.large-target` (read by Slay Large
+  Creature, the grapple immunity and the Rememberer), while the same printed sentence on
+  the Bone Goliath, the Ogre Treasure Hunter and every band `shared-rule.large-target` is
+  excluded as `out-of-scope.shooting`. Done when the prints are compared and one binding
+  convention holds everywhere.
+- **A hired leader lends Leadership inside his synthetic package only.** The Knight of the
+  White Wolf's printed Pride ("may act as a Leader to their comrades") compiles to
+  `mechanic.leader-six`, but the modular borrow gate requires a shared `band.*` tag, so he
+  can lend only to another hireling of `hirelings.hired-sword.2a`, never to the hiring
+  warband's members; the authored scenarios use a same-package comrade. Done when
+  cross-package hiring facts let a hired leader reach his employer's warriors (web-app
+  phase, with the hiring-facts entry below).
 - **Band members' hiring facts are not published.** `hire-eligibility.ts` reads hirelings
   through the derived `hireling_traits`, but band members still go through the hard-coded
   `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists, and the Witch
@@ -161,7 +175,7 @@ identities whose binding already has authored scenarios elsewhere.
 
 | Batch | Theme | Ids | Model | Effort | Routes |
 | --- | --- | ---: | ---: | ---: | --- |
-| B00 | triage-blockers | 31 | 9 | 62 | real profile build 12, condition_ids 8, skill_ids 6, special_rule_ids 3, construction 2 |
+| B00 | triage-blockers | 1 | 1 | 2 | special_rule_ids 1 |
 | B01 | psy-tests-and-enemy-effects | 24 | 14 | 36 | skill_ids 14, real profile build 10 |
 | B02 | hatred-frenzy-and-charge-rages-1 | 25 | 3 | 49 | skill_ids 14, real profile build 7, special_rule_ids 4 |
 | B03 | hatred-frenzy-and-charge-rages-2 | 27 | 7 | 48 | skill_ids 12, real profile build 12, special_rule_ids 2, condition_ids 1 |
@@ -178,9 +192,10 @@ identities whose binding already has authored scenarios elsewhere.
 | B14 | construction-skills-and-profile | 43 | 28 | 64.5 | construction 43 |
 | B15 | operators-hirelings | 39 | 27 | 57 | real profile build 24, special_rule_ids 10, skill_ids 5 |
 | B16 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **547** | 288 | 913.5 | |
+| | **Total** | **517** | 280 | 853.5 | |
 
-**Order.** Triage first (B00). Then the model-heavy themes, which confirm the workflow on
+**Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
+Unshakeable Faith identity withheld on its print). Then the model-heavy themes, which confirm the workflow on
 cheap members: leadership, construction-equipment, construction-skills-and-profile,
 survival-injury-and-immunity. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,

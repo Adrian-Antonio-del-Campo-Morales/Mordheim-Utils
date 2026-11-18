@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.estalian-technique
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (2026-11-18): the technique parries an unparryable natural
+#   6 by rolling under the bearer's Weapon Skill, the printed "under" is strict (a die equal to the
+#   Weapon Skill fails), and the control without the technique shows the same rapier-and-main-gauche
+#   pair cannot parry a 6 under the ordinary rules.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,98 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# Printed sentence (bands/mordheim/dreamwalkers-cult-of-morr-fbg/special-rules.yaml,
+#   andanti--estalian-tecnique): "The Andanti may parry using his rapier and Main Gauche if he can
+#   roll under his weapon skill as opposed to over his opponent's highest hit roll as per the normal
+#   rules."
+# AUTHORED: the mechanic is kind profile, so a hand-built fighter injects it through skill_ids
+#   exactly as mechanic.shallya-strictures does; the operator
+#   (packages/python/combat-engine/mordheim_combat/modular/contexts.py, _estalian_parry) requires
+#   the tag plus a weapon.rapier and a weapon.main-gauche in the hands, and the success condition is
+#   the roll-under comparison (packages/python/combat-engine/mordheim_combat/phases.py,
+#   resolve_parry: `value < roll_under`, strict - the printed word is "under", not "under or
+#   equal").  Rolling under the bearer's own Weapon Skill also detaches the parry from the
+#   opponent's hit roll, so a natural 6 - which the ordinary parry never even attempts - is the
+#   discriminating case.  The ordinary 2x-Strength parry bar is untouched by the print and stays in
+#   force (both sides are Strength 3 here, so it never binds).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Fixture arithmetic: the attacker is a hand-built WS3 mace fixture; the bearer is a hand-built WS4
+# defender (the Andanti's printed Weapon Skill) with rapier main hand and main gauche off hand, so
+# the attacker hits on 4+ and the parry succeeds on a die of 1-3 (under 4).  The bearer's own two
+# swings (two one-handed weapons) are scripted misses; W2 keeps the landed blows short of an injury
+# roll.
+
+# The printed inversion: a natural 6, which the ordinary rules could never parry at all, is blocked
+# by a die of 3 rolled under the bearer's Weapon Skill 4.
+- audit_id: mechanic/mechanic.estalian-technique
+  id: a-natural-six-is-parried-by-rolling-under-the-weapon-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      skill_ids: [mechanic.estalian-technique]
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "under" is strict: a die of 4 is not under Weapon Skill 4, so the parry fails and the
+# hit carries through to the wound.  (Under the ordinary rules the same die would have beaten the
+# hit roll of 4 only by exceeding it; the technique replaces that comparison entirely.)
+- audit_id: mechanic/mechanic.estalian-technique
+  id: a-die-equal-to-the-weapon-skill-does-not-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      skill_ids: [mechanic.estalian-technique]
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical rapier-and-main-gauche pair without the technique parries "as per the
+# normal rules", and the normal rules offer no parry die at all against a natural 6 - the tape that
+# carries none resolves straight to the wound.
+- audit_id: mechanic/mechanic.estalian-technique
+  id: without-the-technique-the-same-pair-cannot-parry-a-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

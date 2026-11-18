@@ -1264,6 +1264,11 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.halfling-knight.item.cavalry-spear
       name: Cavalry Spear
+      # The printed equipment line links the canonical Spear: on foot it
+      # strikes first, and the "+1S for charging with a cavalry spear" of the
+      # Slay Large Creature text is the spear's printed mounted cavalry bonus,
+      # which stays deferred.mounts with the Hound.
+      counts_as: spear
       name_i18n:
         es: Lanza de Caballería
   skill_access:
@@ -1299,14 +1304,13 @@ profiles:
             The Hound and the barding are the mounted/companion kit of this printed entry, which the
             1v1 duel does not put on the table; no mount is enabled.
   - kind: equipment_mapping
-    source_name: Cavalry Spear
+    source_name: Cavalry Spear (mounted cavalry bonus)
     note: >-
-      The unique object declares no canonical combat mapping and none is faithful. The source prints
-      +1S for charging with a cavalry spear; the canonical spear prints only 'strike first', and the
-      canonical lance is a mounted +2 weapon that may only be used on horseback, so substituting
-      either one would drop or replace the printed property. The profile is therefore refused by name
-      instead of being unblocked with an unfaithful item. Slay Large Creature's own +1S on the charge
-      is bound and delivered independently of this block.
+      Resolved 2026-11-18: the printed equipment line links the canonical Spear, so the unique
+      object now counts as it. The "+1S he gains simply for charging with a cavalry spear" of the
+      Slay Large Creature text is the spear's own printed cavalry bonus, which applies to a mounted
+      charger only; it stays deferred.mounts with the Hound above. On foot the spear keeps its
+      strike-first, and Slay Large Creature's +1S is bound and delivered independently.
   combat_traits:
     species: halfling
   source_refs:
@@ -1349,12 +1353,19 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.imperial-tactician.item.two-handed-sword
       name: Two-Handed Sword
+      # The printed equipment line links the canonical two-handed sword
+      # (Great Weapon): +2 Strength, two-handed, strikes last.
+      counts_as: great_weapon
       name_i18n:
         es: Espada a Dos Manos
     - id: hireling.hired-sword.imperial-tactician.item.plate-armour
       name: Plate Armour
       save: 4+
       movement_modifier: -1
+      # The printed statline (4+ save, -1M) is the trading-post Masterwork
+      # Heavy Armour's; the duel save is carried by this item's own mapping
+      # (defence.plate-armour), and the movement penalty is outside the duel.
+      counts_as: masterwork_heavy_armour
       name_i18n:
         es: Armadura de Placas
   skill_access:
@@ -1472,6 +1483,10 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.knight-of-the-white-wolf.item.huge-hammer
       name: Huge Two-Handed Hammer
+      # The print itself says the great ornate two-handed hammer "counts as a
+      # Horseman's Hammer"; its mounted Cavalry Charge clause stays
+      # deferred.mounts.
+      counts_as: horsemans_hammer
       name_i18n:
         es: Martillo a Dos Manos Enorme
   skill_access:

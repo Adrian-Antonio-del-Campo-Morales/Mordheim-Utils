@@ -1,14 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel
-# authoring_status: PARTIAL
-# authoring_progress: the admitted two-handed-spear-gains-parry clause stays without scenarios, and the
-#   blocker is now stated with its evidence rather than by the source row alone.  The recipient and the item
-#   identity are both known and in the KB - the bearer is the band's Ashigaru profile and the weapon is the
-#   catalogue's weapon.spear - so what is genuinely absent is the *declared case*: no build field, variant id
-#   or off-hand value expresses the printed choice of wielding the spear two-handed, and the parry capacity
-#   reads per-weapon flags, so with no declared wielding mode the spear still parries exactly as a one-handed
-#   spear does and a tape could not state the difference the clause decides.  REVIEWED still requires manual
-#   semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (2026-11-18): the real Ashigaru's declared stance lets his
+#   spear parry (and compiles it two-handed), the same spear without the stance offers no parry die,
+#   and the two printed preconditions are refusals (an occupied off hand; a non-spear main weapon).
+#   The former blocker (no build field expresses the printed two-handed choice) no longer applies:
+#   the declared case is the build variant stance.wall-of-steel in variant_ids, which the compiler
+#   projects as two-handed + parry and the conformance runner passes through
+#   (tests/conformance/execution/runner.py).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# Discrimination note (2026-11-18): per the adopted ruling (docs/decisions/design-rulings.md,
+#   Conformance triage decisions, 2026-11-18: "Wall of Steel's parry is carried by the declared
+#   stance"), the variant is the executable carrier of the printed choice, while this identity's
+#   granted mechanic id is what the TS eligibility gate reads
+#   (packages/typescript/domain/eligibility/index.ts, loadoutRestriction: the stance is refused
+#   without the mechanic or the spear, and with an occupied off hand).  When the rule-removal probe
+#   filters this binding, the stance builds below stop compiling (the gate no longer finds the
+#   mechanic), so the expected probe verdict for this identity is construction-only: the refusal is
+#   the binding's own observable effect, and the duel-side projection belongs to the variant.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,24 +25,100 @@
 # REVIEWED requires semantic review; covers labels alone are insufficient.
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
-#
-# PARTIAL: [C] missing input, with the identity gap ruled out.  The printed
-#   sentence ("if wielding a spear you may choose to wield it two-handed, in which case the spear gains the
-#   parry special rule") fixes the outcome and names its recipient: the Ashigaru bearer of weapon.spear, an
-#   item identity the catalogue does carry (its own row is bound to the canonical first-strike contract), so
-#   this is not the "no identity exists" case.  What the fixture cannot declare is the *option itself*: the
-#   printed effect is conditional on a wielding mode, and FighterBuild
-#   (packages/python/core/mordheim_core/models.py) carries main-hand, off-hand, extra-hand, armour, material,
-#   skill, preparation, special-rule, condition, trait-override and variant fields and none of them expresses
-#   "the spear is wielded two-handed" - the two-handed quality is a property of the weapon row's `hands`, not
-#   of the declared loadout - so both sides of the conditional (the parrying two-handed spear and the
-#   identical one-handed spear that does not parry) would compile to the same demanded fixture.  The recorded
-#   effect_id proposed.mechanic.wall-of-steel is also only a proposal with an unresolved relation, and the
-#   parry capacity reads per-weapon parry flags, so the printed grant has no route even once a mode is
-#   declared.  Missing capability, exactly: a declarable wielding mode for a carried weapon plus the effect
-#   row that flags that weapon as parrying for that bearer (the register's own resolution: "add the two-handed
-#   loadout choice and flag the spear as parrying for that bearer").  Declaring the mode is the prerequisite
-#   for the tape, because a tape that declared no mode would assert the one-handed case the clause does not
-#   decide.
+# Record: sources/knowledge/bands/mordheim/nipponese-expedition-web/special-rules.yaml
+#   (ashigaru--wall-of-steel): "... if wielding a spear you may choose to wield it two-handed, in
+#   which case the spear gains the parry special rule."
+# AUTHORED: 4 scenarios cover the real Ashigaru's stance (compiled two-handed parrying spear and the
+#   blocked hit), the parry-less spear without the stance, and the two printed-precondition refusals.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The bearer is the band's real Ashigaru (the rule is grant: profile on him, so nothing is selected)
+# with his printed Weapon Skill 2 in the fixture characteristics; the attacker is a hand-built WS3
+# mace fixture, so the attacker hits on 3+.  The granted parry is the ordinary printed parry: it
+# blocks by beating the highest enemy hit roll (5 beats a 4).  The Ashigaru's own swing is a
+# scripted miss; W2 keeps the landed blow short of an injury roll.
+
+# The printed choice declared: with the stance the compiled spear is two-handed and parries, and a
+# die of 5 blocks the hit of 4.  The compiled pair below is the printed grant itself.
+- audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel
+  id: the-ashigarus-declared-stance-lets-his-spear-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: nipponese-expedition-web
+      profile_id: ashigaru
+      main_weapon_id: weapon.spear
+      variant_ids: [stance.wall-of-steel]
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_fighters:
+    second.main_weapon.parry: True
+    second.main_weapon.two_handed: True
+  expect_rounds:
+    0: {attacks.1.parried: True, attacks.1.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Ashigaru without the declared stance wields a one-handed spear that never
+# gained the parry rule, so no parry die is offered at all - the tape that carries none resolves
+# straight to the wound.
+- audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel
+  id: without-the-stance-his-spear-offers-no-parry-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: nipponese-expedition-web
+      profile_id: ashigaru
+      main_weapon_id: weapon.spear
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_fighters:
+    second.main_weapon.parry: False
+    second.main_weapon.two_handed: False
+  expect_rounds:
+    0: {attacks.1.parried: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed choice is to wield the spear two-handed: an off-hand item alongside the declared
+# stance is refused with the gate's own sentence.
+- audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel
+  id: the-stance-with-an-occupied-off-hand-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: nipponese-expedition-web
+      profile_id: ashigaru
+      main_weapon_id: weapon.spear
+      off_hand_id: weapon.dagger
+      variant_ids: [stance.wall-of-steel]
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  expect_error: "the Wall of Steel spear occupies both hands"
+
+# The printed condition is "if wielding a spear": the declared stance on any other main weapon is
+# refused with the gate's own sentence.
+- audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel
+  id: the-stance-without-his-spear-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: nipponese-expedition-web
+      profile_id: ashigaru
+      main_weapon_id: weapon.sword
+      variant_ids: [stance.wall-of-steel]
+      characteristics: {weapon_skill: 2, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  expect_error: "Wall of Steel requires the Ashigaru's actual spear"

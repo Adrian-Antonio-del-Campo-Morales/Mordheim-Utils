@@ -241,6 +241,72 @@ their separate evidence and ownership.
     inventing an effect. A unique item that is a printed catalogue upgrade binds that
     upgrade's mechanic (the Dark Elf Assassin's blade binds `material.dark-elf-blade`, as
     Innominatus's does).
+- **Conformance triage decisions** (2026-11-18, second triage batch).
+  - *Printed-kit equivalences adopted for the profiles that did not compile.*
+    The Halfling Knight's Cavalry Spear is the canonical Spear (the printed
+    equipment line links it; the "+1S for charging with a cavalry spear" is
+    the spear's own mounted cavalry bonus and stays `deferred.mounts` with the
+    Hound). The Warrior-Priest's Hammer of Sigmar is the canonical Sigmarite
+    hammer. The Imperial Tactician's Two-Handed Sword is the canonical Great
+    Weapon, and his "plate armour (4+ save, -1M)" is the trading-post
+    Masterwork Heavy Armour statline, carried by its own mechanic
+    (`defence.plate-armour`; the movement penalty is outside the duel).
+    "Busty" Gwen's Knives are two canonical daggers (the print names no rule
+    of their own; the kitchen-knife row is the precedent). William's Lucky
+    Rabbit's Foot is the trading-post Rabbit's Foot (printed as flavour; the
+    catalogue keeps the object out of the duel). The Knight of the White
+    Wolf's huge hammer counts as a Horseman's Hammer by its own printed text.
+  - *The Horseman's Hammer is implemented for the duel on foot*
+    (`weapon.horsemans-hammer`): Strength as user +1, two-handed, and no
+    strike-last — the Empire in Flames print (p.16) carries none. Its mounted
+    Cavalry Charge +1 Strength stays `deferred.mounts`.
+  - *A hireling kit without a close-combat weapon fights unarmed.* The
+    band-creation free dagger is not part of a printed hireling kit, so an
+    omitted main weapon defaults to the kit's first close-combat weapon
+    (honouring a kit entry's printed `mechanic_id` qualification) and to
+    `weapon.fist` when the kit has none (Fire-Eater, Pyromaniac). The Clan
+    Skryre Rat Ogre's printed "Jaws and claws!" equipment line is its innate
+    `weapon.natural-attacks`, and its part-mechanical body's 4+ save is an
+    innate profile grant (`defence.bio-armour`), not removable gear.
+  - *Expressly unmodifiable printed saves carried as ordinary wards.* The Dark
+    Emissary's Spiral (5+) and the Truthsayer's Triskele (4+) are worn icons
+    (`defence.spiral`, `defence.triskele`) delivered through the ordinary ward
+    pipeline, like the Eye Pendant. The only general reducer, Djinn's Curse,
+    does not yet respect their printed "cannot be reduced by anything"; that
+    composition gap is a recorded TODO defect, not a licence to modify them.
+  - *Scryer rerolls only the Sleuth's own close-combat dice.* Each of her own
+    rolls may be rerolled at most once, the second result stands, no resource
+    is spent, and the opponent's dice are never touched; the exploration
+    reroll is outside the duel. This adopts the oracle's and the archived
+    text's reading (the open T13-Q104 note is resolved by this ruling).
+  - *A band-wide category ban whose category its own lists never offer is
+    enforced by the equipment-list gate.* Gunnery School's Proud to a Fault
+    ("never use non-black-powder ranged weapons") has no reachable refusal of
+    its own: the band's lists hold only black-powder ranged items, so a bow is
+    already refused without the rule. Its evidence is the compiled
+    construction tag plus a dated Discrimination note naming the gate. The
+    Hired-Sword/Dramatis exemption is unreachable (hirelings compile through
+    their own route).
+  - *A printed rule pre-empted by the profile's own sibling rule is
+    `covered.elsewhere`.* The Poltergeists' No Pain (Stunned becomes Knocked
+    Down) can never act because their Incorporeal ("do not roll for injury;
+    immediately out of action", `trait.injury-profile` 2) removes the Injury
+    roll; the effect is recorded `covered.elsewhere` naming the Incorporeal
+    identity, whose authored scenarios already show the bearer is never
+    Stunned.
+  - *Crazed Firestarter's printed text is recovered* ("he will move but never
+    run or charge. If he is attacked he will fight back normally"), so the
+    `mechanic.cannot-charge` binding is faithful and the Pyromaniac's
+    Fireworks are the rockets of his excluded Rockets rule.
+  - *Crude Belch's "for the turn" is the duel round*: the -1 to hit expires at
+    the next combat phase, and in a one-against-one duel the spent resource
+    not returning carries the printed "must wait until a new enemy engages".
+  - *Wall of Steel's parry is carried by the declared stance*
+    (`stance.wall-of-steel` in `variant_ids`): the compiler projects
+    two-handed + parry from the variant, and the TS gate requires the
+    mechanic, the Ashigaru's actual spear and a free off hand. The mechanic
+    file's scenarios carry a Discrimination note naming the variant as the
+    executable carrier; declaring the stance as a KB record is a TODO.
 - **Hireling profile identities are not reused from bands** merely because
   names match; source-only concepts stay in `unresolved_references` until
   their catalogue exists.

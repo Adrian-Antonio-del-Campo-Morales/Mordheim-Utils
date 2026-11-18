@@ -1,17 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer
-# authoring_status: PARTIAL
-# authoring_progress: the admitted melee-reroll clause has no authored scenario because the record itself is
-#   unresolved: its analysis_status is needs_clarification, its relation is unresolved and its conditions name
-#   the explicit T13-Q104 boundary, "ownership and the precise eligible roll set remain the explicit T13-Q104
-#   boundary".  The printed sentence ("can re-roll any rolls in close combat") does not say whose rolls are
-#   eligible or how many, so two candidate tapes (the bearer's own miss rerolled once, and an unlimited reroll
-#   of either side's rolls) are mutually exclusive readings with different expectations.  The record's own note
-#   forbids resolving this by widening the effect into "an unlimited reroll of opponents' rolls", and it keeps
-#   exploration as a separate exclusion.  Pending: the T13-Q104 ruling, after which the authored shape is the
-#   bearer's own first close-combat miss rerolled once with the second result accepted, plus a non-bearer
-#   control where no reroll die is requested.  REVIEWED still requires manual semantic review and
-#   execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios derived from the printed sentence and the adopted
+#   2026-11-18 ruling (docs/decisions/design-rulings.md, Conformance triage decisions, second
+#   batch: "Scryer rerolls only the Sleuth's own close-combat dice").  The earlier PARTIAL note
+#   cited a retired register record and the then-open T13-Q104 boundary; that ruling resolves
+#   the boundary, adopting the narrow reading: each of the Sleuth's own close-combat rolls may
+#   be re-rolled at most once, the second result stands, no resource is spent, the opponent's
+#   dice are never touched, and the exploration re-roll is outside the duel.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,15 +17,125 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [D] no scenario is authorable until the boundary is ruled.  Category D: what is missing is a normative decision, not an implementation - which side owns the rerolled dice and which roll set is eligible - and both readings are recorded below instead of one being chosen silently.  The missing datum is the
-#   scope of the reroll the printed sentence grants: neither the owner of the rerolled dice nor the eligible
-#   roll set is recorded, and the effect id trait.re-roll-melee is registered with an empty parameter block and
-#   relation `unresolved`.  A tape that declares the bearer's miss followed by a reroll die would silently
-#   choose the narrow reading, and one that rerolls the opponent's dice would choose the widest one the record
-#   explicitly refuses to endorse; both are recorded here as candidates rather than asserted.  Expressibility
-#   is not what withholds them: both readings are writable with the vocabulary this corpus already uses - the
-#   bearer's declared miss 2 beside an accepted reroll 4 under the established first-round hit-reroll request
-#   key, and the same miss standing when no reroll is offered - so the pending item is the T13-Q104 ruling
-#   alone, not a missing input, a missing field or an engine branch.
+# AUTHORED: 4 scenarios cover the printed "A Sleuth can re-roll any rolls in close combat (the
+#   second result must be accepted)": a missed To Hit die re-rolled into a hit, a re-roll whose
+#   worse second result stands (and is offered no second re-roll), a declined re-roll that keeps
+#   the miss, and the opponent's dice receiving no scryer decision at all.  The bearer is the
+#   printed Private Sleuth profile of this band (grant: profile, so nothing is selected); the
+#   build and the request-key grammar copy the authored Hypnotist sibling
+#   (mordheim--watchmen-mim--private-sleuth--hypnotist--mechanic.hypnotist--0e3418d17278.yaml),
+#   whose scenarios already decline scryer decisions on the Sleuth's own dice.  The profile also
+#   prints Hypnotist, so every scenario declines that sibling declaration
+#   (round.0.second.hypnotist: false), with the rule named here as the README prescribes.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The Sleuth (WS3, like her hand-built opponent) misses on a 2 against the 4+ target; the
+# printed re-roll is taken (decision round.0.second.attack.0.hit.scryer) and the second die of 4
+# hits, so her To Wound die is then requested.  That wound die receives its own scryer offer -
+# the rule is a per-roll choice, not a spent resource - which is declined, and the 1 wounds
+# nothing under any Strength.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer
+  id: a-missed-hit-is-rerolled-and-the-second-result-hits
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}            # the profile's sibling rule, declined
+    - {key: round.0.second.attack.0.hit.scryer, value: true}
+    - {key: round.0.second.attack.0.wound.scryer, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit.scryer.reroll, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "the second result must be accepted": a 5 that already hits is re-rolled into a 2
+# and the miss stands.  A roll already re-rolled is never offered scryer again (its key carries
+# .scryer.reroll), so the strict tape's complete consumption also proves no second re-roll was
+# requested, and no To Wound die follows the standing miss.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer
+  id: a-worse-second-result-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+    - {key: round.0.second.attack.0.hit.scryer, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 5}
+    - {key: round.0.second.attack.0.hit.scryer.reroll, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "can re-roll" is the Sleuth's option: declining it keeps the missed 2 and requests
+# no re-roll die.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer
+  id: a-declined-reroll-keeps-the-miss
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+    - {key: round.0.second.attack.0.hit.scryer, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The adopted boundary: only the Sleuth's OWN dice are eligible (modular/contexts.py reads the
+# roller's effects).  The Sleuth is silenced and the opponent rolls its hit and its failed
+# wound; the tape declares no .scryer decision anywhere, and the runner's complete consumption
+# of strict scripts makes that absence assertive - had the engine offered the Sleuth a re-roll
+# of an enemy die, the undeclared decision request would fail the scenario.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer
+  id: the-opponents-dice-offer-no-scryer-decision
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

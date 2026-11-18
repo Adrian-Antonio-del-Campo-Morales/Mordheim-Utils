@@ -193,9 +193,12 @@ def test_frenzy_stays_absent_from_non_recipients(band_id, profile_id):
 
 # no pain: mechanic skill.ignore-pain -> tag-only compiled observable
 NO_PAIN_RECIPIENTS = (
+    # The Poltergeists' No Pain is covered.elsewhere (2026-11-18 triage ruling):
+    # their own Incorporeal removes the Injury roll the conversion acts on, so
+    # the profile no longer carries the tag.
     *(("call-of-the-night-haint-mim", profile, profile + "--no-pain")
       for profile in ("cairn-wraith", "tomb-banshee", "malignant-spirits", "revenants",
-                      "spirit-hosts", "poltergeists", "mourngul")),
+                      "spirit-hosts", "mourngul")),
     *(("masters-of-horror-sylv", profile, profile + "--no-pain")
       for profile in ("thrall", "zombies", "flesh-construct")),
     ("survivors-of-strigos-sylv", "strigoi-vampire", "strigoi-vampire--no-pain"),

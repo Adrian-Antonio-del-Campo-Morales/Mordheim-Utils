@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.halfling-knight.rule.slay-large-creature/slay-large-creature
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model): the Knight charging a supplied Large
+#   target gains the printed +1 Strength, the same charge against a non-Large opponent gains no bonus,
+#   and the refusal outside the profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,78 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Halfling Knight, who compiles
+# since the 2026-11-18 ruling (his printed Cavalry Spear is the canonical Spear; the "+1S for charging
+# with a cavalry spear" is the spear's mounted cavalry bonus and stays deferred.mounts with his Hound and
+# barding).  Printed rule: "A Halfling Knight, when charging a Large sized creature, gains +1S."  The
+# Large size of the charged target is supplied as a duel fact (condition.large-target); no size trait is
+# assumed for the opponent.  Build: band_id hirelings.hired-sword.2a, fixture characteristics WS3 S3 T3
+# W2 I5 A1 with the printed Ld9; the declared main weapon is the kit's own sword, avoiding the spear's
+# strike-first reordering, and the kit's heavy armour, helmet and shield stay owned, not worn, so his
+# side requests no armour die.  Arithmetic: S3 wounds the hand-built T3 opponent on 4+; charging the
+# supplied Large target (S4 vs T3) on 3+, so the declared wound roll of 3 separates the pair.  The
+# opponent carries a mace (no save die) and is silenced (attacks: 0); he causes no fear, so no
+# psychology die is requested.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Knight charges the supplied Large target: the wound roll of 3 wounds (S4 vs T3 needs 3+).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.halfling-knight.rule.slay-large-creature/slay-large-creature
+  id: the-knight-charging-a-supplied-large-target-wounds-on-a-3
+  fighters:
+    first:
+      &knight
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.halfling-knight
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.large-target]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary sibling: the same charge without the supplied condition.  The opponent is not Large, the
+# printed bonus is absent, and the same wound roll of 3 fails (S3 vs T3 needs 4+).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.halfling-knight.rule.slay-large-creature/slay-large-creature
+  id: the-same-charge-against-a-non-large-opponent-gains-no-bonus
+  fighters:
+    first:
+      <<: *knight
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.halfling-knight.rule.slay-large-creature/slay-large-creature
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.halfling-knight.rule.slay-large-creature]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

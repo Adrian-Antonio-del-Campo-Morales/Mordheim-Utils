@@ -375,14 +375,23 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                     entries.extend(option.get("items", ()))
                     entries.extend({"item_id": item_id}
                                    for item_id in (option.get("from_item_ids") or ())[:1])
+            chosen = None
             for entry in entries:
                 counts_as = entry.get("counts_as")
                 item_id = entry.get("item_id") or entry.get("id", "")
                 canonical = counts_as.get("item_id") if isinstance(counts_as, dict) else counts_as
-                mapped = item_mappings.get(str(item_id)) or item_mappings.get(str(canonical or ""))
+                # A printed per-entry qualification ("treat as a double-handed
+                # weapon") names the combat mechanic directly and the kit
+                # matcher consumes that same mechanic, so the default must too.
+                mapped = (entry.get("mechanic_id") or item_mappings.get(str(item_id))
+                          or item_mappings.get(str(canonical or "")))
                 if mapped and weapon_mechanics.get(mapped, {}).get("main_hand"):
-                    build = replace(build, main_weapon_id=mapped)
+                    chosen = mapped
                     break
+            # A printed kit without a close-combat weapon leaves the hands
+            # empty: the hireling fights unarmed, not with the band-creation
+            # free dagger, which the kit matcher refuses as unprinted.
+            build = replace(build, main_weapon_id=chosen or "weapon.fist")
         kit = desktop_call("hirelingKit", build, root, package=package, profile=profile)
         materials = {}
         for entry in profile["hireling_equipment"].get("fixed_items", ()):

@@ -1,12 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison/trait.poison-immune
-# authoring_status: PARTIAL
-# authoring_progress: no scenario; the recipient cannot be built through the hireling route (B00 triage,
-#   2026-11-17): 'hireling unique equipment needs a canonical combat mapping:
-#   hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour' (the Bio-Mechanical Armour prints a 4+ save
-#   but has no catalogue item and mechanic). The poison-immunity family model applies once the profile
-#   compiles; the body stays empty and the gap explicit.
-# PARTIAL: missing datum - the profile does not compile; re-derive when the knowledge base supplies it.
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (poison-immunity family model + hireling family model,
+#   2026-11-18): a Nightshade-coated mace wounds the Rat Ogre and the poisoned-wound Initiative
+#   rider is suppressed; the Bard control takes the same wound and suffers the rider; and the
+#   refusal outside the profile.  The former PARTIAL blocker (the Bio-Mechanical Armour had no
+#   canonical combat mapping) is resolved by the 2026-11-18 ruling: the part-mechanical body's 4+
+#   save is the innate profile grant defence.bio-armour and "Jaws and claws!" is the innate
+#   weapon.natural-attacks, so the profile compiles through the hireling route.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the family models are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,5 +19,88 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Poison-immunity family model (the authored call-of-the-night-haint-mim revenants file of this
+# directory): Nightshade is the one admitted poison whose consequence is a state change on the
+# warrior it wounds (one unsaved wound lowers Initiative by one, carried as the lasting
+# initiative_penalty field), so it is the rider the printed immunity must suppress: the coated mace
+# wounds the bearer as any mace would, and the penalty never lands.  The recipient is the printed
+# Rat Ogre profile compiled through the hireling route (hirelings.hired-sword.1b /
+# hireling.hired-sword.clan-skryre-rat-ogre) with the fixture facts (WS3 S3 T3 W2 I5 A1); its
+# printed Leadership 10 stays and its innate natural attacks are silenced (attacks: 0).  The
+# opponent is the hand-built standard (WS3 S3 T3 W3 I2 A1 Ld7) with a Nightshade-coated mace.  No
+# charge is declared, so neither the Rat Ogre's own Fear nor its psychology immunity requests a die.
+# The control is the grade-1b Bard, the same wound with the rider landing.  The refusal selects the
+# printed rule on that control through special_rule_ids.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The coated mace wounds the Rat Ogre: WS3 v WS3 hits on 4+, S3 v the fixture T3 wounds on 4+ (a
+# non-six, so no critical), and the innate 4+ bio-armour save (defence.bio-armour, unmodified by
+# S3) is declared failing on a 2.  The wound is taken as any wound would be (fixture wounds
+# 2 -> 1, no injury roll) and the poisoned-wound Initiative penalty is suppressed:
+# initiative_penalty stays 0.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider-on-the-rat-ogre
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 1, state.first.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) takes the same unsaved wound and suffers the rider: S3 v T3 wounds on 4+ (the
+# Bard's kit light armour is owned, not worn, so no armour die is requested), and the poisoned
+# wound lowers his Initiative by one (initiative_penalty 1).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison/trait.poison-immune
+  id: a-hireling-without-the-immunity-suffers-the-nightshade-rider
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 1, state.first.initiative_penalty: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling of the same
+# package is refused by the eligibility gate (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison/trait.poison-immune
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

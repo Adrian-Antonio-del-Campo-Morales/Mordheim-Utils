@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.large-target
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios: the supplied condition makes its bearer size.large for the one
+#   duel consumer that reads it on a charge (the Slay Large Creature +1 Strength), and the boundary sibling
+#   without the condition shows the same wound roll failing.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the supplied-size pair are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,57 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# The printed condition (sources/knowledge/catalog/rules/conditions.yaml, condition.large-target):
+# "This model is explicitly Large; size is supplied rather than inferred."  Its execution entry tags the
+# bearer [size.large] (sources/knowledge/catalog/mechanics/execution.yaml).  The observing consumer is the
+# printed Slay Large Creature bonus (Halfling Knight, grade-2a): "+1S when charging a Large sized
+# creature", injected on a hand-built charger through skill_ids - the same kind:profile route as
+# cases/mechanics/mechanic.shallya-strictures.yaml.  Arithmetic: the S3 charger wounds T3 on 4+; with the
+# +1S of the charge against a Large target (S4 vs T3) on 3+.  The declared wound roll of 3 separates the
+# pair: it wounds only while the opponent supplies the condition.  Both fighters carry maces, so no save
+# die is ever requested, and the opponent's own blow is a declared natural 1.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The opponent supplies the condition: the charger's wound roll of 3 wounds (S4 vs T3 needs 3+).
+- audit_id: mechanic/condition.large-target
+  id: the-supplied-condition-makes-the-bearer-large-for-a-slay-large-creature-charge
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.large-target]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary sibling: the same tape without the supplied condition.  Size is supplied, never inferred,
+# so the opponent is not Large, the charge grants no +1S, and the same wound roll of 3 fails against T3.
+- audit_id: mechanic/condition.large-target
+  id: without-the-condition-the-same-wound-roll-of-3-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

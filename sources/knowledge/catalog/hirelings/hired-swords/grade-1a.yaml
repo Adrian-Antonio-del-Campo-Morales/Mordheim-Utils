@@ -502,6 +502,10 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.roadwarden.item.horsemans-hammer
       name: Horseman's Hammer
+      # The printed kit names the Empire in Flames trading-post item itself
+      # (crossbow, horseman's hammer, dagger, heavy armour); the mounted
+      # Cavalry Charge clause of that item stays deferred.mounts.
+      counts_as: horsemans_hammer
       name_i18n:
         es: Martillo de Jinete
   skill_access:
