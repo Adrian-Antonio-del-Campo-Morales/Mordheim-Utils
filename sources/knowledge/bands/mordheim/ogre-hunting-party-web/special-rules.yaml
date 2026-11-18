@@ -179,14 +179,20 @@ rules:
       clauses:
       - id: cause-fear--scope--cause-fear
         scope: 'YES'
-      - id: cause-fear--scope--large-target
-        scope: 'NO'
       - id: cause-fear--scope--all-alone
         scope: 'NO'
       - id: cause-fear--scope--equipment-restriction
         scope: 'YES'
       - id: cause-fear--scope--warband-rating
         scope: 'NO'
+    # "All ogres are Large targets": the printed size fact binds the supplied
+    # Large identity (uniform Large Target binding, design ruling 2026-11-18);
+    # the shooting consequences stay out of scope.
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: profile.equipment-restrictions
       scope: 'YES'
       binding:

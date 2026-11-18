@@ -31,10 +31,17 @@ rules:
     - youths
 - id: band--large
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
+        parameters:
+          profile_ids: [broodmother, firstborns, youths]
     - id: unimplemented.brood-of-ghurash-the-sc.band.large
       scope: 'NO'
       binding: null

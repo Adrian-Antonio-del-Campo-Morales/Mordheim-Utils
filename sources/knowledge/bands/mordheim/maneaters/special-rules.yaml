@@ -288,10 +288,17 @@ rules:
     - half-growns
 - id: band--large
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
+        parameters:
+          profile_ids: [captain, mountain-guide, bulls]
     - id: unimplemented.maneaters.band.large
       scope: 'NO'
       binding: null

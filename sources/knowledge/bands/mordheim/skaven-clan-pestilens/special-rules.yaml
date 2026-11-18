@@ -159,10 +159,15 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.skaven-clan-pestilens.rat-ogre.large-target
       scope: 'NO'
       binding: null

@@ -735,10 +735,15 @@ rules:
     - great-squig
 - id: great-squig--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.night-goblins-web.great-squig.large-target
       scope: 'NO'
       binding: null
@@ -939,10 +944,15 @@ rules:
   rule_ref: shared-rule.vomit-attack
 - id: troll--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.night-goblins-web.troll.large-target
       scope: 'NO'
       binding: null

@@ -324,10 +324,15 @@ rules:
   rule_ref: shared-rule.fear
 - id: gigantic-spider--large-monster
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.forest-goblins-lus.gigantic-spider.large-monster
       scope: 'NO'
       binding: null

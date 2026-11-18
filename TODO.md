@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 517 of 2,271 admitted identities have no scenarios. The division
+- **Authoring backlog.** 517 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -43,12 +43,6 @@ what is pending and when it is done.
   `mechanic.wall-of-steel` tag is read by the gate only, so the mechanic's entry probes
   inert (a dated Discrimination note records it). Done when the stance is a declared KB
   variant and the compiler reads the mechanic, or the current carrier is ruled canonical.
-- **"Counts as a large target" is bound inconsistently.** The Clan Skryre Rat Ogre, Ogre
-  Bodyguard and Ogre Slave Master bind `condition.large-target` (read by Slay Large
-  Creature, the grapple immunity and the Rememberer), while the same printed sentence on
-  the Bone Goliath, the Ogre Treasure Hunter and every band `shared-rule.large-target` is
-  excluded as `out-of-scope.shooting`. Done when the prints are compared and one binding
-  convention holds everywhere.
 - **A hired leader lends Leadership inside his synthetic package only.** The Knight of the
   White Wolf's printed Pride ("may act as a Leader to their comrades") compiles to
   `mechanic.leader-six`, but the modular borrow gate requires a shared `band.*` tag, so he

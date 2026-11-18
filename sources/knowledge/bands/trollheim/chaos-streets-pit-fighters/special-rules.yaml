@@ -372,10 +372,15 @@ rules:
     profile_ids:
     - ogre-pit-fighter
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.large-target
       scope: 'NO'
       binding: null

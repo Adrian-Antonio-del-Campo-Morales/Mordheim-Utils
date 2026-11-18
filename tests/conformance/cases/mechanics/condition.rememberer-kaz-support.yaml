@@ -40,6 +40,9 @@
       collection: mordheim
       band_id: black-orcs
       profile_id: troll
+      # Since the uniform Large Target binding (2026-11-18) the troll's own
+      # band rule already grants size.large; the supplied condition is kept as
+      # this scenario's declared fact and stacks harmlessly with it.
       condition_ids: [condition.large-target]
   duel_context:
     charging: []

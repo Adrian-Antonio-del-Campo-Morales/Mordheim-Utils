@@ -75,10 +75,15 @@ rules:
     profile_ids:
     - bull-centaur
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.sons-of-hashut.bull-centaur.large-target
       scope: 'NO'
       binding: null

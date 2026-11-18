@@ -282,10 +282,15 @@ rules:
     - great-bear
 - id: great-bear--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.cursed-cavalcade.great-bear.large-target
       scope: 'NO'
       binding: null

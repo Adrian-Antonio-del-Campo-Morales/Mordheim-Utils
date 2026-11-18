@@ -499,9 +499,17 @@ profiles:
       es: Objetivo Grande
     runtime:
       grant: profile
-      scope: 'NO'
-      implemented: 'NO'
+      scope: 'YES'
+      implemented: 'YES'
       effects:
+      # Uniform Large Target binding (design ruling 2026-11-18): the printed
+      # size fact is the supplied Large identity; the shooting consequences
+      # stay out of scope.
+      - id: condition.large-target
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: condition.large-target
       - id: hireling.hired-sword.ogre-treasure-hunter.rule.large-target.pending-duel
         scope: 'NO'
         binding: null

@@ -168,10 +168,15 @@ rules:
     profile_ids:
     - ogre
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.ostlanders.ogre.large
       scope: 'NO'
       binding: null

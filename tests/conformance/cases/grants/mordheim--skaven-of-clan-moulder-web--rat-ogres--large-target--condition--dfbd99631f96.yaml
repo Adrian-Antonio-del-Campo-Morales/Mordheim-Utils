@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--large-target/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (Large Target duel-evidence family, model
+#   catalog--hired-swords--hireling.hired-sword.ogre-slave-master.rule.large--2c8fd2324f9c): the
+#   printed Large Target grant exposes size.large to a charging Slay Large Creature bearer (the
+#   declared wound roll of 3 that only succeeds at S4 vs T3), and the hand-built control without the
+#   rule is not wounded by the same 3.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the clause: the real recipient (built with the required Extra Arm
+#   mutation) exposes size.large, so the declared wound roll of 3 succeeds for the charging Slay
+#   Large Creature bearer (S4 vs T3 after the charge bonus, through a passed fear test), and the
+#   hand-built control without the rule is not wounded by the same 3 (S3 vs T3 needs 4+).
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Uniform Large Target binding (design ruling recorded 2026-11-18): every printed "is a / counts as
+# a Large Target" rule binds condition.large-target, whose execution entry tags the bearer
+# [size.large]; the printed shooting consequences stay excluded as out-of-scope.shooting
+# (unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target).  The duel reader is the printed
+# Slay Large Creature bonus ("+1 Strength when charging a Large creature in the first round"),
+# injected into a hand-built charger through skill_ids - the same evidence route as the hireling
+# Large model file.  Arithmetic: S3 wounds T3 on 4+, the +1S of the charge against a Large bearer
+# (S4 vs T3) on 3+, so the declared wound roll of 3 separates the real recipient from the hand-built
+# control.
+# Profile build and dice (from the rat-ogres' fear and stupidity siblings): the recruitment clause
+# requires exactly one Mutation, so the build selects the inert Extra Arm entry
+# (special_rule_ids: [band--mutations-extra-arm]), exactly as the AUTHORED stupidity sibling does.
+# The Rat Ogre causes Fear, so the charger (Ld7) declares the 2D6 charge test - 3+3 passes; its
+# conditional Stupidity is tested at the start of the bearer's own turn only, so with the charger
+# active and a single round no stupidity die is requested; being wounded requests no armour or
+# regeneration die.  The recipient's own blows are silenced (attacks: 0; the Rat Ogre fights with
+# its natural attacks, so the silence is complete).
+
+# The Slay Large Creature charger wounds the Large Rat Ogre on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--large-target/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-rat-ogre-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The Rat Ogre causes fear: the charger's 2D6 charge test of 3+3 passes Ld7.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built opponent without the Large rule carries no size.large, so the same
+# charge carries no bonus and the same 3 does not wound (S3 vs T3 needs 4+).
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--large-target/condition.large-target
+  id: without-the-large-rule-the-same-three-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

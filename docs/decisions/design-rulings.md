@@ -301,6 +301,23 @@ their separate evidence and ownership.
   - *Crude Belch's "for the turn" is the duel round*: the -1 to hit expires at
     the next combat phase, and in a one-against-one duel the spent resource
     not returning carries the printed "must wait until a new enemy engages".
+  - *A printed Large Target is Large in the duel: the uniform binding* (user
+    decision adopted 2026-11-18). "Large Target" is the game's size category —
+    defined by the shooting chapter and read by close-combat rules (the
+    Gaoler's grapple prints "Large targets are immune", Slay Large Creature
+    "a Large sized creature", the Rememberer "a Large creature"). Every rule
+    that prints the fact ("counts as a Large Target", "is a Large Target as
+    defined in the shooting rules") therefore binds `condition.large-target`
+    (the `size.large` identity), while its shooting consequences (+1 to hit,
+    targetable when not the closest) stay excluded as `out-of-scope.shooting`.
+    Band-wide grants carry their printed recipients (Maneaters: captain,
+    mountain-guide and bulls — Youngbloods and Half-growns are the printed
+    exceptions; Brood of Ghurash: the Heroes broodmother, firstborns and
+    youths). The Knights of the Bitter Moors Field Trebuchet is a siege
+    machine, not a fighter, and stays excluded whole (the Gyrocopter
+    precedent). A scenario may still supply `condition.large-target`
+    explicitly (the KAZ Rememberer file does); the supplied fact stacks
+    harmlessly with an innate grant.
   - *Wall of Steel's parry is carried by the declared stance*
     (`stance.wall-of-steel` in `variant_ids`): the compiler projects
     two-handed + parry from the variant, and the TS gate requires the

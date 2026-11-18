@@ -452,10 +452,15 @@ rules:
   rule_ref: shared-rule.never-gain-experience
 - id: rat-ogres--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target
       scope: 'NO'
       binding: null

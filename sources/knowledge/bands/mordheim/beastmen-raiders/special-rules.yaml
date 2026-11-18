@@ -300,10 +300,15 @@ rules:
     - minotaur
 - id: minotaur--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.beastmen-raiders.minotaur.large-target
       scope: 'NO'
       binding: null
