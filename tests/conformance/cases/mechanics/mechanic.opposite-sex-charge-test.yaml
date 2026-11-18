@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.opposite-sex-charge-test
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   opposite-sex charger's Leadership gate failed (the voluntary charge is cancelled), the same gate
+#   passed (the charge proceeds), the same-sex charger owing no gate, and the refusal when a duelist's
+#   sex fact is missing.  REVIEWED still requires manual semantic review; execution_status stays
+#   UNEXECUTED until the suite runs.
+# AUTHORED: the failed/passed gate pair, the same-sex control and the missing-fact refusal are declared
+#   below; REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,91 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Channel Rats, Mutiny in Marienburg p.181, Charismatic): "any model from the opposite
+# sex (Sisters of Sigmar, Amazons, Kislev Ranger etc), must make a Leadership test if they wish to
+# charge a Fugitive".  Family model (charge gate): the bearer is hand-built with the mechanic injected
+# (WS3 S3 T3 W2 I2 A1 Ld7, mace) and declares its sex; the charger is hand-built (WS3 S3 T3 W2 I5 A1
+# Ld7, mace) and declares its own.  The gate is a 2D6 Leadership test keyed
+# `round.0.<charger>.charismatic-charge.{0,1}` taken before contact: 5+4 fails Ld7 and the voluntary
+# charge is cancelled (the round carries no attack and the duel ends disengaged); 3+3 passes and the
+# charge resolves as ordinary close combat (natural-1 strikes miss).  A charger of the same sex owes
+# nothing.  The consumer requires both duelists' explicit sex facts and refuses the setup otherwise, so
+# the printed "opposite sex" is stated, never assumed.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A woman charging the male bearer fails the gate: no combat dice, the charge is lost.
+- audit_id: mechanic/mechanic.opposite-sex-charge-test
+  id: the-opposite-sex-charger-who-fails-the-gate-cannot-close
+  fighters:
+    first:
+      &female-charger
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: female}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &male-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.opposite-sex-charge-test]
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.charismatic-charge.0, value: 5}
+    - {key: round.0.first.charismatic-charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The same gate passed: the charge proceeds into ordinary close combat.
+- audit_id: mechanic/mechanic.opposite-sex-charge-test
+  id: the-opposite-sex-charger-who-passes-the-gate-closes-and-fights
+  fighters:
+    first:
+      <<: *female-charger
+    second:
+      <<: *male-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.charismatic-charge.0, value: 3}
+    - {key: round.0.first.charismatic-charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A man charging the male bearer is not of the opposite sex: no gate die exists.
+- audit_id: mechanic/mechanic.opposite-sex-charge-test
+  id: the-same-sex-charger-owes-no-gate
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *male-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A charger that declares no sex fact: the printed "opposite sex" cannot be read, so the setup is refused
+# by name instead of guessed.
+- audit_id: mechanic/mechanic.opposite-sex-charge-test
+  id: a-charger-without-an-explicit-sex-fact-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *male-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Charismatic requires both duelists' explicit male/female facts"

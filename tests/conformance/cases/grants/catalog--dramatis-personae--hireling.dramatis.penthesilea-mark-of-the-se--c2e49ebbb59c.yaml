@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, psy-tests-and-enemy-effects batch,
+#   2026-11-18): the enemy in contact with the printed Penthesilea fails its Leadership test and is barred
+#   while standing and defending; the passed test leaves both pools intact; an Undead and a Lizardman
+#   enemy skip the test (the printed Amazon exemptions); the control hireling raises no test; the
+#   refusal.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +16,141 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed hireling profile, compiled
+# through the hireling route (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its
+# printed rule is granted by the profile itself, so the build selects nothing.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed,
+# while its printed Leadership (8) stays in place; the omitted main weapon is the printed kit's first
+# close-combat weapon, the Starsword (parry, +1 Strength, ignores armour saves).  The opponent is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads.  The control is the
+# grade-1b Bard, compiled through the same route with the same fixture.  The refusal selects the printed
+# rule on that control through special_rule_ids.
+# The printed rule ("works as its Amazon special-skill rules"; mordheimer.net Amazons / Mesmerising
+# Dance; Lustria, Amazon special skills / Hypnotic Dance: the enemy must pass a Leadership test or may not attack that phase,
+# though it may defend; Undead and Lizardmen are unaffected) is the shared mechanic.mesmerising-dance of
+# the band files ...ae9453e98c90 and ...801446cfd369: the enemy's dice are
+# round.<r>.<target>.mesmerising-dance.0/.1 and a failure sets state.<target>.charm_attack_blocked.
+# Penthesilea's other printed duel rules are silent here by construction: Man-Hater reads a human male
+# opponent, so the opponent declares no species or sex; Savage Fury adds an attack only on her charge, so
+# no charge is declared; her Amazon rule hates Lizardmen and Norse warbands, and the Lizardman scenario
+# declares every strike a natural 1 so that no first-round re-roll is reached.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The enemy in contact fails its Leadership test (6+6 against Ld7): it may not attack this phase and
+# stays Standing with its defence; Penthesilea's own strike is a natural 1, so no wound die follows.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: a-failed-leadership-test-bars-the-enemy-facing-penthesilea
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 6}
+    - {key: round.0.second.mesmerising-dance.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test (1+1): nothing is barred and both pools ask for their own To Hit die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: a-passed-leadership-test-leaves-both-pools-intact
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 1}
+    - {key: round.0.second.mesmerising-dance.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: an Undead enemy skips the test (no dance die on the tape) and keeps its attack.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: an-undead-enemy-skips-the-dance-test
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption's other half: a Lizardman enemy is unaffected in the same way.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: a-lizardman-enemy-skips-the-dance-test
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lizardman: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) in the same contact: no test is requested and the enemy keeps its attack.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: a-hireling-without-the-dance-raises-no-test
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance/mesmerising-dance
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mesmerising-dance]
+    second:
+      <<: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

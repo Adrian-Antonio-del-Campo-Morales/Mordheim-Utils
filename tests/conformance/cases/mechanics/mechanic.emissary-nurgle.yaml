@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.emissary-nurgle
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): an enemy
+#   charging the hand-built bearer takes the Fear test and a failure cancels the charge; the bearer's
+#   natural 6 to hit wounds automatically as Black Lotus with no wound die; the same warrior without the
+#   mechanic is charged without a test and his natural 6 rolls an ordinary wound die.  The real Emissary
+#   carrier is evidenced in its grant file (catalog--hired-swords--...patron.nur--0b960e016e90).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the contract tags the bearer with poison.black-lotus and
+#   mechanic.causes-fear; the Lotus and Fear operators are the catalogue's own and are only exercised here.
+#   The removal probe reports a skill_ids injection inert by design (README, Rule-removal probe).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,69 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Fanatic Online 94, Emissary of Chaos, Patron Nurgle): "All attacks are poisoned as
+# Black Lotus and the Emissary causes Fear".  The shared mechanic is injected through skill_ids on a
+# hand-built warrior (WS3 S3 T3 W2 I5 A1 Ld7, mace) against a hand-built opponent (WS3 S3 T3 W3 I2 A1
+# Ld7, mace, no armour).  WS3 against WS3 hits on 4+, S3 wounds T3 on 4+; 5+4 fails Ld7; a wound die
+# never shows a 6 so no critical die is requested.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charger must pass Leadership before contact with a Fear-causer; 9 fails Ld7 and the charge is cancelled.
+- audit_id: mechanic/mechanic.emissary-nurgle
+  id: an-enemy-charging-the-bearer-fails-its-fear-test-and-the-charge-is-cancelled
+  fighters:
+    first:
+      &nurgle-mechanic-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.emissary-nurgle]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &nurgle-mechanic-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.failed_charges: ['second'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Black Lotus on every attack: the bearer's natural 6 to hit wounds automatically once the printed
+# critical attempt is declined; no wound die is requested and the unsaved wound lands.
+- audit_id: mechanic/mechanic.emissary-nurgle
+  id: the-bearers-natural-six-to-hit-wounds-automatically-as-black-lotus
+  fighters:
+    first: *nurgle-mechanic-bearer
+    second: *nurgle-mechanic-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the mechanic the charger tests nothing, strikes first, and the warrior's own natural 6 is
+# followed by an ordinary wound die (the declared 1 fails).
+- audit_id: mechanic/mechanic.emissary-nurgle
+  id: the-same-warrior-without-the-mechanic-causes-no-fear-and-rolls-to-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *nurgle-mechanic-opponent
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: True, attacks.1.wounded: False, state.second.wounds: 3, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

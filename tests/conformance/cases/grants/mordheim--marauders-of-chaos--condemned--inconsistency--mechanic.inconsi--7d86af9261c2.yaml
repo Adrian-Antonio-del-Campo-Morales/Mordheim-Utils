@@ -1,6 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): the Weapon
+#   Skill rolled when the blow needs it drives the hit target (1 -> 5+, 6 -> 3+) and the Strength rolled
+#   when the wound needs it drives the wound; the rolled Attacks and Weapon Skill hold for the whole
+#   turn; a new turn rolls again; a Condemned whose four variable characteristics are all permanently
+#   fixed (the printed Fate) rolls nothing; the rule is refused on another profile of the band.  The
+#   compiled random rows themselves belong to the sibling identity profile.random-characteristics
+#   (...--11e1f57008f3).  REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Condemned prints a fixed Initiative (4) so, unlike
+#   Belandysh, no Initiative die opens the round; his Fear (condemned--fear) asks nothing in an uncharged
+#   duel; while any characteristic is variable he fights with his printed penalty-free unarmed blows, so
+#   the rolled Strength is the whole wound Strength.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +21,135 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed clause (special-rules.yaml, condemned--inconsistency): "WS, S, T and A are variable. Whenever
+# one of these characteristics is needed, roll its indicated die once for that turn."  Printed profile:
+# WS D6, S D6, T D6, A D3 (M4 BS3 W1 I4 Ld7 fixed).  The Condemned compiles through its band route
+# (marauders-of-chaos / condemned) with no supplied line, so the printed dice rows are the profile; the
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour) and silenced (attacks 0) so every
+# die is the Condemned's own; Initiative 4 against 2 orders his blow first.  Dice (the Inconsistency
+# convention): the pool needs the variable Attacks (round.<i>.first.characteristic.A.0, a D3), the blow
+# needs the variable Weapon Skill (round.<i>.first.attack.<n>.attacker.characteristic.WS.0) and a hit
+# needs the variable Strength (round.<i>.first.attack.<n>.attacker.characteristic.S.0).  To-hit chart:
+# WS1 against WS3 needs 5+, WS6 against WS3 needs 3+.  S6 against T3 wounds on 2+; a wound die never
+# shows a 6 so no critical die follows.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: a-weapon-skill-of-one-rolled-when-needed-sets-the-hit-target-to-five
+  fighters:
+    first:
+      &condemned-recipient
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: condemned
+    second:
+      &condemned-inconsistency-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.weapon_skill: 1, state.first.initiative: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: a-weapon-skill-of-six-sets-the-hit-target-to-three-and-the-rolled-strength-wounds
+  fighters:
+    first: *condemned-recipient
+    second: *condemned-inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.attacker.characteristic.S.0, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit_target: 3, attacks.0.hit: True, attacks.0.wounded: True, state.first.weapon_skill: 6, state.first.strength: 6, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Once for that turn: the D3 gives two Attacks and one WS die serves both blows.
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: the-rolled-attacks-and-weapon-skill-hold-for-the-whole-turn
+  fighters:
+    first: *condemned-recipient
+    second: *condemned-inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 2}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.1.hit_target: 5, attacks.1.hit: False, state.first.attacks: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A new turn rolls again: WS1 (5+) in the first round, WS6 (3+) in the second.
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: a-new-turn-rolls-the-variable-profile-again
+  fighters:
+    first: *condemned-recipient
+    second: *condemned-inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.1.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.1.first.attack.0.attacker.characteristic.WS.0, value: 6}
+    - {key: round.1.first.attack.0.hit, value: 3}
+    - {key: round.1.first.attack.0.attacker.characteristic.S.0, value: 6}
+    - {key: round.1.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.weapon_skill: 1}
+    1: {attacks.0.hit_target: 3, attacks.0.wounded: True, state.first.weapon_skill: 6, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# Nothing variable remains: a Condemned whose four characteristics were permanently fixed by Fate
+# (supplied as condemned_fixed_characteristics with the fixed line) rolls no characteristic die and
+# hits on the fixed WS3's ordinary 4+ (the wound die then fails on a 1).
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: a-condemned-with-every-characteristic-fixed-rolls-no-characteristic-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: condemned
+      trait_overrides: {condemned_fixed_characteristics: [WS, S, T, A]}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 7}
+    second: *condemned-inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_fighters:
+    first.random_characteristics: []
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: True, attacks.0.wounded: False, state.first.weapon_skill: 3, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed rule belongs to the Condemned; selecting it on another profile of the band is refused.
+- audit_id: rule/mordheim/marauders-of-chaos/condemned--inconsistency/mechanic.inconsistency
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [condemned--inconsistency]
+    second: *condemned-inconsistency-opponent
+  expect_error: "special rule is not available to marauders-of-chaos"

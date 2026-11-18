@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.lahmia-deceive
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the declared
+#   Deceive whose own-value test fails bars the enemy for the phase; the passed test leaves it unbarred;
+#   the three printed exemptions (Undead, Daemons, Psychology-immune) each request no die; declining the
+#   use leaves the enemy alone.  REVIEWED still requires manual semantic review.
+# AUTHORED: 6 scenarios cover the failed and passed own-value test, the three printed exemptions and the declined use.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +14,136 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Chaos in the Streets p.183, Lahmia Special Skills / Deceive, bound by
+# band--lahmia-power-deceive): "Once per turn, one enemy in base contact must pass a Leadership test using
+# its own Leadership.  If it fails, it may not attack the Lahmia Vampire that turn, though it may attack
+# another model in base contact.  Models immune to Psychology, Undead and Daemons are unaffected."
+# Operator model (the authored band file ...f3c4bd901191 is the template): the use is a decision at
+# round.<r>.<target>.deceive, the target's own dice are .0/.1 (own value only), and a failure sets
+# state.<target>.charm_attack_blocked.  The "may attack another model in base contact" remainder has no
+# second target in a duel and is recorded, not asserted.  Not representable: "using its own Leadership"
+# needs a borrowable same-band leader, which a hand-built fixture has no band tag to borrow from.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The declared use and the failed own-value test (6+6 against Ld7): the enemy is barred for the phase.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: a-declared-deceive-that-fails-bars-the-enemy-for-the-phase
+  fighters:
+    first:
+      &deceiver
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmia-deceive]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &target
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.deceive, value: true}
+  rolls:
+    - {key: round.0.second.deceive.0, value: 6}
+    - {key: round.0.second.deceive.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test (1+1): the enemy is not barred and both pools ask for their To Hit die.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: a-passed-deceive-test-leaves-the-enemy-unbarred
+  fighters:
+    first:
+      <<: *deceiver
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.deceive, value: true}
+  rolls:
+    - {key: round.0.second.deceive.0, value: 1}
+    - {key: round.0.second.deceive.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: an Undead enemy asks for no test die and its own attack resolves normally.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: an-undead-enemy-is-unaffected-by-deceive
+  fighters:
+    first:
+      <<: *deceiver
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a Daemon enemy is unaffected in the same way.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: a-daemon-enemy-is-unaffected-by-deceive
+  fighters:
+    first:
+      <<: *deceiver
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a model immune to Psychology is unaffected.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: a-psychology-immune-enemy-is-unaffected-by-deceive
+  fighters:
+    first:
+      <<: *deceiver
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Negative control: declining the use leaves the enemy untouched and requests no Leadership die.
+- audit_id: mechanic/mechanic.lahmia-deceive
+  id: declining-to-use-deceive-leaves-the-enemy-alone
+  fighters:
+    first:
+      <<: *deceiver
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.deceive, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

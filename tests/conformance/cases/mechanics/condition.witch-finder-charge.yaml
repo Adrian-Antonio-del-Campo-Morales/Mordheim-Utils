@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.witch-finder-charge
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the supplied
+#   compulsory charge of the marked Witch-finder against a follower of Chaos and against a necromancer is
+#   admitted and resolved as an ordinary charge; the same supplied charge is refused against an opponent
+#   outside the printed enemies, when the Witch-finder is charged instead of charging, when the Mark is not
+#   chosen, and on a hand-built fighter.  REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the condition is a supplied fact ("the selected Solkan
+#   Witch-finder is making the actual compulsory charge"), not a movement producer, so its duel effect is the
+#   consistency check at duel start: the bearer must carry the chosen Mark (`special_rule_ids`), be charging,
+#   and face a printed enemy (Chaos follower, necromancer, chaotic warband member; the duel reads
+#   identity.chaos-follower / identity.necromancer / warband-group.chaotic and the warlock, sorcerer and
+#   warp-tainted identities, which no supplied trait produces today).  A model merely "capable of casting
+#   spells" (identity.spellcaster) is not read as a sorcerer; this is noted, not asserted.  Construction
+#   admits the condition only on the War-Priest of Solkan with the chosen Mark, so no hand-built shape exists.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,122 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Condition row (catalog/rules/conditions.yaml): "The selected Solkan Witch-finder is making the actual
+# compulsory charge against the supplied eligible reachable opponent."  Skill text (grade-2b.yaml,
+# Witch-Finder): "must charge an eligible follower of Chaos, warlock, necromancer, sorcerer or warp-tainted
+# character; only the supplied actual charge is resolved, without movement or visibility production."  The
+# bearer is the printed Priest of Verena as the War-Priest of Solkan (variant deity.solkan) with the
+# Witch-finder chosen and the condition supplied; fixture characteristics WS3 S3 T3 W2 I5 A1; the omitted
+# weapon is the ceremonial dagger (the variant drops the Verena sword and its Strictures).  Opponents are
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) with the one identity the check reads.  Every strike is a
+# declared natural 1, so the admitted duel requests only the two To Hit dice.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The supplied compulsory charge against a follower of Chaos is admitted and resolved as a charge.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-supplied-compulsory-charge-against-a-chaos-follower-is-admitted
+  fighters:
+    first:
+      &witch_finder
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.witch-finder]
+      condition_ids: [condition.witch-finder-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A necromancer is a printed enemy too.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-supplied-compulsory-charge-against-a-necromancer-is-admitted
+  fighters:
+    first:
+      <<: *witch_finder
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {necromancer: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied charge against an opponent outside the printed enemies is refused at duel start.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-supplied-charge-against-an-opponent-outside-the-printed-enemies-is-refused
+  fighters:
+    first:
+      <<: *witch_finder
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Supplied Witch-finder charge requires its named enemy and charging attempt"
+
+# The condition is the Witch-finder's own charge: supplied while he is the one charged, it is refused.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-supplied-charge-is-refused-when-the-witch-finder-is-charged-instead-of-charging
+  fighters:
+    first:
+      <<: *witch_finder
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  expect_error: "Supplied Witch-finder charge requires its named enemy and charging attempt"
+
+# The condition belongs to the chosen Mark: the War-Priest of Solkan who did not choose Witch-finder is
+# refused by construction.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-condition-without-the-chosen-mark-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      condition_ids: [condition.witch-finder-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  expect_error: "the compulsory Witch-finder charge requires the chosen Mark of Solkan"
+
+# No hand-built shape exists: the condition on a fighter outside the printed recipient is refused even when
+# the shared mechanic is injected.
+- audit_id: mechanic/condition.witch-finder-charge
+  id: the-condition-on-a-hand-built-fighter-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.solkan-witch-finder]
+      condition_ids: [condition.witch-finder-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  expect_error: "the compulsory Witch-finder charge requires the chosen Mark of Solkan"

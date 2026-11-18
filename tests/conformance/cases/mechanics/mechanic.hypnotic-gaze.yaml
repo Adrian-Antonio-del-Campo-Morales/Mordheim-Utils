@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.hypnotic-gaze
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the failed
+#   own-value Leadership test bars the target for the turn and makes the gazer's attack hit without a To
+#   Hit die; the passed test leaves both pools intact; a Psychology-immune target asks for no die; the
+#   declined use leaves the target alone; without the power no test exists.  REVIEWED still requires
+#   manual semantic review.
+# Recorded TODO defect (design-rulings.md, "Hypnotic Gaze for Lahmia"): the KB eligibility of
+#   band--vampire-power-hypnotic-gaze lists lahmia-vampire beside von-carstein-vampire, contrary to the
+#   print (Von Carstein Special Skills).  Not fixed here; this file exercises the operator on a fixture
+#   and takes no position on the recipient list.
+# AUTHORED: 5 scenarios cover the failed and passed own-value test, the Psychology-immune exemption, the declined use and the no-power control.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,116 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Chaos in the Streets p.181, Von Carstein Special Skills / Hypnotic Gaze): "Once per
+# turn, one enemy in base contact must pass a Leadership test using its own Leadership, not the leader's.
+# If it fails, it may not attack that turn and all attacks against it hit automatically.  Models immune
+# to Psychology are unaffected."  Operator model (the authored band file ...d0f2a79f4eea is the
+# template): the use is a decision at round.<r>.<target>.hypnotic-gaze, the target's own two dice are
+# .0/.1 (own_value_only), a failure sets state.<target>.charm_attack_blocked and charm_auto_hit, and the
+# gazer's attack then requests no To Hit die.  Not representable: "not the leader's" needs a borrowable
+# same-band leader, which a hand-built fixture has no band tag to borrow from.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The failed test (6+6 against Ld7): the target is barred and the gazer's attack hits automatically, so
+# the only attack die the tape carries is the To Wound roll, which fails and leaves the target unharmed.
+- audit_id: mechanic/mechanic.hypnotic-gaze
+  id: a-failed-gaze-test-bars-the-target-and-makes-attacks-hit-automatically
+  fighters:
+    first:
+      &gazer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotic-gaze]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &target
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotic-gaze, value: true}
+  rolls:
+    - {key: round.0.second.hypnotic-gaze.0, value: 6}
+    - {key: round.0.second.hypnotic-gaze.1, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.charm_attack_blocked: true, state.second.charm_auto_hit: true, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test (1+1): nothing is barred, no attack is automatic, and both pools ask for their To Hit die.
+- audit_id: mechanic/mechanic.hypnotic-gaze
+  id: a-passed-gaze-test-leaves-both-pools-intact
+  fighters:
+    first:
+      <<: *gazer
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotic-gaze, value: true}
+  rolls:
+    - {key: round.0.second.hypnotic-gaze.0, value: 1}
+    - {key: round.0.second.hypnotic-gaze.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false, state.second.charm_auto_hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a Psychology-immune target asks for no gaze die and keeps its own attack.
+- audit_id: mechanic/mechanic.hypnotic-gaze
+  id: a-psychology-immune-target-skips-the-gaze
+  fighters:
+    first:
+      <<: *gazer
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The power is used at the player's choice: declining it requests no Leadership die.
+- audit_id: mechanic/mechanic.hypnotic-gaze
+  id: declining-the-gaze-leaves-the-target-alone
+  fighters:
+    first:
+      <<: *gazer
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotic-gaze, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Negative control: without the power the identical contact requests no test at all.
+- audit_id: mechanic/mechanic.hypnotic-gaze
+  id: without-the-gaze-no-test-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/crooked-moon-kep/band--animosity/mechanic.goblin-squabble
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   printed Night Goblin squabbles on a 1 at the start of his own turn and strikes no blow, a Boss
+#   of the band rolling a 2 fights normally (the boundary), the band's Cave Squig is asked no
+#   animosity die (the printed "Trolls, Squigs, Snotlings and other non-goblins are not affected"),
+#   and the rule is refused when selected on that Cave Squig.  REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,5 +18,105 @@
 #
 # Clause: animosity (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: the identity's admitted effect is the individual duel consequence of the printed
+#   Animosity (shared-rule.night-goblin-animosity, Crooked Moon p.8: "At the beginning of each Night Goblin turn roll a D6. On a roll of 1
+#   they start to squabble and will do nothing else for the rest of the turn"); the excluded
+#   `animosity` clause is the warband-level group behaviour and owes no scenario here.  Consumer:
+#   modular/rounds.py (ANIMOSITY_SOURCES, the own-turn `round.<i>.<side>.animosity` roll;
+#   `animosity_failed` withholds the bearer's attacks for that round).  The recipients are the
+#   printed profiles the record names (night-goblins, bosses); the Cave Squig is a band profile
+#   outside applies_to.  REVIEWED still requires manual semantic review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Family model (goblin squabble): the bearer is the printed band profile with its own species
+# fact (species: goblin), supplied with the fixture characteristics (WS3 S3 T3 W2 I5 A1; the
+# printed Leadership stays) and a club from the band's own equipment list.  The opponent is the
+# hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7).  WS3 against WS3 hits on 4+, S3 against T3
+# wounds on 4+, an unarmoured mace fixture rolls no save; the band's Hate Stunties grant reaches
+# only a Dwarf (or Skaven) enemy, so this human fixture is offered no Hatred reroll.
+
+# A 1 at the start of the Night Goblin's turn: he squabbles, his attack die is never requested and
+# the enemy's own natural 1 is still rolled.
+- audit_id: rule/mordheim/crooked-moon-kep/band--animosity/mechanic.goblin-squabble
+  id: a-night-goblin-rolling-a-one-squabbles-and-strikes-no-blow
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: True, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary on a second printed recipient: a Boss rolling a 2 is not squabbling and his charge
+# lands normally.
+- audit_id: rule/mordheim/crooked-moon-kep/band--animosity/mechanic.goblin-squabble
+  id: a-boss-rolling-a-two-fights-normally
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: bosses
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: False, attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Squigs ... are not affected": the band's own Cave Squig charges and no animosity die is asked.
+- audit_id: rule/mordheim/crooked-moon-kep/band--animosity/mechanic.goblin-squabble
+  id: the-bands-cave-squig-is-asked-no-animosity-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: cave-squigs
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: False, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant names the goblin profiles only; selecting it on the Cave Squig is refused.
+- audit_id: rule/mordheim/crooked-moon-kep/band--animosity/mechanic.goblin-squabble
+  id: the-rule-is-refused-on-the-cave-squig
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: cave-squigs
+      main_weapon_id: weapon.natural-attacks
+      special_rule_ids: [band--animosity]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to crooked-moon-kep/cave-squigs"

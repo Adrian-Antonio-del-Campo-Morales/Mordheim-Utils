@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the Fallen Sister's charge against a Sister of Sigmar needs her Leadership test (passed and
+#   failed); the Witch Hunters Warrior-Priest is the other printed Sigmarite opponent; no test against an
+#   opponent outside those two; no test when she is the one charged; the Bard control; the refusal.  REVIEWED
+#   still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed rule reads "Uses source psychology rule"; the compiled
+#   contract tests her Leadership before she charges a member of a Sisters of Sigmar warband or the
+#   Warrior-Priest of a Witch Hunters warband (the compiler's `identity.sigmarite-opponent`, produced for those
+#   two builds only, so the opponents are compiled band profiles).  Her kit lists the steel whip first; the
+#   ceremonial dagger is named explicitly so the whip's charge bonus attack does not join the tape; her light
+#   armour is owned, not worn.  Her Wizard and Warrior Wizard rules are excluded (magic).
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,155 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Fallen Sister compiled
+# through the hireling route (hirelings.hired-sword.2a / hireling.hired-sword.the-fallen-sister); her
+# printed rule is granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays); the dagger of her kit is named.  The Sigmarite opponents are compiled band profiles with fixture
+# characteristics (WS3 S3 T3 W3 I2 A1, printed Ld, mace); the plain opponent is hand-built (Ld7, mace).
+# Dice: her 2D6 test (`round.0.first.ashamed-and-afraid.{0,1}`) of 3+3 passes Ld8 and 5+4 = 9 fails it;
+# every strike is a declared natural 1; a failed charge test ends the duel `disengaged` with no blow struck.
+# The control is the grade-1b Bard, a hireling without any psychology rule; the refusal selects the printed
+# rule on it.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Her charge against a Sister of Sigmar needs the test: 3+3 passes Ld8 and the charge goes in.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: the-fallen-sister-passing-her-test-charges-the-sister-of-sigmar
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.the-fallen-sister
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &sister
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: sigmarite-matriarch
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 3}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 5+4 = 9 fails Ld8: the charge is cancelled, no blow is struck and the duel disengages.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: the-fallen-sister-failing-her-test-does-not-charge-the-sister-of-sigmar
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *sister
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 5}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The Warrior-Priest of a Witch Hunters warband is the other printed Sigmarite opponent.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: her-charge-against-a-witch-hunters-warrior-priest-needs-the-same-test
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: warrior-priest
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 3}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opponent outside the two printed Sigmarites prompts no test: the strict tape holds no Leadership dice.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: no-test-is-taken-against-an-opponent-outside-the-printed-sigmarites
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The test guards her own charge: charged by the Sister of Sigmar she takes no test and fights back.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: no-test-is-taken-when-the-sister-of-sigmar-charges-her
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *sister
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same Sister of Sigmar: no Leadership die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: a-hireling-without-the-rule-charges-the-sister-of-sigmar-untested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *sister
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid/mechanic.ashamed-and-afraid
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

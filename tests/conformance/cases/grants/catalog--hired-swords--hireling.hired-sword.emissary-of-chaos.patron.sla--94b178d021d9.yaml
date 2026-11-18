@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): an enemy charging the Slaanesh Emissary takes the printed Leadership test and a failure
+#   cancels the charge; a passed test lets the charge land at -1 to hit; an engaged enemy who did not
+#   charge still suffers the -1 (a 4 that beats the ordinary target misses); the same Emissary under
+#   another patron is charged without a test at the ordinary target; the patron is refused outside the
+#   Emissary's package.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed charge test is an ordinary (non-Psychology)
+#   Leadership test in the recorded contract (mechanic.slaanesh-charge-test), so a Psychology-immune
+#   enemy would still take it; no such enemy is declared here.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,104 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.emissary-of-chaos.patron.slaanesh, grant selectable): "All
+# enemies must pass Leadership to charge the Emissary. An enemy engaging him in close combat suffers -1
+# to hit" - binding mechanic.emissary-slaanesh.  Hireling family model (README, Hireling recipients): the
+# real Emissary through the hireling route with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld9
+# stays), the printed kit's default sword and exactly one patron selected with special_rule_ids.  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace).  The control is the same Emissary under the
+# Tzeentch patron (identity tags only).  Dice: WS3 against WS3 hits on 4+, so -1 to hit makes the
+# target 5+; a 2D6 Leadership test of 5+4 fails Ld7 and 3+3 passes; the charge test dice are
+# round.0.<side>.slaanesh-charge.{0,1} and a failed charge ends in termination_reason disengaged.  The
+# opponent's blows against the Emissary are declared misses so his sword's parry is never offered.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charge test fails (9 against Ld7): the charge is cancelled and the round carries no attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
+  id: an-enemy-failing-the-leadership-test-cannot-charge-the-slaanesh-emissary
+  fighters:
+    first:
+      &slaanesh-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.slaanesh]
+    second:
+      &slaanesh-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.slaanesh-charge.0, value: 5}
+    - {key: round.0.second.slaanesh-charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.failed_charges: ['second'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The charge test passes (6 against Ld7): the charger strikes first, at 5+ instead of the ordinary 4+;
+# the Emissary's reply keeps the ordinary target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
+  id: a-passed-test-lets-the-charge-land-at-minus-one-to-hit
+  fighters:
+    first: *slaanesh-recipient
+    second: *slaanesh-opponent
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.slaanesh-charge.0, value: 3}
+    - {key: round.0.second.slaanesh-charge.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, attacks.1.hit_target: 4, state.engaged: True, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No charge, already engaged: the enemy still suffers -1 to hit, so a 4 that beats the ordinary 4+
+# misses the 5+.  The Emissary is silenced so the only die is the enemy's.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
+  id: an-engaged-enemy-suffers-minus-one-to-hit-without-a-charge
+  fighters:
+    first: *slaanesh-recipient
+    second: *slaanesh-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: under the Tzeentch patron the charger tests nothing and hits on the ordinary 4+.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
+  id: the-same-emissary-under-another-patron-is-charged-untested-at-the-ordinary-target
+  fighters:
+    first:
+      <<: *slaanesh-recipient
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+    second: *slaanesh-opponent
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The patron belongs to the Emissary's own package; selecting it on a hireling of another package is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.slaanesh/mechanic.emissary-slaanesh
+  id: the-patron-is-refused-on-a-hireling-outside-the-emissary-package
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.slaanesh]
+    second: *slaanesh-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

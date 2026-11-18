@@ -1,6 +1,22 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dark-elf-corsairs-mou/witch-elf--drugs-frenzy/trait.frenzy
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   printed Witch Elf compiles frenzied and her one supplied Attack is doubled (two blades: three
+#   strikes) while the Fear-causing charge she receives prompts no Fear test; a band comrade without
+#   the rule strikes once and is tested; the injury that knocks her down ends her Frenzy.  REVIEWED
+#   still requires manual semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the frenzied recipient, the comrade control and the knocked-down end of Frenzy are declared
+#   below; REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the Witch Elf's printed kit is a compound ("two dark elven blades coated
+#   in dark venom"), which the compiler fills into both hands (compiler.py _printed_compound_kit), so
+#   her supplied A1 doubled by Frenzy (2) plus the second blade's one extra attack (added after the
+#   doubling, Rulebook order) is three strikes; the two blades compile to the same operator, so no
+#   main-weapon-majority choice is expected.  The compulsory charge and the parry prohibition the
+#   Rulebook's Frenzy prints are spatial or absent from the alias and are not asserted (the
+#   adventurers-kaz Barbarian file is the precedent).  Her printed 5+ save against all wounds is the
+#   profile's natural_armour_save, rolled at `round.0.first.attack.0.armour`; the hit that knocks her
+#   down is a natural 6, which no parry may attempt, so no parry request intervenes.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +25,95 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/dark-elf-corsairs-mou/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Dark Elf Corsairs, Mousillon supplement p.5, Specialist / Witch Elf / Drugs): "Uses
+# drugs and is therefore subject to frenzy."  The record witch-elf--drugs-frenzy binds trait.frenzy
+# (value true) to the witch-elf profile.  Rulebook Frenzy: the warrior fights with double her Attacks,
+# is immune to Psychology (no Fear test), and loses Frenzy for the rest of the battle once knocked
+# down.  Family model (band-profile frenzy): the recipient is the band's printed Witch Elf
+# (dark-elf-corsairs-mou / witch-elf) with the corpus characteristics (WS3 S3 T3 W2 I5 A1; the printed
+# Ld8 stays) and her printed blades (main_weapon_id weapon.sword, the compound fills the second); her
+# strikes are natural 1s so neither the blades' venom nor their upgrade adds a die.  The comrade control
+# is the band's printed Corsair (corsairs, a sword of the Reavers list, the same fixture, printed Ld7)
+# who carries no frenzy rule.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace), charges, and
+# declares causes_fear where the Fear face is read.  A 2D6 Fear test of 5+4 fails Ld7.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Frenzied: the charge of a Fear-causer prompts no Fear dice and her one supplied Attack is doubled
+# (two from Frenzy plus the second blade's one: three strikes, the fourth recorded attack of the round).
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/witch-elf--drugs-frenzy/trait.frenzy
+  id: the-frenzied-witch-elf-doubles-her-attacks-and-takes-no-fear-test
+  fighters:
+    first: &fear-charger
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: &witch-elf
+      collection: mordheim
+      band_id: dark-elf-corsairs-mou
+      profile_id: witch-elf
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {second.frenzy: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.3.wounded: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A band comrade without the rule (Corsair) strikes once and is tested for Fear (9 fails Ld7).
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/witch-elf--drugs-frenzy/trait.frenzy
+  id: a-corsair-without-the-rule-strikes-once-and-is-tested-for-fear
+  fighters:
+    first: *fear-charger
+    second:
+      collection: mordheim
+      band_id: dark-elf-corsairs-mou
+      profile_id: corsairs
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  expect_initial: {second.frenzy: false}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.fear_hit_sixes: true, attacks.1.wounded: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The injury that knocks her down ends her Frenzy: a natural 6 hits (no parry may be attempted), the 4
+# wounds T3, her printed 5+ save fails on a 1 and the Injury roll of 1 is Knocked Down; the frenzy flag
+# is cleared beside the condition and she strikes no blow.
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/witch-elf--drugs-frenzy/trait.frenzy
+  id: the-injury-that-knocks-the-witch-elf-down-ends-her-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *witch-elf
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN, attacks.0.wounded: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

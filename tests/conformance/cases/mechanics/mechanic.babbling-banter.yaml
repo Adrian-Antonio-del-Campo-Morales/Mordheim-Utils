@@ -1,6 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.babbling-banter
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   round's banter trick accepted (+1 to the bearer's hit target, -1 to the opponent's), the same
+#   round with every trick declined (both hit targets unchanged), and a bearer without the Jester's
+#   chooser (no trick offered at all).  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the accepted-banter / declined-banter pair and the chooserless control are declared below;
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the engine reads no `mechanic.babbling-banter` tag.  The Dark
+#   Jester's Confound and Confuse chooser (packages/python/combat-engine/mordheim_combat/modular/
+#   rounds.py, JESTER_TRICK_STATES, gated on `mechanic.confound-and-confuse`) offers the three printed
+#   tricks each round and lights `banter_trick_active`; the hit context (contexts.py, prepare_hit_context:
+#   `modifier += int(attacker_state.banter_trick_active)`, `modifier -= int(defender_state.
+#   banter_trick_active)`) reads that state alone.  kernel.py lists `mechanic.babbling-banter` among the
+#   "catalogue tags with no engine read at all ... the Jester's chooser owns Banter".  The removal probe
+#   will therefore report this identity non-discriminating: the effect is delivered by the sibling
+#   mechanic.confound-and-confuse binding, which these scenarios inject beside the banter tag so the
+#   banter slot can be chosen.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +26,82 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (The Dark Jester in Mordheim, mordheimer.net grade-2a Dramatis Personae): Babbling
+# Banter is one of the three combat tricks the Jester chooses from each combat turn; while babbling he
+# is +1 to hit and his bewildered opponent is -1 to hit him.  The KB record carries the rule as "applies
+# source to-hit modifiers".  Family model: the bearer is hand-built (WS3 S3 T3 W2 I5 A1, mace) and
+# charges a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace); WS3 against WS3 hits on 4+, so a 3 and
+# a 4 are the two boundary faces.  The chooser offers the dodge, the banter and the trip in that order
+# as decisions `round.0.first.jester-trick.<slot>` and stops at the first acceptance; a declined offer
+# leaves the slot dark.  Every wound roll is a natural 1 so no save or injury die follows.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The banter accepted: the bearer's 3 now hits (target 3) and the opponent's 4 now misses (target 5).
+- audit_id: mechanic/mechanic.babbling-banter
+  id: the-accepted-banter-raises-the-bearers-hit-target-and-lowers-the-opponents
+  fighters:
+    first:
+      &banter-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.confound-and-confuse, mechanic.babbling-banter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &banter-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.banter_trick_active: true, attacks.0.hit_target: 3, attacks.0.hit: true,
+        attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Every trick declined: the same faces resolve at the unmodified 4+ (the 3 misses, the 4 hits).
+- audit_id: mechanic/mechanic.babbling-banter
+  id: with-every-trick-declined-both-hit-targets-stay-at-four
+  fighters:
+    first:
+      <<: *banter-bearer
+    second:
+      <<: *banter-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: false}
+    - {key: round.0.first.jester-trick.trip_trick_active, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.first.banter_trick_active: false, attacks.0.hit_target: 4, attacks.0.hit: false,
+        attacks.1.hit_target: 4, attacks.1.hit: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: a fighter without the Jester's chooser is offered no trick (the strict decision list is
+# empty) and the 3 misses at the plain 4+.
+- audit_id: mechanic/mechanic.babbling-banter
+  id: a-fighter-without-the-chooser-is-offered-no-trick-and-hits-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *banter-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

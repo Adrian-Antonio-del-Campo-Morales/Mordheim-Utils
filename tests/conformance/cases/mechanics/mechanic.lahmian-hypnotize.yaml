@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.lahmian-hypnotize
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the failed
+#   test bars the chosen enemy and gives every attack against it the printed +1 To Hit (a declared three
+#   reaches an equal-Weapon-Skill target only through it); the passed test leaves the same three short;
+#   a Psychology-immune enemy asks for no die; declining the use leaves the enemy alone; without the
+#   power no test exists.  REVIEWED still requires manual semantic review.
+# AUTHORED: 5 scenarios cover the failed test with its bar and +1 To Hit, the passed test, the Psychology-immune exemption, the declined use and the no-power control.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +15,119 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Khemri p.90, Lahmian Vampire Special Skills / Hypnotize, bound by
+# band--lahmian-special-skills-hypnotize): at the start of the Combat phase choose one enemy in base
+# contact with the Vampire; it must pass a Leadership test or it may not attack that turn and all attacks
+# directed against it gain +1 To Hit.  Models immune to Psychology are unaffected.  Operator model (the
+# authored band file ...2150a9022e44 is the template): the use is a decision at round.<r>.<target>.hypnotize,
+# the enemy's dice are .0/.1 (no own-value qualifier is printed), a failure sets
+# state.<target>.charm_attack_blocked and marks it hypnotized so a To Hit die of three hits WS3 (four
+# needed unaided).  The "may attack another model in base contact" remainder has no second target in a
+# duel and is recorded, not asserted.  The hand-built fixtures carry no band tag, so no leader's value is
+# borrowable and the enemy's own Leadership 7 is the tested value.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The failed test (6+6 against Ld7) consumes both printed halves: the enemy is barred and the declared
+# three hits it only through the +1 (an equal Weapon Skill needs four); the wound die of one then fails.
+- audit_id: mechanic/mechanic.lahmian-hypnotize
+  id: a-failed-hypnotize-test-bars-the-target-and-gives-the-printed-plus-one
+  fighters:
+    first:
+      &hypnotist
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-hypnotize]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      &target
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotize, value: true}
+  rolls:
+    - {key: round.0.second.hypnotize.0, value: 6}
+    - {key: round.0.second.hypnotize.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, attacks.0.hit: true, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test (1+1): no bar and no +1, so the identical three misses and both pools resolve.
+- audit_id: mechanic/mechanic.lahmian-hypnotize
+  id: a-passed-hypnotize-test-leaves-the-declared-three-short
+  fighters:
+    first:
+      <<: *hypnotist
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotize, value: true}
+  rolls:
+    - {key: round.0.second.hypnotize.0, value: 1}
+    - {key: round.0.second.hypnotize.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a Psychology-immune enemy asks for no hypnotize die and keeps its whole pool.
+- audit_id: mechanic/mechanic.lahmian-hypnotize
+  id: a-psychology-immune-target-skips-hypnotize
+  fighters:
+    first:
+      <<: *hypnotist
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The choice is the player's: declining it requests no Leadership die.
+- audit_id: mechanic/mechanic.lahmian-hypnotize
+  id: declining-to-hypnotize-leaves-the-target-alone
+  fighters:
+    first:
+      <<: *hypnotist
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotize, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Negative control: without the power the identical contact requests no test and the three misses.
+- audit_id: mechanic/mechanic.lahmian-hypnotize
+  id: without-the-power-no-test-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch,
+#   2026-11-18): the charging Penthesilea striking twice with one supplied Attack (+1 A when charging),
+#   the charged Penthesilea striking once and taking no Fear test from a Fear-causing charger (immune
+#   to fear), the Bard control charging with one strike, the Bard control tested for Fear in the same
+#   setup, and the refusal outside the printed profile.  REVIEWED still requires manual semantic
+#   review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the batch brief paired this identity with Profound Hatred; the KB binds the
+#   printed skill to `mechanic.savage-fury` (Amazon special skill: "+1 A when charging and is immune to
+#   charm effects and fear"; execution.yaml: charge_attacks_bonus 1, mechanic.fear-immunity,
+#   mechanic.charm-immunity), so that is the contract evidenced here.  The charm immunity has no
+#   charmer in this file: the Hypnotist and Mesmerising Dance operators (rounds.py) skip a
+#   `mechanic.charm-immunity` target, and that face belongs to the charm identities' own files.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +23,127 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Penthesilea compiled through the
+# hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.penthesilea-mark-of-the-serpent)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays); her omitted main weapon is the
+# kit's Starsword (+1 Strength, parry, ignores armour saves: S4 wounds T3 on 3+ and the mace-armed
+# opponent has no save to roll), her Starblade, Amulet and Skins stay owned.  Her printed Savage Fury
+# is granted by the profile itself, so the build selects nothing.  Her other printed duel rules are
+# accounted for: Mesmerising Dance tests the standing opponent's Leadership every round
+# (`round.0.<opponent>.mesmerising-dance.{0,1}`, declared 3+3 to pass Ld7 so its attack is not
+# blocked); Man-Hater reads a human male the hand-built opponent never declares; the Amazon rule reads
+# Lizardmen or Norse identities it never carries.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace) with natural-1 strikes (no parry request against her Starsword).  The control is the grade-1b
+# Bard compiled through the same route (dagger: S3 wounds T3 on 4+ and grants its target a 6+ save,
+# declared failed on a 1); the refusal selects the printed rule on that control.  A 2D6 Fear test of
+# 5+4 fails Ld7.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Charging, her one supplied Attack becomes two: both 4s hit, both 3s wound at S4, two wounds land.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
+  id: the-charging-penthesilea-strikes-twice-with-one-supplied-attack
+  fighters:
+    first:
+      &amazon
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &amazon-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Mesmerising Dance (her sibling rule): the opponent's Leadership test, passed.
+    - {key: round.0.second.mesmerising-dance.0, value: 3}
+    - {key: round.0.second.mesmerising-dance.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.1.hit: true, state.second.wounds: 1, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Charged by a Fear-causer she neither tests Fear nor gains the charge Attack: no Fear dice, one strike.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
+  id: the-charged-penthesilea-takes-no-fear-test-and-strikes-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *amazon
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.mesmerising-dance.0, value: 3}
+    - {key: round.0.first.mesmerising-dance.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.1.hit: true, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same opponent: one supplied Attack is one strike.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
+  id: a-hireling-without-the-rule-strikes-once-when-charging
+  fighters:
+    first:
+      &amazon-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *amazon-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # The printed dagger grants its target a 6+ save; the declared 1 fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control charged by the same Fear-causer is tested (9 fails Ld7).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
+  id: a-hireling-without-the-rule-is-tested-for-fear-in-the-same-setup
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *amazon-control
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury/savage-fury
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *amazon-control
+      special_rule_ids: [hireling.dramatis.penthesilea-mark-of-the-serpent.rule.savage-fury]
+    second:
+      <<: *amazon-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

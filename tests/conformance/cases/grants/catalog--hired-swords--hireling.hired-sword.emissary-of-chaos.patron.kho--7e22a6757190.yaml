@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.khorne/mechanic.emissary-khorne
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the Khorne Emissary is frenzied from initialisation and swings four times (the printed
+#   +1 Attack doubled by Frenzy); the same Emissary under another patron is not frenzied and swings once;
+#   two patrons at once are refused; the patron is refused on a hireling outside the Emissary's package.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the recorded contract delivers "Frenzy and +1 Attack" as one
+#   effect-set (frenzy: true, attacks_bonus: 1), so the four swings evidence the composition
+#   (1 + 1) x 2 and no legal build isolates the +1 from the doubling; the frenzy flag is observed on its
+#   own through state.first.frenzy.  Frenzy's "must charge" compulsion is a movement fact outside the duel.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,86 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.emissary-of-chaos.patron.khorne, grant selectable): "Frenzy
+# and +1 Attack" - binding mechanic.emissary-khorne.  Hireling family model (README, Hireling recipients):
+# the recipient is the real Emissary compiled through the hireling route (hirelings.hired-sword.2a) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld9 stays) and the printed kit's default sword; exactly
+# one patron is selected with special_rule_ids (an Emissary needs exactly one printed patron).  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace).  The control is the same Emissary under the
+# Tzeentch patron, whose own consequences are identity tags only, so the same tape differs by the patron
+# alone.  Dice: WS3 against WS3 hits on 4+; every attack is declared a natural 1 so no wound, save or
+# injury die is requested.  A frenzied warrior doubles his Attacks: (1 + 1) x 2 = 4 strikes.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Khorne Emissary charges: he is frenzied from initialisation and the pool holds four strikes, all
+# declared misses; the opponent's single reply follows as the fifth outcome at the ordinary target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.khorne/mechanic.emissary-khorne
+  id: the-khorne-emissary-is-frenzied-and-swings-four-times
+  fighters:
+    first:
+      &khorne-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.khorne]
+    second:
+      &khorne-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.3.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: True}
+  expect_rounds:
+    0: {attacks.3.hit: False, attacks.4.hit_target: 4, state.first.frenzy: True, state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same Emissary under the Tzeentch patron is not frenzied and the fixture's single Attack
+# is the whole pool; the opponent's reply is the second outcome.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.khorne/mechanic.emissary-khorne
+  id: the-same-emissary-under-another-patron-is-not-frenzied-and-swings-once
+  fighters:
+    first:
+      <<: *khorne-recipient
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+    second: *khorne-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: False}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit_target: 4, state.first.frenzy: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The patron obligation: Khorne together with a second patron is refused by construction.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.khorne/mechanic.emissary-khorne
+  id: two-patrons-at-once-are-refused
+  fighters:
+    first:
+      <<: *khorne-recipient
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.khorne, hireling.hired-sword.emissary-of-chaos.patron.nurgle]
+    second: *khorne-opponent
+  expect_error: "an Emissary of Chaos requires exactly one printed patron"
+
+# The patron belongs to the Emissary's own package; selecting it on a hireling of another package is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.khorne/mechanic.emissary-khorne
+  id: the-patron-is-refused-on-a-hireling-outside-the-emissary-package
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.khorne]
+    second: *khorne-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

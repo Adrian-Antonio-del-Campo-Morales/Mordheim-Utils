@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, psy-tests-and-enemy-effects
+#   batch, 2026-11-18): a Beastman charged by the Beast Hunter fails its Fear test and hits only on
+#   sixes, one passes and fights normally, a Beastman charging him fails the charge test and is
+#   halted, a human enemy is never tested, the Bard control frightens the same Beastman not at all,
+#   and the rule is refused on a hireling outside its printed profile.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +17,145 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Skull Rack): "The bearer causes fear in all Beastmen."  The binding
+# is the shared mechanic.fear-beastmen: Fear scoped to an enemy that is a Beastman
+# (species.beastman).  Consumer: modular/psychology.py causes_fear() and resolve_fear()/needs_test().
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Beast Hunter compiled
+# through the hireling route (hirelings.hired-sword.1a / hireling.hired-sword.beast-hunter) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; his printed Ld7 stays); his kit's first close-combat
+# weapon is an axe, so the main weapon is omitted; the rule is a profile grant, so nothing is
+# selected.  The Beast Hunter is silenced (attacks 0) in every scenario: his sibling Beastmen
+# Vengeance (Hatred against Beastmen) would otherwise offer him a hit reroll against the Beastman,
+# and the observable here is the Beastman's own test and hit target.  The enemy is hand-built
+# (mace, WS3 S3 T3 W3 I2 A1 Ld7) and declares the one fact the rule reads (species: beastman, or
+# human).  Dice: a 2D6 Fear test of 5+4 fails Ld7 and 3+3 passes; the failed charged test raises
+# the enemy's hit target to 6, so its 4 misses where it hit before.  The control is the grade-1b
+# Bard, compiled through the same route; the refusal selects the printed rule on the Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Beast Hunter charges a Beastman; the Beastman's 9 fails Ld7 and its 4 now needs a 6.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: a-beastman-charged-by-the-beast-hunter-that-fails-its-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.beast-hunter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 6 passes Ld7: the Beastman keeps its ordinary 4+ (its natural 1 misses on its own).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: a-beastman-charged-by-the-beast-hunter-that-passes-its-fear-test-fights-normally
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Beastman charging the Beast Hunter must pass first: 9 fails, the charge is cancelled and no
+# blow is struck.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: a-beastman-charging-the-beast-hunter-that-fails-its-fear-test-is-halted
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# "in all Beastmen": a charged human enemy is asked no Fear die and keeps its 4+.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: a-human-enemy-charged-by-the-beast-hunter-is-not-tested
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same Beastman: no Fear die is requested and the 4+ stands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: a-hireling-without-the-skull-rack-prompts-no-fear-test-in-a-beastman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Beast Hunter's profile; selecting it on another hireling is
+# refused (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.skull-rack/mechanic.fear-beastmen
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.beast-hunter.rule.skull-rack]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

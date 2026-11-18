@@ -1,6 +1,21 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 8 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the War-Priest of Solkan who chose Witch-finder makes the supplied compulsory charge against a
+#   follower of Chaos and against a necromancer; the supplied charge is refused against an opponent outside the
+#   printed enemies, when he is charged instead of charging, and when the Mark is not chosen; the unselected
+#   control fights an ordinary duel; the refusal without the Solkan variant; the refusal on another hireling.
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Marks of Solkan are selectable only on the printed War-Priest
+#   of Solkan variant (`variant_ids: [deity.solkan]`; the kit gate refuses the unmarked Priest with "a Mark of
+#   Solkan requires the War-Priest of Solkan variant").  The variant drops the Verena sword and its Strictures,
+#   so the omitted weapon is the ceremonial dagger.  The printed compulsion is a movement-phase obligation;
+#   the duel reads it only through the supplied `condition.witch-finder-charge`, validated at duel start
+#   against the chosen Mark, the charge and the opponent's identity (Chaos follower, necromancer, chaotic
+#   warband member; a model merely capable of casting spells is not read as a sorcerer - noted, not asserted).
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +24,154 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Priest of Verena compiled
+# through the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.priest-of-verena) as the
+# War-Priest of Solkan (variant deity.solkan) with the selectable Witch-finder chosen through
+# special_rule_ids and the compulsory charge supplied through condition_ids; fixture characteristics WS3 S3
+# T3 W2 I5 A1 (printed Ld8 stays).  Printed text: "The chosen War-Priest must charge an eligible follower
+# of Chaos, warlock, necromancer, sorcerer or warp-tainted character; only the supplied actual charge is
+# resolved, without movement or visibility production."  Opponents are hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace) with the one identity the check reads; every strike is a declared natural 1, so an admitted duel
+# requests only the two To Hit dice.  The unselected control is the same War-Priest without the Mark; the
+# refusals are the unmarked Priest (sword in hand, since his Strictures bar the dagger) and the Bard.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The supplied compulsory charge against a follower of Chaos is admitted and resolved as a charge.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-witch-finders-supplied-compulsory-charge-against-a-chaos-follower-is-admitted
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.witch-finder]
+      condition_ids: [condition.witch-finder-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &chaos_follower
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A necromancer is a printed enemy too.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-witch-finders-supplied-compulsory-charge-against-a-necromancer-is-admitted
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {necromancer: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied charge against an opponent outside the printed enemies is refused at duel start.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-supplied-charge-against-an-opponent-outside-the-printed-enemies-is-refused
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Supplied Witch-finder charge requires its named enemy and charging attempt"
+
+# The compulsion is the Witch-finder's own charge: supplied while he is the one charged, it is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-supplied-charge-is-refused-when-the-witch-finder-is-charged-instead-of-charging
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *chaos_follower
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  expect_error: "Supplied Witch-finder charge requires its named enemy and charging attempt"
+
+# The condition belongs to the chosen Mark: the War-Priest who did not choose Witch-finder is refused it.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-supplied-charge-without-the-chosen-mark-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      condition_ids: [condition.witch-finder-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *chaos_follower
+  duel_context: {charging: [first], active_participant: first}
+  expect_error: "the compulsory Witch-finder charge requires the chosen Mark of Solkan"
+
+# The unselected control: the War-Priest without the Mark charges the same Chaos follower as an ordinary,
+# voluntary charge (no condition, no refusal, the same two dice).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-war-priest-without-the-mark-fights-an-ordinary-duel
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *chaos_follower
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Mark belongs to the War-Priest of Solkan: the unmarked Priest of Verena (sword in hand) is refused it.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-priest-of-verena-without-the-solkan-variant-is-refused-the-mark
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      main_weapon_id: weapon.sword
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.witch-finder]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *chaos_follower
+  expect_error: "requires the War-Priest of Solkan variant"
+
+# The selectable skill is the Priest's own; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.witch-finder/mechanic.solkan-witch-finder
+  id: the-skill-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.witch-finder]
+    second:
+      <<: *chaos_follower
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

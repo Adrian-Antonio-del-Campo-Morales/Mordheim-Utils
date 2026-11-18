@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter/babbling-banter
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch,
+#   2026-11-18): the printed Jester accepting the banter trick (+1 to his hit target, -1 to his
+#   opponent's), the same Jester declining every trick (both targets unchanged), the Bard control that
+#   is offered no trick, and the refusal outside the printed profile.  REVIEWED still requires manual
+#   semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the engine reads no `mechanic.babbling-banter` tag; the Jester's
+#   sibling rule Confound and Confuse (`mechanic.confound-and-confuse`) owns the per-round chooser that
+#   lights `banter_trick_active`, which the hit context reads (contexts.py prepare_hit_context; rounds.py
+#   JESTER_TRICK_STATES; kernel.py lists the banter tag among "catalogue tags with no engine read").
+#   Removing this binding alone leaves the printed Jester's banter in place, so the removal probe will
+#   report the identity non-discriminating; the sibling binding is the executable carrier.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,102 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Dark Jester compiled through the
+# hireling route (hirelings.dramatis-personae.2a / hireling.dramatis.the-dark-jester-in-mordheim) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays) and his printed skeleton hobby horse,
+# the canonical club (weapon.club, the kit's first close-combat weapon; the sack of spikes stays owned).
+# His printed Babbling Banter is granted by the profile itself, so the build selects nothing.  His other
+# printed abilities add no die here: Leap, Acrobat, Jump Up and Lightning Reflexes are movement or
+# order rules (he charges, so he strikes first anyway), Sidestepper and Trip are the two tricks the
+# chooser offers beside the banter and are declined, Loner is out of scope.  The chooser offers the
+# dodge, the banter and the trip in that order (`round.0.first.jester-trick.<slot>`) and stops at the
+# first acceptance.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace): WS3 against WS3 hits on
+# 4+, so a 3 and a 4 are the boundary faces; every wound roll is a natural 1 so no save or injury die
+# follows.  The control is the grade-1b Bard, compiled through the same route, who is offered no trick.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Jester babbles: his 3 hits (target 3) and his bewildered opponent's 4 misses (target 5).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter/babbling-banter
+  id: the-babbling-jester-hits-on-three-and-is-hit-only-on-five
+  fighters:
+    first:
+      &jester
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.the-dark-jester-in-mordheim
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &jester-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.banter_trick_active: true, attacks.0.hit_target: 3, attacks.0.hit: true,
+        attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Jester declines every trick this round: the same faces resolve at the unmodified 4+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter/babbling-banter
+  id: the-jester-who-declines-every-trick-keeps-both-hit-targets-at-four
+  fighters:
+    first:
+      <<: *jester
+    second:
+      <<: *jester-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: false}
+    - {key: round.0.first.jester-trick.trip_trick_active, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.first.banter_trick_active: false, attacks.0.hit_target: 4, attacks.0.hit: false,
+        attacks.1.hit_target: 4, attacks.1.hit: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same opponent: no trick is offered and his 3 misses at 4+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter/babbling-banter
+  id: a-hireling-without-the-rule-is-offered-no-banter-and-hits-on-four
+  fighters:
+    first:
+      &jester-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *jester-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter/babbling-banter
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *jester-control
+      special_rule_ids: [hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter]
+    second:
+      <<: *jester-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

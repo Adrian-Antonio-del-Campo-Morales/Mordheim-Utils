@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.emissary-tzeentch
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): a hand-built
+#   bearer is read as a spellcaster, so a Burn-the-Witch enemy's first-round miss against him is
+#   re-rolled; the same warrior without the mechanic sees the same miss stand.  The real Emissary
+#   carrier is evidenced in its grant file (catalog--hired-swords--...patron.tze--00d4dc314016).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the contract is identity tags only (identity.chaos-follower,
+#   identity.spellcaster) - the bearer casts nothing; its duel consequence is being read by an enemy's
+#   rule.  The removal probe reports a skill_ids injection inert by design (README, Rule-removal probe).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,49 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Fanatic Online 94, Emissary of Chaos, Patron Tzeentch): Academic skill access, spell
+# casting excluded - in the duel the bearer is a spellcaster by identity.  The shared mechanic is
+# injected through skill_ids on a hand-built warrior (WS3 S3 T3 W2 I5 A1 Ld7, mace), silenced so the
+# only dice are the enemy's; the enemy is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) with Burn the Witch
+# (Hatred of spellcasters: a first-round miss is re-rolled).  WS3 against WS3 hits on 4+.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: mechanic/mechanic.emissary-tzeentch
+  id: a-witch-burner-rerolls-a-first-round-miss-against-the-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.emissary-tzeentch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &tzeentch-mechanic-witch-burner
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.burn-the-witch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the mechanic the warrior is no spellcaster: the same 2 misses and no re-roll is requested.
+- audit_id: mechanic/mechanic.emissary-tzeentch
+  id: the-same-miss-stands-against-the-warrior-without-the-mechanic
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *tzeentch-mechanic-witch-burner
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

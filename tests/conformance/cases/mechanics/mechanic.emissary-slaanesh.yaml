@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.emissary-slaanesh
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): an enemy
+#   charging the hand-built bearer takes the Leadership test and a failure cancels the charge; a passed
+#   test lets the charge land at -1 to hit; an engaged enemy who did not charge still suffers the -1; the
+#   same warrior without the mechanic is charged untested at the ordinary target.  The real Emissary
+#   carrier is evidenced in its grant file (catalog--hired-swords--...patron.sla--94b178d021d9).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the charge test is an ordinary (non-Psychology) Leadership
+#   test in the recorded contract.  The removal probe reports a skill_ids injection inert by design.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,82 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Fanatic Online 94, Emissary of Chaos, Patron Slaanesh): "All enemies must pass
+# Leadership to charge the Emissary. An enemy engaging him in close combat suffers -1 to hit".  The
+# shared mechanic is injected through skill_ids on a hand-built warrior (WS3 S3 T3 W2 I5 A1 Ld7, mace)
+# against a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace).  WS3 against WS3 hits on 4+, so -1 to
+# hit makes the target 5+; 5+4 fails Ld7 and 3+3 passes; a failed charge ends in disengaged.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: mechanic/mechanic.emissary-slaanesh
+  id: an-enemy-failing-the-leadership-test-cannot-charge-the-bearer
+  fighters:
+    first:
+      &slaanesh-mechanic-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.emissary-slaanesh]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &slaanesh-mechanic-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.slaanesh-charge.0, value: 5}
+    - {key: round.0.second.slaanesh-charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.failed_charges: ['second'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# A passed test (6 against Ld7): the charger strikes first at 5+; the bearer's reply keeps the 4+.
+- audit_id: mechanic/mechanic.emissary-slaanesh
+  id: a-passed-test-lets-the-charge-land-at-minus-one-to-hit
+  fighters:
+    first: *slaanesh-mechanic-bearer
+    second: *slaanesh-mechanic-opponent
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.slaanesh-charge.0, value: 3}
+    - {key: round.0.second.slaanesh-charge.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, attacks.1.hit_target: 4, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Already engaged, no charge: the -1 still applies and a 4 that beats the ordinary 4+ misses the 5+.
+- audit_id: mechanic/mechanic.emissary-slaanesh
+  id: an-engaged-enemy-suffers-minus-one-to-hit-without-a-charge
+  fighters:
+    first: *slaanesh-mechanic-bearer
+    second: *slaanesh-mechanic-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the mechanic the charger tests nothing and the same 4 hits the ordinary 4+ (the wound die
+# then fails on a 1).
+- audit_id: mechanic/mechanic.emissary-slaanesh
+  id: the-same-warrior-without-the-mechanic-is-charged-untested-at-the-ordinary-target
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *slaanesh-mechanic-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: True, attacks.0.wounded: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

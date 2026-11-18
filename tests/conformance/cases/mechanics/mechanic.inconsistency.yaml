@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.inconsistency
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): on the two
+#   real carriers the Weapon Skill rolled when the blow needs it drives the hit target (the Condemned's
+#   1 makes a 5+; Belandysh's 6 makes a 3+ and his rolled Strength wounds); a Condemned whose variable
+#   characteristics are all fixed rolls nothing; a hand-built warrior carrying only the tag has no
+#   variable profile to roll and keeps his fixed targets.  REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the mechanic is the per-turn operator over a profile's
+#   compiled random rows (profile.random-characteristics); no FighterBuild trait supplies such rows
+#   (contracts.py TRAIT_TYPES has only condemned_fixed_characteristics), so a skill_ids injection on a
+#   hand-built fighter is inert by construction and the activation is evidenced on the real carriers
+#   (the Condemned through the band route, Belandysh through the hireling route).  Both carriers also
+#   author the operator in their own grant files (...condemned--inconsistency--mechanic.inconsi--
+#   7d86af9261c2, ...belandysh...--0d3fde6466b9).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,112 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed sources: Marauders of Chaos, Condemned, Inconsistency ("WS, S, T and A are variable. Whenever
+# one of these characteristics is needed, roll its indicated die once for that turn"; WS D6, S D6, T D6,
+# A D3, I4 fixed) and Border Town Burning, Belandysh, Inconsistency ("variable attributes are determined
+# whenever needed, once every turn"; WS D6, S D6, T D6, I D6, A D3).  The opponent is hand-built (WS3 S3
+# T3 W3 I2 A1 Ld7, mace, no armour) and silenced (attacks 0) so every die is the carrier's own; the
+# duels are uncharged so neither carrier's Fear asks anything.  Dice convention (authored Belandysh
+# files): the strike order needs a random Initiative first (Belandysh only; the Condemned's is fixed),
+# the pool needs the random Attacks (characteristic.A.0, a D3), the blow needs the random Weapon Skill
+# (attack.<n>.attacker.characteristic.WS.0), a hit needs the random Strength (...S.0).  To-hit chart:
+# WS1 against WS3 needs 5+, WS6 against WS3 needs 3+.  Belandysh's fixture (WS3 S3 T3 W2 I5 A1) is the
+# compiled base only; the rolled face is the value used.  His Strongman keeps his two-handed Broadsword
+# of Damnation (+2 Strength) at the ordinary strike order, so the uncharged duel ties on priority and
+# his random Initiative opens the round.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The Condemned's Weapon Skill of 1, rolled when the blow needs it, makes the 4 miss a 5+.
+- audit_id: mechanic/mechanic.inconsistency
+  id: the-condemneds-rolled-weapon-skill-of-one-sets-the-hit-target-to-five
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: condemned
+    second:
+      &inconsistency-mechanic-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.weapon_skill: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Belandysh's Weapon Skill of 6 makes the 3 hit a 3+, and the Strength rolled when the wound needs it
+# (6, +2 for the broadsword) wounds T3 on the 5.
+- audit_id: mechanic/mechanic.inconsistency
+  id: belandyshs-rolled-weapon-skill-of-six-sets-the-hit-target-to-three-and-his-rolled-strength-wounds
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1c
+      profile_id: hireling.dramatis.belandysh-condemned-champion-of-chen
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *inconsistency-mechanic-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.I.0, value: 6}
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.attacker.characteristic.S.0, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit_target: 3, attacks.0.wounded: True, state.first.weapon_skill: 6, state.first.strength: 6, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Nothing variable remains: a Condemned with all four characteristics permanently fixed rolls no
+# characteristic die and hits on the fixed WS3's ordinary 4+.
+- audit_id: mechanic/mechanic.inconsistency
+  id: a-carrier-with-every-characteristic-fixed-rolls-no-characteristic-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: condemned
+      trait_overrides: {condemned_fixed_characteristics: [WS, S, T, A]}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 7}
+    second: *inconsistency-mechanic-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_fighters:
+    first.random_characteristics: []
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: True, attacks.0.wounded: False, state.first.weapon_skill: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The tag alone: a hand-built warrior with the mechanic but no variable profile has nothing to roll and
+# keeps his fixed WS3 target of 4+ (the wound die then fails on a 1).
+- audit_id: mechanic/mechanic.inconsistency
+  id: a-hand-built-warrior-without-a-variable-profile-has-nothing-to-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.inconsistency]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *inconsistency-mechanic-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_fighters:
+    first.random_characteristics: []
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: True, attacks.0.wounded: False, state.first.weapon_skill: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

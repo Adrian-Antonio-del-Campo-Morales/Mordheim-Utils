@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/fen-guard-mim/band--fear-of-fire/mechanic.fears-fire
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   printed Spiteborn charged by a torch-wielding enemy fails his Fear test (9 against his printed
+#   Ld6) and hits only on sixes, passes on 6 and fights normally, charging a torch-wielder he fails
+#   the charge test and is halted, and an enemy without flame prompts no test.  REVIEWED still
+#   requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,5 +17,116 @@
 #
 # Clause: fears-fire (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: the printed Fear of Fire ("Active fires, torch wielding enemies or any flame on the
+#   battlefield cause fear in Fen Guard", Fen Guard p.1) is band-wide (applies_to band: true); its
+#   admitted duel face is the bearer's Fear of a fire-armed enemy, and the excluded `fears-fire`
+#   clause is the battlefield-terrain face (fires and flames on the table), which owes no scenario
+#   here.  Consumer: modular/psychology.py fears_opponent_fire() (condition.open-flame or an
+#   attack.fire weapon on the enemy), read by causes_fear() and needs_test()/test_fear().  The
+#   recipient is the printed Spiteborn, the band's one profile without Fear or Psychology immunity
+#   of its own, so its tape holds nothing but the test under study.  Semantic wrinkle (2026-11-18):
+#   the engine treats this Fear as outside ordinary Psychology (a psychology-immune Branchwych or
+#   Treekin would still test), which the band-wide printing over a largely immune band supports
+#   but which is not asserted here; the Dryads and Treekin themselves cause Fear, so their torch
+#   charger would test too, and they are left out to keep the tape single-purpose.  No refusal is
+#   authored: the grant is band-wide and reaches every profile.  REVIEWED still requires manual
+#   semantic review.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Family model (fears-fire): the bearer is the printed Spiteborn (fixture WS3 S3 T3 W2 I5 A1; the
+# printed Ld6 stays) with a sword from the band's Dryad equipment list.  The enemy is the
+# hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) declaring the one fact the rule reads: a lit
+# item (trait_overrides lit_item, the compiler's condition.open-flame - the "torch wielding
+# enemy").  A 2D6 Fear test of 5+4 = 9 fails Ld6 and 3+3 = 6 passes it; the failed charged test
+# raises the bearer's hit target to 6, so his declared 4 misses where it hit before.  The enemy is
+# silenced (attacks 0) where the bearer's hit target is the observable, so none of the band's
+# Bark Skin, Hard to Kill or Hard to Rattle defender effects is reached.  A failed charge test
+# cancels the charge and the duel ends disengaged.
+
+# A torch-wielding enemy charges the Spiteborn; his 9 fails Ld6 and his 4 now needs a 6.
+- audit_id: rule/mordheim/fen-guard-mim/band--fear-of-fire/mechanic.fears-fire
+  id: a-spiteborn-charged-by-a-torch-wielder-that-fails-his-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 6 passes Ld6: the Spiteborn keeps his ordinary 4+ and his 4 hits and wounds.
+- audit_id: rule/mordheim/fen-guard-mim/band--fear-of-fire/mechanic.fears-fire
+  id: a-spiteborn-charged-by-a-torch-wielder-that-passes-his-fear-test-fights-normally
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Spiteborn charging a torch-wielder must pass first: 9 fails, the charge is cancelled and no
+# blow is struck.
+- audit_id: rule/mordheim/fen-guard-mim/band--fear-of-fire/mechanic.fears-fire
+  id: a-spiteborn-charging-a-torch-wielder-that-fails-his-fear-test-is-halted
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# No flame, no Fear: the same charge from a plain mace enemy prompts no Fear die.
+- audit_id: rule/mordheim/fen-guard-mim/band--fear-of-fire/mechanic.fears-fire
+  id: an-enemy-without-flame-does-not-frighten-the-spiteborn
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

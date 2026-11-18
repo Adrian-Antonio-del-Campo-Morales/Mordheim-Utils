@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   inherited first-round re-roll of the band's Master Craftsman against an Orc and against a Goblin, the same
+#   miss standing against an opponent outside the hated kind, and the second round offering no re-roll.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until the suite
+#   runs.
+# AUTHORED: the two hated-kind re-rolls, the unhated control and the second-round boundary are declared
+#   below; REVIEWED still requires manual semantic review.
+# Discrimination check (2026-11-18): no profile of dwarf-guildsmen-kaz carries a hatred rule of its own and
+#   no other record of the band binds mechanic.hatred-orcs-goblins (grep of the band's special-rules.yaml
+#   and profiles.yaml), so the Town Crier 6 inheritance record is the single source of the band's Hatred
+#   and no Discrimination note is required.  The sibling hard-to-kill identity of the same record keeps
+#   its compile-level tapes (the inherited tag is listed there); this undivided identity evidences the
+#   duel effect.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,105 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Family model (Hatred of Orcs and Goblins, band grant).  The record band--town-crier-6-inheritance
+# (Karak Azgal p.26: "All of the special rules ... from Town Crier 6 (or Best of Town Crier) apply
+# apart from Incomparable Miners") is a `grant: band` rule whose hatred effect binds
+# mechanic.hatred-orcs-goblins, the Town Crier 6 Dwarf rule "Hate Orcs and Goblins: all Dwarfs are
+# subject to Hatred of Orcs and Goblins" - the Rulebook's Hatred re-rolls the bearer's missed hits in
+# the first round of a combat only.  The consumer reads the opponent's species fact (species.orc or
+# species.goblin) or a greenskin identity.  A band grant selects nothing, so there is no refusal to
+# evidence; the control is the same bearer against an opponent that declares no hated kind.
+# Fixture facts: the bearer is the band's printed Master Craftsman with the corpus characteristics (WS3 S3 T3 W2
+# I5 A1; the printed Leadership stays) and the mace of the band's own list; it charges.  The opponent
+# is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and its own hits are natural 1s.  A natural 2 misses WS3
+# on 4+; the re-roll of 4 hits and S3 wounds T3 on 4+ (no critical die below a 6).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Against an Orc the first-round miss is re-rolled, hits and wounds.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+  id: a-first-round-miss-is-rerolled-against-an-orc
+  fighters:
+    first: &dwarf-bearer
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: orc}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &dwarf-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Against a Goblin the same re-roll is offered.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+  id: a-first-round-miss-is-rerolled-against-a-goblin
+  fighters:
+    first:
+      <<: *dwarf-bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *dwarf-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opponent that declares no hated kind (a human): the strict tape holds no re-roll key and the 2 stands.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+  id: the-same-miss-stands-against-an-opponent-outside-the-hated-kind
+  fighters:
+    first:
+      <<: *dwarf-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *dwarf-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred lasts the first round only: the same Orc's second round offers no re-roll and the 2 stands.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+  id: the-second-round-miss-against-the-same-orc-is-not-rerolled
+  fighters:
+    first:
+      <<: *dwarf-bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: orc}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *dwarf-charges
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.wounds: 2}
+    1: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

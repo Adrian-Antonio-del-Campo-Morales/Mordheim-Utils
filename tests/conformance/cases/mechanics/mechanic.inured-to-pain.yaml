@@ -1,6 +1,16 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.inured-to-pain
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the Injury
+#   roll of 1 reduced to zero ignores the damage entirely (the Wound is kept); 2 and 3 become knocked down;
+#   5 becomes stunned; 6 is still out of action; the control without the mechanic loses the Wound and is
+#   knocked down on the same 1.  REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the -1 applies to every Injury roll against the bearer, so the
+#   whole table shifts by one (6 stays out of action: 5 reaches the ordinary 5-6 band).  The attacker carries
+#   an axe rather than the conventional mace because the mace's Concussion rewrites the 2-4 band and would hide
+#   the shift; the bearer wears no armour, so the axe's save modifier requests no die.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +19,132 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Inured to Pain): "All Injury rolls against the Gaoler have -1. An Injury
+# result of zero ignores the damage entirely."  Family model: the bearer is a hand-built defender carrying
+# only this mechanic through skill_ids (WS3 S3 T3 W2 I5 A1, mace), silenced (attacks: 0) and brought to
+# its last Wound (initial_state wounds: 1) so the attacker's single wounding blow reaches the Injury
+# table; the attacker is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, axe) and charges.  Arithmetic: 4 hits
+# (WS3 vs WS3), 4 wounds (S3 vs T3; a 6 would add a critical die), no save is owned.  Ordinary table:
+# 1-2 knocked down, 3-4 stunned, 5-6 out of action; with -1 the roll of 1 totals zero.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A roll of 1 totals zero: the damage is ignored entirely, the Wound is kept and the bearer stays standing.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: an-injury-roll-reduced-to-zero-ignores-the-damage-entirely
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.inured-to-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &attacker
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 2 totals 1: the Wound is lost and the bearer is knocked down.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: an-injury-roll-of-two-still-knocks-the-bearer-down
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 3 totals 2: knocked down where the ordinary table stuns.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: an-injury-roll-of-three-knocks-down-instead-of-stunning
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 5 totals 4: stunned where the ordinary table takes the bearer out of action.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: an-injury-roll-of-five-stuns-instead-of-taking-out
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 6 totals 5: still out of action.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: an-injury-roll-of-six-still-takes-the-bearer-out-of-action
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: first_out}
+
+# The control without the mechanic: the same 1 keeps the damage and knocks the defender down.
+- audit_id: mechanic/mechanic.inured-to-pain
+  id: without-the-mechanic-the-same-one-keeps-the-damage-and-knocks-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

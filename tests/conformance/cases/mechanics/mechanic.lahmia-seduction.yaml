@@ -1,6 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.lahmia-seduction
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 8 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the male enemy
+#   that fails its own test is controlled and barred; the passed test leaves it unbarred; a female enemy
+#   is outside the printed recipient; a male Undead and a male Psychology-immune enemy are exempt; the
+#   power acts only during the Vampire's own turn; the control persists into the victim's own turn where
+#   the printed Recovery-phase regain test is offered and fails, or passes and frees it.  REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the printed Stupidity exemption is not declared because a
+#   Stupid victim's own test request on the Vampire's turn is not fixed by the README grammar; the printed
+#   "any attack by the Lahmia warband that hits the controlled warrior breaks the control" is a group face
+#   whose duel half (the bearer's own hit) is left to the band file; "only one warrior may be controlled
+#   at a time" is group scope.
+# AUTHORED: 8 scenarios cover the failed and passed own-value test of a male enemy, the female/Undead/Psychology-immune boundaries, the Vampire-turn-only gate and the Recovery-phase regain test.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +21,190 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (Chaos in the Streets p.183, Lahmia Special Skills / Seduction, bound by
+# band--lahmia-power-seduction): "During each Vampire turn, one male enemy in base contact must test
+# against its own Leadership.  If it fails, the Lahmia player immediately controls that warrior.  Any
+# attack by the Lahmia warband that hits the controlled warrior breaks the control.  Test in each
+# Recovery phase to see whether the warrior regains control.  Only one warrior may be controlled at a
+# time.  Models immune to Psychology, Undead, Daemons and models subject to Stupidity are unaffected."
+# Operator model (the authored band file ...d37cb13b5269 is the template): on the Vampire's own turn the
+# use is a decision at round.<r>.<target>.lahmia-seduction, the male target's own dice are .0/.1, a
+# failure sets state.<target>.charm_attack_blocked and a lasting control; on the victim's own turn the
+# regain test is a decision at round.<r>.<target>.lahmia-seduction.regain-control with dice .0/.1.  The
+# male/female fact is a supplied build fact.  In the two-round scenarios the Vampire is silenced with
+# initial_state attacks 0 so that no hit of hers can break the control before the regain test.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The male recipient fails its own test (6+6 against Ld7) on the Vampire's turn and is barred.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: a-male-target-that-fails-its-own-test-is-controlled
+  fighters:
+    first:
+      &seducer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmia-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &male
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
+  rolls:
+    - {key: round.0.second.lahmia-seduction.0, value: 6}
+    - {key: round.0.second.lahmia-seduction.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed test (1+1): the male recipient is not controlled and both pools ask for their To Hit die.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: a-male-target-that-passes-its-own-test-is-unbarred
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      <<: *male
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
+  rolls:
+    - {key: round.0.second.lahmia-seduction.0, value: 1}
+    - {key: round.0.second.lahmia-seduction.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipient is "one male enemy": a female enemy is outside the clause, so no test exists.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: a-female-target-is-outside-the-printed-recipient
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: female}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a male Undead enemy is unaffected and asks for no die.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: a-male-undead-target-is-exempt
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male, creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a male enemy immune to Psychology is unaffected.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: a-male-psychology-immune-target-is-exempt
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male}
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "During each Vampire turn": on the enemy's own turn the power is not offered, so no decision and no
+# test die exist and both pools resolve normally.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: on-the-enemys-own-turn-the-seduction-is-not-offered
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      <<: *male
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control lasts: in the victim's own turn the printed Recovery-phase regain test is taken and fails
+# (6+6), so the victim stays barred.  The Vampire is silenced so no hit of hers can break the control.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: the-controlled-warrior-fails-the-regain-test-and-stays-barred
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      <<: *male
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
+    - {key: round.1.second.lahmia-seduction.regain-control, value: true}
+  rolls:
+    - {key: round.0.second.lahmia-seduction.0, value: 6}
+    - {key: round.0.second.lahmia-seduction.1, value: 6}
+    - {key: round.1.second.lahmia-seduction.regain-control.0, value: 6}
+    - {key: round.1.second.lahmia-seduction.regain-control.1, value: 6}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true}
+    1: {state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The regain test passed (1+1): the warrior regains control in its own turn and attacks again.
+- audit_id: mechanic/mechanic.lahmia-seduction
+  id: the-controlled-warrior-passes-the-regain-test-and-is-freed
+  fighters:
+    first:
+      <<: *seducer
+    second:
+      <<: *male
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.second.lahmia-seduction, value: true}
+    - {key: round.1.second.lahmia-seduction.regain-control, value: true}
+  rolls:
+    - {key: round.0.second.lahmia-seduction.0, value: 6}
+    - {key: round.0.second.lahmia-seduction.1, value: 6}
+    - {key: round.1.second.lahmia-seduction.regain-control.0, value: 1}
+    - {key: round.1.second.lahmia-seduction.regain-control.1, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true}
+    1: {state.second.charm_attack_blocked: false, attacks.0.hit: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

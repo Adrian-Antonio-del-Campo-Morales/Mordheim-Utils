@@ -1,6 +1,19 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.ashamed-and-afraid
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the bearer's
+#   charge against a Sisters of Sigmar warrior needs a Leadership test (passed: the charge goes in; failed: the
+#   charge is cancelled and the duel disengages); the Witch Hunters Warrior-Priest is the other printed
+#   Sigmarite opponent; no test against an opponent outside those two; no test when the bearer is the one
+#   charged; the control without the mechanic charges untested.  REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkle (2026-11-18, recorded): the Sigmarite opponent is a supplied identity produced by the
+#   compiler for two concrete builds only - any member of a Sisters of Sigmar warband, or the Warrior-Priest
+#   of a Witch Hunters warband (`identity.sigmarite-opponent`); no trait override produces it, so the
+#   opponents are compiled band profiles with fixture characteristics.  The test is the charger's own
+#   2D6 Leadership test (`round.0.<side>.ashamed-and-afraid.{0,1}`), taken only when she charges.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +22,132 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed rule (grade-2a.yaml, The Fallen Sister / Ashamed and Afraid: "Uses source psychology rule"; the
+# source makes her test her Leadership before charging a Sister of Sigmar or a Warrior-Priest of Sigmar).
+# Family model (first-batch psychology files): the bearer is a hand-built fighter carrying only this
+# mechanic through skill_ids (WS3 S3 T3 W2 I5 A1 Ld7, mace) and charges; the Sigmarite opponent is a
+# compiled band profile with fixture characteristics (WS3 S3 T3 W3 I2 A1, printed Ld, mace); the plain
+# opponent is hand-built (Ld7, mace).  Dice: a 2D6 test of 3+3 passes Ld7 and 5+4 fails it; every strike
+# is a declared natural 1; a failed charge test ends the duel `disengaged` with no blow struck.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The charge against a Sister of Sigmar needs the test: 3+3 passes Ld7 and the charge goes in.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: the-bearer-passing-the-test-charges-the-sister-of-sigmar
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ashamed-and-afraid]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &sister
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: sigmarite-matriarch
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 3}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 5+4 fails Ld7: the charge is cancelled, no blow is struck and the duel disengages.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: the-bearer-failing-the-test-does-not-charge-the-sister-of-sigmar
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *sister
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 5}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The Warrior-Priest of a Witch Hunters warband is the other printed Sigmarite opponent.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: the-charge-against-a-witch-hunters-warrior-priest-needs-the-same-test
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: warrior-priest
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.ashamed-and-afraid.0, value: 3}
+    - {key: round.0.first.ashamed-and-afraid.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opponent outside the two printed Sigmarites prompts no test: the strict tape holds no Leadership dice.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: no-test-is-taken-against-an-opponent-outside-the-printed-sigmarites
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The test guards her own charge: charged by the Sister of Sigmar she takes no test and fights back.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: no-test-is-taken-when-the-sister-of-sigmar-charges-the-bearer
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *sister
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control without the mechanic charges the Sister of Sigmar untested.
+- audit_id: mechanic/mechanic.ashamed-and-afraid
+  id: without-the-mechanic-the-charge-against-the-sister-of-sigmar-needs-no-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *sister
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, psy-tests-and-enemy-effects
+#   batch, 2026-11-18): Aksho, who causes Fear, is still tested when a fear-causer charges him
+#   (11 fails his printed Ld10 and clamps him to sixes; 10 passes), charging a fear-causer he fails
+#   the charge test and is halted, a fear-causing hireling without Craven (the Ogre Bodyguard) is
+#   not tested in the same charge, an enemy that causes no Fear prompts nothing from him, and the
+#   rule is refused on a hireling outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +18,151 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Coward King): "Not immune to psychology/fear despite causing fear."
+# The binding is the shared mechanic.craven: a fear-causer ordinarily never tests Fear, Craven
+# keeps the bearer subject to it.  Consumer: modular/psychology.py needs_test() (the
+# `not causes_fear(self) or mechanic.craven` branch).  Aksho's own Fear is his sibling rule
+# (mechanic.causes-fear, its own authored file).
+# Hireling family model (P0, 2026-11-17).  Aksho is compiled through the hireling route
+# (hirelings.dramatis-personae.2a / hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; his printed Ld10 stays); his kit is his innate
+# natural attacks and the rule is a profile grant, so nothing is selected.  Aksho is silenced
+# (attacks 0) in every scenario, so his Daemonic Flesh magical label is never reached, and the
+# enemy's strike is a declared natural 1, so his unmodifiable 5+ save is never rolled.  The enemy
+# is hand-built (mace, WS3 S3 T3 W3 I2 A1 Ld7) and declares the one fact the rule reads
+# (causes_fear: true); being a fear-causer itself it never tests against Aksho, so the tape holds
+# only Aksho's test.  Dice: a 2D6 Fear test of 6+5 = 11 fails his Ld10 and 5+5 = 10 passes it; a
+# failed charge test cancels the charge.  The non-Craven control is the Ogre Bodyguard
+# (hirelings.hired-sword.core, a fear-causing hireling with no Craven); the refusal selects the
+# printed rule on the grade-1b Bard (the compiler's fragment, another package).
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A fear-causer charges Aksho; a fear-causer himself, Craven keeps him subject to the test, 11
+# fails Ld10 and he is clamped to sixes for the round.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: aksho-charged-by-a-fear-causer-still-tests-and-a-failure-clamps-him-to-sixes
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 10 passes his Ld10: the test is still asked, and he is not clamped.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: aksho-charged-by-a-fear-causer-that-passes-his-fear-test-is-not-clamped
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Aksho charging a fear-causer must pass first: 11 fails, the charge is cancelled and no blow is
+# struck.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: aksho-charging-a-fear-causer-that-fails-his-fear-test-is-halted
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 5}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The ordinary exemption Craven removes: a fear-causing hireling without Craven (the Ogre
+# Bodyguard) charged by the same fear-causer is asked no Fear die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: a-fear-causing-hireling-without-craven-is-not-tested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.ogre-bodyguard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Craven is not Fear of its own: an enemy that causes no Fear prompts nothing from Aksho, while
+# that enemy must itself pass the charge test against Aksho's Fear (1+1 passes Ld7).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: an-enemy-that-causes-no-fear-prompts-no-test-from-aksho
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.second.fear_hit_sixes: False, state.second_charged: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Aksho's profile; selecting it on a hireling of another package is
+# refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king/mechanic.craven
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

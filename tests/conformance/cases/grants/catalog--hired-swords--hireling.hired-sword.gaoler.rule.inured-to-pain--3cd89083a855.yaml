@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the printed Gaoler's Injury roll of 1 reduced to zero ignores the damage (the Wound is kept);
+#   3 knocks down instead of stunning; 5 stuns instead of taking out; 6 still takes out; the Bard control is
+#   knocked down and loses the Wound on the same 1; the refusal.  REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkle (2026-11-18, recorded): the attacker carries an axe rather than the conventional mace
+#   because the mace's Concussion rewrites the 2-4 band and would hide the -1 shift; the Gaoler's kit owns no
+#   armour, so the axe's save modifier requests no die.  The Gaoler is brought to his last Wound through
+#   initial_state so one wounding blow reaches the Injury table under the fixture W2.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,147 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Gaoler compiled through
+# the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.gaoler); its printed rule is granted
+# by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld7 stays); the omitted main
+# weapon is the kit's heavy chain, which never reaches a die because the Gaoler is silenced (attacks: 0).
+# Printed text: "All Injury rolls against the Gaoler have -1. An Injury result of zero ignores the damage
+# entirely."  The attacker is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, axe) and charges: 4 hits (WS3 vs WS3),
+# 4 wounds (S3 vs T3; a 6 would add a critical die), no save is owned; the Injury die is
+# `round.0.second.attack.0.injury.0`.  Ordinary table: 1-2 knocked down, 3-4 stunned, 5-6 out of action.
+# The control is the grade-1b Bard under the same fixture and tape; the refusal selects the printed rule.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# A roll of 1 totals zero: the damage is ignored entirely, the Wound is kept and the Gaoler stays standing.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: an-injury-roll-against-the-gaoler-reduced-to-zero-ignores-the-damage-entirely
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.gaoler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &attacker
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 3 totals 2: knocked down where the ordinary table stuns.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: an-injury-roll-of-three-knocks-the-gaoler-down-instead-of-stunning
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 5 totals 4: stunned where the ordinary table takes the Gaoler out of action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: an-injury-roll-of-five-stuns-the-gaoler-instead-of-taking-him-out
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A roll of 6 totals 5: still out of action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: an-injury-roll-of-six-still-takes-the-gaoler-out-of-action
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 0, state.first.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: first_out}
+
+# The control (Bard): the same 1 keeps the damage and knocks the hireling down.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: a-hireling-without-the-rule-loses-the-wound-and-is-knocked-down-on-the-same-one
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *attacker
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 0, state.first.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.inured-to-pain/mechanic.inured-to-pain
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.gaoler.rule.inured-to-pain]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

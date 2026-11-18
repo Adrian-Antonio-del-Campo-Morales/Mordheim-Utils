@@ -5,7 +5,7 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 286 of 2,306 admitted identities have no scenarios. The division
+- **Authoring backlog.** 210 of 2,306 admitted identities have no scenarios. The division
   into batches, the order and the per-batch procedure are in *Rules-conformance authoring
   plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
   done when the gate passes.
@@ -132,6 +132,19 @@ what is pending and when it is done.
   compiler projects the bite); the Sigmund Spindle Frenzy compulsory charge is not modelled when a
   scenario declares `charging: []`; the Chaos Fury/Aksho "blessed" negation has no duel producer.
   Done when each is confirmed as the intended encoding or repaired.
+- **Psychology and hatred wrinkles (2026-11-18).** Recorded in the files, none blocking: the
+  Dark Jester's `rule.confound-and-confuse` and `rule.trip` both bind one mechanic and his
+  `babbling-banter` tag is read by no engine code (the chooser carries the effect) — three
+  non-discriminating identities with dated notes; `mechanic.vengeful-hatred` is compiled from the
+  supplied target facts, so the probe cannot reach it; the Bitter Moors Righteous Charge prints
+  only mounted clauses (both `deferred.mounts`) and stays PARTIAL; fire-fear (`mechanic.fears-fire`)
+  is resolved outside ordinary Psychology, so a psychology-immune bearer would still test; the
+  Lahmia Seduction's printed Stupidity exemption and the Hypnotic Musk's mount/goading exceptions
+  are not representable; the Swashbuckler's Charismatic needs a printed sex the profile does not
+  carry (supplied as male from the text); the Emissary of Khorne's Frenzy and +1 Attack are one
+  effect-set (the +1 cannot be isolated) and the Tzeentch patron compiles identity tags only;
+  Hypnotic Gaze's KB eligibility still lists the Lahmia vampire (open defect above). Done when each
+  is confirmed as the intended encoding or repaired.
 - **Scenarios on out-of-scope identities.** 10 identities outside the admitted
   scope still carry scenarios because no admitted identity holds their
   behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
@@ -240,23 +253,21 @@ identities whose binding already has authored scenarios elsewhere.
 | Batch | Theme | Ids | Model | Effort | Routes |
 | --- | --- | ---: | ---: | ---: | --- |
 | B00 | triage-blockers | 1 | 1 | 2 | special_rule_ids 1 |
-| B01 | psy-tests-and-enemy-effects | 24 | 14 | 36 | skill_ids 14, real profile build 10 |
-| B02 | hatred-frenzy-and-charge-rages-1 | 25 | 3 | 49 | skill_ids 14, real profile build 7, special_rule_ids 4 |
-| B03 | hatred-frenzy-and-charge-rages-2 | 27 | 7 | 48 | skill_ids 12, real profile build 12, special_rule_ids 2, condition_ids 1 |
-| B04 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
-| B05 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
-| B06 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
-| B07 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
-| B08 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
-| B09 | operators-hirelings | 40 | 28 | 58.5 | real profile build 24, special_rule_ids 10, skill_ids 5, construction 1 |
-| B10 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
-| | **Total** | **286** | 118 | 509.5 | |
+| B01 | survival-saves-and-rerolls | 32 | 11 | 62 | real profile build 21, skill_ids 6, equipment slot 3, special_rule_ids 1, condition_ids 1 |
+| B02 | supplied-conditions-1 | 23 | 3 | 41 | condition_ids 21, skill_ids 1, real profile build 1 |
+| B03 | supplied-conditions-2 | 27 | 19 | 39 | condition_ids 27 |
+| B04 | equipment-items-1 | 23 | 4 | 56 | equipment slot 21, skill_ids 1, real profile build 1 |
+| B05 | equipment-items-2 | 21 | 3 | 54 | equipment slot 21 |
+| B06 | operators-hirelings | 40 | 28 | 58.5 | real profile build 24, special_rule_ids 10, skill_ids 5, construction 1 |
+| B07 | operators-band-rules | 43 | 25 | 64 | skill_ids 29, real profile build 7, special_rule_ids 5, condition_ids 1, equipment slot 1 |
+| | **Total** | **210** | 94 | 376.5 | |
 
 **Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
 Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
 Large Target pass landed the same day, followed by the construction-equipment and
 construction-skills-and-profile batches, then both survival-injury-and-immunity batches, which
-closed the model-heavy themes). Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
+closed the model-heavy themes; the psychology and hatred/frenzy themes followed). The remaining
+themes are the new-contract ones. Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
 and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
 equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
 construction and may run in parallel; the coordinator owns the shared documents (this file,

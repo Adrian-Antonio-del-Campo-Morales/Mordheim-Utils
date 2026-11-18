@@ -1,6 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.hypnotic-musk
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): an animal
+#   charger fails the printed Leadership gate and its charge is cancelled; the same animal passes the gate
+#   and the charge resolves; a non-animal charger is ungated; the bearer charging the animal raises no
+#   gate, because the print gates only charges against him.  REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkles (recorded, not asserted): the printed mount exemption ("mounts are immune") needs the
+#   deferred mount schema; the printed Goading exception needs the goading-charge condition supplied by
+#   the Beastmaster's own rule, outside this operator's identity; the band file ...16b3a37792ce records
+#   the open charge-gate vs attack-variant reading, and these scenarios take the charge-gate reading of
+#   the recorded contract.
+# AUTHORED: 4 scenarios cover the failed and passed animal charge gate, the ungated non-animal charger and the bearer's own charge.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,6 +20,90 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+#
+# --- Authored scenarios ---
+# Printed source (mordheimer.net, Skaven of Clan Moulder / Special Skills / Hypnotic Musk, bound by
+# band--clan-moulder-special-skills-hypnotic-musk): any animal or beast of an opposing warband that wants
+# to charge him must pass a Leadership test to do so, unless the charge results from Goading; mounts are
+# immune.  Operator model (the authored band file ...16b3a37792ce is the template): the animal charger
+# tests at round.0.<charger>.hypnotic-musk-charge (.0/.1) against its own Leadership; a failure cancels
+# the charge so the duel is no longer engaged (termination_reason disengaged); a pass lets the charge
+# resolve as ordinary close combat.  The animal fact is the supplied build fact normal_animal.  Both
+# builds are weaponless fixtures and compile to fists; every strike is a natural 1 so no wound die exists.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# The gate failed: the animal (Ld5) rolls 4+3 = 7 and may not charge; the round holds no combat dice.
+- audit_id: mechanic/mechanic.hypnotic-musk
+  id: the-animal-charger-fails-the-musk-gate-and-its-charge-is-cancelled
+  fighters:
+    first:
+      &bearer
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      &animal
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false, state.second_charged: false, state.failed_charges: ['second']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The gate passed: 1+1 = 2 is under Ld5, so the same animal charges and the combat resolves normally.
+- audit_id: mechanic/mechanic.hypnotic-musk
+  id: the-animal-charger-passes-the-musk-gate-and-charges
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *animal
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 1}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.second_charged: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A non-animal charger of the same build is outside the printed clause: no gate die, ordinary combat.
+- audit_id: mechanic/mechanic.hypnotic-musk
+  id: the-non-animal-charger-is-ungated
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The print gates charges against the bearer only: when the bearer charges the animal no test exists.
+- audit_id: mechanic/mechanic.hypnotic-musk
+  id: the-bearer-charging-the-animal-raises-no-gate
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *animal
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.first_charged: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
