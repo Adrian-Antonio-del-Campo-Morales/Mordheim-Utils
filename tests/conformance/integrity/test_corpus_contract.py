@@ -360,12 +360,13 @@ def _run(validator, directory, *, real=False, require_complete=False):
     return code, buffer.getvalue()
 
 
-def test_the_real_corpus_reports_clean_integrity_but_declared_gaps(validator):
-    """Sorted whole-tree run: nothing malformed, coverage gaps stay report-only."""
+def test_the_real_corpus_reports_clean_integrity_and_report_only_gaps(validator):
+    """Sorted whole-tree run: nothing malformed, any coverage gaps stay report-only."""
     code, text = _run(validator, CASES_DIRECTORY, real=True)
     assert code == 0
     assert "unknown clause references: 0" in text
-    assert "--require-complete" in text or "reported gaps are information" in text
+    complete = "admitted identities without scenarios: 0" in text
+    assert complete or "reported gaps are information" in text
 
 
 def test_a_minimal_synthetic_corpus_is_accepted(validator, tmp_path):

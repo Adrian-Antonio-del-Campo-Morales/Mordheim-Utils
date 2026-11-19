@@ -1,14 +1,17 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
-# audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/skill.hatred
-# authoring_status: PARTIAL
-# authoring_progress: PARTIAL: 4 authored scenarios show the first-round re-roll, its first-round limit, the control and
-#   the refusal.  The print hates enemy spellcasters only, but the binding is the general skill.hatred
-#   while the band Witch Hunters bind mechanic.burn-the-witch, which reads identity.spellcaster
-#   (declarable with trait_overrides: {spellcaster: true}).  With the general binding the engine re-rolls
-#   against any enemy, so the printed boundary (no re-roll against a non-spellcaster) is left unauthored
-#   until the binding is corrected; recorded in TODO.md (2026-11-17).
-# PARTIAL: a printed boundary stays unauthored (see authoring_progress);
-#   REVIEWED still requires manual semantic review.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios show the first-round re-roll against a declared spellcaster,
+#   its first-round limit, the printed boundary (the same miss stands against a declared non-spellcaster),
+#   the controls and the refusal.
+# Status corrected 2026-11-18: ruling B3 rebinds the hireling's Burn the Witch from the general
+#   skill.hatred (hatred of every enemy) to mechanic.burn-the-witch, as on the band Witch Hunters records,
+#   which reads identity.spellcaster (declared with trait_overrides: {spellcaster: true}).  The effect id
+#   moved with the binding, so this file moved from the skill.hatred identity
+#   (...--32444028b38e.yaml) and every audit_id follows.  The two re-roll scenarios now declare their
+#   opponent a spellcaster (input only; expectations unchanged), and the printed non-spellcaster boundary
+#   is authored.  Was PARTIAL (boundary withheld pending the rebind, TODO.md 2026-11-17).
+# AUTHORED: REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -25,7 +28,7 @@
 # characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed,
 # while its printed Leadership stays in place; an omitted main weapon is the printed kit's own.
 # The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads
-# (causes_fear, or the hated kind).  The control is a plain hireling without any psychology rule - the
+# (causes_fear, or the hated kind; here trait_overrides: {spellcaster: true|false}).  The control is a plain hireling without any psychology rule - the
 # grade-1b Bard - compiled through the same route with the same fixture, so the request that the rule
 # removes (or the reroll it grants) is shown present without it.  The refusal selects the printed rule
 # on that control through special_rule_ids: a profile-granted rule is not available elsewhere.
@@ -33,8 +36,8 @@
 # or injury die is requested; a 2D6 Fear test of 5+4 fails Ld7 and 3+3 passes it.
 
 # The recipient charges; a natural 2 misses WS3, the printed Hatred re-roll is requested, 4 hits and
-# S3 wounds T3 on 4+.  The opponent is not declared a spellcaster: the current binding hates everyone (see header).
-- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/skill.hatred
+# S3 wounds T3 on 4+.  The opponent is declared a spellcaster, the enemy the print hates (ruling B3).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
   id: a-first-round-miss-by-the-witch-hunter-is-rerolled-against-an-enemy-it-hates
   fighters:
     first:
@@ -46,6 +49,7 @@
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
+      trait_overrides: {spellcaster: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
@@ -59,13 +63,15 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # Hatred re-rolls only in the first round of a combat: the second-round miss is not offered a re-roll.
-- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/skill.hatred
+# The opponent is declared a spellcaster, so the first-round re-roll is owed (ruling B3).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
   id: the-reroll-belongs-to-the-first-round-so-a-later-miss-stands
   fighters:
     first:
       <<: *recipient
     second:
       main_weapon_id: weapon.mace
+      trait_overrides: {spellcaster: true}
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 2
@@ -81,8 +87,53 @@
     1: {state.second.wounds: 2}
   expect_final: {rounds_executed: 2, termination_reason: horizon}
 
+# The printed boundary: the print hates enemy spellcasters only, so the same first-round miss against an
+# opponent declared not to be a spellcaster is not offered a re-roll; the strict tape proves it by the
+# absence of the re-roll die, and the miss leaves the opponent unwounded.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
+  id: the-same-first-round-miss-stands-against-a-non-spellcaster
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {spellcaster: false}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges a declared spellcaster: without the rule the miss is not offered a re-roll,
+# so the re-roll of the first scenario is the Witch Hunter's printed grant, not the opponent's identity.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
+  id: a-hireling-without-the-rule-receives-no-reroll-against-a-spellcaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {spellcaster: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
 # The control (Bard) charges the same opponent: the miss is not offered a re-roll.
-- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/skill.hatred
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
   id: a-hireling-without-the-hatred-receives-no-reroll
   fighters:
     first:
@@ -104,7 +155,7 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
-- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/skill.hatred
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.witch-hunter.rule.burn-the-witch/mechanic.burn-the-witch
   id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
   fighters:
     first:

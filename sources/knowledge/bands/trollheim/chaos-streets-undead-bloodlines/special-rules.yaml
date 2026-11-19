@@ -1220,15 +1220,19 @@ rules:
     - vampire-bat
 - id: vampire-bat--no-pain
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
+    # The profile's own Summoned Creature ("taken Out of Action without rolling on the Injury chart",
+    # bound as trait.injury-profile 4) removes the Injury roll the Stunned-to-Knocked-Down conversion
+    # acts on, so No Pain can never apply to a Vampire Bat. Covering identity:
+    # rule/trollheim/chaos-streets-undead-bloodlines/vampire-bat--summoned-creature/trait.injury-profile
+    # (the Poltergeist precedent, design-rulings.md; applied 2026-11-19).
     - id: skill.ignore-pain
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: skill.ignore-pain
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: No Pain
   source:
     manual: chaos-in-the-streets
@@ -1538,10 +1542,19 @@ rules:
         kind: mechanic
         id: skill.sword-master
       clauses:
-      - id: match-parry-and-parry-a-six
+      - id: match-parry
         scope: 'YES'
+      # Ruling 2026-11-18: the printed "may therefore parry a roll of 6" is carried by
+      # the Blood Dragon's own mechanic below, not by the shared skill.sword-master.
+      - id: parry-a-six
+        scope: 'NO'
       - id: one-reroll-only
         scope: 'YES'
+    - id: mechanic.blood-dragon-sword-master
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.blood-dragon-sword-master
   name: Sword Master
   effect: >-
     When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a

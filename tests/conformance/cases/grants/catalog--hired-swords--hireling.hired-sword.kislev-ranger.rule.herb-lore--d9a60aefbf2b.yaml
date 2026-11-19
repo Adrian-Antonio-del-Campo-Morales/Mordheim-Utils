@@ -1,13 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/catalog/hired-swords/hireling.hired-sword.kislev-ranger.rule.herb-lore/mechanic.herb-lore-outside-combat
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: 4 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): the
 #   printed Kislev Ranger with Herb Lore selected is a legal build that, engaged at a lost wound, is never
 #   offered the healing request ("She cannot heal while in close combat"); the same profile without the
 #   selection (the selectable control) shows the identical tape; a fixture carrying the unrestricted
 #   mechanic.herb-lore is offered the request in the same engaged phase; the refusal on the Bard.  The
 #   healing face itself is not representable (blocker below).  REVIEWED still requires manual semantic review.
-# PARTIAL: the printed "heal herself ... by one Wound on 4+ in Recovery" has a consumer
+# Disposition (carried as the PARTIAL block until 2026-11-18): the printed "heal herself ... by one Wound on 4+ in Recovery" has a consumer
 #   (modular/rounds.py:431-438: `(has_tag(..., "mechanic.herb-lore") or not state.engaged and has_tag(...,
 #   "mechanic.herb-lore-outside-combat")) and decisions.choose(f"round.{i}.{label}.herb-lore")`), but its
 #   positive branch requires `not state.engaged` at the start of her turn and no executed round of the 1v1
@@ -28,6 +28,19 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
 #
+# Status corrected 2026-11-18: the recorded blocker was wrong and the gap it named is now closed.
+#   An executed round can be unengaged after all: the Danse Macabre control branch
+#   (modular/rounds.py:418-428) cancels a round-0 charge on a failed Leadership test and sets
+#   `engaged=False` immediately before the recovery step at rounds.py:430, so resolve_fear is not the
+#   only in-round producer of a cancelled charge.  With the supplied condition.danse-macabre-controlled
+#   the healing face is reachable and is authored below; the ally-heal, the movement forfeit and the
+#   shooting allowance remain outside the duel.  The discrimination note above is likewise superseded.
+#   The block above is kept for the record.
+# AUTHORED: five scenarios on the printed Kislev Ranger - the engaged Ranger with Herb Lore is
+#   offered no healing, the unselected control shows the identical tape, the unrestricted
+#   mechanic.herb-lore IS offered the request in the same engaged phase, the unengaged Ranger heals
+#   herself by one Wound on a four, and the rule is refused on a hireling outside its printed profile.
+
 # --- Authored scenarios ---
 # Hireling family model (README, Hireling recipients): the recipient is the printed Kislev Ranger compiled
 # through the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.kislev-ranger); Herb Lore is
@@ -124,3 +137,34 @@
     second:
       <<: *opponent
   expect_error: "special rule is not available to hirelings.hired-sword.1b"
+
+# The healing face itself, authored 2026-11-18 on the printed Ranger.  An executed round CAN be
+# unengaged: the Danse Macabre control branch (modular/rounds.py:418-428) cancels a round-0 charge on
+# a failed Leadership test and sets `engaged=False` immediately BEFORE the recovery step at
+# rounds.py:430, so the earlier note that resolve_fear is the only in-round producer of a cancelled
+# charge was wrong.  The printed Ranger with Herb Lore selected charges while supplied as controlled,
+# fails the Leadership test (6+6 against her printed Leadership 7) and is therefore no longer in close
+# combat when her recovery comes round: the healing request IS offered and the declared four restores
+# the lost Wound - "she may heal herself by one Wound on a 4+ in the Recovery phase", the half her
+# carrier's "she cannot heal while in close combat" withholds in the three tapes above.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.kislev-ranger.rule.herb-lore/mechanic.herb-lore-outside-combat
+  id: the-unengaged-kislev-ranger-heals-herself-by-one-wound-on-a-four
+  fighters:
+    first:
+      <<: *recipient
+      condition_ids: [condition.danse-macabre-controlled]
+    second:
+      <<: *opponent
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 6}
+    - {key: round.0.first.danse-macabre.1, value: 6}
+    - {key: round.0.first.herb-lore, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.engaged: false}
+  # The round resolves in full and the harness then ends the duel because it is no longer engaged.
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the held term is settled by the ruling "Natural armour does not
+#   lift the Toughened Leathers restriction" (docs/decisions/design-rulings.md, 2026-11-19): the
+#   leathers' own "cannot be combined ... except a helmet or buckler" governs and the compiler's
+#   cancellation stays; no equipment list of this band offers Toughened Leathers, so a
+#   hide-over-leathers build has no legal recipient here. Every applicable requirement is represented.
 # authoring_progress: the printed save, its combination with worn armour and the duplicate-row
 #   clause all carry authored scenarios derived from the printed rule, its recorded contract and
 #   the band package.  One term of the combines-with-armour clause stays open and is recorded on
@@ -19,7 +24,8 @@
 #   EVIDENCED: 3 scenarios reach the 5+ the printed combination yields - the
 #   shield's +1 and worn light armour each take the hide one step better, and a four is a wound,
 #   so the composite is one step and not a second layer.
-# PARTIAL[combines-with-armour]: [CLOSING-REVIEW [D]] the admitted clause carries one term that is not observable, and it
+# AUTHORED[combines-with-armour]: settled 2026-11-19 by ruling (see the status line above); the former
+#   held-term record follows as provenance: [CLOSING-REVIEW [D]] the admitted clause carries one term that is not observable, and it
 #   is recorded here instead of dropped.  The printed sentence says the hide "can be combined with
 #   other armour as normal", and the register's own note leaves the row at needs_clarification:
 #   compile_fighter cancels a Toughened Leathers contribution whenever natural_armour_stacks is set,

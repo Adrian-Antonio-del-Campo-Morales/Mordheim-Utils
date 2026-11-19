@@ -1,13 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/condition.mouth-sewn
-# authoring_status: PARTIAL
-# PARTIAL: [D] (2026-11-18) condition.mouth-sewn has no row in catalog/rules/conditions.yaml, so the
-#   compiler refuses it as a supplied condition ("unknown canonical condition: 'condition.mouth-sewn'")
-#   and the duel-produced mouth_sewn state (Needle and Thread) never feeds a supplied provider in the
-#   same duel. Only the unsewn control lend is declared. Recorded in TODO.md.
-# authoring_progress: 1 declared scenario (supplied-conditions batch, 2026-11-18): the unsewn
-#   same-band leader lends his Leadership (the reachable control); the sewn faces are withheld as
-#   the PARTIAL note explains.  execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: ruling B6 adds the condition.mouth-sewn row to
+#   catalog/rules/conditions.yaml (runtime implemented YES, bound to mechanic condition.mouth-sewn), so the
+#   compiler now admits it as a supplied condition and the sewn faces are authored.  Was PARTIAL: the
+#   compiler refused it ("unknown canonical condition: 'condition.mouth-sewn'"), recorded in TODO.md.
+# authoring_progress: 3 authored scenarios: the sewn leader is not offered and the borrower stands on
+#   his own Leadership; the unsewn control lends; a borrower whose own mouth is sewn still borrows from
+#   an unsewn leader.  REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: 3 scenarios read the printed "Leaders cannot then use their leader ability" on a supplied
+#   nearby provider and on the borrower.  REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -25,19 +27,59 @@
 #   same duel: the borrow block reads the tag on a supplied nearby provider (modular/leadership.py:236-238),
 #   and a duelist is never its own side's provider.  The two halves are therefore evidenced separately
 #   (producer: mechanics/mechanic.needle-and-thread.yaml; consumer: this file).  No compiler gate exists
-#   for the condition, so any build may carry it.
+#   for the condition, so any build may carry it; the supplied row is catalog/rules/conditions.yaml.
 #
 # --- Authored scenarios ---
 # Supplied-leader family model (mechanics/mechanic.leader-twelve.yaml): a hand-built borrower carries
 # no band.* tag and is never offered a provider, so the real Mercenaries pair is used - the printed
-# warriors profile (fixture Ld3) borrows from the printed mercenary-captain (Leader rule, fixture Ld8)
+# warriors profile (fixture Ld7) borrows from the printed mercenary-captain (Leader rule, fixture Ld8)
 # supplied as a standing same-side nearby participant at the printed six inches.  The vehicle is the
 # Fear test of the received charge from a hand-built fear-causer: 2d6 <= Leadership passes, so the
-# declared 4+4 = 8 passes only through the borrowed 8 and fails the borrower's own 3; the printed
+# declared 4+4 = 8 passes only through the borrowed 8 and fails the borrower's own 7; the printed
 # consequence of a standing failure is state.second.fear_hit_sixes.  Both swings are natural 1s.
 
-# The sewn mouth on the provider: no leader decision is offered at all (an offered borrow would
-# request an undeclared decision), so the test stands on the borrower's own Leadership 3 and fails.
+# The sewn mouth on the provider ("Leaders cannot then use their leader ability"): no leader decision
+# is offered at all (an offered borrow would request an undeclared decision), so the test stands on
+# the borrower's own Leadership 7 and fails.
+- audit_id: mechanic/condition.mouth-sewn
+  id: a-leader-with-a-sewn-mouth-lends-no-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          condition_ids: [condition.mouth-sewn]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same leader without the sewn mouth is offered, and the 8 passes on his Leadership 8.
 - audit_id: mechanic/condition.mouth-sewn
   id: without-the-sewn-mouth-the-same-leader-is-offered
   fighters:
@@ -80,3 +122,42 @@
 # The fact is read on the provider only: the printed consequence is that *leaders* cannot use their
 # leader ability, so a borrower whose own mouth is sewn still takes its tests and still borrows from
 # an unsewn leader - the borrow is offered and the eight passes through the captain's 8.
+- audit_id: mechanic/condition.mouth-sewn
+  id: a-borrower-with-a-sewn-mouth-still-borrows-from-an-unsewn-leader
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.mouth-sewn]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

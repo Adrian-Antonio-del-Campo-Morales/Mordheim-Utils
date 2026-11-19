@@ -564,6 +564,9 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
   combat_status: implemented
   mechanic_id: weapon.broadsword
+  # Printed "Difficult to use": the property a skill such as Master of Arms names.
+  tags:
+  - difficult-to-use
 - id: cat_o_nine_tails
   kind: close-combat-weapon
   name: Cat O Nine Tails
@@ -1695,6 +1698,11 @@ items:
   - *id095
   combat_status: implemented
   mechanic_id: weapon.morning-star
+  # Difficult to Use by user ruling (2026-11-19, design-rulings.md): the rules owner states the
+  # Morning Star prints Difficult to Use; the effect text above prints only "Heavy" and should be
+  # checked against the printed entry (TODO.md).
+  tags:
+  - difficult-to-use
 - id: ogre_club
   kind: close-combat-weapon
   name: Ogre Club
@@ -3083,6 +3091,9 @@ items:
     section: Priests for Every Occasion / Priest of Morr / Ceremonial Scythe
   combat_status: implemented
   mechanic_id: weapon.ceremonial-scythe
+  # Printed "Difficult to use": the property a skill such as Master of Arms names.
+  tags:
+  - difficult-to-use
 
 - id: whip_tc14
   kind: close-combat-weapon

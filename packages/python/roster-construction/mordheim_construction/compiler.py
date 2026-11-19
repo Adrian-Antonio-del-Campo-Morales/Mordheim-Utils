@@ -469,14 +469,6 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                 raise ValueError(f"special rule has no executable contract: {rule_id}")
             validate_special_rule(build, package, profile, rule, traits.get("starting_skills", ()), "access")
             selected_special_mechanics.extend(str(binding["id"]) for binding in bindings if binding.get("kind") == "mechanic")
-            # Editorial variants sharing Sword Master do not share every condition.
-            parry_variant = {
-                "band--blood-dragon-power-sword-master": "rule.blood-dragon-sword-master",
-                "band--dwarf-special-skills-master-of-blades": "rule.dwarf-axe-parry-reroll",
-            }.get(rule_id)
-            if parry_variant:
-                selected_special_effects = merge_effects(
-                    selected_special_effects, EffectSet(tags=(parry_variant,)))
             selected_profile_bindings.extend(binding for binding in bindings if binding.get("kind") == "profile")
             for binding in (binding for binding in bindings if binding.get("id") == "profile.characteristics"):
                 parameters = binding.get("parameters") or {}

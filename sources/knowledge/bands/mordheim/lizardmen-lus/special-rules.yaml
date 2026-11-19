@@ -511,6 +511,8 @@ rules:
     es: Rugido de Batalla Atronador
   eligibility:
   - saurus-totem-warriors
+  # "Saurus only" names a warrior type: a promoted Saurus Brave qualifies (user ruling 2026-11-19).
+  eligibility_promoted_ids: [saurus-braves]
   applies_to:
     band: true
   rule_ref: shared-rule.bellowing-battle-roar
@@ -536,6 +538,8 @@ rules:
     es: Piel Endurecida
   eligibility:
   - saurus-totem-warriors
+  # "Saurus only" names a warrior type: a promoted Saurus Brave qualifies (user ruling 2026-11-19).
+  eligibility_promoted_ids: [saurus-braves]
   applies_to:
     band: true
   rule_ref: shared-rule.toughened-hide
@@ -592,9 +596,6 @@ rules:
           - poison.reptile-venom
           weapon_kinds:
           - ranged-weapon
-      clauses:
-      - id: whole
-        scope: 'NO'
   name: Skink Henchman Poison Application
   effect: >-
     Skink henchmen may coat their missile weapons with Reptile Venom for one battle; it is never

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills-netter/condition.netted
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +20,7 @@
 #   compiler.py hard-codes (compile_fighter's supplied-condition checks on band/profile/kind) instead of
 #   reading this rule's applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/crooked-moon-kep/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/crooked-moon-
+# Disposition (recorded as PARTIAL until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/crooked-moon-
 #   kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-
 #   skills, whose KB effect is now unbound (out-of-scope.shooting for the umbrella skill list); the duel
 #   behaviour they exercise is this identity's.  Inputs, dice and expectations are unchanged by the
@@ -28,6 +28,15 @@
 #   they were authored against.  The one scenario is the absence control: a printed Night Goblin without
 #   the Netter rule charges and no net die is requested.  Gap: no scenario supplies condition.netted and
 #   observes the netted target (automatically hit, counted as knocked down).
+
+# Status corrected 2026-11-18: the gap recorded above was reachable with the corpus vocabulary and is
+#   now authored - the netted-victim scenario below supplies condition.netted and reads the printed
+#   consequence on the Crooked Moon's own Night Goblin.  The excluded net-charge producer (the thrown
+#   net, the Strength escape test and the failed charge stopped short, `out-of-scope.movement`) is not
+#   an applicable requirement.
+# AUTHORED: 2 scenarios cover the printed Netter consequence - "a warrior caught in a net will be
+#   automatically hit in combat but the Goblin must still roll to wound as with a knocked down enemy"
+#   - and its absence control.
 
 # --- Authored scenarios ---
 
@@ -60,3 +69,35 @@
   expect_events:
     - {kind: roll, key: round.0.first.animosity, sides: 6, value: 4}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The printed consequence of the net, read on the Crooked Moon's own Night Goblin: "a warrior caught in
+# a net will be automatically hit in combat but the Goblin must still roll to wound as with a knocked
+# down enemy".  The victim is supplied as caught (condition.netted), so it starts Knocked Down, the
+# Goblin's blow asks for no hit die at all and only the wound die is declared; S3 against T3 wounds on
+# 4+, and a knocked-down warrior that suffers a wound is taken out of action (core injury rule).  The
+# victim is silenced (attacks: 0) so every die on the tape is the Goblin's, and the band's Animosity
+# asks the active Night Goblin for its own-turn die first (a 4 passes), exactly as in the control.
+- audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills-netter/condition.netted
+  id: the-netted-victim-is-hit-automatically-and-the-goblin-still-rolls-to-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.netted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_initial: {second.condition: KNOCKED_DOWN, second.netted: true}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

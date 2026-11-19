@@ -1,7 +1,8 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment
-# authoring_status: PARTIAL
-# authoring_progress: the admitted whole clause carries 1 authored scenario derived from the printed sentence and the accepted ruling that respects the source's "may" (zero mutations are allowed): a Possessed built with no mutation is admitted and the duel runs.  The recording of the upper bound as a refusal (a Possessed with three mutations) is pending because the scaffold records no diagnostic for exceeding the maximum.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios derived from the printed sentence "each Possessed may begin with one or two Mutations" and the accepted ruling that its "may" allows zero: a Possessed with no mutation is admitted and its round resolves, a Possessed with two mutations is admitted (the bound itself), and a Possessed with three mutations is refused at recruitment.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Status corrected 2026-11-19: the earlier PARTIAL status claimed the construction stage declares no diagnostic for exceeding the maximum; that was false - the mutationLimit stage of packages/typescript/domain/eligibility/index.ts (bundled into roster-construction _eligibility.js) returns "at most two mutations are allowed for <band>/<profile>" when this compiler contract is present and more than two band--mutations-* rules are selected.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,11 +11,14 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the pending upper-bound half is an expected result the contract does not establish:
-# the construction stage declares no diagnostic for exceeding the maximum, so a tape supplying three
-# mutation rows could only assert a refusal message nobody has derived (inventing the observable, which is
-# exactly what the user's rule forbids).  The configuration itself may be declarable; the expected
-# observation is not.  1 scenario evidences the recorded ruling that the printed "may begin with one or two Mutations" admits a Possessed with no mutation.  Pending: the upper-bound refusal (three mutations), whose missing datum is the diagnostic the construction stage emits when the maximum is exceeded.
+# AUTHORED: 3 scenarios evidence the printed one-or-two range under the recorded zero-allowed ruling: zero and two mutations are admitted, three are refused with the mutationLimit diagnostic.
+# Superseded blocker (provenance, 2026-11-19), kept for history:
+#   [C] the pending upper-bound half is an expected result the contract does not establish:
+#   the construction stage declares no diagnostic for exceeding the maximum, so a tape supplying three
+#   mutation rows could only assert a refusal message nobody has derived (inventing the observable, which is
+#   exactly what the user's rule forbids).  The configuration itself may be declarable; the expected
+#   observation is not.  1 scenario evidences the recorded ruling that the printed "may begin with one or two Mutations" admits a Possessed with no mutation.  Pending: the upper-bound refusal (three mutations), whose missing datum is the diagnostic the construction stage emits when the maximum is exceeded.
+#   Earlier authoring_progress: the admitted whole clause carries 1 authored scenario derived from the printed sentence and the accepted ruling that respects the source's "may" (zero mutations are allowed): a Possessed built with no mutation is admitted and the duel runs.  The recording of the upper bound as a refusal (a Possessed with three mutations) is pending because the scaffold records no diagnostic for exceeding the maximum.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 
 # De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
 #   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
@@ -46,3 +50,40 @@
   expect_fighters:
     first.construction_tags: [compiler.mutation-purchase-at-recruitment, compiler.possessed-optional-zero-to-two-mutations-at-recruitment]
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Printed upper bound: "each Possessed may begin with one or two Mutations".  A Possessed selecting
+# three of the band's listed mutations exceeds it and is refused by the mutationLimit stage of the
+# shared eligibility gate (packages/typescript/domain/eligibility/index.ts), which emits "at most two
+# mutations are allowed for <band>/<profile>" only when this compiler contract is present.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+  id: a-possessed-with-three-mutations-is-refused-at-recruitment
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-acid-blood, band--mutations-scorpion-tail, band--mutations-extra-arm]
+      main_weapon_id: weapon.natural-attacks
+  expect_error: "at most two mutations are allowed for trollheim-cult-of-the-possessed/the-possessed"
+
+# Contrast at the bound itself: "one or two" admits two, so the same Possessed with two of the three
+# mutations constructs.  Construction-only shape (no charge, the bearer out of action before the
+# first phase, so no die is requested); the compiled trace of the grant is the construction tag.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+  id: a-possessed-with-two-mutations-is-admitted-at-recruitment
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-acid-blood, band--mutations-scorpion-tail]
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_fighters:
+    first.construction_tags: [compiler.mutation-purchase-at-recruitment, compiler.possessed-optional-zero-to-two-mutations-at-recruitment]
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

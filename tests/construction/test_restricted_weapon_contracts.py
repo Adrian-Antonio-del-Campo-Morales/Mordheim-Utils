@@ -43,3 +43,32 @@ def test_restricted_weapons_and_toughened_leathers_keep_legal_combinations():
     assert build(armour_id="armour.toughened-leathers", off_hand_id="defence.buckler").off_hand is not None
     with pytest.raises(ValueError, match="toughened leathers"):
         build(armour_id="armour.toughened-leathers", off_hand_id="defence.shield")
+
+
+def _master_of_arms_verdict(main_weapon_id, off_hand_id, *, contracts=("compiler.master-of-arms",)):
+    from mordheim_construction.eligibility import validate_loadout
+    from mordheim_construction.contracts import mechanic_index
+
+    fighter = FighterBuild(ruleset="mordheim", characteristics=Characteristics(3, 3, 3, 1, 3, 1),
+                           main_weapon_id=main_weapon_id, off_hand_id=off_hand_id)
+    try:
+        validate_loadout(fighter, main_weapon_id, mechanic_index("mordheim"), contracts, (), "hands")
+    except ValueError as error:
+        return str(error)
+    return None
+
+
+def test_master_of_arms_reads_the_declared_difficult_to_use_property():
+    # Rulings 2026-11-18/19: 'He may now wield a Difficult to Use weapon and a hand weapon at the
+    # same time'. The Broadsword prints "Difficult to use"; the Morning Star is Difficult to Use by
+    # the rules owner's ruling. Both are relaxed by the contract and only by it.
+    assert _master_of_arms_verdict("weapon.broadsword", "weapon.club") is None
+    assert _master_of_arms_verdict("weapon.broadsword", "weapon.club", contracts=()) == (
+        "weapon.broadsword cannot be combined with weapon.club")
+    assert _master_of_arms_verdict("weapon.morning-star", "weapon.club") is None
+    assert _master_of_arms_verdict("weapon.morning-star", "weapon.club", contracts=()) == (
+        "weapon.morning-star cannot be combined with weapon.club")
+    # The Ceremonial Scythe is Difficult to use and two-handed.
+    assert _master_of_arms_verdict("weapon.ceremonial-scythe", "weapon.club") is None
+    assert _master_of_arms_verdict("weapon.ceremonial-scythe", "weapon.club", contracts=()) == (
+        "main weapon occupies both hands")

@@ -1,0 +1,83 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.master-of-blades-axe-reroll
+# authoring_status: AUTHORED
+# Discrimination note (2026-11-19): this mechanic probes non-discriminating because the parry-reroll
+#   formula also ends in an unconditional `or dwarf_axes` (modular/contexts.py `_parry_context`, mirrored in
+#   vectorized/_operators.py and native/_combat_compile.py), so any fighter with two Dwarf axes re-rolls a
+#   failed parry with or without Master of Blades. That generic term is the TODO entry "Engine or
+#   eligibility behaviour without printed support" (the Dwarf axe item prints only Cutting Edge); once it
+#   is gated, this mechanic is the Master of Blades clause's own carrier and these scenarios discriminate.
+# authoring_progress: the undivided identity (Master of Blades' "if this Dwarf has two Dwarf axes he
+# can reroll any failed parries") carries two authored scenarios derived from the printed rule: with
+# two Dwarf axes a failed parry is rolled again and recovered, and with a single Dwarf axe no reroll
+# die is offered.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 2 scenarios cover the identity: two Dwarf axes reroll a failed parry, and a single Dwarf
+#   axe is offered no reroll.
+
+# --- Authored scenarios ---
+# mechanic/mechanic.master-of-blades-axe-reroll - ruling 2026-11-18 (split the Sword Master binding):
+# the Dwarf Master of Blades (shared-rule.master-of-blades) no longer binds the Vampire's
+# skill.sword-master; its own clause "if this Dwarf has two Dwarf axes (as detailed above) he can
+# reroll any failed parries" is this mechanic.  The bearer carries the mechanic alone (no equality
+# source), so each parry die must beat the To Hit roll; its own attack pool is declared empty.
+# Expectations come from the printed rule, never from engine output.
+
+# The printed sentence: with two Dwarf axes the failed first parry die is rolled again and the reroll
+# beats the hit, so the blow is blocked.
+- audit_id: mechanic/mechanic.master-of-blades-axe-reroll
+  id: two-dwarf-axes-reroll-a-failed-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+      skill_ids: [mechanic.master-of-blades-axe-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 6}
+    # Two weapons in the bearer's hands leave it one attack of its own even with the
+    # declared empty profile, so that die is taped as a miss against Weapon Skill 3.
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition "two Dwarf axes": with a single Dwarf axe the reroll is not granted, so the
+# tape holds no reroll die and the wound is resolved.
+- audit_id: mechanic/mechanic.master-of-blades-axe-reroll
+  id: a-single-dwarf-axe-gets-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.dwarf-axe
+      skill_ids: [mechanic.master-of-blades-axe-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,7 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
-# authoring_status: PARTIAL
-# authoring_progress: the admitted whole--scope--scorpion-tail clause carries 2 authored scenarios derived from the printed sentence and the recorded contract (one extra attack each close-combat phase, fixed Strength 5, Strength 2 against a poison-immune defender).  The extra attack is evidenced by the pool carrying one attack die more than the same recipient without the mutation.  Pending: the printed poison-immunity strength reduction, because the tail attack's own wound key inside the pool is not recorded, so an assertion on its wound face could not be placed without inventing the index.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole--scope--scorpion-tail clause carries 4 authored scenarios derived from the printed sentences (one additional Strength 5 attack in each close-combat phase; Strength 2 instead against a model immune to poison): the pool-size pair evidences the extra attack, and the poison-immunity pair evidences the S2/S5 branch on the tail's own wound die (attack.1.wound, face 3) against the Vampire Bat and a plain T3 defender.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Status corrected 2026-11-19: the earlier PARTIAL status claimed the tail attack's wound key inside the pool was not recorded; that was false - the compiler appends the tail as an extra attack after the profile attacks (roster-construction compiler.py), so for the one-attack Mutant it is round.<n>.first.attack.1.wound, and contexts.py resolves it at S2 against a poison-immune defender and S5 otherwise.
+# Removal-probe note (2026-11-19): the probe reports construction-only, because removing the tail
+#   leaves the Mutant with no mutation and the band's required-mutation gate ("at least one mutation
+#   is required for <band>/mutants") refuses it before any die.  The refusal comes from that gate, not
+#   from this rule.  A bearer that allows zero mutations (the Possessed) would make the tail scenarios
+#   discriminating.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -11,7 +17,9 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: whole--scope--scorpion-tail (scope: YES)
-# PARTIAL[whole--scope--scorpion-tail]: [C] 2 scenarios evidence the printed additional attack of each close-combat phase through the pool size, with the same recipient without the mutation as the contrast.  Pending: the poison-immunity branch (the tail attack is Strength 2 instead of 5), whose missing datum is the roll key of the tail attack inside the pool.
+# AUTHORED[whole--scope--scorpion-tail]: 4 scenarios evidence the printed additional attack of each close-combat phase (pool size, contrast without the mutation) and the poison-immunity branch (the tail wounds a T3 defender on a 3 at S5 but not at S2 against the Vampire Bat).
+# Superseded blocker (provenance, 2026-11-19): [C] 2 scenarios evidence the printed additional attack of each close-combat phase through the pool size, with the same recipient without the mutation as the contrast.  Pending: the poison-immunity branch (the tail attack is Strength 2 instead of 5), whose missing datum is the roll key of the tail attack inside the pool.
+#   Earlier authoring_progress, kept for history: the admitted whole--scope--scorpion-tail clause carries 2 authored scenarios derived from the printed sentence and the recorded contract (one extra attack each close-combat phase, fixed Strength 5, Strength 2 against a poison-immune defender).  The extra attack is evidenced by the pool carrying one attack die more than the same recipient without the mutation.  Pending: the printed poison-immunity strength reduction, because the tail attack's own wound key inside the pool is not recorded, so an assertion on its wound face could not be placed without inventing the index.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 #
 # Clause: whole--scope--cost (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
@@ -66,4 +74,60 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Against a model immune to poison, this attack is Strength 2 instead."  The tail is the pool's
+# second attack (attack.1).  Against the Vampire Bat (printed T3, W2 and Immune to Poison) the tail
+# strikes at S2, so a wound roll of 3 fails (S2 v T3 wounds on 5+).  Charging a Fear-causing model asks
+# the Mutant for a charge Fear test; the double one passes it.  Every other attack misses.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: against-a-poison-immune-model-the-tail-strikes-at-strength-two
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-scorpion-tail]
+      main_weapon_id: weapon.mace
+    second: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Contrast: the same tail against a T3 defender that is not immune to poison strikes at the printed
+# S5, so the identical wound roll of 3 wounds (S5 v T3 wounds on 3+).  A 3 is the discriminating face:
+# it separates S5 from S2, and the Mutant's own S3 mace would not wound with it either.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: against-a-model-not-immune-to-poison-the-tail-strikes-at-strength-five
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-scorpion-tail]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.wounded: true, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/shadow-warriors/band--hate-dark-elves/mechanic.hatred-dark-elves
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the printed exclusion of Hired Swords is not a vocabulary gap - it is
+#   enforced by construction. Hired Swords compile only from their own hireling packages, a band rule
+#   reaches only profiles of its own package, and a hireling declaring the band rule or its mechanic is
+#   refused; no hireling carries this band Hatred (the Shadow Warrior hired sword's own "Hates Dark Elves"
+#   is its own printed rule). The Gunnery School ruling already records that this exemption is
+#   unreachable because hirelings compile through their own route (design-rulings.md). Every applicable
+#   requirement is represented by the fight-time scenarios below.
 # authoring_progress: the admitted hatred clause carries 4 authored scenario(s) for the family
 #   model derived from the printed rule and the recorded semantic contract: the grant delivers
 #   the first-round reroll against the qualifying dark-elf; the same miss stands without the
@@ -18,7 +25,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the authored scenarios represent the fight-time faces of the printed clause.
+# AUTHORED: the fight-time faces of the band Hatred are represented; the Hired Sword exclusion is enforced by construction.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [C] the authored scenarios represent the fight-time faces of the printed clause.
 #   The printed exclusion ("All warriors in the Shadow Warrior warband, excluding Hired Swords, are
 #   subject to Hatred against Dark Elves.", bands/mordheim/shadow-warriors/special-rules.yaml:65)
 #   still needs the exclusion-affected BEARER: a lawful Hired Sword of this warband, facing the same

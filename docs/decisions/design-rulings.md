@@ -678,3 +678,192 @@ and the Trollheim Protectorate's All Alone rider are recorded. Adding a supplied
 multi-enemy fact would introduce a new scope input rather than implement this
 rule; revisit only through an approved runtime-scope change that admits group
 engagement counting.
+
+## Unshakeable Faith is the Warrior Priest's special skill — 2026-11-18
+
+The Protectorate of Sigmar (LotD3) prints Unshakeable Faith among its Special
+Skills without naming who may take it, and no hero of the band prints the
+`special` skill access, so the selection was refused for every profile. By user
+ruling the skill is accessible to the Warrior Priest. The band row carries
+`eligibility: [warrior-priest]` and `applies_to.profile_ids: [warrior-priest]`,
+the projection Rousing Sermon and Utter Determination already use; every other
+profile of the band is refused the skill.
+
+## Skink Henchman Reptile Venom: the close-combat ban is construction — 2026-11-18
+
+The Lizardmen (Lustria) print lets Skink henchmen coat their missile weapons
+with Reptile Venom and never a close-combat weapon. The missile-weapon use is
+shooting and stays outside the duel. The ban is kept as a construction
+restriction, encoded like the Skink Heroes' Dark Venom and Black Lotus rule
+(`band--skink-poison-application`): `band--skink-henchman-poison-application`
+binds `profile.equipment-restrictions` with `poisons: [poison.reptile-venom]`
+and `weapon_kinds: [ranged-weapon]` as one undivided admitted identity (the
+former `whole: NO` clause mark is removed). A Skink Brave whose close-combat
+weapon carries the venom is refused at construction.
+
+## The Rememberer is not bound by "No Armour, No Toys" — 2026-11-19
+
+The Dwarf Slayer Cult prints "No Armour, No Toys! Slayers may never use armour of any
+kind…", and the Rememberer's own rule prints "A Rememberer is not a Slayer, and the slayer
+rules don't apply." By user ruling the print governs: the Rememberer may buy the light
+armour, helmet, shield, buckler, crossbow and pistol his own list offers. The defect was in
+the shared eligibility stage: `bandEquipmentForbids` applied every `grant: band` equipment
+restriction band-wide and ignored `applies_to.profile_ids`, which `applicableRules` already
+honours. It is now profile-aware. A survey found this rule to be the only band restriction
+the narrowing affects.
+
+## Natural armour does not lift the Toughened Leathers restriction — 2026-11-19
+
+Natural armour saves that print "can be combined with other armour as normal" (Beastmen
+Shaggy Hide, the Black Orc save) meet Toughened Leathers, which print "cannot be combined
+with the effects of any other armour except a helmet or buckler". The item's own specific
+restriction governs over the general "as normal": the compiler keeps the natural save and
+cancels the leathers' contribution (`compiler.py`, the `armour.toughened-leathers` branch).
+No Beastmen or Black Orc list offers Toughened Leathers, so the question has no legal
+recipient in those bands; it is live only where a list pairs the leathers with a natural save.
+
+## Difficult to Use is a declared item property — 2026-11-19
+
+Master of Arms prints "He may now wield a Difficult to Use weapon and a hand weapon at the same
+time, but not two Difficult to Use weapons." The catalogue prints "Difficult to use" on two
+items only, the Broadsword and the Ceremonial Scythe; the Morning Star prints "Heavy". The
+property is declared as the `difficult-to-use` item tag on those two items and the Master of
+Arms exception reads it, replacing the hard-coded Morning Star. No Maneaters list offers a
+Difficult to Use weapon, and none can sit in the off hand, so both printed faces are
+unreachable for that band today. Two questions stay open (TODO.md): whether the separate
+`restricted` table's Morning Star entry (no off-hand item at all) has printed support, and the
+two-handed relaxation Master of Arms still grants to any two-handed weapon.
+
+## The hired Witch Hunter's Burn the Witch hates spellcasters only — 2026-11-19
+
+The band rule prints "Hatred against all models capable of casting spells" and the hireling
+"Hates enemy spellcasters". The hireling bound the generic `skill.hatred` (hatred of every
+enemy); it now binds `mechanic.burn-the-witch`, the operator the band records use, which
+requires the enemy's `identity.spellcaster`. Its identity moved to
+`.../rule.burn-the-witch/mechanic.burn-the-witch`.
+
+## Hypnotic Musk gates the animal's charge — 2026-11-19
+
+"Any animal or beast from an opposing warband wishing to charge him must pass a Leadership test
+to do so unless said charge is the result of Goading; mounts are immune." The test gates the
+charge; it is not an in-combat attack bar. This is what `modular/psychology.py` implements,
+with both printed exceptions. No alternative reading has printed support.
+
+## The Scholar's Physiology reroll stays out of the duel — 2026-11-19
+
+Field of Scholarship's Physiology branch ("after all serious injuries have been resolved you may
+select a hero to re-roll his result") is a post-battle campaign consequence, scope NO, under the
+2026-10-04 ruling "Combat Lab remains a 1v1 duel simulator". This decides the question three
+case files cited as MHD-13 in `outputs/human-decisions.md`, a file that does not exist. The Poetry
+branch stays admitted; its "if your warband won the last battle" gate is carried by supplying
+`condition.poetry-victorious-leader`.
+
+## A sewn mouth is a supplied condition — 2026-11-19
+
+The Crow Master's Needle and Thread prints that a sewn enemy's "Leaders cannot then use their
+leader ability". The engine's producer (the duelist's `mouth_sewn` state) and its consumer (a
+nearby Leader provider carrying `condition.mouth-sewn`) never meet in one duel, so the fact is
+supplied: `condition.mouth-sewn` has a row in `catalog/rules/conditions.yaml`, shaped like
+`condition.netted`. The spell-casting half is out of scope (magic). As with other supplied
+conditions, no compiler recipient gate restricts who may carry it.
+
+## Sword Master is split by print; the six-parry is the Blood Dragon's — 2026-11-19
+
+One mechanic id, `skill.sword-master`, was bound by records carrying three different printed
+rules: the Blood Dragon's Sword Master ("only needs to equal the opponent's roll and may
+therefore parry a roll of 6 … may also re-roll one failed parry … may not parry more than one
+attack"), the Bretonnian Knight's Feats Sword master ("may parry, with re-roll at equal or
+higher") and the Dwarf Master of Blades ("beats or matches", two parries with two Parry weapons,
+and with two Dwarf axes "he can reroll any failed parries"). By user ruling the binding is split
+so that no print receives a face it does not print:
+
+- `skill.sword-master` carries what its remaining recipients share: equality and one failed-parry
+  re-roll. Its printed "parry a roll of 6" is clause `parry-a-six`, scope NO.
+- `mechanic.blood-dragon-sword-master` (new) carries the six-parry for the Blood Dragon record,
+  which binds it as a second effect; it emits the `rule.blood-dragon-sword-master` tag the engine
+  already reads. The one-parry cap is the engine's default capacity.
+- The Dwarf Master of Blades no longer binds `skill.sword-master`: equality and two parries come
+  from `skill.unbeatable-warrior`, and the two-axe re-roll from `mechanic.master-of-blades-axe-reroll`
+  (new, emitting `rule.dwarf-axe-parry-reroll`).
+
+The compiler's hard-coded `parry_variant` table is removed; the KB now delivers both tags, and
+the re-roll term reads the Dwarf variant without `skill.sword-master` (behaviour-preserving,
+mirrored in the vectorized and native compile ports). This supersedes ruling D1-A
+(`dec-d1-sword-master-parry-gate`, 2026-10-14), recorded only in a case file, which placed the
+six-parry on `skill.sword-master` itself: implementing it would have given the Bretonnian and
+Dwarf prints a six-parry.
+
+## Master of Arms relaxes only Difficult to Use weapons — 2026-11-19
+
+By user ruling, Master of Arms ("may now wield a Difficult to Use weapon and a hand weapon at the
+same time, but not two Difficult to Use weapons") applies only to a main weapon carrying the
+Difficult to Use trait. It no longer lifts "main weapon occupies both hands" for an arbitrary
+two-handed weapon: a great weapon is not Difficult to Use, so the skill does not free its second
+hand. The Morning Star is Difficult to Use by the same ruling (the rules owner states the trait;
+the catalogue's effect text prints only "Heavy" and is to be checked against the printed entry),
+so it carries the `difficult-to-use` tag beside the Broadsword and the Ceremonial Scythe, and a
+Maneaters Captain may pair it with a hand weapon. This amends "Difficult to Use is a declared item
+property" above, which had read the Morning Star as Heavy only. The Pit Fighter's Arms Master is a
+different print ("ignores all 'difficult to use' weapon restrictions and may combine weapons that
+would normally be prohibited") and keeps its broader relaxation.
+
+## Weapon Knowledge reaches only weapons an item provides — 2026-11-19
+
+The Hochland Duelist's Weapon Knowledge prints "may use any close combat or missile weapon that the
+warband members can get hold of". A weapon can be got hold of when some ordinary (non-hireling)
+catalogue item of the ruleset provides it. `weaponKnowledgeAllows` already applied that test when a
+binding names `allowed_kinds`; the kind-less branch admitted every `weapon.*` mechanic id, so the
+Duelist could take another creature's innate attack (a Troll's vomit) and other characters' unique gear
+(Drenok's Axe of Icefang, Veskit's claws). The test now applies to both branches. It follows the
+Weapons Training ruling that such grants do not manufacture innate attacks or transfer another
+character's unique gear. The same narrowing reaches the two hireling rules that bind the kind-less
+contract; the Imperial Assassin's "any weapon he finds" no longer reaches the bare `weapon.trident`
+mechanic, which no item provides in the Mordheim ruleset. What a given warband has actually bought or
+stashed is campaign state and stays out of the duel. Natural attacks and the fist are untouched: every
+profile may fight with them, so they are not a Weapon Knowledge grant.
+
+## The Arabian Tomb Raiders' skill table is the Heroes' — 2026-11-19
+
+"Arab Heroes may use the following skill table instead of any of the standard skill tables available
+to them." The table's row reached the whole band (`applies_to.band: true`), so a Henchman (the Bedouin,
+with no skill access) was admitted a member on the `skill_ids` route. The row now carries
+`applies_to.profile_types: [hero]`, and a Henchman is refused the table.
+
+## Hypnotic Gaze is a Von Carstein and Lahmia power — 2026-11-19
+
+By user ruling, Hypnotic Gaze (Chaos in the Streets, cited under Von Carstein Special Skills) is
+available to both the Von Carstein and the Lahmia Vampire. The record's `eligibility` list already
+names both; the construction test that expected the Lahmia Vampire to be refused, and the conformance
+note that called the list a defect, were corrected, and a Lahmia real-recipient scenario was added.
+
+## A promoted Henchman may take special skills — 2026-11-19
+
+By user ruling, a Henchman promoted to Hero (`promotion.hero`) may take special skills. The shared
+eligibility stage completes the promotion (`promotedHero`): the member is marked `promoted` and gains
+the band's `special` category when its Heroes print one, unless the band prints its own promotion
+lists (`compiler.promoted-hero-skill-access`), which then govern. A special skill whose `eligibility`
+list enumerates the band's Heroes, rather than a printed role, carries `eligibility_admits_promoted:
+true` and admits him; 61 records carry it: the 60 lists that name every Hero of their band, and Sons of
+Nagarythe Powerful Build, whose print excludes only the Shadow Weaver. Lists that name a printed role
+(Warrior Priest only, Saurus only, the Slayer skills) are unchanged.
+
+## A promoted Henchman of a printed warrior type takes that type's skills — 2026-11-19
+
+Extends "A promoted Henchman may take special skills". By user ruling, a limitation that names a type
+of warrior, rather than a specific Hero, admits a promoted Henchman of that type: a promoted Saurus
+Brave takes the "Saurus only" skills, and a promoted Slayer Henchman takes the Slayer skills. A
+limitation naming a specific Hero (the Warrior Priest, the Questing Knight, the Vampire of a
+bloodline) stays closed. The type's Henchmen are listed explicitly in `eligibility_promoted_ids` and are
+admitted only once promoted: the six Saurus-only skills (Saurus Braves), the Dwarf Slayer Cult Slayer
+list (Troll Slayers, Stubbles and Axe Hurlers, the band's Slayer-rule bearers) and the KAZ Slayer
+column (Slayers). Lists that only enumerate the Heroes who print the special table, or all Heroes but a
+named exclusion, carry `eligibility_admits_promoted` (Art of Unarmed Combat, Wraith Touch, Absolute Faith,
+the two Dark Elf Strength-access skills, and both Town Crier Dwarf tables). Where a type has no Henchman
+in its band (the Slayer skills of the Dwarf warbands without Slayer Henchmen, Untiring's Knights,
+Explorers, Trackers, the Possessed and Mutants), nothing changes. Both fields are read by the skill
+eligibility gate and by the band-grant recipient gate.
+A band's own printed promotion rule governs only when it enumerates the promoted Hero's lists (the
+Halfling and Ostlanders Ogres: "may only choose from Combat and Strength"). One that adds a list without
+excluding the others carries `additive: true` and leaves the band's Hero lists open: the Dwarf Slayer
+Cult's Born Marksmen ("he may always choose Shooting skills as one of his two skill list choices"), so a
+promoted Axe Hurler keeps the Slayer list as well as Shooting.

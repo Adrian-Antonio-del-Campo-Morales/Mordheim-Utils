@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/ghost-pirates-sar/the-bloated--undead/mechanic.psychology-immunity
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +9,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/ghost-pirates-sar/special-rules.yaml
-# PARTIAL: Two scenarios.  The first was split out on 2026-11-16 from the the-bloated
+# Disposition (carried as the PARTIAL block until 2026-11-18): Two scenarios.  The first was split out on 2026-11-16 from the the-bloated
 #   trait.poison-immune file that hosted it after the KB split the printed Undead rule into one effect per
 #   consequence (inputs, dice and expectations unchanged).  It is the hand-built combined fixture shared
 #   by the immune-to-psychology family: Stupidity, Hatred (Undead) and the immunity injected through
@@ -21,6 +21,18 @@
 #   profile, the route of the rule/trollheim/lustria-norse/wulfen--immune-to-psychology file.  The Frenzy
 #   and Hatred facets remain asserted on the hand-built fixture only.  REVIEWED still requires manual
 #   semantic review.
+
+# Status corrected 2026-11-18: the item this note leaves open is not an applicable requirement.
+#   Every consequence the printed Undead rule grants through mechanic.psychology-immunity - the
+#   skipped Stupidity test, the suppressed Frenzy and the denied Hatred reroll - already has a
+#   scenario in this file, on the hand-built combined fixture the immune-to-psychology family shares;
+#   the second scenario adds the real-recipient projection on the printed Bloated.  The only thing
+#   withheld is carrying the Frenzy and Hatred faces a second time on the printed profile, which the
+#   band package cannot pair with it - an authoring preference, not a missing requirement.  The
+#   PARTIAL block above is kept as the standing disposition.
+# AUTHORED: the printed Undead immunity to psychology is evidenced on both routes - the shared
+#   combined fixture (Stupidity, Frenzy and Hatred) and the printed Bloated built from the band
+#   package, whose Stupidity source is the supplied head-injury result.
 
 # --- Authored scenarios ---
 

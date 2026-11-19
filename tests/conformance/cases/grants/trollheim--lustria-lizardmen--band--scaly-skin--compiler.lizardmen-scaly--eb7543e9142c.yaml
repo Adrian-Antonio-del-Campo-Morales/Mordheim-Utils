@@ -13,7 +13,14 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the one pending term is a vacuous printed exception, not an applicable requirement.
+#   "except Hardened Leather provides no additional bonus" has no legal recipient: no Lizardman
+#   equipment list offers hardened or toughened leathers and no band package pairs one with a Scaly
+#   Skin profile, so the cancellation can never be observed; the representable half, the armour
+#   prohibition itself, is authored below as a construction refusal.  Every other printed term (the
+#   two natural saves, the 6+ floor, the ordinary-armour combination and the ignore-armour negation)
+#   carries a scenario.
 # authoring_progress: every admitted clause of this ID is represented by an
 #   authored scenario, or recorded as PARTIAL with its concrete blocker.
 #   REVIEWED is authoring and semantic contrast only; execution_status stays
@@ -22,7 +29,14 @@
 #   Skink Priest 6+ on the real attack route, the 6+ floor that Strength may not reduce a
 #   Scaly Skin save beyond, the light-armour combination the Skink list does offer, and
 #   the printed negation by a result that denies armour saves.
-# PARTIAL: the printed exception "except Hardened Leather provides no additional bonus" is unobservable in this revision and is recorded rather than dropped: a Lizardman wearing hardened or toughened leathers is a build the printed lists forbid (skinks-, saurus- and kroxigor-equipment-list offer no such item, and no band package pairs it with a Scaly Skin profile), so the compiler's cancellation of the leather contribution has no legal recipient to observe.  The representable half - the prohibition itself - is authored below as a construction refusal with the corpus's established armour-prohibition diagnostic `armour is forbidden for <band>/<profile>`, the same contract the kroxigor identities use, so an illegally armoured Lizardman is refused instead of silently keeping the natural save.  The remaining terms of this printed rule (the two natural saves, the 6+ floor, the ordinary-armour combination and the ignore-armour negation) are authored above.
+# AUTHORED: 5 scenarios read the printed band contract - the Kroxigor 4+ and the Skink Priest 6+ on
+#   the real attack route, the 6+ floor that Strength may not reduce a Scaly Skin save beyond, the
+#   light-armour combination the Skink list does offer, and the printed negation by a result that
+#   denies armour saves - plus the armour-prohibition refusal.  REVIEWED still requires manual
+#   semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the printed exception "except Hardened Leather provides no additional bonus" is unobservable in this revision and is recorded rather than dropped: a Lizardman wearing hardened or toughened leathers is a build the printed lists forbid (skinks-, saurus- and kroxigor-equipment-list offer no such item, and no band package pairs it with a Scaly Skin profile), so the compiler's cancellation of the leather contribution has no legal recipient to observe.  The representable half - the prohibition itself - is authored below as a construction refusal with the corpus's established armour-prohibition diagnostic `armour is forbidden for <band>/<profile>`, the same contract the kroxigor identities use, so an illegally armoured Lizardman is refused instead of silently keeping the natural save.  The remaining terms of this printed rule (the two natural saves, the 6+ floor, the ordinary-armour combination and the ignore-armour negation) are authored above.
 # Missing datum: a legal Scaly Skin bearer that may wear Hardened Leather, which this revision does not contain.
 # De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
 #   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal

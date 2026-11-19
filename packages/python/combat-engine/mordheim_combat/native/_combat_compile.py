@@ -489,9 +489,11 @@ def _parry_flags(me: CompiledFighter) -> dict:
     sword_and_buckler = bool(
         sword and (has(g, "defence.buckler") or bool(off and has(off, "defence.buckler")))
     )
+    # Mirrors modular/contexts.py::_parry_context.
+    dwarf_axe_variant = has(g, "rule.dwarf-axe-parry-reroll")
     sword_master_reroll = bool(
-        has(g, "skill.sword-master")
-        and (not has(g, "rule.dwarf-axe-parry-reroll") or dwarf_axes)
+        (has(g, "skill.sword-master") and not dwarf_axe_variant)
+        or (dwarf_axe_variant and dwarf_axes)
     )
     return {
         "parry": parry,

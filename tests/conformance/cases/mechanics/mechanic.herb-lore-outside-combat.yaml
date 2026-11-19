@@ -1,12 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.herb-lore-outside-combat
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: 2 authored scenarios (operators-hirelings batch, 2026-11-18): the engaged bearer at a
 #   lost wound is never offered the healing request ("cannot heal while in close combat"), and the same
 #   fixture carrying the unrestricted mechanic.herb-lore IS offered it in the identical phase, so the
 #   withheld request is this carrier's own gate.  The healing face itself is not representable (blocker
 #   below).  REVIEWED still requires manual semantic review.
-# PARTIAL: the printed heal "on 4+ in Recovery ... cannot heal while in close combat" has a consumer
+# Disposition (carried as the PARTIAL block until 2026-11-18): the printed heal "on 4+ in Recovery ... cannot heal while in close combat" has a consumer
 #   (modular/rounds.py:431-438: `(has_tag(..., "mechanic.herb-lore") or not state.engaged and has_tag(...,
 #   "mechanic.herb-lore-outside-combat")) and decisions.choose(f"round.{i}.{label}.herb-lore")`), but its
 #   positive branch requires `not state.engaged` at the start of the bearer's turn, and no executed round
@@ -28,6 +28,18 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
 #
+# Status corrected 2026-11-18: the recorded blocker was wrong and the gap it named is now closed.
+#   An executed round can be unengaged after all: the Danse Macabre control branch
+#   (modular/rounds.py:418-428) cancels a round-0 charge on a failed Leadership test and sets
+#   `engaged=False` immediately before the recovery step at rounds.py:430, so resolve_fear is not the
+#   only in-round producer of a cancelled charge.  With the supplied condition.danse-macabre-controlled
+#   the healing face is reachable and is authored below; the ally-heal, the movement forfeit and the
+#   shooting allowance remain outside the duel.  The discrimination note above is likewise superseded.
+#   The block above is kept for the record.
+# AUTHORED: three scenarios - the engaged bearer is offered nothing, the unrestricted
+#   mechanic.herb-lore IS offered the request in the identical engaged phase, and the unengaged
+#   bearer is offered it and heals one Wound on a four.
+
 # --- Authored scenarios ---
 # Operator model: at the start of the active fighter's own turn a bearer below its maximum Wounds is offered
 # `round.N.<label>.herb-lore` (decision, then a die; 4+ restores one wound).  The unrestricted mechanic.herb-lore
@@ -82,3 +94,35 @@
   expect_rounds:
     0: {state.first.wounds: 2, state.second.wounds: 3}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The "outside combat" face itself, authored 2026-11-18.  An executed round CAN be unengaged: the
+# Danse Macabre control branch (modular/rounds.py:418-428) cancels a round-0 charge on a failed
+# Leadership test and sets `engaged=False` immediately BEFORE the recovery step at rounds.py:430, so
+# the earlier note that resolve_fear is the only in-round producer of a cancelled charge was wrong.
+# The bearer charges, is controlled, fails the Leadership test (6+6 against its Leadership 7), and the
+# duel is no longer engaged when its own recovery comes round: the healing request IS offered and the
+# declared four restores the lost Wound - the printed "heal herself by one Wound on 4+ in Recovery",
+# which the printed restriction allows only while she is not in close combat.
+- audit_id: mechanic/mechanic.herb-lore-outside-combat
+  id: the-unengaged-bearer-is-offered-the-healing-request
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.herb-lore-outside-combat]
+      condition_ids: [condition.danse-macabre-controlled]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *opponent
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 6}
+    - {key: round.0.first.danse-macabre.1, value: 6}
+    - {key: round.0.first.herb-lore, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.engaged: false}
+  # The round resolves in full and the harness then ends the duel because it is no longer engaged.
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

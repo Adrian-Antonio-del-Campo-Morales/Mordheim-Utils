@@ -1,7 +1,7 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/witch-hunters/flagellants--fanatical/mechanic.automatic-leadership
-# authoring_status: PARTIAL
-# authoring_progress: the admitted automatic-leadership clause carries 4 authored scenarios (count corrected
+# authoring_status: AUTHORED
+# authoring_progress: the admitted automatic-leadership clause carries 6 authored scenarios (count updated 2026-11-18) (count corrected
 #   2026-11-16); three read through the only Leadership tests this 1v1 setup can force on a Flagellant:
 #   the round-0 Fear test
 #   of the charged warrior, the round-0 Fear test of the charging warrior, and the Stupidity test the
@@ -10,7 +10,7 @@
 #   no die for the auto-passed test, and the
 #   strict tape consumes exactly the declared dice, so a test the engine still asked for fails the
 #   case instead of passing quietly - the absence is the assertion.  The clause's non-Psychology
-#   Leadership face has no representative here; see the PARTIAL note below.  REVIEWED still requires
+#   Leadership face is now evidenced by the crude-belch pair appended 2026-11-18.  REVIEWED still requires
 #   manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -21,7 +21,13 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: automatic-leadership (scope: YES)
-# PARTIAL[automatic-leadership]: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes all Leadership-based tests they are
+# AUTHORED[automatic-leadership]: the non-Psychology Leadership face is now evidenced below through the
+#   crude-belch route; REVIEWED still requires manual semantic review.
+# Status corrected 2026-11-18: the non-Psychology Leadership face is evidenced through the
+# crude-belch route (rounds.py:829-838 requests a Leadership test without psychology=True); the
+# earlier note that no such route exists was wrong.
+#
+# Disposition (retired 2026-11-18, kept as provenance): [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes all Leadership-based tests they are
 #   required to take, and the three scenarios cover the Leadership tests this setup can force on a
 #   Flagellant: the charged warrior's Fear test, the charging warrior's Fear test, and the Stupidity
 #   test of the declared Head Injury result 6.  The leader bar in the same sentence belongs to its
@@ -128,4 +134,58 @@
     - {key: round.0.first.attack.0.hit, value: 2}
   expect_rounds:
     0: {state.first.danse_macabre_controlled: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Non-Psychology Leadership route (2026-11-18): the Ogres' Crude Belch asks its engaged enemy for a
+# Leadership test that modular/rounds.py:829-838 requests WITHOUT psychology=True and without a Fear
+# flag, so on this request mechanic.psychology-immunity cannot answer and only the printed auto-pass
+# can.  The belcher is a hand-built opponent carrying the operator through skill_ids; the Flagellant is
+# the printed profile.  The auto-pass answers the request with no die at all - the strict tape would
+# fail on a request the engine still made - and the Flagellant keeps its ordinary 4+ against Weapon
+# Skill 3, so its declared 4 hits (the wound of 1 then fails).
+- audit_id: rule/mordheim/witch-hunters/flagellants--fanatical/mechanic.automatic-leadership
+  id: the-crude-belch-leadership-test-is-auto-passed-without-a-die
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.crude-belch-ogre]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: witch-hunters, profile_id: flagellants}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast on the same non-Psychology route: a warrior without the printed auto-pass has to roll
+# the belch Leadership test, and 6+6 against the printed Leadership 10 fails it, so its target
+# against Weapon Skill 3 rises from 4 to 5 and the same declared 4 misses.
+- audit_id: rule/mordheim/witch-hunters/flagellants--fanatical/mechanic.automatic-leadership
+  id: without-the-auto-pass-the-crude-belch-leadership-dice-are-rolled
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.crude-belch-ogre]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 10}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

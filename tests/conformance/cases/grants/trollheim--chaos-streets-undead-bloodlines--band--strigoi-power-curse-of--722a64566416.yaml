@@ -1,11 +1,15 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration
-# authoring_status: PARTIAL
-# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['four-plus-regeneration',
-#   'blocked-by-fire-and-blessed' (the fire half, and the unblessed boundary the two regeneration
-#   scenarios show)]; the clause still pending is the blessed half of 'blocked-by-fire-and-blessed':
-#   no catalogue id, profile rule or supplied input in this corpus grants attack.blessed, which is the
-#   missing datum named in that clause's note.  REVIEWED requires manual semantic review and
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker ("no catalogue id, profile rule or supplied input in the
+#   corpus grants attack.blessed") is stale.  sources/knowledge/catalog/rules/conditions.yaml defines
+#   the supplied condition.blessed-weapon, which emits attack.blessed on the slots named by its
+#   slot_fact blessed_weapon_slots, and the sibling identity's file
+#   (...strigoi-power-curse-of--b1c7be7591f4.yaml) already builds a Witch Hunter whose main-hand mace
+#   is so blessed.  The withheld blessed half is authored below and the clause is promoted.
+# authoring_progress: 4 authored scenario(s) in this file; authored clauses ['four-plus-regeneration',
+#   'blocked-by-fire-and-blessed' (both halves: fire via the brazier iron, blessed via the supplied
+#   condition.blessed-weapon on a Witch Hunter's mace)].  REVIEWED requires manual semantic review and
 #   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -16,17 +20,16 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: blocked-by-fire-and-blessed (scope: YES)
-# PARTIAL[blocked-by-fire-and-blessed]: [CLOSING-REVIEW [C]] the clause names two exclusions and only one is
-#   representable.  Fire is authored below: the brazier iron is the admitted attack.fire producer,
-#   and the strict tape shows the Regeneration die is never requested against it.  The blessed half
-#   has no admitted build source, exactly as recorded for the same contract in
-#   cases/mechanics/skill.regeneration-blocked-by-blessed.yaml: the consumer is the blocking term of
-#   prepare_special_save_context (contexts.py:408-414), but no catalogue id, profile rule or
-#   supplied input in the corpus grants attack.blessed (the tag appears only as engine data and as a
-#   direct benchmark injection in the combat-lab CLI).  What the corpus can still fix is the
-#   boundary: the same flag leaves an unblessed attack's Regeneration roll intact, which the
-#   four-plus-regeneration scenarios below show.  Missing datum: a selectable source of
-#   attack.blessed (or a supplied-input route for effect tags) so the blocked branch can be built.
+# AUTHORED[blocked-by-fire-and-blessed]: both printed exclusions are authored.  Fire: the brazier
+#   iron is the admitted attack.fire producer, and the strict tape shows the Regeneration die is
+#   never requested against it.  Blessed (added 2026-11-18): the catalogue's supplied condition
+#   condition.blessed-weapon (catalog/rules/conditions.yaml, Exploration result 13, bearer limited to
+#   Sisters of Sigmar and Witch Hunters) emits attack.blessed on the slots its slot_fact
+#   blessed_weapon_slots names; a Witch Hunter whose main-hand mace is so blessed wounds the Strigoi
+#   and no Regeneration die is requested.  The consumer is the blocking term of
+#   prepare_special_save_context.  The earlier note that no supplied input in the corpus grants
+#   attack.blessed is superseded by that condition.  The boundary the same flag leaves intact - an
+#   unblessed attack's Regeneration roll - is shown by the four-plus-regeneration scenarios below.
 #
 # Clause: four-plus-regeneration (scope: YES)
 # AUTHORED[four-plus-regeneration]: 2 scenarios show the printed base of the power: a 4 takes the
@@ -104,6 +107,35 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.ignition, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed blessed exclusion (2026-11-18): the attacker is a Witch Hunter, a printed bearer of the
+# supplied Blessed Weapon Exploration result, whose main-hand mace is the blessed item
+# (condition.blessed-weapon with its slot_fact naming the main hand).  The same Weapon Skill 10 /
+# Strength 8 fixture facts as above make the declared 5 and 5 a hit and a wound; the blessed blow is
+# not a fire attack, so only the blessed exclusion explains the absent Regeneration die, and the
+# unsaved Wound stands.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration
+  id: a-blessed-weapon-takes-the-wound-without-a-regeneration-roll
+  covers: [blocked-by-fire-and-blessed]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: witch-hunters
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.blessed-weapon]
+      trait_overrides: {blessed_weapon_slots: [main]}
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: *strigoi-bearer
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
     - {key: round.0.first.attack.0.wound, value: 5}
   expect_rounds:
     0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}

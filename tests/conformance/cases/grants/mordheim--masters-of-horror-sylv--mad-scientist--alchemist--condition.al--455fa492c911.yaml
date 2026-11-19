@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-strength
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the only recorded gap was that this identity carries no contrast of its own; the
+#   no-potion control is a disposition ("covered elsewhere": it lives on the sibling supplied
+#   condition condition.alchemist-resilience, which shares the one catalogue operator under test) and
+#   is not an applicable requirement of this identity.  The printed effect of this potion - the raised
+#   Strength on the printed Mad Scientist - is authored below.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +25,11 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
+# AUTHORED: 1 scenario covers the printed effect of this supplied condition: the potion raises the Mad
+#   Scientist's Strength by one on the printed profile.  REVIEWED still requires manual semantic
+#   review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as provenance):
+#   Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
 #   horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist, whose
 #   KB effect is now unbound (a supplied-condition split: the start-of-game potion roll stays unbound,
 #   each potion is a bound condition); the duel behaviour they exercise is this identity's.  Inputs,

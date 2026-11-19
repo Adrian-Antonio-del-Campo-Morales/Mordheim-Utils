@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the pending datum is a vacuous printed restriction, not an applicable requirement.
+#   This is the accepted disposition of design-rulings.md, "A band-wide category ban whose category its
+#   own lists never offer is enforced by the equipment-list gate" (the Gunnery School precedent): no
+#   Bandit Henchman equipment row offers either blackpowder id, so a henchman naming one is already
+#   refused by the offered-item gate and this rule's own refusal has no reachable input.  The face that
+#   is reachable - the band's hero keeping his blackpowder access - is authored below.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +15,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: the recorded contract is a prohibition on Bandit HENCHMEN plus the absence of any bar
+# AUTHORED: 1 scenario covers the reachable face of the printed contract: the Bandit hero duelist,
+#   whose own equipment list is this band's only blackpowder row, is admitted with weapon.pistol, so
+#   the printed "Bandit Heroes keep their own access" holds while the henchman prohibition stays
+#   enforced by the equipment-list gate.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the recorded contract is a prohibition on Bandit HENCHMEN plus the absence of any bar
 #   on the band's heroes ("Bandit Heroes keep their own access").  The reachable half is authored: the
 #   hero duelist, whose own equipment list is the only row of this band that carries a blackpowder weapon,
 #   is admitted with weapon.pistol in the main hand (the shared branch is gated on p.type !== "hero").

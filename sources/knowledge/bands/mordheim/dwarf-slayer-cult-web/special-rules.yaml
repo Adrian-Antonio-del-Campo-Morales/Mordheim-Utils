@@ -469,6 +469,9 @@ rules:
         parameters:
           allowed_skill_lists:
           - shooting
+          # "He may always choose Shooting skills as one of his two skill list choices": an addition, not an
+          # exhaustive list, so the promoted Axe Hurler keeps the band's other Hero lists (ruling 2026-11-19).
+          additive: true
       clauses:
       - id: promotion-shooting-skill-choice--scope--promotion-event
         scope: 'NO'
@@ -593,6 +596,9 @@ rules:
       tabla de Heridas para este Héroe, un resultado de 1-3 se trata como derribado, 4-5 como
       aturdido y 6 como fuera de combate. Cabeza Dura — tiene una salvación de 3+ en 1D6 para evitar
       quedar aturdido; si la supera, trata el resultado de aturdido como derribado.
+  # "Slayers Only": the Slayer warriors of the band (its Slayer rules name them) qualify once promoted
+  # (user ruling 2026-11-19).
+  eligibility_promoted_ids: [troll-slayers, stubbles, axe-hurlers]
   applies_to:
     band: true
     profile_ids:

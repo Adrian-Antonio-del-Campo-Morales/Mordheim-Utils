@@ -130,9 +130,14 @@ header when authoring. An identity counts as present when a file is headed by
 it or a scenario declares it, so a file may host scenarios of several
 identities when the knowledge base splits one printed rule across effects.
 `--check` writes nothing and returns exit 1 for missing or retired scaffolds
-(a header identity that is no longer admitted, or a file not at the path its
-identity derives); it checks presence and identity, not scenario bodies,
-semantic sufficiency or engine behavior. A changed clause contract is reviewed
+(a header identity the knowledge base no longer declares, or a file not at the
+path its identity derives); it checks presence and identity, not scenario
+bodies, semantic sufficiency or engine behavior. A scaffold of a declared but
+unadmitted identity is kept, because its scenarios may document a `NO`/`LATER`
+effect; when such a file is left with an empty body it carries nothing and is
+retired by hand (thirteen `profile.natural-attacks` scaffolds were removed this
+way on 2026-11-18, their behaviour evidenced by the sibling
+`profile.equipment-restrictions` files). A changed clause contract is reviewed
 in the knowledge base (`git log` on the record), not through a scaffold snapshot.
 
 `--knowledge-root` and `--output-dir` accept alternative inputs and
@@ -232,6 +237,56 @@ Continue across the assigned directory until no resolvable requirements remain.
 Send short progress updates with counts and specific gaps; reserve the detailed
 inventory for final handoff. Report files with scenarios separately from counts
 by authoring status, since a `PARTIAL` file may still have an empty body.
+
+### Before recording a blocker
+
+A `PARTIAL` note is a claim about what the code cannot do today, and nothing
+re-checks it when the code changes. In the 2026-11-18/19 pass, every one of the
+then-remaining PARTIAL blockers turned out stale or misclassified once it was
+tested. So test the concrete claim before writing it: compile the build, run the
+would-be scenario through `execution/runner.py::check_case`, and grep the engine
+for the consumer. Record a blocker only when that probe fails. When probing
+refusals, catch `ValueError` only: a mistyped profile id raises `KeyError` and
+otherwise looks like a refusal.
+
+Routes that settled blockers once believed impossible:
+
+- An unengaged round inside the duel: a failed Danse Macabre test
+  (`condition.danse-macabre-controlled`) clears `engaged` mid-round
+  (`modular/rounds.py`), before that round's recovery and form checks. Herb Lore
+  and The Bitten's reversion are authored this way.
+- A non-Psychology Leadership test: the opponent's `mechanic.crude-belch-ogre`
+  request calls `resolve_local_leadership` without `psychology=True`, while
+  `mechanic.automatic-leadership` auto-passes after the psychology and fear
+  short-circuits. This isolates automatic Leadership from Psychology immunity.
+- A blessed attack: `condition.blessed-weapon` with
+  `trait_overrides: {blessed_weapon_slots: [main]}` emits `attack.blessed`.
+- Seeded state: `initial_state` accepts any `FighterState` field (for example
+  `transformed`).
+- A second attack for an Attacks 1 recipient: an off-hand weapon.
+- Diagnostics: search `eligibility/index.ts` before calling one missing (for
+  example "at most two mutations are allowed", "Big Bully may only be taken
+  once").
+
+A face that no legal build can reach is a disposition, not a gap. Examples: a
+restriction vacuous in a one-against-one duel, a printed exception with no
+recipient in the band's lists, or an exclusion enforced by construction (hired
+swords compile from their own packages). Record it as such and author the file.
+A rule pre-empted by a sibling rule of the same profile is `covered.elsewhere`
+(the Poltergeist precedent in design rulings).
+
+### New authoring backlog
+
+When the knowledge base admits new identities, the completeness gate lists them.
+`tools/conformance/backlog_batches.py` divides them into batches by printed-rule
+group, route and effort (`--table`, `--batch <id>`, `--out <work-dir>` for probe id
+lists). A unit is one printed-rule group, the uncovered rules that share a binding.
+The mechanics of one printed source section form one family and are never split.
+Triage the identities with a recorded blocker first; triage is a decision pass
+(author, rule, or withhold with the blocker named). Batches own disjoint files and
+may run in parallel. Verify each with `validate_corpus.py` (0 metadata
+conflicts), the affected `execution/test_cases.py` selection and
+`removal_probe.py --identities-file <ids> --show non-discriminating`.
 
 ### Hireling recipients
 

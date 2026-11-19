@@ -2938,11 +2938,40 @@ skills:
   source_refs: []
   name_i18n:
     es: Maestro de la Espada
+  # Ruling 2026-11-18: the shared mechanic is what every remaining printed recipient
+  # shares (equality and one failed-parry reroll).  The Blood Dragon print's "may
+  # therefore parry a roll of 6" is carried by mechanic.blood-dragon-sword-master,
+  # bound beside this one on band--blood-dragon-power-sword-master only.
   clauses:
-  - id: match-parry-and-parry-a-six
+  - id: match-parry
     scope: 'YES'
+  - id: parry-a-six
+    scope: 'NO'
   - id: one-reroll-only
     scope: 'YES'
+- id: mechanic.blood-dragon-sword-master
+  name: Sword Master (Blood Dragon)
+  name_i18n:
+    es: Maestro de la Espada (Dragón Sangriento)
+  category: special
+  kind: warband
+  engine_option: Sword Master (Blood Dragon)
+  source_refs:
+  - manual: chaos-in-the-streets
+    printed_page: 182
+    section: Blood Dragon Special Skills / Sword Master
+- id: mechanic.master-of-blades-axe-reroll
+  name: Master of Blades (two Dwarf axes)
+  name_i18n:
+    es: Maestro de las Hojas (dos hachas Enanas)
+  category: special
+  kind: warband
+  engine_option: Master of Blades (two Dwarf axes)
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Master of Blades
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
 - id: skill.thick-skull
   name: Thick Skull
   category: special

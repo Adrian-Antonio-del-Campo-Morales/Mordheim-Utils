@@ -264,18 +264,11 @@ rules:
         scope: 'YES'
       - id: reroll-with-two-dwarf-axes
         scope: 'YES'
-    - id: skill.sword-master
+    - id: mechanic.master-of-blades-axe-reroll
       scope: 'YES'
       binding:
         kind: mechanic
-        id: skill.sword-master
-      clauses:
-      - id: match-the-to-hit-roll
-        scope: 'YES'
-      - id: two-parries-with-two-parry-weapons
-        scope: 'YES'
-      - id: reroll-with-two-dwarf-axes
-        scope: 'YES'
+        id: mechanic.master-of-blades-axe-reroll
   name: Master of Blades
   effect: >-
     When using a weapon with the Parry special rule, this Hero parries successfully if his roll
@@ -298,6 +291,7 @@ rules:
   - dwarf-noble
   - dwarf-engineer
   - dwarf-troll-slayers
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 - id: band--dwarf-special-skills-extra-tough
@@ -373,6 +367,7 @@ rules:
   - dwarf-noble
   - dwarf-engineer
   - dwarf-troll-slayers
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   rule_ref: shared-rule.hard-as-steel
@@ -399,6 +394,7 @@ rules:
   - dwarf-noble
   - dwarf-engineer
   - dwarf-troll-slayers
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   rule_ref: shared-rule.thick-skull

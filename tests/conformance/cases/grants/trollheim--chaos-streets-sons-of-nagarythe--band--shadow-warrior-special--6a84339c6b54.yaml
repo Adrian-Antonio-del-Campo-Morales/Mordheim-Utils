@@ -1,6 +1,14 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19 (second pass): the promoted-Henchman ruling makes the Strength access
+#   observable after all: a promoted Shadow Warrior lacks Strength, so the two scenarios at the end of this
+#   file show Powerful Build granting it.
+# Status corrected 2026-11-19: no printed face is pending. The Strength access is idempotent for both
+#   eligible profiles (shadow-master and shadow-walker already print Strength), the Shadow Weaver ban is
+#   authored, and the two-warrior warband cap is out of scope (roster.maximum-two-powerful-build, scope NO)
+#   and can never be exceeded by one duelist. Whether a henchman promoted to Hero may take band special
+#   skills is a general promotion question recorded in TODO.md, not this rule's printed face.
 # authoring_progress: the grant, the closure of the special list and (2026-11-16) the printed Shadow
 #   Weaver exclusion are covered; the clause stays PARTIAL because the Strength category is already
 #   printed on both eligible profiles, so the grant itself is idempotent for them (see the
@@ -21,17 +29,18 @@
 #   grant.  The printed Shadow Weaver exclusion is now resolved (profile id shadow-weaver) and asserted
 #   as a construction refusal below; it is a refusal, not a duel observable of the grant.
 #
-# Update 2026-11-16: the Shadow Weaver half below is now resolved (profile id shadow-weaver) and
-#   asserted by a-shadow-weaver-may-never-take-powerful-build; only the idempotent-grant half remains.
-# PARTIAL: [C] two halves stay unrepresented for want of identity, not of authoring: the printed
-# Shadow Weaver exclusion names only the class (the band package's profile id for it was not resolved
-# here), and the Strength category is already printed in both eligible profiles' `skill_access`, so the
-# grant itself is idempotent for them and no contrast exists.  The selected-grant scenario and a closure refusal are authored, but two printed
-#   halves stay unrepresented.  The Shadow Weaver exclusion needs the excluded profile id of this
-#   band (the scaffold names only the class, and the band package's profile list was not resolved
-#   for it here); and the Strength category is already in both eligible profiles' printed
-#   `skill_access`, so no contrast is available for the grant itself on this band.  Recorded, not
-#   fabricated.
+# Status corrected 2026-11-18: the first of the two halves the note below recorded is stale and has
+#   been struck.  The band's profiles.yaml does declare the excluded profile id shadow-weaver, the
+#   exclusion is resolved, and a-shadow-weaver-may-never-take-powerful-build asserts its refusal.
+#   The note is narrowed to the one half that is still real: the Strength grant is idempotent on this
+#   band.  The file stays PARTIAL for that reason alone.
+# AUTHORED: the access, the Shadow Weaver ban and the vacuous cap are accounted for.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [C] one half stays unrepresented, for want of contrast rather than of authoring: the
+# Strength category is already printed in both eligible profiles' `skill_access`
+# (shadow-master, shadow-walker), the rule's eligibility admits only those two profiles, so the grant
+# itself is idempotent for every legal build and no contrast is available on this band.  The
+# selected-grant scenario, a closure refusal and the Shadow Weaver exclusion are authored.  The
+# warband-level "two warriors" cap is not represented in a 1v1 duel.  Recorded, not fabricated.
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
@@ -77,3 +86,35 @@
       profile_id: shadow-weaver
       special_rule_ids: [band--shadow-warrior-special-skills-powerful-build]
   expect_error: "special rule is not available to chaos-streets-sons-of-nagarythe/shadow-weaver: band--shadow-warrior-special-skills-powerful-build"
+
+# A promoted Henchman may take special skills (user ruling 2026-11-19), and Powerful Build's print
+# excludes only the Shadow Weaver. A promoted Shadow Warrior has no Strength list of his own, so the
+# printed "may choose skills from the Strength skill list" is observable on him: with the skill he may
+# take a Strength skill, without it he may not.
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+  id: a-promoted-shadow-warrior-with-powerful-build-may-take-a-strength-skill
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-warrior
+      variant_ids: [promotion.hero]
+      special_rule_ids: [band--shadow-warrior-special-skills-powerful-build]
+      skill_ids: [skill.mighty-blow]
+    second: {main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Contrast: the same promoted Shadow Warrior without Powerful Build is refused the Strength skill.
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+  id: without-powerful-build-the-promoted-shadow-warrior-has-no-strength-list
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-warrior
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to chaos-streets-sons-of-nagarythe/shadow-warrior: ['skill.mighty-blow']"

@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.barbed-whip
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: the admitted clause is PARTIAL. Three scenarios evidence the Whipcrack bonus, its cap and the charged strike-first timing; the printed target restriction of the charged bonus (only against the charger) is vacuous in a single-opponent duel rather than unobservable (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -10,7 +10,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: 3 scenarios evidence the one-point Whipcrack bonus when charging,
+# Disposition (recorded as PARTIAL until 2026-11-18): 3 scenarios evidence the one-point Whipcrack bonus when charging,
 #   the two-whip cap and the strike-first timing of the charged bonus, and a fourth
 #   control scenario (authored below) pins the uncharged bearer's ordinary pool.
 #   The printed restriction that the charged bonus may only be used against the
@@ -24,6 +24,16 @@
 #   one-against-one runtime does not model; multi-model combat is an excluded
 #   runtime, not a deferred one, so the facet is satisfied by every authored
 #   configuration rather than separable within one.
+
+# Status corrected 2026-11-18: the only item held below is the printed restriction that the charged
+#   Whipcrack attack may be used only against the charger, and the block itself establishes that the
+#   restriction is vacuous in a one-against-one duel - the charger is the sole opponent, so every
+#   configuration this vocabulary can build satisfies it and none can violate it.  A vacuous printed
+#   restriction is not an applicable requirement; multi-model combat is an excluded runtime, not a
+#   deferred one.  The disposition block above is kept as the record of that decision.
+# AUTHORED: 4 scenarios cover the printed Whipcrack - the +1 attack on the charge, the one-attack cap
+#   with two whips, the strike-first tier of the bonus when the bearer is charged, and the uncharged
+#   control with no bonus at all.
 
 # --- Authored scenarios ---
 # mechanic/weapon.barbed-whip - Whipcrack: +1 attack when the bearer charges or

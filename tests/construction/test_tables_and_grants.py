@@ -225,3 +225,47 @@ def test_the_seer_becomes_a_bloodfather_with_strength_access_only_under_the_mark
     chief_facts = desktop_call("profileFacts", build("marauders-of-chaos", "marauder-chieftain",
         special_rule_ids=(mark,)), ROOT, package=pack, profile=chief)
     assert not [row for row in chief_facts["skill_lists"] if row["rule_id"] == mark]
+
+
+def test_a_promoted_henchman_may_take_special_skills():
+    # User ruling 2026-11-19: a Henchman promoted to Hero (`promotion.hero`) may take special skills.
+    # He gains the band's special category, and an eligibility list that names the band's Heroes
+    # (`eligibility_admits_promoted`) admits him; a list that names a printed role does not.
+    def admitted(band, profile, rule, collection="mordheim", promoted=True, **options):
+        try:
+            compile_fighter(FighterBuild("mordheim", collection=collection, band_id=band, profile_id=profile,
+                variant_ids=("promotion.hero",) if promoted else (), special_rule_ids=(rule,), **options), ROOT)
+        except ValueError:
+            return False
+        return True
+    shaggy = "band--beastmen-special-skills-shaggy-hide"
+    assert admitted("beastmen-raiders", "ungor", shaggy)                      # band-wide special table
+    assert not admitted("beastmen-raiders", "ungor", shaggy, promoted=False)  # an unpromoted Henchman
+    build = "band--shadow-warrior-special-skills-powerful-build"
+    assert admitted("chaos-streets-sons-of-nagarythe", "shadow-warrior", build, collection="trollheim")
+    assert not admitted("chaos-streets-sons-of-nagarythe", "shadow-weaver", build, collection="trollheim", promoted=False)
+    # A printed role ("Warrior Priest only") keeps its named list.
+    assert not admitted("protectorate-of-sigmar-lotd3", "crusader", "band--special-skill-unshakeable-faith")
+
+
+def test_a_promoted_henchman_of_a_printed_warrior_type_takes_that_types_skills():
+    # User ruling 2026-11-19: a limitation that names a type of warrior (not a specific Hero) admits a
+    # promoted Henchman of that type (`eligibility_promoted_ids`), and only once promoted.
+    def admitted(band, profile, promoted=True, collection="mordheim", **options):
+        try:
+            compile_fighter(FighterBuild("mordheim", collection=collection, band_id=band, profile_id=profile,
+                variant_ids=("promotion.hero",) if promoted else (), **options), ROOT)
+        except ValueError:
+            return False
+        return True
+    saurus = {"special_rule_ids": ("band--lizardmen-special-skills-saurus-only-toughened-hide",)}
+    assert admitted("lizardmen-lus", "saurus-braves", **saurus)                 # "Saurus only": a Saurus
+    assert not admitted("lizardmen-lus", "saurus-braves", promoted=False, **saurus)
+    assert not admitted("lizardmen-lus", "skink-braves", **saurus)              # a Skink is not a Saurus
+    slayer = {"skill_ids": ("skill.ferocious-charge",)}
+    assert admitted("dwarf-slayers-kaz", "slayers", **slayer)                    # the Slayer column
+    assert not admitted("dwarf-slayers-kaz", "slayers", promoted=False, **slayer)
+    assert not admitted("dwarf-slayers-kaz", "clansmen", **slayer)                # not a Slayer
+    # A specific Hero stays closed: Rousing Sermon is the Warrior Priest's.
+    assert not admitted("chaos-streets-sigmar-protectorate", "crusader", collection="trollheim",
+                        special_rule_ids=("band--protectorate-special-skills-rousing-sermon",))

@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the Henchman face was not unobservable but wrongly admitted. On the
+#   skill_ids route a Henchman (bedouin, empty skill access) was accepted with a Hero-only table member,
+#   because the row's applies_to reached the whole band. The record now restricts the table to
+#   profile_types [hero] ("Arab Heroes may use the following skill table", ruling 2026-11-19), and the
+#   refusal is authored below with the Hero admission as its contrast.
 # authoring_progress: the table's access carries a control set even though every member's own effect is
 #   dispositioned out of the duel scope: the printed member admitted for an Arab Hero (observed as that
 #   member's own deferred refusal, which proves the recipient gate admitted the Hero), another band's
@@ -18,7 +23,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] three requirements, separated; the access is in scope even though every member's own
+# AUTHORED: the table reaches the Arab Heroes and a Henchman is refused it.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [C] three requirements, separated; the access is in scope even though every member's own
 #   effect is not, and the tape set is written from that distinction.
 #   R1 TABLE ACCESS - (rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/
 #   profile.skill-access; effect_id profile.skill-access; binding parameters {"category":"special","skills":[3 members]};
@@ -153,3 +159,16 @@
   expect_initial: {first.attacks: 0, second.attacks: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# "Arab Heroes may use the following skill table": a Henchman is not a Hero, so the band's table member
+# is not a skill it can declare. Without the table the member id is no skill of the Bedouin at all, so
+# the shared stage refuses it as an unknown id (the diagnostic the build emits).
+- audit_id: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
+  id: a-henchman-is-refused-the-hero-skill-table
+  fighters:
+    first:
+      collection: mordheim
+      band_id: arabian-tomb-raiders
+      profile_id: bedouin
+      main_weapon_id: weapon.mace
+      skill_ids: [band--arabian-tomb-raiders-special-skills-sand-worm]
+  expect_error: "unknown mechanic IDs: ['band--arabian-tomb-raiders-special-skills-sand-worm']"

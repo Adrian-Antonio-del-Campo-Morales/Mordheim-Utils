@@ -1,14 +1,19 @@
 ﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
-# authoring_status: PARTIAL
-# authoring_progress: three of the four admitted clauses carry authored scenarios derived from the
-#   printed rule, the recorded contract and the accepted end-to-end test of the same family
+# authoring_status: AUTHORED
+# authoring_progress: all four admitted clauses carry authored scenarios derived from the printed rule,
+#   the recorded contract and the accepted end-to-end test of the same family
 #   tests/python/combat/modular/test_t13_devoted_and_bitten.py (The Bitten): the cast-off equipment, the
 #   duration of the form and the removal of the unarmed penalties are covered, and the per-turn roll's
-#   six, two-to-five and one faces are covered.  The one pending face is the printed "If Transformed,
-#   they revert to human form" half of the Madness result, which needs a transformed bearer in a
-#   disengaged duel and is named in its own clause note below; that is why the file stays PARTIAL.
-#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+#   six, two-to-five and one faces are covered, including the printed "If Transformed, they revert to
+#   human form" half of the Madness result.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# Status corrected 2026-11-19: the earlier PARTIAL held the reversion face on two claims, both false.
+#   (a) "`transformed` cannot be seeded": the runner's initial_state accepts any FighterState field, so
+#   initial_state.first.transformed seeds the form.  (b) "the only disengagement ends the duel" before a
+#   later own turn: the Danse Macabre branch clears engagement in the bearer's own turn before the form
+#   die is read in that same turn (modular/rounds.py), so a transformed, disengaged bearer rolls its
+#   form die in round 0 and the reversion is observable there.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,12 +24,6 @@
 #
 # Clause: transformation-equipment-loss (scope: YES)
 # AUTHORED[transformation-equipment-loss]: 1 scenario covers the printed cast-off with a fixture the printed list actually permits - bitten-equipment-list offers dagger, mace, axe, sword, spear and shield and no armour at all, so the discarded item is the shield, not an armour piece no printed list gives this profile.  The first phase is the control: the worn shield still counts and its own 6+ save holds the incoming wound (the accepted family test reads the same shield bonus of one).  In the second phase the declared six enters the form, the shield is cast off, the same incoming wound requests no armour die at all - the strict tape declares none, so a surviving shield would fail the case - and the wound reaches the injury chart instead of being saved.  The sword of the same printed sentence is read through the same equipment projection; the retained dagger is the clause's exception and needs no separate tape because a retained item is what the fixture already carries.
-#   wears light armour, and while the form lasts the incoming wound of the second round requests no
-#   armour die at all: the strict tape declares no such roll, so an armour die would fail the case, and
-#   the same tape records the wound reaching the injury chart (KNOCKED_DOWN) instead of being saved.
-#   The sword and shield of the same sentence are the same seam (equipment_for_state) and are read
-#   through the same projection; the retained dagger is the clause's exception and needs no separate
-#   tape because a retained item is what the fixture already carries.
 #
 # Clause: transformation-state--scope--transformation-duration (scope: YES)
 # AUTHORED[transformation-state--scope--transformation-duration]: 1 scenario covers both printed
@@ -34,7 +33,18 @@
 #   the accepted test asserts the same absence ("round.2.first.bitten" not in requests).
 #
 # Clause: transformation-state--scope--transformation-state (scope: YES)
-# PARTIAL[transformation-state--scope--transformation-state]: [C] 3 of the printed faces carry authored
+# AUTHORED[transformation-state--scope--transformation-state]: 4 of the printed faces carry authored
+#   scenarios: a declared six transforms the bearer and grants the printed Frenzy, which doubles his
+#   printed A1; a declared four leaves the form unchanged and the bearer acting normally; a declared
+#   one is the printed Madness, which imposes Stupidity for that turn (the test is taken against his
+#   printed Leadership 6 with two dice and fails on 6,6), so he strikes not at all that phase; and the
+#   same one on a bearer who begins Transformed is the printed "If Transformed, they revert to human
+#   form": a seeded transformed bearer whose own charge is cancelled by a failed Danse Macabre test is
+#   out of combat at its own turn, so it rolls the form die, and the declared one reverts it (its
+#   Frenzy ends with the form).  The control seeds the same form in an engaged duel, where the printed
+#   "Transformed do not roll when in combat" asks for no form die and the form stands.
+# Superseded blocker (provenance, recorded before 2026-11-19; text kept verbatim apart from its marker):
+#   [was PARTIAL] [C] 3 of the printed faces carry authored
 #   scenarios: a declared six transforms the bearer and grants the printed Frenzy, which doubles his
 #   printed A1; a declared four leaves the form unchanged and the bearer acting normally; and a declared
 #   one is the printed Madness, which imposes Stupidity for that turn (the test is taken against his
@@ -204,7 +214,7 @@
 # A declared one is the printed Madness: Stupidity this turn, tested against the bearer's own printed
 # Leadership of six with two dice.  He is not the charging side here, so the failure is read only as the
 # printed consequence - no attack of his own, while the opponent still strikes.  The reversion half of
-# the same result is the named pending item of this file.
+# the same result is authored at the end of this file.
 
 - audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
   id: a-declared-one-is-madness-and-a-this-turn-stupidity
@@ -285,4 +295,66 @@
     - {key: round.0.first.attack.0.wound, value: 3}
   expect_rounds:
     0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "1: Madness: ... If Transformed, they revert to human form."  The bearer begins Transformed (with the
+#   equipment the form cast off already gone) and is under the Danse Macabre: on its own turn the
+#   declared 6, 6 fails that test against its Leadership 6, so its charge is cancelled and the duel is
+#   disengaged before the form die is read.  Transformed but not in combat, it rolls the form die; the
+#   declared one is Madness, so it reverts to human form, loses the Frenzy the form gave it, and takes
+#   the printed Stupidity test of that turn (1, 1 passes).  The disengaged duel then ends.
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-transformed-bitten-out-of-combat-reverts-to-human-form-on-a-one
+  covers: [transformation-state--scope--transformation-state]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.danse-macabre-controlled]
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {transformed: true, equipment_cast_off: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 6}
+    - {key: round.0.first.danse-macabre.1, value: 6}
+    - {key: round.0.first.bitten, value: 1}
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: false, state.first.bitten_result: 1, state.first.frenzy: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The control of the reversion: the same seeded Transformed bearer without the Danse Macabre stays in
+#   combat on its own turn, so the printed "Transformed do not roll when in combat" asks for no form die
+#   - the strict tape declares none - and the form, with its Frenzy's two blows, stands.
+- audit_id: rule/mordheim/masters-of-horror-sylv/the-bitten--transform/mechanic.bitten-transform
+  id: a-seeded-transformed-bitten-in-combat-asks-for-no-form-die-and-stays-transformed
+  covers: [transformation-state--scope--transformation-duration]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: the-bitten
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {transformed: true, equipment_cast_off: true}
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: true, state.first.frenzy: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

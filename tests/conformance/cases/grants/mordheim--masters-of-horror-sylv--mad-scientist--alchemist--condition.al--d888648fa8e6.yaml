@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-aberrantius-vigortia
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +20,7 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
+# Disposition (recorded as PARTIAL until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
 #   horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist, whose
 #   KB effect is now unbound (a supplied-condition split: the start-of-game potion roll stays unbound,
 #   each potion is a bound condition); the duel behaviour they exercise is this identity's.  Inputs,
@@ -28,6 +28,15 @@
 #   and may still name the placeholder record they were authored against.  One scenario shows the
 #   supplied potion raises both Strength and Toughness on the printed Mad Scientist.  Gap: this identity
 #   has no contrast of its own; the no-potion control lives in condition.alchemist-resilience.
+
+# Status corrected 2026-11-18: the only pending item recorded below is the absence control, which is
+#   not an applicable requirement of this identity: this band rule's single route is the supplied
+#   condition, and the no-potion contrast together with the catalogue row's own boundaries are authored
+#   on the operator identity mechanic/condition.alchemist-aberrantius-vigortia
+#   (tests/conformance/cases/mechanics/condition.alchemist-aberrantius-vigortia.yaml, AUTHORED).  The
+#   disposition block above is kept as the record of that decision.
+# AUTHORED: the scenario below reads both printed halves of "6: Aberrantius Vigortia - Adds +1 to both
+#   Strength and Toughness." on the printed Mad Scientist, this identity's only observable route.
 
 # --- Authored scenarios ---
 

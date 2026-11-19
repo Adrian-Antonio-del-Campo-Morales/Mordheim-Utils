@@ -1,6 +1,20 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the two items the held clause still records are dispositions, not
+#   applicable requirements.  (1) "nor learn magic" is a between-battles decision outside this
+#   corpus's duel-and-construction scope, the declared binding carries no token for it and the band's
+#   Slayer ranks bind no arcane contract, so there is nothing for a scenario to observe.  (2) whether
+#   a band-wide token set may also refuse the Rememberer is an open KB data question, not a missing
+#   scenario; it is left recorded below for the rules owner.  All three representable parts of the
+#   printed prohibition, and the admitted psychology clause, carry scenarios, so the file is AUTHORED.
+#   The PARTIAL[no-armour-no-toys] marker is kept as that record (the weapon.starsword precedent).
+# Correction 2026-11-18 (Ruling A1, the Rememberer may wear armour; print governs): item (2) above is
+#   resolved, not open.  The rule's `applies_to.profile_ids` already names the five Slayer ranks
+#   (giant-slayer, doomseeker, troll-slayers, stubbles, axe-hurlers) and the Rememberer's own rule
+#   prints "A Rememberer is not a Slayer, and the slayer rules don't apply." The shared band-forbid
+#   collection now honours that recipient set, so the token set no longer reaches him; one scenario
+#   below authors his admission (the armour of his own list), and every Slayer refusal is unchanged.
 # authoring_progress: the admitted deathwish--scope--deathwish-psychology clause carries 3 authored scenario(s) derived
 # (the file holds 13 under this audit_id; the other 10 are no-armour-no-toys refusals; checked 2026-11-16) from the printed rule, the recorded semantic contract and the printed profile; any remaining
 # face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
@@ -36,6 +50,11 @@
 #   Open question, recorded and not authored: the binding carries no `profile_ids`, so its token set
 #   is band-wide, while the printed band text excludes the Rememberer from the Slayer ranks - whether
 #   a band-wide set may refuse him is a data decision this file does not take.
+#   Correction 2026-11-18 (Ruling A1): the premise above was mistaken - the binding has no
+#   `profile_ids` parameter, but the rule's own `applies_to.profile_ids` names the five Slayer ranks
+#   and excludes the Rememberer, as the print does ("A Rememberer is not a Slayer, and the slayer
+#   rules don't apply"). The question is closed: the band-wide token set does not refuse him, and the
+#   scenario the-rememberer-carries-the-armour-of-his-own-list authors that admission.
 
 #
 # Clause: deathwish--scope--deathwish-all-alone (scope: NO)
@@ -271,6 +290,30 @@
       band_id: dwarf-slayer-cult-web
       profile_id: axe-hurlers
       main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-rememberer-carries-the-armour-of-his-own-list
+  covers: [no-armour-no-toys]
+  # Ruling A1 (2026-11-18): "A Rememberer is not a Slayer, and the slayer rules don't apply." The
+  # printed prohibition ("Slayers may never use armour of any kind") names the Slayers, and the
+  # Rememberer's own rememberer-equipment-list offers light_armour, helmet and shield. Declared
+  # through the carried-item channel, the kit constructs; the giant-slayer opponent starts out of
+  # action so no die is needed.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      main_weapon_id: weapon.mace
+      owned_item_ids: [light_armour, helmet, shield]
     second:
       collection: mordheim
       band_id: dwarf-slayer-cult-web

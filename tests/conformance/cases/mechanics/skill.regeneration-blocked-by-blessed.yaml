@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.regeneration-blocked-by-blessed
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: the admitted clause is PARTIAL. Two scenarios evidence the boundary the contract actually implements: the same blocked-by-blessed flag leaves an ordinary attack's Regeneration roll fully intact (taken and then either good or bad). The printed core, a blessed attack preventing that roll, has no admitted build source for the attack.blessed tag (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -10,7 +10,18 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: the flag the clause needs is representable; the attack it must meet is not. The defender's flag is supplied exactly as the printed clause states it, through the combat trait regeneration_blocked_by_blessed (compiler.py:559, contracts.py:63), and the executor's consumer is the blocking term of prepare_special_save_context (contexts.py:408-414): with the flag set and attack.blessed on the incoming effect the Regeneration die is never requested. No admitted build source grants attack.blessed, so no corpus configuration can produce that incoming effect: a case-insensitive search of the whole repository finds the tag only as data for the consumer (phases.py/vectorized) and as a direct benchmark injection in the combat-lab CLI (apps/combat-lab/mordheim_combat_lab/cli/scenarios.py:401, first_attack_tags=('attack.blessed',), asserted in tests/python/cli/test_benchmarking.py:101), while the corpus builds every effect through the compiler from catalogue ids this repository does not contain for that tag. What IS authorable, and is authored below, is the boundary the same code path draws: the flag alone does not touch an unblessed attack, whose Regeneration die is requested and resolves normally. Missing datum: a selectable catalogue source of attack.blessed (or a supplied-input route for effect tags) so the blocked branch can be configured.
+# Disposition (carried as the PARTIAL block until 2026-11-18): the flag the clause needs is representable; the attack it must meet is not. The defender's flag is supplied exactly as the printed clause states it, through the combat trait regeneration_blocked_by_blessed (compiler.py:559, contracts.py:63), and the executor's consumer is the blocking term of prepare_special_save_context (contexts.py:408-414): with the flag set and attack.blessed on the incoming effect the Regeneration die is never requested. No admitted build source grants attack.blessed, so no corpus configuration can produce that incoming effect: a case-insensitive search of the whole repository finds the tag only as data for the consumer (phases.py/vectorized) and as a direct benchmark injection in the combat-lab CLI (apps/combat-lab/mordheim_combat_lab/cli/scenarios.py:401, first_attack_tags=('attack.blessed',), asserted in tests/python/cli/test_benchmarking.py:101), while the corpus builds every effect through the compiler from catalogue ids this repository does not contain for that tag. What IS authorable, and is authored below, is the boundary the same code path draws: the flag alone does not touch an unblessed attack, whose Regeneration die is requested and resolves normally. Missing datum: a selectable catalogue source of attack.blessed (or a supplied-input route for effect tags) so the blocked branch can be configured.
+
+# Status corrected 2026-11-18: the recorded blocker was stale, and the gap it named is now closed.
+#   An admitted build source of attack.blessed does exist in this corpus: condition.blessed-weapon
+#   (sources/knowledge/catalog/rules/conditions.yaml) binds profile.item-modifiers with
+#   effect_parameters tags [blessing.undead-possessed-on-two, attack.blessed] on the slot named by
+#   blessed_weapon_slots, for bearers tagged band.sisters-of-sigmar or band.witch-hunters - the route
+#   the accepted strigoi sibling already uses.  The blocked branch is therefore authored below on a
+#   Witch Hunter, so the printed core has a scenario and no applicable requirement is left open.
+#   The earlier 'missing datum' note is superseded; the block above is kept for the record.
+# AUTHORED: three scenarios - a blessed attack prevents the Regeneration roll entirely, while the
+#   same flag leaves an unblessed attack's Regeneration die intact on both of its faces.
 
 # --- Authored scenarios ---
 # The boundary of the printed rule, from the blocker's own flag: the defender carries the
@@ -57,6 +68,38 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.special.regeneration, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed core, authored 2026-11-18: a blessed attack prevents the Regeneration roll entirely.
+# The attacker is a Witch Hunter, a printed bearer of the supplied Blessed Weapon result, whose
+# main-hand mace is the blessed item (condition.blessed-weapon with blessed_weapon_slots [main] -
+# the same admitted build route the accepted strigoi sibling uses,
+# trollheim--chaos-streets-undead-bloodlines--band--strigoi-power-curse-of--b1c7be7591f4.yaml).  The
+# defender is the identical regenerating fixture of the two scenarios above, so the only change is
+# that the incoming attack is blessed: no Regeneration die is declared and the strict tape rejects
+# the request if it is still made, the unsaved Wound stands and the defender drops to one Wound.
+- audit_id: mechanic/skill.regeneration-blocked-by-blessed
+  id: a-blessed-attack-prevents-the-regeneration-roll
+  fighters:
+    first:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: witch-hunters
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.blessed-weapon]
+      trait_overrides: {blessed_weapon_slots: [main]}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {regeneration_save: 4, regeneration_blocked_by_blessed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: True, attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}

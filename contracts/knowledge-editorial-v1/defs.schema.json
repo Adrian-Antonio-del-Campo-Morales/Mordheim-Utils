@@ -252,6 +252,11 @@
               "type": "array",
               "items": { "$ref": "#/$defs/id" }
             },
+            "additive": {
+              "description": "A printed promotion rule (`compiler.promoted-hero-skill-access`) that only adds `allowed_skill_lists` ('he may always choose Shooting skills as one of his two skill list choices') rather than enumerating them; the promoted Henchman keeps the band's other Hero lists, including the special table (ruling 2026-11-19).",
+              "type": "boolean",
+              "const": true
+            },
             "bonuses": {
               "description": "Characteristic bonuses the binding grants.",
               "type": "object",

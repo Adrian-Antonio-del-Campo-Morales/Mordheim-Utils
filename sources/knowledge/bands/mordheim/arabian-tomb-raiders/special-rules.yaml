@@ -171,8 +171,11 @@ rules:
     es: >-
       Los héroes árabes pueden usar la siguiente tabla de habilidades en lugar de cualquiera de las
       tablas de habilidades estándar disponibles para ellos.
+  # "Arab Heroes may use the following skill table" (ruling 2026-11-19): the table reaches the band's
+  # Heroes only; a Henchman is refused it.
   applies_to:
     band: true
+    profile_types: [hero]
 - id: band--arabian-tomb-raiders-special-skills-sand-worm
   kind: warband_skill
   runtime:

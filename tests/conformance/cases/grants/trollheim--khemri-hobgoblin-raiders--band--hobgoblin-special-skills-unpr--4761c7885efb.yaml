@@ -1,9 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
-# authoring_status: PARTIAL
-# authoring_progress: the represented clauses are authored; the clause marked PARTIAL
-#   below carries its concrete blocker. PARTIAL is authoring and semantic contrast only;
-#   execution_status stays UNEXECUTED and no functional result exists.
+# authoring_status: AUTHORED
+# authoring_progress: the printed rule is authored in full: the declared attack cannot be parried, an
+#   undeclared attack is still parried, the unselected recipient is parried, another profile is refused,
+#   and - added 2026-11-19 - "one of its attacks" with a two-attack bearer, where the declared attack
+#   escapes the parry and its undeclared sibling in the same phase is parried.  execution_status stays
+#   UNEXECUTED and no functional result exists.
+# Status corrected 2026-11-19: the former blocker claimed the "one of its attacks" half had no eligible
+#   build because "both printed recipients have Attacks 1, so only unpredictable-attack.0 exists".  That
+#   was false: an off-hand weapon gives the bearer a second attack (the dagger is on the Raider list), so
+#   the Khann with a mace and an off-hand dagger has two allocated attacks; that tape is authored below.
+#   The former header also named only Sneaky and Khann as recipients, but the band skill's eligibility
+#   (bands/trollheim/khemri-hobgoblin-raiders/special-rules.yaml, band--hobgoblin-special-skills-
+#   unpredictable) lists khann, hobgoblin-shaman, scouts and sneaky.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,7 +21,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the pending half is an observation the printed recipients cannot produce: the route
+# AUTHORED: "This warrior may declare one of its attacks Unpredictable; that attack cannot be parried by
+#   the opponent." (shared-rule.unpredictable-attack, catalog/rules/special-rules.yaml), granted as the
+#   band skill band--hobgoblin-special-skills-unpredictable to khann, hobgoblin-shaman, scouts and sneaky.
+#   The bearer here is the Khann.
+#
+# Superseded blocker text (provenance only; disproved 2026-11-19, see the status correction above):
+#   (was PARTIAL [C]) the pending half is an observation the printed recipients cannot produce: the route
 # indexes one declared attack per phase (`round.0.first.unpredictable-attack.0`), and both printed
 # recipients (Sneaky, Khann) have printed Attacks 1 at recruitment, so "one of its attacks for which the
 # others stay parryable" has no eligible build in this revision.  The configuration is not the gap; the
@@ -75,6 +90,40 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: false, state.second.wounds: 1, state.second.parries_remaining: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "one of its attacks": the Khann carries a mace and an off-hand dagger, so it makes two attacks.  It
+# declares its first attack Unpredictable; only one attack may be declared, so the second is not offered
+# the declaration.  The sword-armed defender has one parry.  Both attacks hit; the declared first
+# attack cannot be parried and goes on to wound, while the undeclared second attack is parried with the
+# defender's single parry.  The first attack is the one declared because, were the second declared, the
+# single parry would already be spent on the first and the observation would be confounded.
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+  id: only-the-declared-one-of-its-attacks-escapes-the-parry
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      special_rule_ids: [band--hobgoblin-special-skills-unpredictable]
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.unpredictable-attack.0, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.parry, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.1.parried: true, state.second.wounds: 2,
+        state.second.parries_remaining: 0}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 - audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack

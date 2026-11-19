@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/channel-rats-mim/fugitives--charismatic/mechanic.opposite-sex-charge-test
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker ("the engine models neither sex nor the printed recipient
+#   list", "existing seams, not an already implemented Charismatic operator") is stale.  The band row
+#   binds mechanic.opposite-sex-charge-test, sex is a declared canonical trait, and
+#   modular/psychology.py gates the voluntary charge of an opposite-sex charger on a
+#   round.<i>.<side>.charismatic-charge Leadership test (the sex facts are declared the same way the
+#   accepted mechanic.man-hater tape declares them).  The two tapes below therefore state the gate
+#   directly and the clause is promoted.
 # authoring_progress: the corridor re-checked the clause note against the current KB and executor
 #   contract, because the 2026-10-14 snapshot predated the gate's activation: the band's own row
 #   fugitives--charismatic is runtime YES / implemented YES / grant profile with the live
@@ -23,7 +30,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the printed sentence gates an opposing charge on the opponent's sex ("any
+# AUTHORED: the printed gate is stated by the pair below - an opposite-sex charger takes the
+#   round.0.first.charismatic-charge Leadership test and a failure cancels the voluntary charge,
+#   while the same-sex control charges ungated and resolves ordinary close combat.
+#
+# Superseded blocker (retained verbatim; its claim that the engine models neither sex nor the gate is
+# corrected by the dated status line above):
+# [C] the printed sentence gates an opposing charge on the opponent's sex ("any
 # model from the opposite sex (Sisters of Sigmar, Amazons, Kislev Ranger etc), must make a Leadership
 # test if they wish to charge a Fugitive").  The recorded effect is the proposed
 # proposed.sex-qualified-charge-gate, and the register states plainly that the complete resolve_fear

@@ -610,14 +610,18 @@ rules:
     - shaman
 - id: shoota-teams--teamwork
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
+    # Reconciled 2026-11-19 (was LATER / deferred.other): no work is pending. The printed "count as
+    # one model" is delivered by the profile's own single characteristic block in profiles.yaml, so
+    # the effect is covered.elsewhere. Its placeholder scenarios were retired on 2026-11-19 (they
+    # asserted only the printed characteristic block; no admitted identity held them).
     - id: profile.single-model-projection
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: covered.elsewhere
   name: Teamwork
   source:
     manual: mordheimer.net
@@ -699,14 +703,18 @@ rules:
     - shoota-teams
 - id: snotling-mobs--teamwork
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
+    # Reconciled 2026-11-19 (was LATER / deferred.other): no work is pending. The printed "count as
+    # one model" is delivered by the profile's own single characteristic block in profiles.yaml, so
+    # the effect is covered.elsewhere. Its placeholder scenarios were retired on 2026-11-19 (they
+    # asserted only the printed characteristic block; no admitted identity held them).
     - id: profile.single-model-projection
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: deferred.other
+      reason: covered.elsewhere
   name: Teamwork
   source:
     manual: mordheimer.net

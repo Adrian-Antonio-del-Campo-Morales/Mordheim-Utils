@@ -1725,6 +1725,22 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: mechanic.blood-dragon-sword-master
+  handler: effect-set
+  parameters:
+    tags:
+    - rule.blood-dragon-sword-master
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.master-of-blades-axe-reroll
+  handler: effect-set
+  parameters:
+    tags:
+    - rule.dwarf-axe-parry-reroll
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: skill.thick-skull
   handler: effect-set
   parameters:

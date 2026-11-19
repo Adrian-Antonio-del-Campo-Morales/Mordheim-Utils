@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/muzil-rel/scholar--field-of-scholarship/condition.poetry-victorious-leader
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the ruling "The Scholar's Physiology reroll stays out of the duel"
+#   (docs/decisions/design-rulings.md, 2026-11-19) decides the question these files cited as MHD-13
+#   (outputs/human-decisions.md does not exist): the injury reroll is a post-battle campaign
+#   consequence, scope NO. The printed "if your warband won the last battle" gate is carried by
+#   supplying condition.poetry-victorious-leader itself (the supplied-condition convention), and the
+#   binding is live, so every applicable requirement is represented.
 # authoring_progress: both admitted clauses now carry scenarios, written from the printed sentence and this [Reconciled 2026-10-14: the injury-reroll tape was withdrawn against the register's scope-NO
 #   disposition; only the leader-leadership tapes remain.]
 #   origin's accepted contract: the Physiology re-roll on the duel's own injury route (the post-battle
@@ -29,15 +35,15 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 #
-# PARTIAL: [E] accepted scope disposition, recorded against the canonical register: the row
+# Disposition (retired 2026-11-19 by the ruling above; kept as provenance): [E] accepted scope disposition, recorded against the canonical register: the row
 #   field-of-scholarship--scope--injury-reroll carries clause_scope NO (the printed producer is the
 #   post-battle Serious Injuries table, campaign scope), so the previous tape
 #   the-scholar-rerolls-an-injury-result-he-suffers (which covered this clause) is withdrawn and no
 #   tape may cover it. The contradiction between that historical scope review's admitted facet and
-#   the canonical register is recorded for the owner as decision MHD-13 in
-#   outputs/human-decisions.md; nothing here re-decides it. Retained previous contract text:
+#   the canonical register is recorded for the owner as decision MHD-13, now decided by the 2026-11-19
+#   ruling (scope NO). Retained previous contract text:
 #
-# PARTIAL: [C] asserted as the admitted supplied leader
+# AUTHORED: asserted as the admitted supplied leader
 #   condition, with its unrepresentable gate recorded.  The printed sentence is "your leader adds +1 to his
 #   Leadership for his first leadership test in a scenario", and the register admits the facet as the supplied
 #   leader condition the ruling allows ("an external aura, leader or temporary effect may be supplied as an

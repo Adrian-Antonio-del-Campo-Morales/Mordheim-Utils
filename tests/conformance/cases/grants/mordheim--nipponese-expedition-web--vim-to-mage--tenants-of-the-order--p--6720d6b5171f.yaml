@@ -1,12 +1,18 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/nipponese-expedition-web/vim-to-mage--tenants-of-the-order/profile.equipment-restrictions
-# authoring_status: PARTIAL
-# authoring_progress: the admitted owned-equipment-ban clause now carries both directions of the printed
-#   restriction over the supplied carried set: the printed exception (a walking staff/club and a dagger) is
-#   admitted and any further owned item is refused.  The ownership-exception contract the refusal waits on is
-#   named in the clause marker below as the implementation defect those tapes detect, not as a reason to
-#   withhold the requirement.  REVIEWED still requires manual semantic review and execution_status stays
-#   UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: both directions of the printed restriction over the supplied carried set are
+#   authored: the printed exception (a walking staff/club and a dagger) is admitted and any further
+#   owned item is refused with the shared profile.equipment-restrictions decision's own sentence.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# Status corrected 2026-11-19: the former blocker claimed a "PENDING IMPLEMENTATION DEFECT" (no
+#   ownership-exception contract and no profile binding, so the refusal could not be produced).  That
+#   was false: the record binds profile.equipment-restrictions with allowed_kinds and implemented: 'YES'
+#   (sources/knowledge/bands/mordheim/nipponese-expedition-web/special-rules.yaml, the
+#   vim-to-mage--tenants-of-the-order runtime block), its consumer is the shared eligibility decision
+#   (packages/typescript/domain/eligibility/index.ts, the "may not be carried" issue), and both
+#   scenarios below already pass with the refusal matching their expect_error exactly.  No new
+#   scenario was needed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,7 +21,23 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the printed requirement is declared below in both directions and the
+# AUTHORED: the printed requirement "With the exception of a walking staff (club) and a dagger the
+#   Vim-To Mage may never have any equipment" is declared in both directions over the possession channel
+#   (FighterBuild.owned_item_ids): the printed club and dagger are admitted, and an owned sword is refused
+#   with the shared decision's own sentence family "<item> may not be carried; the printed clause admits
+#   only <allowed_kinds>." (packages/typescript/domain/eligibility/index.ts; mirrored in
+#   packages/python/roster-construction/mordheim_construction/_eligibility.js).  The recipient is this
+#   band's own profiles.yaml id vim-to-mage, whose fixed_equipment already carries club and dagger and
+#   whose equipment_lists is empty.
+#   KB NOTE (recorded, the KB is not changed here): the binding's allowed_kinds lists weapon.mace beside
+#   weapon.club and weapon.dagger, although the print admits only the club and the dagger.  It is
+#   harmless today because a mace is refused earlier by the profile's (empty) equipment list, so the
+#   extra row never admits anything; it remains visible in the refusal sentence the second scenario
+#   quotes verbatim.
+#   REVIEWED still requires manual semantic review.
+#
+# Superseded blocker text (provenance only; disproved 2026-11-19, see the status correction above):
+#   (was PARTIAL [C]) the printed requirement is declared below in both directions and the
 #   contract it waits on is named exactly.
 #   PRINTED REQUIREMENT AND RECIPIENT: "With the exception of a walking staff (club) and a dagger the Vim-To
 #   Mage may never have any equipment", i.e. validate the whole carried set rather than only the active hands.
@@ -27,7 +49,8 @@
 #   every non-informational issue's own message, so the possession set is a real receipt and not an invented
 #   field.  The printed exception is therefore declared as an admitted build and any further owned item as a
 #   refusal whose fragment is the shared equipment decision's own sentence family ("equipment is not available
-#   to <band>/<profile>"); the exact raised sentence is the implementation's to produce.
+#   to <band>/<profile>" [wrong: the real family is "<item> may not be carried; ..."]); the exact raised
+#   sentence is the implementation's to produce.
 #   PENDING IMPLEMENTATION DEFECT (recorded, not a reason to withhold): the recorded note still stands - "An
 #   active_weapon_permits binding is insufficient: that contract deliberately permits ownership of other
 #   equipment. Add the ownership exception contract at the shared decision layer; canonical data and both
@@ -76,9 +99,9 @@
   id: any-item-beyond-the-printed-staff-and-dagger-is-refused
   # The printed prohibition over the whole carried set rather than the active hands: the Mage owns the printed
   # staff and dagger plus a sword, so the item beyond the two the print allows must be refused.  The fragment
-  # is the shared equipment decision's own sentence family (the raised sentence is the implementation's own);
-  # the ownership-exception contract named in the marker is what has to produce it, so this tape is written
-  # for that contract and fails until it exists.
+  # is the shared profile.equipment-restrictions decision's own sentence ("<item> may not be carried; the
+  # printed clause admits only ..."), raised through the bound allowed_kinds (see the KB note in the marker
+  # on the extra weapon.mace row).
   fighters:
     first:
       collection: mordheim

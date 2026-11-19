@@ -1339,6 +1339,35 @@ conditions:
       binding:
         kind: mechanic
         id: condition.netted
+- id: condition.mouth-sewn
+  name: Supplied Sewn Mouth
+  name_i18n:
+    es: Boca Cosida Aportada
+  effect: >-
+    The supplied model's mouth was sewn shut by Needle and Thread: a Leader carrying it cannot use
+    his leader ability for the remainder of the battle, so no nearby warrior may borrow his
+    Leadership. The printed bar on casting spells is out of scope (magic) and is not simulated.
+  effect_i18n:
+    es: >-
+      La boca de la miniatura indicada fue cosida con Aguja e Hilo: un Líder que la tenga no puede
+      usar su capacidad de líder durante el resto de la batalla, así que ningún guerrero cercano
+      puede tomar prestado su Liderazgo. La prohibición impresa de lanzar hechizos queda fuera de
+      alcance (magia) y no se simula.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Crow Master, The
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.mouth-sewn
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.mouth-sewn
 - id: condition.nuttaz-charge
   name: Required Nuttaz Charge
   name_i18n:

@@ -71,7 +71,7 @@ def test_pirate_mercenary_access_master_of_arms_and_mutation_contracts():
     assert pirate.armour_save <= 5
 
     ogre = compile_fighter(build(
-        "maneaters", "captain", main_weapon_id="weapon.double-handed-weapon", off_hand_id="weapon.sword",
+        "maneaters", "captain", main_weapon_id="weapon.morning-star", off_hand_id="weapon.club",
         special_rule_ids=("band--ogres-special-skills-master-of-arms",),
     ), ROOT)
     assert ogre.off_hand_attacks

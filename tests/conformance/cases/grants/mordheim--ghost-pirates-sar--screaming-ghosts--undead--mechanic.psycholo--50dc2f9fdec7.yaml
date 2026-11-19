@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/ghost-pirates-sar/screaming-ghosts--undead/mechanic.psychology-immunity
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the recorded gap was not a missing requirement but a fixture choice.  All three
+#   printed consequences of the Undead rule's psychology immunity - the skipped Stupidity test, the
+#   suppressed Frenzy and the denied Hatred re-roll - already carry scenarios, and the printed
+#   recipient is exercised on the band's own Screaming Ghost.  That the Frenzy and Hatred facets are
+#   asserted on the hand-built fixture shared by the immune-to-psychology family is the corpus's
+#   established pattern for this operator, not an unauthored requirement.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +15,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/ghost-pirates-sar/special-rules.yaml
-# PARTIAL: Two scenarios.  The first was split out on 2026-11-16 from the screaming-ghosts
+# AUTHORED: 2 scenarios cover the printed Undead psychology immunity: the shared hand-built
+#   fixture shows the Stupidity test skipped, the Frenzy suppressed and the Hatred re-roll denied on
+#   one operator, and the printed screaming-ghosts profile built from the band package takes no
+#   Stupidity test from a supplied head-injury source.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   Two scenarios.  The first was split out on 2026-11-16 from the screaming-ghosts
 #   trait.poison-immune file that hosted it after the KB split the printed Undead rule into one effect per
 #   consequence (inputs, dice and expectations unchanged).  It is the hand-built combined fixture shared
 #   by the immune-to-psychology family: Stupidity, Hatred (Undead) and the immunity injected through

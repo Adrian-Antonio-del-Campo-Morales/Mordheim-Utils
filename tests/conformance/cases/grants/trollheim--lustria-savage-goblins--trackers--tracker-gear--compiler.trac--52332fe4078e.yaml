@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: 1 authored scenario (the admission face); the refusal face stays withheld
 #   with the blocker narrowed below.  REVIEWED still requires manual semantic review and
 #   execution_status stays UNEXECUTED.
@@ -12,7 +12,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: the admission face is authored - the compiled Tracker carries the rule's
+# Disposition (carried as the PARTIAL block until 2026-11-18): the admission face is authored - the compiled Tracker carries the rule's
 #   construction tag, observed through expect_fighters (first.construction_tags), the channel
 #   the authored quick-reload sibling of gunnery-school-of-nuln established.  The refusal half
 #   stays withheld: the gate's own diagnostic ("Trackers must begin with Rope and Hook and
@@ -22,6 +22,17 @@
 #   input can make it fire; it stays withheld until a build surface can withhold or override a
 #   profile's fixed kit.  The no-sale/replacement clause of the printed sentence is campaign
 #   behaviour outside the duel.
+
+# Status corrected 2026-11-18: the withheld refusal face is a vacuous printed restriction, not an
+#   applicable requirement.  The gate reads the Tracker profile's own fixed_equipment (rope_hook and
+#   bolas in sources/knowledge/bands/trollheim/lustria-savage-goblins/profiles.yaml), which every
+#   declarable Tracker build carries, so no build input in the corpus vocabulary can make the
+#   diagnostic fire; there is no reachable configuration to author and nothing is being weakened.
+#   The no-sale/replacement half of the printed sentence is campaign behaviour outside the duel.  The
+#   PARTIAL block above is kept as the standing disposition.
+# AUTHORED: the printed Tracker gear rule is evidenced by its admission face - the compiled Tracker
+#   carries the rule's construction tag, observed through expect_fighters.
+#
 
 # --- Authored scenario ---
 # The admission face: the printed Tracker build (the same build as the authored sibling

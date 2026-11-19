@@ -13,9 +13,9 @@
 #   Psychology-immune exemption and the absence of the gate without the power.  REVIEWED still requires
 #   manual semantic review and execution_status stays UNEXECUTED.
 # Real-recipient addendum (2026-11-16): one further scenario builds the printed Von Carstein Vampire
-# and selects Hypnotic Gaze through special_rule_ids. It currently fails because construction
-# refuses every eligible Vampire (see the ENGINE-DEFECT note on that scenario); the printed
-# expectation is kept.
+# and selects Hypnotic Gaze through special_rule_ids; a second does the same for the Lahmia Vampire
+# (both bloodlines may take the power, user ruling 2026-11-19). The former ENGINE-DEFECT is gone: both
+# builds now construct (corrected 2026-11-19).
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -106,10 +106,8 @@
 # a-failed-gaze-test-bars-the-target-and-makes-attacks-hit-automatically, but the gazer is the
 # printed Von Carstein Vampire with Hypnotic Gaze selected through special_rule_ids - the KB
 # record's eligibility lists von-carstein-vampire and lahmia-vampire. No charge is declared, so the
-# vampire's Fear asks for no die. ENGINE-DEFECT (2026-11-16): construction refuses this printed
-# route with "Vampiric Powers must belong to the Vampire's bloodline:
-# ['band--vampire-power-hypnotic-gaze']" (the rule id carries no bloodline prefix); the printed
-# expectation is kept.
+# vampire's Fear asks for no die. (The 2026-11-16 ENGINE-DEFECT, a bloodline refusal of this route, no
+# longer occurs: the bloodline gate reads the record's eligibility list. Corrected 2026-11-19.)
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/mechanic.hypnotic-gaze
   id: the-real-von-carstein-vampire-gaze-bars-the-target-and-makes-attacks-hit-automatically
   fighters:
@@ -117,6 +115,36 @@
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: von-carstein-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--vampire-power-hypnotic-gaze]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  decisions:
+  - {key: round.0.second.hypnotic-gaze, value: true}
+  rolls:
+  - {key: round.0.second.hypnotic-gaze.0, value: 6}
+  - {key: round.0.second.hypnotic-gaze.1, value: 6}
+  - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.charm_attack_blocked: true, state.second.charm_auto_hit: true, state.second.condition: STANDING,
+      state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient: the same duel with the printed Lahmia Vampire as the gazer. Hypnotic Gaze is
+# available to both the Von Carstein and the Lahmia bloodlines (user ruling 2026-11-19).
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/mechanic.hypnotic-gaze
+  id: the-real-lahmia-vampire-gaze-bars-the-target-and-makes-attacks-hit-automatically
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
       special_rule_ids: [band--vampire-power-hypnotic-gaze]

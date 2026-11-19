@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the held term is settled by the ruling "Natural armour does not
+#   lift the Toughened Leathers restriction" (docs/decisions/design-rulings.md, 2026-11-19): the
+#   leathers' own "cannot be combined ... except a helmet or buckler" governs and the compiler's
+#   cancellation stays; no equipment list of this band offers Toughened Leathers, so a
+#   hide-over-leathers build has no legal recipient here. Every applicable requirement is represented.
 # authoring_progress: the recorded "equipment bonuses add to the natural save" observable carries two
 # authored scenarios (the shield-improved five that saves and the four that does not), derived from
 # the printed sentence and the recorded contract.  What stays pending below is one face and it is a
@@ -16,7 +21,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [D] 2 scenarios cover the printed "may be combined with other equipment to improve
+# AUTHORED: 2 scenarios cover the natural save improved by carried equipment (5+ holds, 4 fails).
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [D] 2 scenarios cover the printed "may be combined with other equipment to improve
 # it": the Boss carrying a shield saves the unsaved wound on the improved five, and the four is not
 # saved, so the natural save really is improved by the carried equipment rather than left at six.
 # Bearer is the printed Black Orc Boss profile, which receives the natural save from its own profile

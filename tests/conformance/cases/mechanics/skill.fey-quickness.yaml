@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/skill.fey-quickness
-# authoring_status: TODO
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios (status corrected 2026-11-18). The printed close-combat faces
+#   are evidenced on a hand-built bearer: the 6+ avoidance (6 holds, 5 fails), the Step Aside
+#   upgrade to one 4+ save (4 holds, 3 fails) and the no-rule control. The missile half and the
+#   Dodge upgrade are outside the duel (Dodge is a missile save, `out-of-scope.shooting`).
+#   REVIEWED still requires manual semantic review.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +14,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/catalog/mechanics/close-combat.yaml
-# TODO: Review the rule and author all required scenarios.
+# AUTHORED: 5 scenarios cover the 6+ avoidance at its boundary, the Step Aside 4+ upgrade at its
+#   boundary and the control without the rule.
 
 
 # Migrated 2026-11-16 from the retired catalogue-skill identity
@@ -203,3 +209,26 @@
   expect_final:
     rounds_executed: 1
     termination_reason: horizon
+
+# The Step Aside upgrade is a 4+, not a 3+: one face below it the single save fails and the
+# wound is taken (the same duel as step-aside-replaces-the-save-with-one-four-plus).
+- audit_id: mechanic/skill.fey-quickness
+  id: step-aside-upgrade-fails-on-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.fey-quickness, skill.step-aside]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 2}
+  - {key: round.0.first.attack.0.special.ward, value: 3}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

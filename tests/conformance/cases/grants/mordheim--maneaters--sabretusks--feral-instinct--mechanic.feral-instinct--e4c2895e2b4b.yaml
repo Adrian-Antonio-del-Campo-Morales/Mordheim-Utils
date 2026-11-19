@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/maneaters/sabretusks--feral-instinct/mechanic.feral-instinct
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker ("the record carries no effect id", "the consumer has no
+#   such branch", "a new behaviour is needed") is stale.  The band row sabretusks--feral-instinct
+#   binds the scope-YES effect mechanic.feral-instinct
+#   (sources/knowledge/bands/mordheim/maneaters/special-rules.yaml) and the named consumer seam does
+#   request the turn-start test now: modular/rounds.py asks for
+#   round.<i>.<side>.feral-instinct and records the outcome as feral_instinct_failed, which is the
+#   observable the two tapes below read.  The clause is promoted.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -10,7 +17,13 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: feral-instinct--scope--leadership-test (scope: YES)
-# PARTIAL[feral-instinct--scope--leadership-test]: [C] not asserted. the admitted facet is the compulsory Leadership test the Sabretusk takes at the beginning of the Ogres' turn, whose only printed consequence - the out-of-control state in which the opponent moves the beast - is the excluded scope-NO sibling. the record carries no effect id, its relation is only related, its sole consumer is rounds.resolve_round and its implementation_work is behaviour, and the register states that the exact out-of-control consequence is not in the KB and that the consumer has no such branch, so a new behaviour is needed. Two representations are missing: the effect identity/binding for a turn-start compulsory test on this beast, and the branch in rounds.resolve_round that requests it; without the consequence the test leaves no observable of its own, so a tape would only restate a supplied state. Searching the record, its named consumer seam and the authored corpus found no operator, roll key or diagnostic for either. REVIEWED still requires manual semantic review.
+# AUTHORED[feral-instinct--scope--leadership-test]: the compulsory turn-start Leadership test is
+#   asserted by the boundary pair below (2+2 passes the printed Leadership 4, 6+5 fails and the
+#   failure is carried in the state as feral_instinct_failed); the failed test's printed consequence,
+#   the opponent moving the beast, is the excluded scope-NO sibling.
+#
+# Superseded blocker (retained verbatim; corrected by the dated status line above):
+# [C] not asserted. the admitted facet is the compulsory Leadership test the Sabretusk takes at the beginning of the Ogres' turn, whose only printed consequence - the out-of-control state in which the opponent moves the beast - is the excluded scope-NO sibling. the record carries no effect id, its relation is only related, its sole consumer is rounds.resolve_round and its implementation_work is behaviour, and the register states that the exact out-of-control consequence is not in the KB and that the consumer has no such branch, so a new behaviour is needed. Two representations are missing: the effect identity/binding for a turn-start compulsory test on this beast, and the branch in rounds.resolve_round that requests it; without the consequence the test leaves no observable of its own, so a tape would only restate a supplied state. Searching the record, its named consumer seam and the authored corpus found no operator, roll key or diagnostic for either. REVIEWED still requires manual semantic review.
 #
 # Clause: feral-instinct--scope--movement-control (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.

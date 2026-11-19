@@ -1,6 +1,10 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the open reading is settled by the ruling "Hypnotic Musk gates the
+#   animal's charge" (docs/decisions/design-rulings.md, 2026-11-19): the printed "wishing to charge
+#   him must pass a Leadership test to do so" is a charge gate, which these scenarios assert and
+#   modular/psychology.py implements (with the printed mount and Goading exceptions).
 # Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Skaven of Clan
 # Moulder profile itself (packmaster) and select band--clan-moulder-special-skills-hypnotic-musk
 # through special_rule_ids, so the KB grant of this identity is exercised rather than only the
@@ -14,7 +18,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/skaven-of-
+# AUTHORED: 4 scenarios cover the animal charger's failed musk gate and the ungated non-animal charger.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/skaven-of-
 #   clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-
 #   web.special.clan-moulder-special-skills, whose KB effect is now unbound (covered.elsewhere: each
 #   listed skill is its own bound identity); the duel behaviour they exercise is this identity's.

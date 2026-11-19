@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/ghost-pirates-sar/skeleton-mates--undead/mechanic.psychology-immunity
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +9,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 # Record: sources/knowledge/bands/mordheim/ghost-pirates-sar/special-rules.yaml
-# PARTIAL: Two scenarios.  The first was split out on 2026-11-16 from the skeleton-mates
+# Disposition (recorded as PARTIAL until 2026-11-18): Two scenarios.  The first was split out on 2026-11-16 from the skeleton-mates
 #   trait.poison-immune file that hosted it after the KB split the printed Undead rule into one effect per
 #   consequence (inputs, dice and expectations unchanged).  It is the hand-built combined fixture shared
 #   by the immune-to-psychology family: Stupidity, Hatred (Undead) and the immunity injected through
@@ -21,6 +21,16 @@
 #   profile, the route of the rule/trollheim/lustria-norse/wulfen--immune-to-psychology file.  The Frenzy
 #   and Hatred facets remain asserted on the hand-built fixture only.  REVIEWED still requires manual
 #   semantic review.
+
+# Status corrected 2026-11-18: the block above records provenance and fixture choice, not a missing
+#   requirement.  Every applicable consequence of the printed Undead immunity is represented: the
+#   skipped Stupidity test, the suppressed Frenzy and the denied Hatred re-roll on the shared operator,
+#   and the skipped Stupidity test on the printed skeleton-mates itself.  That the Frenzy and Hatred faces
+#   are asserted on the hand-built mirror is a fixture disposition - no skeleton-mates can carry a second
+#   psychology grant for the immunity to suppress - and a Fear test is dispositioned out of the duel
+#   because the same printed rule makes the bearer cause Fear, so it cannot discriminate.
+# AUTHORED: the two scenarios below cover the printed "Immune to Psychology" consequence of the Undead
+#   rule on both the shared operator and the printed skeleton-mates recipient.
 
 # --- Authored scenarios ---
 

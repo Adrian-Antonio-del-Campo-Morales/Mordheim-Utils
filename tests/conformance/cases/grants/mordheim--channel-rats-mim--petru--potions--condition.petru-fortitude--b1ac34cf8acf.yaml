@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-fortitude
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +20,7 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
+# Disposition (carried as the PARTIAL block until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
 #   mim/petru--potions/unimplemented.channel-rats-mim.petru.potions, whose KB effect is now unbound (a
 #   supplied-condition split: the pre-battle draught roll stays unbound, each result is a bound
 #   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
@@ -28,6 +28,15 @@
 #   placeholder record they were authored against.  One scenario shows the supplied draught grants one
 #   extra wound on the printed Petru.  Gap: this identity has no contrast of its own; the no-draught
 #   control lives in condition.petru-strength.
+# Status corrected 2026-11-18: neither pending item is an applicable requirement of this identity.
+#   The missing "contrast" is the shared no-draught control of the four petru--potions results, which
+#   is authored once on the sibling identity condition.petru-strength (file mordheim--channel-rats-
+#   mim--petru--potions--condition.petru-strength--dae2c9119a74.yaml, authoring_status AUTHORED) -
+#   covered elsewhere, not absent.  The printed rider "once lost the wound cannot be restored" is
+#   vacuous inside the 1v1 duel, which carries no healing or recovery step able to restore a lost
+#   Wound, so it has no observable face to author.  The disposition block above is kept.
+# AUTHORED: the printed "6 Fortitude (gains an extra wound for the whole battle)" is evidenced on the
+#   printed Petru: the supplied draught starts the Hero at three of its printed two Wounds.
 
 # --- Authored scenarios ---
 

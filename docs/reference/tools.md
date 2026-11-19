@@ -705,7 +705,7 @@ Permanent validation and generation:
 | `tools/knowledge/export_compiled_cases.py` | Python export API for explicit compiled case plans; reads the KB during fixture generation. |
 | `tools/knowledge/audit_kb_conformance.py` | Check canonical knowledge against the expected model. |
 | `tools/knowledge/audit_schema_strictness.py` | Detect gaps and unintended permissiveness in editorial schemas. |
-| `tools/conformance/backlog_batches.py` | Divide the rules-conformance authoring backlog (admitted identities without scenarios) into batches by printed-rule group, route and effort: `--table` (the plan of record in `TODO.md`), `--batch <id>`, `--out <work-dir>` (id lists for the removal probe). Reads the KB and the corpus, writes neither. Engine-free. |
+| `tools/conformance/backlog_batches.py` | Divide the rules-conformance authoring backlog (admitted identities without scenarios) into batches by printed-rule group, route and effort: `--table` (see *New authoring backlog* in `tests/conformance/README.md`), `--batch <id>`, `--out <work-dir>` (id lists for the removal probe). Reads the KB and the corpus, writes neither. Engine-free. |
 | `tools/knowledge/clauses.py` | Clause inventory of the knowledge base and its declared test coverage: `inventory`, `coverage [--pending]`, `check` (unknown references, inconsistencies) and `report` (the CSVs behind `check report rules`). Engine-free. |
 | `tools/knowledge/generate_knowledge_web.py` | Generate deterministic JSON consumed by the web application. |
 | `tools/knowledge/artefact_document.py` | Load the complete generated web KB artefact (initial document plus prose, display-text and catalogue fragments) for tools and tests. |

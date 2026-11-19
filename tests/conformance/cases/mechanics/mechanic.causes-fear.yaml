@@ -84,3 +84,46 @@
     0: {attacks.0.damage: 1, state.second.fear_hit_sixes: False, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# Moved 2026-11-19 from rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
+# (covered.elsewhere): it evidences mechanic/mechanic.causes-fear on a printed non-Undead profile;
+# inputs, rolls and expectations unchanged.
+# The printed Psychology face: charging an opponent who causes Fear, the Tomb Scorpion must take its own
+# Leadership test, and the declared 6+6 fails its printed Leadership 4, so the charge is cancelled.
+- audit_id: mechanic/mechanic.causes-fear
+  id: the-printed-living-scorpion-takes-the-fear-test-for-its-charge--mordheim-tomb-scorpion
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 6}
+    - {key: round.0.second.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.engaged: False, state.failed_charges: ['second'], state.second_charged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Moved 2026-11-19 from rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+# (covered.elsewhere): it evidences mechanic/mechanic.causes-fear on a printed non-Undead profile;
+# inputs, rolls and expectations unchanged.
+# The printed Psychology face: charging an opponent who causes Fear, the Tomb Scorpion must take its own
+# Leadership test, and the declared 6+6 fails its printed Leadership 4, so the charge is cancelled.
+- audit_id: mechanic/mechanic.causes-fear
+  id: the-printed-living-scorpion-takes-the-fear-test-for-its-charge--khemri-tomb-scorpion
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 6}
+    - {key: round.0.second.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.engaged: False, state.failed_charges: ['second'], state.second_charged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

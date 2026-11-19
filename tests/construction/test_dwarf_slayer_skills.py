@@ -170,7 +170,9 @@ def test_born_marksmen_opens_shooting_only_for_the_promoted_axe_hurler():
     assert shooting[0]["skills"], "the printed Shooting list is published, not the whole catalogue"
     choices = desktop_call("skillChoices", promoted, ROOT, package=pack, profile=row)
     assert choices["skill.quick-shot"] is True
-    assert choices["skill.ferocious-charge"] is False
+    # A promoted Slayer Henchman takes the Slayer skills (user ruling 2026-11-19): the band's Slayer
+    # rules name the Axe Hurlers, and Born Marksmen adds Shooting without excluding the Slayer list.
+    assert choices["skill.ferocious-charge"] is True
 
 
 def _supplied(band, profile, **overrides):

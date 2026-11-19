@@ -1,6 +1,9 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/horned-hunters/drunken-gang--drunk/mechanic.automatic-leadership
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the non-Psychology Leadership face is evidenced through the
+#   crude-belch route (rounds.py:829-838 requests a Leadership test without psychology=True); the
+#   earlier note that no such route exists was wrong.
 # authoring_progress: the admitted automatic-leadership clause carries 4 authored scenarios (2026-11-16); three read
 #   through the only Leadership tests this 1v1 setup can force on the Drunken Gang: the round-0 Fear
 #   test of the charged warrior, the round-0 Fear test of the charging warrior, and the Stupidity
@@ -19,7 +22,18 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] CLOSED BY THE REGISTER (M4e-psychology-leadership wave, 2026-10-09): the row's own notes now record the accepted connection of mechanic.automatic-leadership to the shared operator for this printed recipient - 'the band rule gains the shared binding and the canonical compiler/catalogue route reaches it', focal evidence tests/python/combat/modular/test_t13_m4e_connections.py - so the missing-KB-binding step is closed; the held face is only the [C] non-Psychology Leadership request above.  Original note follows: the printed sentence passes all Leadership-based tests the gang is
+# AUTHORED: the admitted clause is evidenced end to end.  Its non-Psychology Leadership face
+#   is carried by the two crude-belch tapes at the end of this file: modular/rounds.py:829-838
+#   issues `round.<i>.<label>.crude-belch-ogre.leadership` through resolve_local_leadership
+#   WITHOUT psychology=True and without fear=, so on that request the psychology and fear
+#   short-circuits of leadership.py:141-151 cannot fire and mechanic.automatic-leadership is the
+#   only tag that suppresses the dice - which separates this clause from
+#   mechanic.psychology-immunity.  The auto-pass tape declares no Leadership die for the belch
+#   and the bearer keeps its printed to-hit target; the contrast tape, on a warrior with the same
+#   printed characteristics but no auto-pass, declares both dice and a 6+6 failure costs the hit.
+#   REVIEWED still requires manual semantic review.
+# Disposition (retired 2026-11-18, kept as provenance; its 'no non-Psychology Leadership test
+#   route' finding is superseded by the correction above): [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] CLOSED BY THE REGISTER (M4e-psychology-leadership wave, 2026-10-09): the row's own notes now record the accepted connection of mechanic.automatic-leadership to the shared operator for this printed recipient - 'the band rule gains the shared binding and the canonical compiler/catalogue route reaches it', focal evidence tests/python/combat/modular/test_t13_m4e_connections.py - so the missing-KB-binding step is closed; the held face is only the [C] non-Psychology Leadership request above.  Original note follows: the printed sentence passes all Leadership-based tests the gang is
 #   required to take, and the three scenarios cover the Leadership tests this setup can force on it:
 #   the charged warrior's Fear test, the charging warrior's Fear test, and the Stupidity test of the
 #   declared Head Injury result 6.
@@ -119,4 +133,66 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.danse_macabre_controlled: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Correction (2026-11-18): the non-Psychology Leadership face named as missing above is reachable.
+# modular/rounds.py:829-838 requests `round.<i>.<label>.crude-belch-ogre.leadership` through
+# resolve_local_leadership WITHOUT psychology=True and without fear=, so on that request neither the
+# psychology nor the fear short-circuit of leadership.py:141-151 can fire and
+# `mechanic.automatic-leadership` is the only tag that suppresses the dice - which separates this
+# clause from mechanic.psychology-immunity.  Printed source of the request: Maneaters/Ogres special
+# skills, Crude Belch - "A Hero with this 'condition' may unleash his thunderous fumes on all enemies
+# engaged in close combat.  Those that do not pass a Ld test suffer a -1 'to hit' modifier for the
+# turn."  Worked dice keys: tests/conformance/cases/mechanics/mechanic.crude-belch-ogre.yaml.
+# The two tapes below are the same duel twice: the printed Drunken Gang as the belched enemy, and a
+# hand-built warrior carrying the same printed characteristics but not the auto-pass.
+
+# The printed Drunken Gang is engaged by an Ogre who unleashes the belch.  The Leadership test the belch
+# asks of it is auto-passed before any die is requested, so the strict tape declares NO
+# `round.0.first.crude-belch-ogre.leadership` die at all - an implementation that asked for one
+# would fail the case - and the Drunken Gang keeps its unmodified 4+ to hit.
+- audit_id: rule/mordheim/horned-hunters/drunken-gang--drunk/mechanic.automatic-leadership
+  id: the-belched-drunken-gang-owes-no-leadership-die-and-keeps-its-to-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.crude-belch-ogre]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: horned-hunters, profile_id: drunken-gang}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same duel against a hand-built warrior with the Drunken Gang printed characteristics
+# but without the auto-pass.  Now the belch Leadership test is rolled - both dice are declared - and
+# 6+6 fails it, so the printed -1 'to hit' applies and the same declared 4 misses against a
+# 5+ target.
+- audit_id: rule/mordheim/horned-hunters/drunken-gang--drunk/mechanic.automatic-leadership
+  id: without-the-auto-pass-the-belch-leadership-dice-are-rolled-and-a-failure-costs-the-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.crude-belch-ogre]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

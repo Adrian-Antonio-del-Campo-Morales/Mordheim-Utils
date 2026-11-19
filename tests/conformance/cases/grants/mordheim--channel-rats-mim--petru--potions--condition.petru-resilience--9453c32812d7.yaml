@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-resilience
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the only recorded gap was that this identity carries no contrast of its own; the
+#   no-draught control is a disposition ("covered elsewhere": it lives on the sibling supplied
+#   condition condition.petru-strength, which shares the one catalogue operator under test) and is not
+#   an applicable requirement of this identity.  The printed effect of this draught - the raised
+#   Toughness on the printed Petru - is authored below.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +25,11 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
+# AUTHORED: 1 scenario covers the printed effect of this supplied condition: the draught raises the
+#   affected Hero's Toughness by one on the printed Petru.  REVIEWED still requires manual semantic
+#   review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as provenance):
+#   Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
 #   mim/petru--potions/unimplemented.channel-rats-mim.petru.potions, whose KB effect is now unbound (a
 #   supplied-condition split: the pre-battle draught roll stays unbound, each result is a bound
 #   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are

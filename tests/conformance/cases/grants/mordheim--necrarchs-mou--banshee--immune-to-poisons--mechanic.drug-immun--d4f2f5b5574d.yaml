@@ -1,6 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/necrarchs-mou/banshee--immune-to-poisons/mechanic.drug-immunity
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker is the accepted disposition of design-rulings.md, "A printed rule
+#   pre-empted by the profile's own sibling rule is `covered.elsewhere`" (the Poltergeists' No Pain /
+#   Incorporeal precedent).  The Banshee's own printed restriction "Banshees never carry any
+#   equipment, as they cannot hold them" (banshee--equipment-restrictions) refuses every build that
+#   would carry a drug to her, so this immunity's suppression is vacuous on its bearer rather than
+#   unauthored.  The refusal that pre-empts it, a hand-built control showing the same drug acting on
+#   an ordinary bearer, and the off-profile refusal are all authored below.
 # authoring_progress: 3 scenarios (2026-11-18) under PARTIAL: the drug cannot be carried to this bearer.
 #   Blocker (precise): the Banshee's own printed restriction "Banshees never carry any equipment, as
 #   they cannot hold them" is bound as profile.equipment-restrictions `forbids: [equipment]`
@@ -14,7 +21,13 @@
 #   rule exactly as the Poltergeists' No Pain is by their Incorporeal (design-rulings, second triage
 #   batch), so a `covered.elsewhere` ruling naming banshee--equipment-restrictions would retire this
 #   blocker; until then PARTIAL.  REVIEWED still requires manual semantic review.
-# PARTIAL: the immunity's suppression is unobservable on this bearer because a drug cannot be carried to
+# AUTHORED: 3 scenarios cover what the printed immunity can require of this bearer: the
+#   construction refusal '"equipment" is forbidden for necrarchs-mou/banshee.' that keeps any drug
+#   from reaching her, the hand-built control in which the same drug acts on an ordinary bearer, and
+#   the off-profile refusal.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the immunity's suppression is unobservable on this bearer because a drug cannot be carried to
 #   her ('"equipment" is forbidden for necrarchs-mou/banshee.' from banshee--equipment-restrictions);
 #   the refusal, the hand-built control and the off-profile refusal are declared below.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)

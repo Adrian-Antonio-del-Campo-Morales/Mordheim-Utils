@@ -1,6 +1,6 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/channel-rats-mim/petru--potions/condition.petru-debilitating
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,7 +20,7 @@
 #   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
 #   applies_to; that is a compiler choice, not a KB duplicate.
 # Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
-# PARTIAL: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
+# Disposition (recorded as PARTIAL until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/channel-rats-
 #   mim/petru--potions/unimplemented.channel-rats-mim.petru.potions, whose KB effect is now unbound (a
 #   supplied-condition split: the pre-battle draught roll stays unbound, each result is a bound
 #   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
@@ -28,6 +28,15 @@
 #   placeholder record they were authored against.  One scenario shows the supplied draught lowers
 #   Toughness by one on the printed Petru.  Gap: this identity has no contrast of its own; the no-
 #   draught control lives in condition.petru-strength.
+
+# Status corrected 2026-11-18: the only pending item recorded below is the absence control, which is
+#   not an applicable requirement of this identity: this band rule's single route is the supplied
+#   condition, and both the no-draught contrast and the printed recovery clearing ("-1 Toughness until
+#   a 6 in own recovery clears the draught") are authored on the operator identity
+#   mechanic/condition.petru-debilitating (tests/conformance/cases/mechanics/condition.petru-debilitating.yaml,
+#   AUTHORED).  The disposition block above is kept as the record of that decision.
+# AUTHORED: the scenario below reads the printed penalty "1 Debilitating (-1 Toughness ...)" on the
+#   printed Petru through the supplied condition, which is this identity's only observable route.
 
 # --- Authored scenarios ---
 

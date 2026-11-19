@@ -160,7 +160,9 @@ def test_the_priest_of_manann_line_reaches_that_one_hireling():
             if ids & {"trident", "weapon.trident"}:
                 reached[str(profile["id"])] = sorted(ids & {"trident", "weapon.trident"})
     assert sum(len(package.profiles) for package in HIRELINGS.values()) > 100
-    # The line itself reaches the Priest of Manann alone; the Imperial Assassin's
-    # trident is its own printed Weapons Master grant, not this line.
-    assert reached == {"hireling.hired-sword.mariner-priest-of-manann": ["trident"],
-                       "hireling.hired-sword.imperial-assassin": ["weapon.trident"]}
+    # The line itself reaches the Priest of Manann alone. The Imperial Assassin's
+    # Weapons Master ("may use any weapon he finds") no longer reaches the bare
+    # weapon.trident mechanic: no catalogue item provides it in this ruleset (the
+    # Mordheim `trident` item is out of scope), so it is not a weapon he can find
+    # (ruling 2026-11-19, "Weapon Knowledge reaches only weapons an item provides").
+    assert reached == {"hireling.hired-sword.mariner-priest-of-manann": ["trident"]}

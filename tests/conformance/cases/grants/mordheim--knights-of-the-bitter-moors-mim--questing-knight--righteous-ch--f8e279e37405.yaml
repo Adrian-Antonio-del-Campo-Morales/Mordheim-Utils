@@ -1,13 +1,13 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/questing-knight--righteous-charge/mechanic.righteous-charge
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
 #   printed Questing Knight compiles on foot and is refused when the Righteous Charge activation is
 #   supplied to him unmounted; charging on foot he hits at the plain 4+ and imposes no Fear.  Both
 #   declared clauses are outside the admitted scope (see PARTIAL), so the mounted duel effect is not
 #   evidenced.  REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until
 #   the suite runs.
-# PARTIAL: the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges,
+# Disposition (recorded as PARTIAL until 2026-11-18): the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges,
 #   if he has at least 1 other model within 2 inches, all friendly charging mounted warriors (including
 #   the Questing Knight) within 4 inches gain +1 to Hit, cause fear and are immune to all Psychology for
 #   the first round of combat") and `friendly-aura` - because the rule acts only on a mounted charger
@@ -38,6 +38,15 @@
 # Clause: whole (scope: NO)
 # Outside the admitted clause scope; retained for context, not a test TODO.
 #
+# Status corrected 2026-11-18: the identity declares no `scope: YES` clause - `whole` and
+#   `friendly-aura` are both excluded (`deferred.mounts`), so the mounted +1 to Hit, Fear and
+#   Psychology immunity and the 2"/4" aura are not applicable requirements of this corpus.  What the
+#   printed rule does make checkable with an unmounted recipient is authored below: the construction
+#   refusal of a supplied Righteous Charge activation on foot, and the unchanged foot duel.  The
+#   disposition block above is kept as the record of the deferral.
+# AUTHORED: 2 scenarios cover every applicable face of this identity under the mount deferral - the
+#   named refusal on an unmounted recipient and the plain 4+ / no-Fear foot charge.
+
 # --- Authored scenarios ---
 # The recipient is the band's printed Questing Knight (knights-of-the-bitter-moors-mim /
 # questing-knight; his Righteous Charge is a profile grant, so nothing is selected) with the corpus

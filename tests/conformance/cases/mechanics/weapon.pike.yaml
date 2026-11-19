@@ -1,7 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.pike
-# authoring_status: PARTIAL
-# authoring_progress: the `whole` clause carries three authored scenarios for the strike-first priority, the wielder's Strength and one refusal; the `first-turn-scope` clause stays unauthored because it is an open source-vs-contract conflict (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the `first-turn-scope` clause is no longer unauthored - the ruling
+#   [M2-offensive 2026-10-08] settled the scope and the differential two-round scenario below covers
+#   the clause.  The residual recorded in the clause note is editorial (the mechanic record's prose is
+#   unqualified while the item prose prints 'first turn'); aligning KB prose is not a missing scenario,
+#   so it is not an applicable requirement of this file.
+# authoring_progress: the `whole` clause carries three authored scenarios for the strike-first priority, the wielder's Strength and one refusal; the `first-turn-scope` clause is authored as the two-round differential below. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -11,7 +16,7 @@
 # Governing rulings: docs/decisions/design-rulings.md
 #
 # Clause: first-turn-scope (scope: YES)
-# PARTIAL[first-turn-scope]: the printed scope (strike first in the first turn of a
+# AUTHORED[first-turn-scope]: the printed scope (strike first in the first turn of a
 #   hand-to-hand combat) is resolved for the engine ([M2-offensive 2026-10-08]:
 #   resolve_priority drops the pike's strike-first layer once the first round is
 #   over, as it does for the spear and the long-boat-hook) and is now authored as the

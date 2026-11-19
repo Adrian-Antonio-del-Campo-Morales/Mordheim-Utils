@@ -40,9 +40,8 @@ def test_the_lahmia_vampire_reaches_its_own_bloodline_power():
     assert "mechanic.enchanting-beauty" in tags
     unselected = compile_fighter(FighterBuild("mordheim", **build))
     assert "mechanic.lahmia-seduction" not in unselected.global_effects.tags
-    # Hypnotic Gaze is a vampiric power of another bloodline, so the Lahmia
-    # vampire cannot be given it; its route is the record binding above plus the
-    # consumer witness below.
-    with pytest.raises(ValueError, match="bloodline"):
-        compile_fighter(FighterBuild(
-            "mordheim", special_rule_ids=("band--vampire-power-hypnotic-gaze",), **build))
+    # Hypnotic Gaze is available to both the Von Carstein and the Lahmia bloodlines
+    # (user ruling 2026-11-19; the record's eligibility lists both vampires).
+    gazing = compile_fighter(FighterBuild(
+        "mordheim", special_rule_ids=("band--vampire-power-hypnotic-gaze",), **build))
+    assert "mechanic.hypnotic-gaze" in gazing.global_effects.tags

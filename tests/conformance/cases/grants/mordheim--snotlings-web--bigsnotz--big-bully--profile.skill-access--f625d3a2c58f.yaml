@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the once-only limit is NOT unobservable - construction enforces it with its
+#   own diagnostic (packages/typescript/domain/eligibility/index.ts: "Big Bully may only be taken once by
+#   <band>/<profile>"), so the earlier "advancement scope with no construction field" note was stale and
+#   contradicted the recorded scope_reason that admits the limit. It is authored below; every printed
+#   requirement of this identity is now represented.
 # authoring_progress: 5 authored scenario(s) in this file.  The admitted whole clause carries the printed
 # incompatibility term (the refusal of a BigSnot that declares the printed pair, and the accepted control
 # that declares neither skill of it) and, since 2026-11-16, the printed immediate grant of ONE Strength
@@ -16,7 +21,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [E] the remaining printed consequence (the once-only limit) is excluded by accepted scope rather than
+# AUTHORED: 6 scenarios cover the incompatibility, the one-Strength-skill grant and the once-only limit.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [E] the remaining printed consequence (the once-only limit) is excluded by accepted scope rather than
 #   CRITERION CORRECTION (final reconciliation): the wording "excluded by an accepted scope decision" above
 #   is replaced by the precise record.  This requirement is NOT out of the admitted scope: its own recorded
 #   scope_reason admits it - "The BigSnot's immediate grant of one Strength skill, the once-only limit, the BigSnotz recipient and the printed incompatibility with Frustratingly Tiny are all construction and legal-combination consequences of that bearer." - and nothing here is concluded from a scope-LATER / implemented-NO /
@@ -125,3 +131,16 @@
       special_rule_ids: [bigsnotz--big-bully]
       skill_ids: [skill.mighty-blow, skill.resilient]
   expect_error: Big Bully grants exactly one Strength skill to snotlings-web/bigsnotz
+
+# "A BigSnot may only take this skill once each": declaring Big Bully a second time is refused by
+# construction's own once-only check, so a second take can buy no second Strength skill.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: big-bully-may-only-be-taken-once
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully, bigsnotz--big-bully]
+      skill_ids: [skill.mighty-blow]
+  expect_error: Big Bully may only be taken once by snotlings-web/bigsnotz

@@ -69,6 +69,18 @@
           "minItems": 1,
           "items": { "$ref": "defs.schema.json#/$defs/id" }
         },
+        "eligibility_admits_promoted": {
+          "description": "The `eligibility` list enumerates the band's Heroes (or all Heroes but a printed named exclusion) rather than a printed role, so a Henchman promoted to Hero (`promotion.hero`) is admitted too: a promoted Henchman may take special skills (user ruling 2026-11-19). Absent for lists that name a printed role ('Only the Warrior Priest', 'Saurus only').",
+          "type": "boolean",
+          "const": true
+        },
+        "eligibility_promoted_ids": {
+          "description": "Henchman profile ids of the printed warrior type the `eligibility` list names (e.g. 'Saurus only' names the Saurus, so a promoted Saurus Brave qualifies). They are admitted only once promoted to Hero (`promotion.hero`); a limitation that names a specific Hero carries none (user ruling 2026-11-19).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
         "eligible_condition_ids": {
           "description": "Canonical supplied conditions that qualify a member the static `eligibility` list does not name. Some printed clauses name a state instead of a starting profile ('only the current warband leader may choose this skill'), so a member that carries every named condition is admitted as if the list named it, while a member that carries none stays governed by the list. A condition is a caller-supplied current fact, never inferred from a profile.",
           "type": "array",

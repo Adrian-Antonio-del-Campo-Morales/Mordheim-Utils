@@ -10,7 +10,7 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# AUTHORED: 3 scenarios cover the failed 3D6-keep-highest test that blocks the enemy's attacks and leaves the marked leader's blows automatic, the passed test that spends the one-shot resource and leaves both attacks standing, and the Immune-to-Psychology enemy that passes without rolling any die. Documented gap: neither the automatic-hit consequence nor the once-per-battle duration is stated in the frozen printed clause; both come from the recorded contract, and the duration is observable only as the spent `mark-of-shornaal.passed` resource inside the single taped round (rounds.py:328-343).
+# AUTHORED: 5 scenarios cover the failed 3D6-keep-highest test that blocks the enemy's attacks and leaves the marked leader's blows automatic, the passed test that spends the one-shot resource and leaves both attacks standing, and the Immune-to-Psychology enemy that passes without rolling any die, plus the printed "Lizardmen Cold Blooded cannot be used for this test" as a pair: a Cold Blooded defender takes the Shornaal test on the printed discard-lowest dice and fails where the Cold Blooded discard-highest would have passed, while in the same duel its ordinary Fear test keeps the Cold Blooded benefit. Documented gap: neither the automatic-hit consequence nor the once-per-battle duration is stated in the frozen printed clause; both come from the recorded contract, and the duration is observable only as the spent `mark-of-shornaal.passed` resource inside the single taped round (rounds.py:328-343).
 
 # --- Authored scenarios ---
 # The target's three dice 6, 6, 6 keep the two highest for twelve against its
@@ -89,4 +89,62 @@
     0: {state.second.charm_attack_blocked: False, state.second.charm_auto_hit: False,
         state.second.resources_spent: ['mark-of-shornaal.passed'], attacks.0.damage: 1,
         state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed "Lizardmen Cold Blooded cannot be used for this test": the enemy carries the Lizardmen
+# Cold Blooded psychology dice (mechanic.cold-blooded-psychology, three dice with the highest
+# discarded), and the Shornaal test is itself a psychology test.  The declared 6, 6, 1 against its
+# Leadership 7 decides the two conventions apart: the printed discard-lowest keeps 6+6 = 12 and fails,
+# whereas Cold Blooded would discard a six and keep 6+1 = 7 and pass.  The test fails, so the enemy is
+# blocked, the one-shot resource is not spent, and the automatic hit wounds on the declared four.
+- audit_id: mechanic/mechanic.mark-of-shornaal
+  id: a-cold-blooded-enemy-takes-the-test-without-its-cold-blooded-discard-and-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-shornaal]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-psychology]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.shornaal.0, value: 6}
+    - {key: round.0.second.shornaal.1, value: 6}
+    - {key: round.0.second.shornaal.2, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: True, state.second.charm_auto_hit: True,
+        state.second.resources_spent: [], state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The contrast inside one duel: the marked leader also causes Fear and charges, so the same Cold
+# Blooded enemy first takes an ordinary Fear test for the charge it receives and then the Shornaal
+# test, each on the identical 6, 6, 1.  The Fear test keeps the Cold Blooded benefit (the six is
+# discarded, 7 against Leadership 7 passes, so the enemy does not need sixes to hit), while the
+# Shornaal test does not (the one is discarded, 12 fails), so the same enemy is still blocked.
+- audit_id: mechanic/mechanic.mark-of-shornaal
+  id: the-same-cold-blooded-enemy-keeps-its-benefit-on-an-ordinary-fear-test-in-the-same-duel
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-shornaal, mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-psychology]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.2, value: 1}
+    - {key: round.0.second.shornaal.0, value: 6}
+    - {key: round.0.second.shornaal.1, value: 6}
+    - {key: round.0.second.shornaal.2, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.second.charm_attack_blocked: True,
+        state.second.charm_auto_hit: True, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

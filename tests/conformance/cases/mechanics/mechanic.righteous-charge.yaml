@@ -1,13 +1,23 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.righteous-charge
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: both declared clauses of this identity are `scope: NO` (deferred.mounts), so neither
+#   is an applicable requirement here; an excluded clause is a disposition, not a gap.  What is
+#   declarable without the mounts schema - the compiler's refusal of a supplied Righteous Charge
+#   activation on an unmounted recipient, and the unchanged duel of the bearer on foot - is authored
+#   below.  The mounted +1/Fear/immunity and the 4" aura return with the mounts schema.
 # authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
 #   compiler's refusal of a supplied Righteous Charge activation on a recipient that is not mounted, and
 #   the bearer on foot charging with no +1 to hit and no Fear imposed.  Both declared clauses of this
 #   identity are outside the admitted scope (see PARTIAL), so the duel effect itself is not evidenced.
 #   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until the suite
 #   runs.
-# PARTIAL: the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges
+# AUTHORED: 2 scenarios cover everything declarable for this identity in the admitted scope: the
+#   construction refusal "Righteous Charge requires a mounted recipient", and the bearer charging on
+#   foot with no +1 to Hit and no Fear imposed.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges
 #   ... +1 to Hit, cause fear and are immune to all Psychology for the first round of combat") and
 #   `friendly-aura` ("all friendly charging mounted warriors ... within 4 inches") - because the rule
 #   acts only on a mounted charger and mounts are deferred (`deferred.mounts`; the Ride rule of the

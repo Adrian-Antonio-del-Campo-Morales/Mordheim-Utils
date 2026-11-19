@@ -184,6 +184,7 @@ def test_conditions_catalog_is_canonical():
         "condition.massively-built-lost-turn",
         "condition.master-craftsman-initiative",
         "condition.master-craftsman-strength",
+        "condition.mouth-sewn",
         "condition.netted",
         "condition.nuttaz-charge",
         "condition.petru-debilitating",

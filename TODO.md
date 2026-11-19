@@ -5,65 +5,45 @@ what is pending and when it is done.
 
 ## Rules-conformance coverage
 
-- **Authoring backlog.** 2 of 2,306 admitted identities have no scenarios (Unshakeable Faith,
-  withheld on its print; Skink Henchman Poison Application, whose clause mark and binding
-  disagree — both recorded above). The division
-  into batches, the order and the per-batch procedure are in *Rules-conformance authoring
-  plan* below. Check with `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`;
-  done when the gate passes.
-- **Rousing Sermon (Trollheim) cost not modelled.** The printed "He may not use
-  Prayers that turn" is not enforced (no engine models Prayers), and
-  `catalog/skills/warband.yaml` (`skill.inspiring-sermon`) still describes a passive
-  "+1 Attack for the turn" without the declaration. The Trollheim file holds two
-  real-profile scenarios plus two fixtures on `mechanic.rousing-sermon` (the
-  once-per-game Mordheim operator), and its "ENGINE-DEFECT (2026-11-16)" comments are
-  stale. Done when the cost is ruled out of duel scope or modelled, the skill text
-  matches, and the fixtures are retired or rebound.
-- **Hypnotic Gaze for Lahmia.** Eligibility reads the KB `eligibility` list
-  (`von-carstein-vampire`, `lahmia-vampire`), but the cited print (*Chaos in the
-  Streets* p.181) is a Von Carstein section. Done when the list matches the print.
-- **Master of Arms misses the Broadsword.** Items carry no Difficult-to-Use flag, so
-  the exception in `eligibility/index.ts` (and `_eligibility.js`) names the Morning
-  Star only, while the KB prints the Broadsword as the one-handed "Difficult to use"
-  weapon (`weapons-close-combat.yaml`) and the Morning Star's KB text says only
-  "Heavy". Done when Difficult to Use is a declared item property read by the
-  exception, after checking the Morning Star's print.
-- **Dead Strongman branch.** `phases.py`, `vectorized/_operators.py` and
-  `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
-  exemption, though the broadsword has no penalty to remove. Done when the three
-  branches read the two-handed case only.
-- **Spiral and Triskele unmodifiable faces vs Djinn's Curse.** The Dark Emissary's Spiral
-  (5+) and the Truthsayer's Triskele (4+) print saves "that cannot be reduced by anything"
-  and are carried as ordinary wards (`defence.spiral`, `defence.triskele`); the only general
-  reducer, Djinn's Curse, still worsens them because the modular respect-check
-  (`contexts.py`, `intrinsic_djinn`) is Djinn-specific and `EffectSet` has no
-  unmodifiable-ward field. Done when the 2026-10-15 Djinn ruling's "expressly unmodifiable"
-  respect extends to these printed faces (and its optimized ports), or the composition is
-  ruled unreachable.
-- **Wall of Steel's stance is not a KB record.** The printed two-handed choice is carried by
-  the hard-coded build variant `stance.wall-of-steel` (compiler and TS gate); the bound
-  `mechanic.wall-of-steel` tag is read by the gate only, so the mechanic's entry probes
-  inert (a dated Discrimination note records it). Done when the stance is a declared KB
-  variant and the compiler reads the mechanic, or the current carrier is ruled canonical.
-- **A hired leader lends Leadership inside his synthetic package only.** The Knight of the
-  White Wolf's printed Pride ("may act as a Leader to their comrades") compiles to
-  `mechanic.leader-six`, but the modular borrow gate requires a shared `band.*` tag, so he
-  can lend only to another hireling of `hirelings.hired-sword.2a`, never to the hiring
-  warband's members; the authored scenarios use a same-package comrade. Done when
-  cross-package hiring facts let a hired leader reach his employer's warriors (web-app
-  phase, with the hiring-facts entry below).
-- **Band members' hiring facts are not published.** `hire-eligibility.ts` reads hirelings
-  through the derived `hireling_traits`, but band members still go through the hard-coded
-  `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists, and the Witch
-  Hunter's printed exception (priests of Sigmar, Ulric, Taal and Morr only) is coded as any
-  `priest`. Several hireling species and alignment facts rest on knowledge of the printed
-  sources rather than the KB text: check them when the prints are mirrored. Done when the
-  generator publishes band members' facts and the keyword lists are gone (web-app phase).
-- **Witch Hunter Burn the Witch binds the general `skill.hatred`.** The print hates enemy
-  spellcasters; the band Witch Hunters bind `mechanic.burn-the-witch`, which reads
-  `identity.spellcaster` (`trait_overrides: {spellcaster: true}` declares it), while
-  the hired Witch Hunter binds the generic hatred of everyone. Done when the hireling
-  rule binds `mechanic.burn-the-witch` and its file covers the non-spellcaster boundary.
+The suite is complete as of 2026-11-19: every admitted identity has scenarios, no case file is
+`PARTIAL`, and `MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE=1 python -m pytest tests/conformance -q`
+passes. What remains is evidence quality, semantic review, and the KB, eligibility and engine
+defects found while authoring. New identities admitted later are batched as described in
+*New authoring backlog* (`tests/conformance/README.md`).
+
+### Evidence quality
+
+- **Construction-only evidence.** The removal probe (2026-11-19) reports 119 identities
+  `construction-only` (110 rules, 9 mechanics). For construction rules (skill access, equipment
+  restrictions) a refusal is the expected verdict; for combat identities it means no scenario shows
+  the duel effect with and without the rule, because the build is refused once the rule is removed
+  (handler leadership, brood mentality, mutations, tail attacks, Scorpion Tail on a Mutant who then
+  has no mutation). Done when each combat identity has a scenario whose duel observable changes, or
+  the build genuinely cannot exist without the rule (record why).
+- **Non-discriminating evidence.** 74 identities pass with their rule removed; each carries a dated
+  `# Discrimination note` naming the duplicate encoding that delivers the effect. Done when each
+  effect has a single source (see *Printed-source checks before de-duplicating* below and the
+  encoding questions recorded per batch).
+- **Inert identities.** 19 mechanics and 8 rules probe `inert`: the removal never reaches the build.
+  The mechanics are tag-only execution entries whose effect comes from the item catalogue or the
+  engine (the body armours, `material.normal`, `weapon.natural-attacks`,
+  `mechanic.norse-shieldmaster`, `skill.dodge-sidestepper`, `mechanic.wall-of-steel` - see its entry
+  below - and `skill.regeneration-blocked-by-blessed`, whose flag is supplied as a trait). The rules
+  are the six Fungus Brew conditions and Danse Macabre (band rules binding a supplied `condition.*`
+  with `grant: none`) and the Ogre Hunting Bull Charge, whose three scenarios inject
+  `mechanic.bull-charge` through `skill_ids`. Done when the probe can substitute an item, the rules are
+  re-authored against their own binding, or each is accepted with its reason.
+- **Coverage baseline digest is stale.** `integrity/evidence/coverage-baseline.yaml`
+  was accepted on 2026-10-08 against an inventory digest that no longer matches (the
+  control re-checks each clause and passes, but reports the move) and protects 16
+  identities only. Done when a reviewed edit refreshes the digest and extends the
+  reference to the reviewed identities.
+
+### Semantic review
+
+- **Files awaiting `REVIEWED`.** 16 of 2,305 case files are `REVIEWED`; the rest are `AUTHORED`.
+  `REVIEWED` requires a manual comparison of each file with its print. Done when the files are
+  reviewed.
 - **Semantic review items from the authored batches.** Authored scenarios whose evidence
   route or reading deserves a reviewer's eye before `REVIEWED` (none blocks execution; each is
   documented in its file): (a) the Necrarchs' Nosferatu Leader borrow is evidenced on the Danse
@@ -76,19 +56,6 @@ what is pending and when it is done.
   (e) Warrior-Priest Hammer of Sigmar = Sigmarite hammer, Gwen's Knives = two daggers,
   William's Lucky Rabbit's Foot = the trading-post item (adopted equivalences, 2026-11-18).
   Done when a reviewer confirms or re-authors each and the files advance to `REVIEWED`.
-- **Skink Henchman Poison Application is bound but has no admitted clause.** The Lizardmen
-  (`lizardmen-lus`) rule binds `profile.equipment-restrictions` with `scope: YES` while its only
-  clause `whole` is `scope: NO`, so the backlog tool lists the identity as authorable but the
-  inventory admits no clause and refuses every scenario on it (the gate still enforces the
-  venom restriction). Done when the clause mark and the binding agree (the positive face,
-  venom on a missile weapon, has no duel representation: every Skink missile item is
-  `out_of_scope`).
-- **Profile prose `equipment_restrictions` duplicates bound rules.** The eligibility gate reads
-  the free-text `equipment_restrictions` lines of `profiles.yaml` (`index.ts`, the prose scan
-  near the profile-restriction stage) and yields "armour is forbidden" without the bound rule,
-  so the Kislevite warrior profiles, the Marauder Seer and the Necrarch Nosferatu no-armour
-  identities probe non-discriminating (dated Discrimination notes in their files). Done when
-  one source carries each printed ban (the bound rule) and the prose is descriptive only.
 - **Construction-batch wrinkles (B11/B12, 2026-11-18).** Recorded in the files, none blocking:
   the Priest of Morr's permitted scythe has no simulation mapping (the dagger is the only
   reachable permitted weapon); the Priestess of Shallya's same rule forbids wielding her printed
@@ -125,8 +92,9 @@ what is pending and when it is done.
   against Town Cryer 22; Mandrake Root prints "no effect on Undead" but the compiler's
   undead-inert drug set covers Crimson Shade and Mad Cap only, so the Nosferatu/Wight drug
   immunities discriminate through that gap; the Necrarch Banshee's own `forbids: [equipment]`
-  refuses every drug, so her `mechanic.drug-immunity` identity stays PARTIAL (a
-  `covered.elsewhere` candidate on the Poltergeist precedent); one mechanic bound twice on one
+  refuses every drug, so her `mechanic.drug-immunity` identity is evidenced only by refusals and
+  stays non-discriminating (a `covered.elsewhere` candidate on the Poltergeist precedent, which would
+  retire it); one mechanic bound twice on one
   profile (Khar-Mel's Curse and Luck both bind `mechanic.djinns-curse`; the Bone Goliath's No
   Pain and Undead Construct both bind `skill.ignore-pain`) makes the rule identities
   non-discriminating (dated notes); Marianna's No Pain Knocked Down is lifted instantly by her
@@ -138,19 +106,15 @@ what is pending and when it is done.
   Dark Jester's `rule.confound-and-confuse` and `rule.trip` both bind one mechanic and his
   `babbling-banter` tag is read by no engine code (the chooser carries the effect) — three
   non-discriminating identities with dated notes; `mechanic.vengeful-hatred` is compiled from the
-  supplied target facts, so the probe cannot reach it; the Bitter Moors Righteous Charge prints
-  only mounted clauses (both `deferred.mounts`) and stays PARTIAL; fire-fear (`mechanic.fears-fire`)
+  supplied target facts, so the probe cannot reach it; fire-fear (`mechanic.fears-fire`)
   is resolved outside ordinary Psychology, so a psychology-immune bearer would still test; the
-  Lahmia Seduction's printed Stupidity exemption and the Hypnotic Musk's mount/goading exceptions
-  are not representable; the Swashbuckler's Charismatic needs a printed sex the profile does not
+  Lahmia Seduction's printed Stupidity exemption and the Hypnotic Musk's mount and Goading exceptions
+  cannot be supplied by a fixture (the operator implements both); the Swashbuckler's Charismatic needs a printed sex the profile does not
   carry (supplied as male from the text); the Emissary of Khorne's Frenzy and +1 Attack are one
-  effect-set (the +1 cannot be isolated) and the Tzeentch patron compiles identity tags only;
-  Hypnotic Gaze's KB eligibility still lists the Lahmia vampire (open defect above). Done when each
-  is confirmed as the intended encoding or repaired.
+  effect-set (the +1 cannot be isolated) and the Tzeentch patron compiles identity tags only. Done
+  when each is confirmed as the intended encoding or repaired.
 - **Equipment and hireling-operator wrinkles (2026-11-18).** Recorded in the files, none blocking:
-  Herb Lore heals only while the duel is not engaged and the harness ends an unengaged duel before
-  a round resolves, so its two identities stay PARTIAL (a harness gap: no disengaged-but-continuing
-  round); the engine carries an unbound `mechanic.darting-steel` parry operator (`contexts.py`)
+  the engine carries an unbound `mechanic.darting-steel` parry operator (`contexts.py`)
   with no KB record while the Duellist binds only `trait.counts-as-buckler`; the Druchii Sea
   Dragon Cloak prints a +1 overlay combinable with light armour while the Q128 ruling fixes the
   shared cloak as an armour choice (two different encodings); `armour.wizard-robe` encodes only a
@@ -165,10 +129,7 @@ what is pending and when it is done.
   non-discriminating with dated notes. Done when each is confirmed as the intended encoding or
   repaired.
 - **Supplied-condition and band-operator wrinkles (2026-11-18).** Recorded in the files, none
-  blocking: `mechanic/condition.mouth-sewn` has an execution entry but no row in
-  `catalog/rules/conditions.yaml`, so it cannot be supplied and the duel-produced `mouth_sewn`
-  state never reaches a provider in the same duel (PARTIAL); Combat Charge's engine reading also
-  applies the Weapon Skill bonus defensively against the reply although the print says "when
+  blocking: Combat Charge's engine reading also applies the Weapon Skill bonus defensively against the reply although the print says "when
   charging"; Power Grab's compiler gate admits any Underworld Alliance duelist regardless of
   race (the majority fact is the caller's); the Disability hero-nearby exemption is decided by
   explicit Hero provider records even without the supplied id; `condition.poetry-inspired` and
@@ -191,135 +152,112 @@ what is pending and when it is done.
   non-discriminating/inert with notes; the Tomb Robber's dodge upgrade is runtime-only (compiled
   `ward_save` stays 5); the Cursed Hillman's wolf form encodes the lost cloak twice (trait and
   equipment projection). Done when each is confirmed as the intended encoding or repaired.
-- **Scenarios on out-of-scope identities.** 10 identities outside the admitted
-  scope still carry scenarios because no admitted identity holds their
-  behaviour: Living (Mordheim and Trollheim Tomb Scorpions; a profile
-  `creature_kind: living` trait), Animated (Stone Golem), Teamwork (Snotling Mobs,
-  Shoota Teams; LATER), and restrictions encoded only by an equipment-list line
-  or a profile's skill access (Orc Boyz crossbow, Thieves Guild Enforcer and
-  Ruffian, Strigany and Nipponese skill tables). Done when each behaviour has an
-  admitted identity to hold the scenarios, or the scenarios are retired.
-- **Conditions and bull-charge unreachable by scenarios.** 8 rule identities
-  probe `inert`: the six Fungus Brew conditions and Danse Macabre (band rules
-  that bind a supplied `condition.*` with `grant: none`) and the Ogre
-  bull-charge. Done when each is routed, re-authored against its own binding or
-  excluded with its own reason.
-- **Protectorate of Sigmar (LotD3) special-skill access.** Unshakeable Faith (and the other
-  band-wide special skills) has no eligibility list and no hero prints the `special` skill
-  access, so the selection is refused for every profile and the identity stays `PARTIAL`.
-  Done when the print says which heroes may use the band's Special Skills and the KB carries
-  it (a `special` access or an eligibility list).
-- **Printed-source checks before de-duplicating.** Skaven of Clan Mors and Clan Skryre
-  (Karak Azgal) `band--rulebook-inheritance` grants a skill list whose members are already
-  Hero-only warband skills of their own: the access is encoded twice and the two files carry a
-  Discrimination note; keep one source. Sons of Nagarythe Powerful
-  Build: the Shadow Master and Shadow Walker already list `strength` in
-  `skill_access`, so the skill adds nothing for them; check the printed skill
-  tables. `mad-scientist--lunatic` is printed as a Special Skill but granted
-  automatically to four Masters of Horror profiles, which makes the Thrall's own
-  Cause Fear redundant: `thrall--cause-fear` and the five
-  `mad-scientist--alchemist` conditions probe `non-discriminating`; check the
-  print. Done when each encoding matches its print and the probe reports the
-  identity `discriminating`.
-- **Construction-only evidence.** The probe reports 70 identities
-  `construction-only`. For 12 the rule *is* a construction rule (skill access,
-  equipment restrictions, single-model projection), where a refusal is the
-  expected verdict. The other 58 are combat identities (handler leadership,
-  brood mentality, mutations, tail attacks, ...) refused at construction when
-  their rule is removed, so no scenario shows their duel effect with and without
-  the rule. Done when each has a scenario whose duel observable changes, or the
-  build genuinely cannot exist without the rule (record why).
-- **Equipment mechanics the probe cannot reach.** 12 mechanics probe `inert`
-  because their execution entry carries only a tag and the effect comes from the
-  item catalogue or is synthesised by the engine (nine body armours,
-  `material.normal`, `weapon.natural-attacks`, `mechanic.norse-shieldmaster`).
-  Done when the probe can substitute an item, or these are accepted as covered
-  by item-level coverage.
-- **`skill.regeneration-blocked-by-blessed` is authorable.** Its file still says no
-  build supplies `attack.blessed`, but `condition.blessed-weapon` (with
-  `trait_overrides: {blessed_weapon_slots: [main]}`) does, and a Curse of the Reborn
-  scenario already uses it. Done when the mechanic's own blocked branch is authored
-  and the header corrected.
-- **Coverage baseline digest is stale.** `integrity/evidence/coverage-baseline.yaml`
-  was accepted on 2026-10-08 against an inventory digest that no longer matches (the
-  control re-checks each clause and passes, but reports the move) and protects 15
-  identities only. Done when a reviewed edit refreshes the digest and extends the
-  reference to the reviewed identities.
-- **Ogre Hunting scenarios that miss their identity.** `crude-belch-ogre` probes
-  non-discriminating without a dated `# Discrimination note`: its file exercises
-  `skill.crude-belch-halfling` and hosts two Monster Slayer refusals moved from the retired
-  skill-access file; the three `bull-charge` scenarios inject `mechanic.bull-charge` through
-  `skill_ids` and probe `inert`. Done when each identity has scenarios on its own binding (or
-  its note) and the refusals live with the identity they evidence.
+
+### KB, eligibility and engine defects
+
+- **Rousing Sermon (Trollheim) cost not modelled.** The printed "He may not use
+  Prayers that turn" is not enforced (no engine models Prayers), and
+  `catalog/skills/warband.yaml` (`skill.inspiring-sermon`) still describes a passive
+  "+1 Attack for the turn" without the declaration. The Trollheim file holds two
+  real-profile scenarios plus two fixtures on `mechanic.rousing-sermon` (the
+  once-per-game Mordheim operator), and its "ENGINE-DEFECT (2026-11-16)" comments are
+  stale. Done when the cost is ruled out of duel scope or modelled, the skill text
+  matches, and the fixtures are retired or rebound.
+- **Morning Star printed text (2026-11-19).** By user ruling the Morning Star is Difficult to Use
+  (it carries the `difficult-to-use` tag), but its catalogue `effect` in
+  `catalog/items/weapons-close-combat.yaml` prints only "Heavy". Separately, the eligibility
+  `restricted` table lets a Morning Star take no off-hand item at all, while the Broadsword's printed
+  Difficult to Use text lets its bearer "carry a shield or a kite shield as normal". Done when the
+  effect text matches the printed entry and the Morning Star's shield allowance is checked against it.
+- **Dead Strongman branch.** `phases.py`, `vectorized/_operators.py` and
+  `native/_combat_compile.py` still name `weapon.broadsword` in the Strongman
+  exemption, though the broadsword has no penalty to remove. Done when the three
+  branches read the two-handed case only.
+- **Spiral and Triskele unmodifiable faces vs Djinn's Curse.** The Dark Emissary's Spiral
+  (5+) and the Truthsayer's Triskele (4+) print saves "that cannot be reduced by anything"
+  and are carried as ordinary wards (`defence.spiral`, `defence.triskele`); the only general
+  reducer, Djinn's Curse, still worsens them because the modular respect-check
+  (`contexts.py`, `intrinsic_djinn`) is Djinn-specific and `EffectSet` has no
+  unmodifiable-ward field. Done when the 2026-10-15 Djinn ruling's "expressly unmodifiable"
+  respect extends to these printed faces (and its optimized ports), or the composition is
+  ruled unreachable.
+- **Wall of Steel's stance is not a KB record.** The printed two-handed choice is carried by
+  the hard-coded build variant `stance.wall-of-steel` (compiler and TS gate); the bound
+  `mechanic.wall-of-steel` tag is read by the gate only, so the mechanic's entry probes
+  inert (a dated Discrimination note records it). Done when the stance is a declared KB
+  variant and the compiler reads the mechanic, or the current carrier is ruled canonical.
+- **A hired leader lends Leadership inside his synthetic package only.** The Knight of the
+  White Wolf's printed Pride ("may act as a Leader to their comrades") compiles to
+  `mechanic.leader-six`, but the modular borrow gate requires a shared `band.*` tag, so he
+  can lend only to another hireling of `hirelings.hired-sword.2a`, never to the hiring
+  warband's members; the authored scenarios use a same-package comrade. Done when
+  cross-package hiring facts let a hired leader reach his employer's warriors (web-app
+  phase, with the hiring-facts entry below).
+- **Band members' hiring facts are not published.** `hire-eligibility.ts` reads hirelings
+  through the derived `hireling_traits`, but band members still go through the hard-coded
+  `FEAR_PROFILE_KEYWORDS` / `SPELLCASTER_PROFILE_KEYWORDS` substring lists, and the Witch
+  Hunter's printed exception (priests of Sigmar, Ulric, Taal and Morr only) is coded as any
+  `priest`. Several hireling species and alignment facts rest on knowledge of the printed
+  sources rather than the KB text: check them when the prints are mirrored. Done when the
+  generator publishes band members' facts and the keyword lists are gone (web-app phase).
+- **Profile prose `equipment_restrictions` duplicates bound rules.** The eligibility gate reads
+  the free-text `equipment_restrictions` lines of `profiles.yaml` (`index.ts`, the prose scan
+  near the profile-restriction stage) and yields "armour is forbidden" without the bound rule,
+  so the Kislevite warrior profiles, the Marauder Seer and the Necrarch Nosferatu no-armour
+  identities probe non-discriminating (dated Discrimination notes in their files). Done when
+  one source carries each printed ban (the bound rule) and the prose is descriptive only.
+- **The web app still applies band equipment restrictions band-wide.** The Rememberer ruling
+  (2026-11-19) made the shared eligibility stage honour `applies_to.profile_ids`, but
+  `tools/knowledge/generate_knowledge_web.py` (`_band_equipment_data`) and the web app's
+  `packages/typescript/domain/campaign/construction.ts` (`bandFactsOf`) still treat the Slayer tokens as band-wide, so the
+  web roster builder refuses the Rememberer's armour. Done when both read the recipient list.
+- **A Hero with special access but no applicable special table gets every special skill.** When
+  `profileSkillLists` returns no list, the access check in `eligibility/index.ts` falls back to every
+  catalogue skill of category `special`. The Dwarf Slayer Cult Rememberer ("may not learn 'Slayer Only'
+  skills") is therefore admitted `skill.deathwish`. Found 2026-11-19; it predates the promotion work.
+  Done when the fallback is limited to the profile's own printed tables, after checking which bands
+  rely on it.
 - **Haughty also bars obsidian for the Mordheim High Elves.** One Dwarf-equipment guard
   (`_eligibility.js`, `index.ts`) serves two bands and treats `material.obsidian` as
   Dwarf-made: the Trollheim print names "Gromril and Obsidian", the Mordheim
   (`high-elves-lus`) print only Dwarf origin and Gromril. Done when the guard follows each
   band's print.
+- **Chaos armour ban matches any "chaos" id.** The eligibility ban `Chaos armour is forbidden for
+  <who>` (Chaos Engineer, `eligibility/index.ts`) tests whether any equipment mechanic id contains
+  "chaos"; the print bans only "the Chaos Armours". No reachable build trips it today. Done when the
+  ban names the armour mechanics.
+- **Ogre Crude Belch drops extra engaged enemies.** The Ogre path (`modular/rounds.py`) resolves one
+  target and silently ignores a third engaged enemy, where the Halfling path refuses a multi-contact
+  fixture. Done when the Ogre path refuses it the same way.
+- **Dwarf Unbeatable Warrior clause duplicates the axe re-roll.** The Dwarf `skill.unbeatable-warrior`
+  effects (dwarf-treasure-hunters, chaos-streets-dwarf-treasure-hunters) still declare a
+  `reroll-with-two-dwarf-axes` clause that `mechanic.master-of-blades-axe-reroll` now carries (Sword
+  Master split, 2026-11-19). Done when one identity owns the clause.
+- **Printed-source checks before de-duplicating.** Skaven of Clan Mors and Clan Skryre
+  (Karak Azgal) `band--rulebook-inheritance` grants a skill list whose members are already
+  Hero-only warband skills of their own: the access is encoded twice and the two files carry a
+  Discrimination note; keep one source. `mad-scientist--lunatic` is printed as a Special Skill but granted
+  automatically to four Masters of Horror profiles, which makes the Thrall's own
+  Cause Fear redundant: `thrall--cause-fear` and the five
+  `mad-scientist--alchemist` conditions probe `non-discriminating`; check the
+  print. Done when each encoding matches its print and the probe reports the
+  identity `discriminating`.
 - **Scenarios that contradict or miss their print.** The Mordheim Pirates Sea Shanty
   scenario `a-psychology-immune-enemy-is-not-tested-and-keeps-both-attacks` contradicts its
   print (only Undead and non-living are exempt; the Trollheim copy matches its own print);
   in both Curse of the Reborn files `the-four-plus-regeneration-save-ignores-the-wound`
-  declares `blocked-by-fire-and-blessed` without evidencing it. Done when each scenario
-  matches its print and identity.
+  declares `blocked-by-fire-and-blessed` without evidencing it (the clause itself is evidenced
+  by dedicated fire and blessed tapes; only that scenario's `covers:` label is over-broad). Done when each
+  scenario matches its print and identity.
 - **Engine or eligibility behaviour without printed support.** Any two Dwarf axes
-  get a parry re-roll regardless of skill (`contexts.py::_parry_context`); Wheelo
+  get a parry re-roll regardless of skill (`contexts.py::_parry_context`, mirrored in both
+  ports; check first whether the Dwarf Slayer Cult's printed Parry rule, which the code comment
+  cites, needs it - Master of Blades now has its own carrier, `mechanic.master-of-blades-axe-reroll`,
+  which probes non-discriminating until this term is gated); Wheelo
   fittings are gated on `mechanic.wheelo-impact`, not on the rule; the
   chaos-streets Troll Slayer refuses every special skill through `skill_ids`
   while a Dwarf Noble is admitted to Monster Slayer; Battle Monks warrior-monks
   henchmen are admitted to Energy Focus. Done when each is fixed or ruled.
-
-## Rules-conformance authoring plan
-
-The plan of record for the admitted identities without scenarios.
-`tools/conformance/backlog_batches.py` derives it from the knowledge base and the corpus and
-never writes either; covered identities drop out when it is re-run, so the table below is
-refreshed as batches land.
-
-```bash
-.venv/bin/python tools/conformance/backlog_batches.py --table          # this table
-.venv/bin/python tools/conformance/backlog_batches.py --batch B02      # one batch's identities
-.venv/bin/python tools/conformance/backlog_batches.py --out <work-dir> # batches.json + <id>.ids.txt for the probe
-```
-
-**Unit.** A printed-rule group: an uncovered mechanic with every uncovered rule bound to it
-(one oracle; the mechanic through `skill_ids`, its rules through the real build), or the rules
-that share a binding. A component of more than 30 members with an authored model
-(`profile.equipment-restrictions`) is split by collection. **Effort:** 4 to derive a new
-contract, 1 to add a member to an authored or batch-local model, 1.5 for a construction
-member (admission/refusal pair), 2 for a triage item. Batches hold about 50 units.
-**Triage first:** the `PARTIAL` files with a recorded blocker, the operators no engine or
-construction code reads (a condition whose duel content sits in sibling effects counts as
-read), and the identities on hireling profiles that do not compile (detected live). The
-mechanics of one printed source section (Disability 1–6, Fungus Brew, Petru...) form one
-family and are never split. Triage is a decision pass (author, rule or withhold with the
-blocker named), not bulk authoring. **Model** counts the
-identities whose binding already has authored scenarios elsewhere.
-
-| Batch | Theme | Ids | Model | Effort | Routes |
-| --- | --- | ---: | ---: | ---: | --- |
-| B00 | triage-blockers | 1 | 1 | 2 | special_rule_ids 1 |
-| B01 | operators-band-rules | 1 | 1 | 1.5 | construction 1 |
-| | **Total** | **2** | 2 | 3.5 | |
-
-**Order.** Triage first (B00; the second triage batch landed 2026-11-18, leaving only the
-Unshakeable Faith identity withheld on its print; the leadership batch and the uniform
-Large Target pass landed the same day, followed by the construction-equipment and
-construction-skills-and-profile batches, then both survival-injury-and-immunity batches, which
-closed the model-heavy themes; the psychology, hatred/frenzy, equipment, supplied-condition and
-operator themes followed on 2026-11-18, leaving the two recorded blockers). Then psy-tests-and-enemy-effects, hatred-frenzy-and-charge-rages
-and survival-saves-and-rerolls. The new-contract themes last: supplied-conditions,
-equipment-items, operators-hirelings, operators-band-rules. Batches own disjoint files by
-construction and may run in parallel; the coordinator owns the shared documents (this file,
-the design rulings, the conformance README).
-
-**Per batch.** Follow *Author by semantic family* in `tests/conformance/README.md`
-(hireling recipients: *Hireling recipients* there). Verify with
-`validate_corpus.py` (0 metadata conflicts), `pytest tests/conformance/execution/test_cases.py -k <selector> -n 4`
-and `removal_probe.py --identities-file <id>.ids.txt --workers 3 --show non-discriminating`.
-A surviving scenario whose duplicate is a KB encoding gets a dated `# Discrimination note`;
-an identity that cannot be built stays `PARTIAL` with the blocker named. Record new rulings
-in `docs/decisions/design-rulings.md` and new defects here.
 
 ## Runtime classification
 
@@ -407,6 +345,14 @@ parrot, Lustria High Elves mage staff, Deathbringers witch sword) and gets
 committed KB (2026-11-17), so it predates the hireling work. Done when the verdict code
 matches the printed recipient clause.
 
+## Web-app tests read a stale knowledge artefact
+
+Three web-app tests (`knowledge-reader.test.ts` H7 concessions, `rules-catalogue.test.ts` shared-rule
+count, `warband-reference.test.ts` Sisters sheet) fail against
+`outputs/web-public/knowledge/knowledge-web.json`, an untracked artefact generated on 2026-11-17 from
+an older KB. Done when the artefact is regenerated (`tools/knowledge/generate_knowledge_web.py`) and the
+tests are re-run; any that still fail become defects of their own.
+
 ## Combat Lab checklist popover
 
 Unverified `TclError: bad window path name` after `root.update()` in
@@ -424,7 +370,8 @@ its source scenario's expectations. Charter:
 [`tests/engines/parity/README.md`](tests/engines/parity/README.md).
 
 - **Parity deliveries behind the corpus.** Measured on 2026-11-17 against 5,390
-  corpus scenarios (the corpus has grown since): of 5,161 deliveries, 436 keys name
+  corpus scenarios (the corpus has since grown to about 7,900 scenarios, with scenarios moved
+  between identities and case files retired on 2026-11-18/19, so re-measure first): of 5,161 deliveries, 436 keys name
   scenarios that no longer exist, 665 scenarios had no delivery and 1,321 deliveries
   were stale (`source.sha256`). `tests/engines/fixtures/compiled-cases.json` holds
   `conformance/...` entries under retired scenario ids, and its manifest still lists

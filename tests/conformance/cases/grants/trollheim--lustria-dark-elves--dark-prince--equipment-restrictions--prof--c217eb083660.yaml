@@ -1,6 +1,9 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the held Whip half is no longer ambiguous - the Beastmaster-only gate on
+#   the list entry was removed on 2026-11-16 (see the De-duplication note below), so the rule's own token
+#   refusal fires and the-dark-prince-may-not-select-the-beastmasters-whip asserts it.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -9,7 +12,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the pending half is an observation the executor contract does not fix: the Whip entry is
+# AUTHORED: 3 scenarios cover both printed bans (blackpowder and the Beastmaster's Whip).
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [C] the pending half is an observation the executor contract does not fix: the Whip entry is
 # gated applies_to.profile_ids [beastmaster], so a build carrying it raises the earlier "is not on any
 # equipment list" summary instead of the token refusal, and which of the two strings fires is not
 # established - a tape asserting either would be choosing the observable rather than deriving it.

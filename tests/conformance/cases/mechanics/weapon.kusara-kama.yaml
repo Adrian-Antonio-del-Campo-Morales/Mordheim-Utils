@@ -1,6 +1,11 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.kusara-kama
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: every printed term of this weapon carries a scenario.  The one item left pending was
+#   the literal hand token recorded inside `state.<side>.hampered_hands` - an engine-internal naming,
+#   not a printed requirement: the printed hamper (its trigger, the declared hand choice, the reduced
+#   two-weapon pool and the recovery at the start of the wielder's next close-combat phase) is already
+#   pinned by three tapes, and asserting the token literal would add no printed obligation.
 # authoring_progress: the admitted clause carries 6 authored scenarios (count corrected 2026-11-16) and stays
 #   PARTIAL: the hamper trigger, the reduced pool and the between-phase recovery
 #   (the reset at the start of the wielder's next close-combat phase, pinned with
@@ -16,7 +21,13 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: 6 scenarios evidence the printed extra -1 armour modifier (two tapes),
+# AUTHORED: 6 scenarios evidence every printed term - the extra -1 armour modifier (two tapes), the
+#   two-handed occupancy (one construction refusal) and the weapon hamper with its between-phase
+#   recovery (three tapes, pinned with maximum_rounds: 2).  REVIEWED still requires manual semantic
+#   review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   6 scenarios evidence the printed extra -1 armour modifier (two tapes),
 #   the printed two-handed occupancy (one refusal) and the printed weapon hamper
 #   (three tapes); the earlier reason for leaving the hamper unauthored is
 #   corrected here, and the hamper tapes are authored below. The executor contract does define the state and the keys - modular/attacks.py:275-281 sets

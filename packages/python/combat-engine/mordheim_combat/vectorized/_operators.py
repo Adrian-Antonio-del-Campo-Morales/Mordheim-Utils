@@ -1383,8 +1383,11 @@ def parry_context(
         else "other"
         for weapon in (defender.main_weapon, defender.off_hand) if weapon is not None
     ) == ["axe", "sword"]
-    sword_master_reroll = has(effects, "skill.sword-master") and (
-        not has(effects, "rule.dwarf-axe-parry-reroll") or dwarf_axes
+    # Mirrors modular/contexts.py::_parry_context.
+    dwarf_axe_variant = has(effects, "rule.dwarf-axe-parry-reroll")
+    sword_master_reroll = (
+        (has(effects, "skill.sword-master") and not dwarf_axe_variant)
+        or (dwarf_axe_variant and dwarf_axes)
     )
     reroll = (reroll or sword_and_buckler or sword_master_reroll or dwarf_axes
               or axe_and_sword or has(defender.main_weapon, "weapon.fighting-claws"))

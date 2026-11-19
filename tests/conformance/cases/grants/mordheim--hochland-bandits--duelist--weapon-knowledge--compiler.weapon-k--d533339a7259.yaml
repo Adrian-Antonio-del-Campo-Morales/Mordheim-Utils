@@ -1,6 +1,12 @@
 # Conformance authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: ruling "Weapon Knowledge reaches only weapons an item provides"
+#   (design-rulings.md). "Any close combat or missile weapon that the warband members can get hold of" is
+#   a weapon some ordinary catalogue item provides: the Duelist had been admitted every weapon.* mechanic,
+#   including another creature's innate attack and other characters' unique gear. Both boundaries are
+#   authored below. What a particular warband has actually bought or stashed is campaign state, out of
+#   the duel (a disposition, not a gap).
 # authoring_progress: the access operation the earlier note asked for is established, so the granted
 # admission is authored: the shared stage's buildAccess adds every `weapon.*` mechanic to the
 # recipient's access when this contract is active (packages/python/roster-construction/
@@ -19,7 +25,8 @@
 # Preserve audit_id when filling this file.
 # Governing rulings: docs/decisions/design-rulings.md
 #
-# PARTIAL: [C] the recipient identity and the access operation are established (_eligibility.js buildAccess, compiler.weapon-knowledge row) and two scenarios declare them.  The remaining requirement is the supplied band-obtained weapon set the register names, which the corpus does not carry as a fact; without it the printed condition on the grant cannot be asserted, only recorded.  The register's boundary is kept: ownership versus use, the no-free-dagger proviso, acquisition and casting stay separate clauses and are not folded into this one.
+# AUTHORED: the reach of the grant and both of its printed boundaries are represented.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [C] the recipient identity and the access operation are established (_eligibility.js buildAccess, compiler.weapon-knowledge row) and two scenarios declare them.  The remaining requirement is the supplied band-obtained weapon set the register names, which the corpus does not carry as a fact; without it the printed condition on the grant cannot be asserted, only recorded.  The register's boundary is kept: ownership versus use, the no-free-dagger proviso, acquisition and casting stay separate clauses and are not folded into this one.
 
 # --- Authored scenarios ---
 
@@ -50,3 +57,27 @@
       profile_id: poachers
       main_weapon_id: weapon.mace
   expect_error: equipment is not available to hochland-bandits/poachers
+
+# Boundary 1: another creature's innate attack is no weapon the warband can get hold of (a Troll's
+# vomit has no catalogue item).
+- audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
+  id: the-duelist-cannot-take-another-creatures-innate-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: duelist
+      main_weapon_id: weapon.vomit-attack
+  expect_error: "equipment is not available to hochland-bandits/duelist: ['weapon.vomit-attack']"
+
+# Boundary 2: another character's unique gear (Drenok Johansen's Axe of Icefang) is a hireling item,
+# not one the warband can get hold of.
+- audit_id: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge
+  id: the-duelist-cannot-take-another-characters-unique-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hochland-bandits
+      profile_id: duelist
+      main_weapon_id: weapon.icefang-axe
+  expect_error: "equipment is not available to hochland-bandits/duelist: ['weapon.icefang-axe']"
