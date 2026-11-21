@@ -11,11 +11,11 @@ from __future__ import annotations
 import pytest
 
 from mordheim_knowledge.loader import knowledge_root
-from mordheim_conformance.corpus import load_corpus
+from mordheim_conformance.corpus import shared_corpus
 from mordheim_conformance.execution.dice import EvidenceMismatch
 from mordheim_conformance.execution.runner import check_case
 
-CORPUS = load_corpus()
+CORPUS = shared_corpus()
 
 
 #: Every collected declaration keeps its own id and parameters.

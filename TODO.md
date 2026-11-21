@@ -325,6 +325,45 @@ passes alone and in its own file, but fails under
 `unused rolls: p.attack.1.armour`, also on a clean checkout of `4f271cb7b`.
 Done when the shared state it depends on is found and isolated.
 
+## Rules-conformance suite memory use with several workers
+
+Running `tests/conformance` with many pytest-xdist workers has frozen or forced a reboot of a
+16 GB machine. Measured on 2026-11-20 (commit `3f580a6f9`, one process and `-n 1`/`-n 2`): there is
+no runaway leak, since every process's memory levels off. Each worker cost a fixed amount, about
+770 MB at peak (892 MB with `-n 1`), so the total grows with the worker count: about
+100 MB + 770 MB per worker. Projected, `-n 8` needs about 6.3 GB and `-n auto` (12 workers on that
+machine) about 9.3 GB, beyond the 8 GB that was free. Projection only: no run above `-n 2` was
+measured. The `_COMBINED_EFFECTS` effect cache was measured and is not a cause; the removal probe
+alone levels off at about 450 MB per worker.
+
+Fixed in the same change, measured on 300 scenarios but not yet on a full or multi-worker run:
+the five test modules now share one corpus (`corpus.shared_corpus()`, saving about 200 MB per
+worker), and `check_case` asks the eligibility JavaScript engine for a full collection every 50
+scenarios (`eligibility.collect_garbage()`). That engine collects lazily and otherwise holds
+150-190 MB of garbage per process.
+
+Pending:
+
+- **Re-measure after the fixes.** Run the full suite with `-n 1`, `-n 2` and ideally `-n 3`/`-n 4`
+  under the adaptive memory watcher, and compare with the 2026-11-20 reports. Done when the
+  per-worker peak and the scaling with workers are measured on the fixed revision. The expected
+  peak, about 400-450 MB per worker, is an estimate from the 300-scenario run.
+- **The whole-corpus variant check doubles the suite's work.**
+  `integrity/test_variants.py::test_executing_the_corpus_does_not_change_shared_variant_data`
+  re-runs all scenarios inside one test, and with xdist it decides the wall time: 417 s with
+  `-n 2`, 158 s without it. It barely changes memory. Done when the mutation check no longer
+  re-executes the corpus (for example by snapshotting the shared data around the ordinary
+  scenario run) or is made opt-in.
+- **pytest collection cost per worker (inferred).** Each worker reached 520-590 MB before
+  executing much, against 340 MB for imports, corpus and the engine in one process; every xdist
+  worker collects all 8,005 items. Done when a `--collect-only` measurement confirms or rejects it.
+- **No worker cap.** `tests conformance` forwards `-n` (including `-n auto`) unchanged. Done when
+  the documented guidance (or the launcher) derives a safe worker count from the memory available.
+- **Minor.** The engine process keeps 55-65 MB of freed memory until `malloc_trim`. The xdist
+  controller grows to about 100 MB with the number of test reports. The removal probe rebuilds the
+  4.8 MB eligibility catalogue for every scenario (`_catalogue.cache_clear()`): extra CPU, not
+  extra memory; see the entry below.
+
 ## Intermittent removal-probe baseline failure
 
 On 2026-11-17, two probe runs of the first hireling batch (`--workers 3`) reported both Grave Robber hatred

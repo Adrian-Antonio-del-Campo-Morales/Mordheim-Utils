@@ -20,12 +20,12 @@ from __future__ import annotations
 from copy import deepcopy
 
 from mordheim_knowledge.loader import knowledge_root
-from mordheim_conformance.corpus import load_corpus
+from mordheim_conformance.corpus import shared_corpus
 from mordheim_conformance.execution.dice import EvidenceMismatch
 from mordheim_conformance.execution.runner import check_case
 import pytest
 
-CORPUS = load_corpus()
+CORPUS = shared_corpus()
 BY_IDENTITY = {scenario.test_id: scenario for scenario in CORPUS}
 
 

@@ -44,8 +44,8 @@ a single affected file or node ID; the complete corpus is a full-pipeline run.
 | Path | Current role |
 | --- | --- |
 | `execution/dice.py` | Local copies of strict dice, decisions, exact enumeration and the mismatch exception. |
-| `execution/runner.py` | Copied helpers plus a real-driver combat loop and checkpoint/event checks. |
-| `corpus.py` | Declarative YAML corpus loading and structural validation. |
+| `execution/runner.py` | Copied helpers plus a real-driver combat loop and checkpoint/event checks. Every 50 checked scenarios it asks the eligibility JavaScript engine for a full garbage collection (`eligibility.collect_garbage`), which otherwise holds 150-190 MB of garbage per process. |
+| `corpus.py` | Declarative YAML corpus loading and structural validation. `shared_corpus()` loads the real corpus once per process for every test module (read-only); `load_corpus(directory)` still loads a fresh copy. |
 | `generate_skeletons.py` | Engine-free generator of one source-linked authoring scaffold per admitted ID. |
 | `integrity/test_generate_skeletons.py` | Standalone unittest checks for generation, preservation, source drift and CLI behavior; no combat execution. |
 | `__init__.py`, `conftest.py` | Load the directory for pytest as the local package `mordheim_conformance`, a stable import name that keeps support modules such as `corpus` and `execution.runner` out of the generic top-level namespace. |

@@ -9,6 +9,7 @@ import mordheim_combat.modular.state as combat_state
 import mordheim_combat.modular.rounds as rounds
 import mordheim_combat.phases as phases
 from mordheim_construction.compiler import compile_fighter
+from mordheim_construction.eligibility import collect_garbage
 from mordheim_core.dice import DecisionPolicy, DiceSource
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
 
@@ -27,6 +28,12 @@ CASE_FIELDS = frozenset({
     "rolls", "decisions", "expect_initial", "expect_rounds", "expect_final", "expect_events",
     "expect_fighters", "expect_error",
 })
+#: Scenarios between two full collections of the eligibility JavaScript engine.
+#: It collects lazily, so a worker otherwise carries 150-190 MB of garbage; at
+#: about 50 ms per scenario a collection every 50 costs a few percent.
+GARBAGE_COLLECTION_INTERVAL = 50
+_checked_cases = 0
+
 #: Observation fields a refusal may not be combined with.
 OBSERVATION_FIELDS = ("expect_initial", "expect_rounds", "expect_final", "expect_events",
                       "expect_fighters")
@@ -233,6 +240,10 @@ def check_case(case: dict, root: Path) -> dict:
     fragment, so an unrelated failure cannot satisfy the declaration and a case
     that runs at all fails with ``but the case ran``.
     """
+    global _checked_cases
+    _checked_cases += 1
+    if _checked_cases % GARBAGE_COLLECTION_INTERVAL == 0:
+        collect_garbage()
     if not isinstance(case, dict):
         raise ValueError("conformance case must be a mapping")
     rejection = _declared_rejection(case)

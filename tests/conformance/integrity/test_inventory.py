@@ -27,14 +27,14 @@ from pathlib import Path
 import pytest
 
 from mordheim_knowledge.clauses import admitted_clauses, declared_clauses, load_identities
-from mordheim_conformance.corpus import Scenario, group_by_audit, load_corpus
+from mordheim_conformance.corpus import Scenario, group_by_audit, shared_corpus
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 #: Identity kinds the conformance corpus may declare; items are covered by deterministic tests.
 ADMITTED_KINDS = ("core", "mechanic", "rule")
 REQUIRE_COMPLETE_ENV = "MORDHEIM_CONFORMANCE_REQUIRE_COMPLETE"
 
-CORPUS = load_corpus()
+CORPUS = shared_corpus()
 BY_AUDIT = group_by_audit(CORPUS)
 
 

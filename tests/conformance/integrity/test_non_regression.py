@@ -27,13 +27,13 @@ from pathlib import Path
 import yaml
 
 from mordheim_knowledge.clauses import admitted_clauses, inventory_digest, load_identities
-from mordheim_conformance.corpus import Scenario, group_by_audit, load_corpus
+from mordheim_conformance.corpus import Scenario, group_by_audit, shared_corpus
 import pytest
 
 BASELINE_PATH = Path(__file__).parent / "evidence" / "coverage-baseline.yaml"
 ADMITTED_KINDS = ("core", "mechanic", "rule")
 
-CORPUS = load_corpus()
+CORPUS = shared_corpus()
 
 
 def load_baseline(path: Path | None = None) -> dict:

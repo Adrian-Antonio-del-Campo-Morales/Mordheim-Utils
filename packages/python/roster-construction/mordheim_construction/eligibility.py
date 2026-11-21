@@ -45,6 +45,18 @@ def _engine():
     return _runtime
 
 
+def collect_garbage():
+    """Ask this process's JavaScript engine for a full garbage collection.
+
+    Every call compiles a fresh script, and the single-threaded engine collects
+    lazily, so a long-lived caller (a test worker running thousands of builds)
+    holds 150-190 MB of collectable garbage. A no-op before the engine starts.
+    """
+    with _lock:
+        if _runtime is not None and _runtime_pid == os.getpid():
+            _runtime.low_memory_notification()
+
+
 def call(operation, *args):
     """Execute the shared browser/desktop function, with JSON-only transport."""
     with _lock:

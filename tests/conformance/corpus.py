@@ -261,6 +261,23 @@ def load_corpus(cases_directory: Path | None = None) -> list[Scenario]:
     return scenarios
 
 
+_SHARED_CORPUS: list[Scenario] | None = None
+
+
+def shared_corpus() -> list[Scenario]:
+    """The real corpus, loaded once per process and shared by every test module.
+
+    Each pytest-xdist worker imports all the suite's modules, so a private
+    ``load_corpus()`` per module kept several identical copies (about 50 MB
+    each) in every worker. Callers must treat the result as read-only; a test
+    that needs a doctored corpus builds a new list or copies a case.
+    """
+    global _SHARED_CORPUS
+    if _SHARED_CORPUS is None:
+        _SHARED_CORPUS = load_corpus()
+    return _SHARED_CORPUS
+
+
 def group_by_audit(scenarios: Iterable[Scenario]) -> dict[str, list[Scenario]]:
     grouped: dict[str, list[Scenario]] = {}
     for scenario in scenarios:

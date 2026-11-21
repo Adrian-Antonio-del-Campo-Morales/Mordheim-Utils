@@ -4,11 +4,11 @@ from __future__ import annotations
 import pytest
 import yaml
 from mordheim_knowledge.loader import knowledge_root
-from mordheim_conformance.corpus import CorpusError, load_corpus
+from mordheim_conformance.corpus import CorpusError, load_corpus, shared_corpus
 from mordheim_conformance.execution.dice import EvidenceMismatch
 from mordheim_conformance.execution.runner import check_case
 
-CORPUS = load_corpus()
+CORPUS = shared_corpus()
 
 
 def test_a_declared_scenario_fails_when_its_expectation_is_wrong():
