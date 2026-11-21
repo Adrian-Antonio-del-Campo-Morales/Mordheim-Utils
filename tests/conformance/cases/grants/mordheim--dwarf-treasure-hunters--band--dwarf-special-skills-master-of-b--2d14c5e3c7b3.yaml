@@ -1,0 +1,91 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/mechanic.master-of-blades-axe-reroll
+# authoring_status: AUTHORED
+# authoring_progress: the undivided identity (the printed two-Dwarf-axes sentence of Master of Blades)
+# carries two authored scenarios re-homed unchanged from the retired identity
+# rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master: two Dwarf axes reroll a failed parry, and a single Dwarf axe is offered no reroll.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dwarf-treasure-hunters/special-rules.yaml
+#
+# AUTHORED: 2 scenario(s) cover the identity: with two Dwarf axes the failed parry is rolled again
+# and recovered, and the printed condition is visible in the boundary where a single Dwarf axe is
+# offered no reroll die at all.
+
+# Re-homed 2026-11-18 (ruling: split the Sword Master binding).  This record no longer binds
+#   skill.sword-master (the Vampire's Sword Master is a different print); its printed sentence "if this
+#   Dwarf has two Dwarf axes he can reroll any failed parries" is delivered by the Dwarf-specific
+#   mechanic.master-of-blades-axe-reroll (tag rule.dwarf-axe-parry-reroll).  The two Dwarf-axe scenarios
+#   of the retired identity moved here verbatim (audit_id changed, covers label dropped because this
+#   identity is undivided); its equality and two-parry scenarios were already present, byte-identical,
+#   under the sibling identity rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.unbeatable-warrior
+#   (mordheim--dwarf-treasure-hunters--band--dwarf-special-skills-master-of-b--8be561ccd006.yaml), so they were not duplicated.
+
+# --- Authored scenarios ---
+# Family model (Master of Blades, Dwarf Treasure Hunters printing): the bearer is the printed recipient of this band record,
+# built from its own band and profile and selecting the band row named in the audit id, which projects
+# skill.unbeatable-warrior (equality, two parries) and mechanic.master-of-blades-axe-reroll.  Physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the
+# strike order are fixed; the bearer's own attack pool is declared empty so the tape holds only the
+# parry under test.  Every expectation is read from the printed rule (two Dwarf axes reroll failed
+# parries; he parries when he beats or matches the highest To Hit roll), never from engine output.
+
+# The printed Dwarf Axe sentence: with two Dwarf Axes the failed parry is rolled again and the reroll
+# matches, so the hit is blocked.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/mechanic.master-of-blades-axe-reroll
+  id: two-dwarf-axes-reroll-a-failed-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition of that sentence: with a single Dwarf Axe the reroll is not granted, so the
+# tape holds no reroll die and the wound is resolved.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/mechanic.master-of-blades-axe-reroll
+  id: a-single-dwarf-axe-gets-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

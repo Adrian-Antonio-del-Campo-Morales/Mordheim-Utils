@@ -1,0 +1,117 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.ghostly-howl
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the shared operator
+#   on a hand-built fear-causer - the enemy's charged Fear test subtracts the declared D6 from its
+#   Leadership (a six turns a passing 1+1 into a failure), a one leaves 3+3 passing against the reduced
+#   6, the same faces pass without the howl, and the enemy charging the howler is dropped the same way on
+#   its charge test (a failure cancels the charge).  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed carrier: Call of the Night Haint, Tomb Banshee, Ghostly Howl (bands/mordheim/
+# call-of-the-night-haint-mim/special-rules.yaml tomb-banshee--ghostly-howl, grant profile): "Enemies
+# within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear tests."  The
+# wider radius to other units is the band row's scope-NO clause.  Consumer: modular/leadership.py
+# ~300-301: on a Fear test whose opponent carries mechanic.ghostly-howl the tested value drops by a die
+# on <test key>.ghostly-howl, rolled before the two Leadership dice; the duel supplies the proximity of
+# its two participants.  Model: the PARTIAL grant file (...b09b65c8952d) on the real Banshee; here the
+# operator is injected through skill_ids on the hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace) that
+# also declares causes_fear, because the howl acts on a Fear test the howler itself must cause.  The
+# tested enemy is the mace fixture (WS3 S3 T3 W3 I2 A1 Ld7); every strike is a declared natural 1.
+
+# The howler charges: the enemy's charged Fear test rolls the howl die first (6), its Leadership 7 drops
+# to 1, so even 1+1 fails and its strikes are clamped to sixes.
+- audit_id: mechanic/mechanic.ghostly-howl
+  id: the-howl-drops-the-tested-enemys-leadership-by-the-declared-die
+  fighters:
+    first:
+      &howler
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ghostly-howl]
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &enemy
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.ghostly-howl, value: 6}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, attacks.1.hit_target: 6, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The die is a D6, not a flat penalty: a one leaves Leadership 6, and 3+3 passes exactly on it.
+- audit_id: mechanic/mechanic.ghostly-howl
+  id: a-howl-die-of-one-leaves-six-and-three-plus-three-passes
+  fighters:
+    first:
+      <<: *howler
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.ghostly-howl, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, attacks.1.hit_target: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a plain fear-causer in the howler's place asks no howl die, and 1+1 passes Leadership 7.
+- audit_id: mechanic/mechanic.ghostly-howl
+  id: the-same-faces-pass-without-the-howl
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *enemy
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, attacks.1.hit_target: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The howl reads any Fear test the enemy takes while facing the howler: the enemy charging the howler
+# rolls the howl die on its charge test (6), 1+1 fails the reduced Leadership 1 and the charge is
+# cancelled, ending the duel disengaged.
+- audit_id: mechanic/mechanic.ghostly-howl
+  id: the-enemy-charging-the-howler-is-dropped-on-its-charge-test
+  fighters:
+    first:
+      <<: *enemy
+    second:
+      <<: *howler
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.ghostly-howl, value: 6}
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

@@ -1,0 +1,124 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (construction set, 2026-11-18): a supplied halberd beyond her
+#   printed kit admitted in the main hand (the training visible on the compiled construction tags), the
+#   refusals of a bow, a suit of light armour and another character's unique blade with the ruling's
+#   fragment, the physical-copies refusal of a wielded weapon no ownership supplies, and the control
+#   refusal of the same supplied halberd on a hireling without the training.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Weapons Training is a construction rule (access, no die), so
+#   the probe's construction-only verdict - the admission becomes a kit refusal without the binding - is
+#   the rule's own effect (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Contract fixed by the ruling "Penthesilea Weapon Master means Weapons Training - 2026-10-15"
+# (docs/decisions/design-rulings.md): her undefined printed Weapon Master is proficiency with
+# hand-to-hand weapons - compiler.weapon-knowledge with allowed_kinds [close-combat-weapon] - with no
+# hit, attack or parry bonus; proficiency does not create physical copies, grant ranged weapons or
+# transfer another character's unique gear.  The resolver's scoped-training path (`resolveHirelingKit`)
+# admits a supplied inventory of the printed kit plus close-combat catalogue weapons, refuses any other
+# addition with "Weapons Training does not grant ranged weapons, armour or another character's unique
+# items", and requires every active position to be a supplied copy ("Weapons Training requires
+# supplied physical copies of active equipment").  The recipient is the printed Penthesilea
+# (hirelings.dramatis-personae.1b / hireling.dramatis.penthesilea-mark-of-the-serpent; printed kit
+# starsword, starblade, amulet_of_the_moon, enchanted_skins) with the fixture facts (WS3 S3 T3 W2 I5
+# A1; the printed Ld8 stays).  Her Mark is already in the printed line, Mesmerising Dance, Savage Fury
+# and Man-Hater are duel effects, and Concealment / Elixir of Life are scope NO, so the construction-only
+# shape (no charge, the bearer out of action before the first phase) requests no die.  Supplied
+# ownership travels through owned_item_ids as in the Haunted Mien file; the admission observes the
+# compiled build alone: construction_tags is the sorted list of the two compiler contracts her rules
+# bind (the catalogue-wide fixed-equipment clause and the training).  The control is the corpus's
+# hireling control, the grade-1b Bard, who has no such training and meets the kit matcher.
+
+# A halberd supplied beside her printed kit and wielded: close-combat proficiency admits it.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: a-supplied-close-combat-weapon-beyond-the-kit-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.halberd
+      owned_item_ids: [starsword, starblade, amulet_of_the_moon, enchanted_skins, halberd]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment, compiler.weapon-knowledge]
+
+# A bow supplied beside the kit: the training grants no ranged weapon.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: a-supplied-ranged-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [starsword, starblade, amulet_of_the_moon, enchanted_skins, bow]
+  expect_error: "Weapons Training does not grant ranged weapons, armour or another character's unique items"
+
+# A suit of light armour supplied beside the kit: the training grants no armour.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: supplied-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [starsword, starblade, amulet_of_the_moon, enchanted_skins, light_armour]
+  expect_error: "Weapons Training does not grant ranged weapons, armour or another character's unique items"
+
+# Aenur's Ienh-Khain supplied beside the kit: another character's unique gear does not transfer.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: another-characters-unique-item-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      owned_item_ids: [starsword, starblade, amulet_of_the_moon, enchanted_skins, hireling.dramatis.aenur.item.ienh-khain]
+  expect_error: "Weapons Training does not grant ranged weapons, armour or another character's unique items"
+
+# A halberd wielded with ownership omitted: proficiency creates no physical copy, so the printed kit
+# alone is her inventory and the active weapon has no copy to draw.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: a-wielded-weapon-without-a-supplied-copy-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.halberd
+  expect_error: "Weapons Training requires supplied physical copies of active equipment"
+
+# The control: the Bard, without any training, supplying the same halberd beside his printed kit is
+# refused by the kit matcher.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.weapon-master/weapon-master.melee-access
+  id: the-same-supplied-halberd-is-refused-on-a-hireling-without-the-training
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.halberd
+      owned_item_ids: [sword, dagger, light_armour, halberd]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

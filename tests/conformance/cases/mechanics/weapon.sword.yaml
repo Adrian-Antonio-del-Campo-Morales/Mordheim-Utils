@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.sword
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored parry scenarios.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover a parry that blocks the hit and the
+#   strict-greater boundary, where an equal roll does not parry.
+#   Pending semantic review.
+
+# --- Authored scenarios ---
+# weapon.sword - a sword may parry one eligible close-combat hit.
+# a sword may parry one eligible close-combat hit.
+# A parry must beat the attacker's to-hit roll, so a 5 blocks a hit that
+# landed on a 4 and no wound roll is reached.
+
+- audit_id: mechanic/weapon.sword
+  id: sword-parry-blocks-a-higher-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &atk-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: &dfn-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.sword
+  id: sword-parry-does-not-block-an-equal-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *atk-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *dfn-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

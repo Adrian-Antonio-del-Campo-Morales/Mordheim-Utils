@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/savage-orcs-sar/orc-shaman--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/savage-orcs-sar/special-rules.yaml
+#
+# AUTHORED: 3 scenarios.  Printed: 'May select weapons from the Orc Equipment List, but may never wear armour.'
+#   The binding forbids [armour].  The Orc Equipment List offers the Shaman a shield and no body armour, so the
+#   shield is the on-list item only this clause can refuse (`armour is forbidden for savage-orcs-sar/orc-shaman`);
+#   a heavy armour suit is refused by the same sentence because stage boundEquipment answers before the
+#   equipment-list gate (the orc-mob and chaos-streets-greenskins Orc Shaman files are the authored precedents).
+#   The control is the same Shaman without armour, accepted at construction.
+# authoring_progress: 3 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11): a printed prohibition bound as profile.equipment-restrictions is
+#   evidenced as a construction refusal on the printed recipient plus the same recipient accepted without the
+#   item.  Consumer: the shared eligibility stage (packages/typescript/domain/eligibility/index.ts,
+#   buildRestriction stage boundEquipment, called by mordheim_construction/restrictions.py before the
+#   equipment-list gate), so a slot selection meets the clause's own sentence first: the `armour` token raises
+#   `armour is forbidden for <band>/<profile>`, every interpreted token (`weapons`, `equipment`) raises
+#   `"<token>" is forbidden for <band>/<profile>.` (equipmentIssue), and a printed permit list raises
+#   `<item> may not be carried; the printed clause admits only <permits>.`.  Only the stable fragment is quoted.
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/savage-orcs-sar/orc-shaman--equipment-restrictions/profile.equipment-restrictions
+  id: orc-shaman-with-a-shield-from-his-own-list-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-sar
+      profile_id: orc-shaman
+      main_weapon_id: weapon.dagger
+      off_hand_id: defence.shield
+  expect_error: armour is forbidden for savage-orcs-sar/orc-shaman
+
+- audit_id: rule/mordheim/savage-orcs-sar/orc-shaman--equipment-restrictions/profile.equipment-restrictions
+  id: orc-shaman-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-sar
+      profile_id: orc-shaman
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for savage-orcs-sar/orc-shaman
+
+- audit_id: rule/mordheim/savage-orcs-sar/orc-shaman--equipment-restrictions/profile.equipment-restrictions
+  id: orc-shaman-without-armour-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-sar
+      profile_id: orc-shaman
+    second:
+      collection: mordheim
+      band_id: savage-orcs-sar
+      profile_id: orc-shaman
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

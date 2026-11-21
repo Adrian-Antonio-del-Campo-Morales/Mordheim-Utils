@@ -1,0 +1,74 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.blood-dragon-sword-master
+# authoring_status: AUTHORED
+# authoring_progress: the undivided identity (the Blood Dragon print's "may therefore parry a roll of
+# 6") carries two authored scenarios derived from the printed rule: a Sword Master bearer with this
+# mechanic parries a natural six with a parry die of six, and the same bearer with skill.sword-master
+# alone is offered no parry attempt against the natural six.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 2 scenarios cover the identity: the natural six is parried by an equal six when the
+#   mechanic is present, and is not parryable at all with skill.sword-master alone.
+
+# --- Authored scenarios ---
+# mechanic/mechanic.blood-dragon-sword-master - ruling 2026-11-18 (split the Sword Master binding):
+# the Blood Dragon print reads "When parrying, the Vampire only needs to equal the opponent's roll and
+# may therefore parry a roll of 6".  The shared skill.sword-master carries the equality; this mechanic
+# carries the natural-six face and is bound only on band--blood-dragon-power-sword-master.  A parry of
+# a six needs both halves (a die cannot beat a six, it can only equal it), so the bearer carries both.
+# The bearer parries with a sword and its own attack pool is declared empty so the tape holds only the
+# parry under test.  Expectations come from the printed rule and the core rule that a natural six
+# cannot be parried, never from engine output.
+
+# The printed conclusion "may therefore parry a roll of 6": the natural six is met by a parry die of
+# six and the attack is blocked.
+- audit_id: mechanic/mechanic.blood-dragon-sword-master
+  id: a-sword-master-with-the-blood-dragon-face-parries-a-natural-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.sword-master, mechanic.blood-dragon-sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.parry, value: 6}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary: the shared skill.sword-master alone (the Bretonnian Knight's Feat print, "may parry,
+# with re-roll at equal or higher") does not print the six, so the natural six stays unparryable: no
+# parry die is requested and the blow is resolved and wounds.
+- audit_id: mechanic/mechanic.blood-dragon-sword-master
+  id: skill-sword-master-alone-cannot-parry-a-natural-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

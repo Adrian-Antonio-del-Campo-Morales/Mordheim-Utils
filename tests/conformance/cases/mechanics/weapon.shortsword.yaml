@@ -1,0 +1,113 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.shortsword
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (equipment-items batch, 2026-11-18) pin the printed +1 to
+#   the wounded enemy's armour save on both faces of the 6+ it grants an unarmoured target
+#   (the die 6 saves, the 5 does not), the ordinary sword control that grants no such save
+#   (no armour die is requested), and the shortsword's own parry.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios cover the granted 6+ save on both faces, the sword control and
+#   the parry.
+
+# --- Authored scenarios ---
+# mechanic/weapon.shortsword - Bretonnian Chapel Guard special equipment: Strength as
+# user, Parry, and "an enemy wounded by a shortsword gains +1 to its armour save, or a
+# 6+ save if it has none" (items/weapons-close-combat.yaml).  The record tags the weapon
+# as a sword with `target_armour_bonus: 1`, the same grammar the dagger carries.
+#
+# Expectations come from the printed entry, never from engine output.  Strength 3 against
+# Toughness 3 wounds on a 4+ and applies no save modifier, so an unarmoured target's
+# granted save is exactly the printed 6+; the ordinary sword control requests no armour
+# die at all.  The parry is the sword's: a 5 blocks a hit landed on a 4.
+
+# The granted 6+ on its one saving face.
+- audit_id: mechanic/weapon.shortsword
+  id: shortsword-grants-an-unarmoured-enemy-a-six-plus-save
+  fighters:
+    first:
+      main_weapon_id: weapon.shortsword
+      characteristics: &ss-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ss-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &ss-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the granted 6+: the 5 fails and the wound is taken.
+- audit_id: mechanic/weapon.shortsword
+  id: the-granted-save-fails-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.shortsword
+      characteristics: *ss-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ss-defender
+  duel_context: *ss-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the ordinary sword grants no save, so the same wound requests no armour
+# die and lands directly.  The strict tape proves the absence.
+- audit_id: mechanic/weapon.shortsword
+  id: an-ordinary-sword-grants-no-save-to-the-same-target
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ss-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ss-defender
+  duel_context: *ss-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed parry: the shortsword bearer's 5 beats the hit landed on a 4.
+- audit_id: mechanic/weapon.shortsword
+  id: shortsword-parries-a-higher-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ss-attacker
+    second:
+      main_weapon_id: weapon.shortsword
+      characteristics: *ss-defender
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

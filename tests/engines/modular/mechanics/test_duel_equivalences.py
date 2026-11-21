@@ -64,6 +64,7 @@ def strike(owner, foe, rolls, *, key="r"):
     return result
 
 
+@pytest.mark.covers("rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/mechanic.wall-of-steel")
 def test_the_ashigaru_spear_parries_only_under_wall_of_steel():
     """The stance adds the parry; the same spear without it never offers one."""
     stance = band("nipponese-expedition-web", "ashigaru", main_weapon_id="weapon.spear",

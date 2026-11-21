@@ -1,0 +1,131 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.fungus-brew-rowdy
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied Rowdy
+#   brew makes the bearer's start-of-own-turn Animosity die fail on a 2 (no attack of its own), a 3 is
+#   the boundary and it fights normally, the ordinary goblin Animosity alone passes the same 2, and
+#   without any source no animosity die is asked.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.fungus-brew-rowdy, "Rowdy Fungus
+#   Brew": "Animosity applies on a 1 or 2.")
+# Band-rule note (2026-11-18, recorded, Discrimination-style): the band rule shaman--fungus-brew
+#   (bands/mordheim/night-goblins-web/special-rules.yaml) binds this condition with `grant: none` only to
+#   name the printed brew that produces it; it is never a compile route - construction refuses it on the
+#   printed recipients, so the band-level identity probes `inert` (TODO.md, "Conditions and bull-charge
+#   unreachable by scenarios").  The condition is reached through the supplied condition_ids entry these
+#   scenarios declare, which the rule-removal probe deletes from every id list, so the with/without pairs
+#   below discriminate for this mechanic identity.  No compiler gate exists for the brew results (the
+#   compiler only lists them among the drug ids that Drug Immunity strips, compiler.py:859-866), so the
+#   hand-built bearers below carry the condition directly.
+# AUTHORED: the 4 scenarios below cover the widened band, its boundary, the ordinary-threshold contrast
+#   and the no-source control; REVIEWED still requires manual semantic review.  Consumer: the execution
+#   entry compiles the condition to `mechanic.fungus-rowdy` (execution.yaml:3814-3821), which
+#   modular/rounds.py:89 lists as an Animosity source (the own-turn die `round.<i>.<side>.animosity`)
+#   and rounds.py:713 reads as the widened failure threshold (<= 2 instead of <= 1); `animosity_failed`
+#   withholds the bearer's attacks for that round.  The band-level file (grants/mordheim--night-goblins-
+#   web--shaman--fungus-brew--condition.fungus-brew--1824af2c3c24.yaml) carries the same supplied pair.
+# Semantic wrinkle (2026-11-18, recorded): the brew's row prints only the widened band, so the supplied
+#   condition is itself an Animosity source for a bearer that prints none; the warband-level squabble
+#   behaviour stays the excluded clause of mechanic.goblin-squabble.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built bearer (WS3 S3 T3 W2 I5 A1 Ld7, mace, goblin) charging a hand-built opponent (WS3
+# S3 T3 W3 I2 A1 Ld7, mace).  The D6 is asked at the start of the bearer's own turn, before any attack;
+# a failure leaves no attack die of the bearer's on the tape while the opponent's own natural 1 is still
+# requested.  WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+, no armour die exists.
+
+# The widened band: a 2 at the start of the bearer's turn is a failure under the brew.
+- audit_id: mechanic/condition.fungus-brew-rowdy
+  id: a-two-at-the-start-of-the-bearers-turn-fails-under-the-brew
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-rowdy]
+      trait_overrides: {species: goblin}
+      characteristics: &fb-rowdy-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &fb-rowdy-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary: the printed band is 1 or 2, so a 3 passes and the bearer's charge lands.
+- audit_id: mechanic/condition.fungus-brew-rowdy
+  id: a-three-is-the-boundary-and-the-bearer-fights-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-rowdy]
+      trait_overrides: {species: goblin}
+      characteristics: *fb-rowdy-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-rowdy-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: false, attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the ordinary goblin Animosity (mechanic.goblin-squabble, injected) fails on a 1 only, so
+# the same 2 passes without the brew and the bearer strikes.
+- audit_id: mechanic/condition.fungus-brew-rowdy
+  id: the-ordinary-animosity-alone-passes-the-same-two
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.goblin-squabble]
+      trait_overrides: {species: goblin}
+      characteristics: *fb-rowdy-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-rowdy-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without any Animosity source no animosity die is asked at all and the charge lands.
+- audit_id: mechanic/condition.fungus-brew-rowdy
+  id: without-the-brew-no-animosity-die-is-asked
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: goblin}
+      characteristics: *fb-rowdy-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-rowdy-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

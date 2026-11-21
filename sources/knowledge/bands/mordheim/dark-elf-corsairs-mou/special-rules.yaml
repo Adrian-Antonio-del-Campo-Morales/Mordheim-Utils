@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.band.corsair-special-skills
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Corsair Special Skills
   effect: >-
     Dark Elf Corsairs with the Special Skills available to them may choose to use the following
@@ -50,19 +48,16 @@ rules:
     band: true
 - id: captain--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dark-elf-corsairs-mou.captain.leader
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader (Captain)
-  effect: >-
-    Any warrior within 6" of the Captain may use his Leadership value when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -70,25 +65,21 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
   name_i18n:
     es: Líder (Capitán)
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" o menos del Capitán puede usar su valor de Liderazgo cuando realice
-      tiradas de Liderazgo.
   applies_to:
     profile_ids:
     - captain
+  rule_ref: shared-rule.leader
 - id: captain--hardened
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dark-elf-corsairs-mou.captain.hardened
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
   name: Hardened
   effect: Seen everything, done everything... it makes him immune to fear.
   source:
@@ -112,9 +103,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.captain.slaver
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Slaver
   effect: >-
     Any opponent that has the bad fortune to be captured will await only the whip of the slave
@@ -144,9 +133,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.specialist.hiring-fee
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Hiring Fee (Specialist)
   effect: >-
     A specialist is free to hire before a battle. However, proper payment is expected for the
@@ -191,9 +178,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.specialist.provisory-ally
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.group
   name: Provisory Ally (Specialist)
   effect: >-
     During battle, a Specialist acts like an ordinary member of the warband (contributing to rout
@@ -232,9 +217,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.specialist.in-demand
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: In Demand (Specialist)
   effect: >-
     Specialists are highly in demand, and dispatched all over the world to assist with raiding
@@ -271,9 +254,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.shades.elite
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Elite (Shades)
   effect: >-
     Shades are an elite force of specialists and do not count towards any 'lads got talent' rolls
@@ -301,9 +282,7 @@ rules:
     - id: unimplemented.dark-elf-corsairs-mou.specialists.roster
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Specialists (Roster)
   effect: >-
     Assassin: replacement cost 90 gc; profile M5 WS5 BS5 S4 T4 W1 I7 A1 Ld8; same as Hired Sword
@@ -399,7 +378,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      Sin armas de proyectil.
   applies_to:
     profile_ids:
     - corsairs

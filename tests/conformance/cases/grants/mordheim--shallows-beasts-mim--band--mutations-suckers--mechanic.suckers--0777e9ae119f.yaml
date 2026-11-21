@@ -1,0 +1,56 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-suckers/mechanic.suckers
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (B00 triage, 2026-11-17): a Hero may take the printed mutation and
+#   compiles with the same duel facts as without it; a henchman of the band is refused it.
+# AUTHORED: the admission and the refusal are declared below; REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-17, B00 triage): the printed Suckers only lets the bearer pass
+#   Initiative tests when climbing, which is movement outside the duel; the admitted carrier effect
+#   (`mechanic.suckers`, no tags) exists so a Hero who took the printed mutation stays a legal build
+#   (the construction layer refuses a selected rule with no admitted effect). Removing it cannot
+#   change a duel observable, so the probe reports the identity non-discriminating by design.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+
+# --- Authored scenarios ---
+# The Buccaneer (a Hero of the band) selects Suckers from the Aquatic Mutants pool: the build is legal
+# and its compiled duel facts equal those of the same Hero without the mutation.  Neither side strikes.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-suckers/mechanic.suckers
+  id: a-hero-may-take-suckers-and-fights-as-without-it
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--mutations-suckers]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.global_effects.tags: ['mechanic.leader-six', 'armour.no-armour', 'fighter-kind.hero', 'band.shallows-beasts-mim']
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-suckers/mechanic.suckers
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--mutations-suckers]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-suckers"

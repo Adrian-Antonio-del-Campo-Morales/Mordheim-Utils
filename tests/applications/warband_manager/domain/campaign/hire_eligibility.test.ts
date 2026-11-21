@@ -217,21 +217,24 @@ describe("dynamic hire-eligibility rules (desktop test_hire_eligibility.py)", ()
     expect(decide(bard, ctx("cult-of-the-possessed"))[0].kind).toBe("rejected");
   });
 
-  it("rule facts come from the KB trait registry (no curated sets)", () => {
+  it("rule facts come from the hireling profiles (no curated sets)", () => {
     const expectTrait = (id: string, trait: string) =>
       expect(TRAITS.get(id)?.has(trait) ?? false, `${id} ~ ${trait}`).toBe(true);
     expectTrait("hireling.hired-sword.elf-mage", "elf");
     expectTrait("hireling.hired-sword.dwarf-troll-slayer", "dwarf");
     expectTrait("hireling.hired-sword.highwayman", "human");
-    expectTrait("hireling.hired-sword.grave-robber", "undead");
+    expectTrait("hireling.hired-sword.bone-goliath", "undead");
     expectTrait("hireling.hired-sword.warlock", "spellcaster");
     expectTrait("hireling.hired-sword.elf-mage", "spellcaster");
     expectTrait("hireling.hired-sword.warrior-priest-of-sigmar", "priest");
     expectTrait("hireling.hired-sword.priest-of-morr", "priest");
     expectTrait("hireling.hired-sword.wolf-priest-of-ulric", "priest");
     expectTrait("hireling.hired-sword.dark-elf-assassin", "evil");
-    expectTrait("hireling.hired-sword.ninja-gnoblar", "evil");
+    expectTrait("hireling.hired-sword.slaver", "evil");
     expectTrait("hireling.hired-sword.ogre-bodyguard", "fear-causing");
-    expectTrait("hireling.hired-sword.dark-mage", "fear-causing");
+    expectTrait("hireling.hired-sword.ogre-treasure-hunter", "fear-causing");
+    // Derived from the printed rules: no Cause Fear rule, no fear-causing fact.
+    expect(TRAITS.get("hireling.hired-sword.dark-mage")?.has("fear-causing") ?? false).toBe(false);
+    expect(TRAITS.get("hireling.hired-sword.grave-robber")?.has("undead") ?? false).toBe(false);
   });
 });

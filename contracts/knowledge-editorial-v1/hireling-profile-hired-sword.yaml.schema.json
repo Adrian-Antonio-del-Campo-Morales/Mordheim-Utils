@@ -127,6 +127,26 @@
           "description": "Canonical skill ids the profile starts with. Empty when the source declares none — the key is never dropped, so `no skills` is stated rather than implied.",
           "$ref": "defs.schema.json#/$defs/id_list"
         },
+        "combat_traits": {
+          "description": "The warrior's duel identity, with the same keys and meaning as `combat_traits` in a band's `profiles.yaml` (`mordheim_construction.contracts.TRAIT_TYPES`): what an enemy rule may read about it (species, elf kind, creature kind, lizardman, spellcaster); a nature a printed rule already gives (Daemonic Flesh, Undead) is not repeated. Effects such as causing Fear are not declared here: they come only from the profile's printed rules and their bindings. The hiring rules read the same facts (`mordheim_knowledge.campaign.hireling_traits`).",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "species": { "type": "string", "enum": ["human", "dwarf", "halfling", "ogre", "skaven", "orc", "goblin", "beastman"] },
+            "elf_kind": { "type": "string", "enum": ["high", "dark", "wood", "other"] },
+            "creature_kind": { "type": "string", "enum": ["undead"] },
+            "lizardman": { "type": "boolean" },
+            "spellcaster": { "type": "boolean" }
+          }
+        },
+        "hiring_traits": {
+          "description": "Facts the hiring rules read that are neither a duel identity nor a printed rule: the warrior's alignment (`evil`: the sources tie it to Chaos, the Undead, the Skaven or the Dark Elves, being hireable only by such warbands or printed as one of them; read by the Shadow Warrior's hiring rule) and calling (`priest`: a priest of a god who uses prayers; read by the Witch Hunter and Knight of the White Wolf rules). Race, nature, spellcasting and Fear are never repeated here: `mordheim_knowledge.campaign.hireling_traits` derives them from `combat_traits` and the printed rules.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["evil", "priest"] }
+        },
         "rules": {
           "description": "The intrinsic special rules, inline: text that belongs to this profile and is not shared with another one.",
           "type": "array",

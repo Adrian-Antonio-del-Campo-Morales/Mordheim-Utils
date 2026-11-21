@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/henchmen--no-missile-weapons/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/knights-of-the-bitter-moors-mim/special-rules.yaml
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the printed "Men-at-Arms and Mounted Yeomen may not use
+#   missile weapons" (forbids: ranged-weapons) as a construction refusal on the boundEquipment stage
+#   (packages/typescript/domain/eligibility/index.ts; the Python mirror _eligibility.js is generated):
+#   "missile weapons are forbidden for <band>/<profile>".  One refusal is declared per printed
+#   recipient.  The refused item is the pistol mechanic (weapon.pistol, one of the two MISSILE_WEAPONS
+#   the stage recognises without an item row): it is the only missile weapon a duel hand can hold, and
+#   the stage runs before the equipment-list gate, so the clause's own token answers although the
+#   Men-at-Arms list offers no missile item (a bow in the owned kit would instead meet '"bow" is not on
+#   any equipment list of ...', which is not this clause's evidence).  The admission is a Man-at-Arms
+#   with a spear of its own list.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/henchmen--no-missile-weapons/profile.equipment-restrictions
+  id: men-at-arms-with-a-pistol-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: men-at-arms
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for knights-of-the-bitter-moors-mim/men-at-arms
+
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/henchmen--no-missile-weapons/profile.equipment-restrictions
+  id: mounted-yeomen-with-a-pistol-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: mounted-yeomen
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for knights-of-the-bitter-moors-mim/mounted-yeomen
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/henchmen--no-missile-weapons/profile.equipment-restrictions
+  id: men-at-arms-with-a-spear-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: men-at-arms
+      main_weapon_id: weapon.spear
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.wounds: 1
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

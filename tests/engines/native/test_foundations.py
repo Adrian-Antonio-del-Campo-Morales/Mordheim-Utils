@@ -95,7 +95,7 @@ def test_round_phases_run_in_the_oracle_order():
 
 
 def test_decisions_are_asked_under_the_oracle_round_keys():
-    case = _cases()["e2e/mechanic/mechanic.bull-charge/a-declared-bull-charge-knocks-the-enemy-down"]
+    case = _cases()["conformance/mechanic/mechanic.bull-charge/a-declared-bull-charge-knocks-the-enemy-down"]
     policy = _Recorder()
     trace = {}
     native.simulate_batch_observed(

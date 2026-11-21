@@ -1,0 +1,113 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--large/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (Large Target family model, hireling Large variant
+#   mirrored from catalog--hired-swords--hireling.hired-sword.ogre-slave-master.rule.large): the
+#   printed band grant ("All Heroes are large targets") exposes size.large on the real Broodmother
+#   to a charging Slay Large Creature bearer, the band's Children henchman is outside the Hero
+#   boundary so the same roll does not wound it, and the hand-built control is not wounded either.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the Large Target family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/brood-of-ghurash-the-sc/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Uniform Large Target binding (design ruling 2026-11-18): the printed band rule "All Heroes are
+# large targets" binds condition.large-target with parameters profile_ids [broodmother,
+# firstborns, youths], whose execution entry tags those bearers [size.large]; the printed shooting
+# consequences stay excluded as out-of-scope.shooting and are not asserted here.  The recipient of
+# the activation tape is the real Broodmother, built from her band profile with fixture
+# characteristics (WS3 S3 T3 W2 I5 A1; printed Leadership stays) and silenced (attacks: 0).  The
+# observer is a hand-built charger carrying the printed Slay Large Creature bonus through
+# skill_ids ("+1S when charging a Large sized creature") - the duel reader of the family model.
+# Arithmetic: S3 wounds T3 on 4+, the +1S of the charge against a Large target (S4 vs T3) on 3+,
+# so the declared wound roll of 3 separates the Hero recipient from both the henchman boundary and
+# the control.  Profile-specific dice (per the band's fear and brood-mentality siblings): the
+# band's Fear clause covers all Heroes, so charging the Broodmother declares the charger's (Ld7)
+# 2D6 charge test and 3+3 passes; the Children henchman is not a Hero, causes no fear and prompts
+# no charge test; neither brood build tests the Brood Mentality Stupidity here because that test
+# is taken at the start of the bearer's own turn and the charger is the active participant of the
+# single round; no brood profile wears armour or carries a save, so being wounded requests no
+# further die.
+
+# The Slay Large Creature charger wounds the Large Broodmother on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--large/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-broodmother-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: brood-of-ghurash-the-sc
+      profile_id: broodmother
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The Broodmother is a Hero of the band's Fear clause: the charger's 2D6 charge test of
+    # 3+3 passes Ld7.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # The weaponless Broodmother compiles to fists, and an unarmed fighter
+    # keeps one swing despite attacks: 0, so her residual miss closes the tape.
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Hero boundary: the band's Children are henchmen, so the printed "All Heroes are large
+# targets" does not reach them - the same charge carries no bonus and the same 3 does not wound
+# (S3 vs T3 needs 4+).  A henchman of this band causes no fear, so no charge test is requested.
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--large/condition.large-target
+  id: the-children-henchman-is-not-a-hero-so-the-same-three-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      collection: mordheim
+      band_id: brood-of-ghurash-the-sc
+      profile_id: children
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built opponent without the Large rule, so the same charge carries no bonus
+# and the same 3 does not wound (S3 vs T3 needs 4+).  It causes no fear, so no other die is
+# requested.
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--large/condition.large-target
+  id: without-the-large-rule-the-same-three-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

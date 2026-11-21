@@ -1,0 +1,106 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.slayer-rules/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling construction set, B12 2026-11-18): Snorri's printed kit
+#   is admitted (compiled main weapon weapon.dwarf-axe), armour and a non-thrown ranged weapon are refused,
+#   and the rule is refused outside its profile.  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED.
+# AUTHORED: the admitted kit and the declared bans are represented (see authoring_progress and the
+#   Discrimination note on the enforcing gate); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2b.yaml
+
+# Model (hireling recipients, README; B12 2026-11-18): the KB binds Slayer Rules' profile.equipment-
+#   restrictions with forbids [armour, constant-save-cloak, non-thrown-ranged] (the Slayer's no-armour, no-
+#   cloak, thrown-weapons-only strictures).  Recipient: Snorri compiled through the hireling route
+#   (hirelings.dramatis-personae.2b / hireling.dramatis.snorri-nosebiter) with the fixture facts, his
+#   printed kit supplied as owned_item_ids [dwarf_axe, hammer] and the Drunk table fixed at 3
+#   (trait_overrides snorri_drunk_result; tests/construction/test_hireling_admission.py).  The admission is
+#   observed on the compiled build (first.main_weapon.tags.0: weapon.dwarf-axe, the kit's first close-combat
+#   weapon per the 2026-11-18 ruling) in the construction-only shape.  The refusal outside the profile uses
+#   the Bard control and the common prefix `special rule is not available to hirelings.hired-sword.1b`.
+
+# Discrimination note (2026-11-18): the hireling kit resolver (resolveHirelingKit, `hireling active
+#   equipment and supplied ownership do not form a complete legal printed kit`) runs at the start of the
+#   boundEquipment stage, before the profile's armour check (`armour is forbidden for ...`) and the forbids
+#   token loop (`"non-thrown-ranged" is forbidden for ...`, `"constant-save-cloak" ...`), and it refuses any
+#   active or owned item outside the printed Dwarf Axe + Hammer kit.  The binding's own diagnostics are
+#   therefore unreachable for this hireling and the refusals above are enforced by the kit resolver, per the
+#   Priest of Morr Haunted Mien precedent (catalog--hired-swords--hireling.hired-sword.priest-of-morr-
+#   miracle-worke--45c97d805c6e.yaml).  The removal probe will report the refusals as surviving the
+#   binding's removal; that is the duplicate enforcement named here, not a missing scenario.
+
+# --- Authored scenarios ---
+# Derived from the hireling record, the printed kit, the README hireling conventions and the gate's message
+#   templates; no engine output was consulted.
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.slayer-rules/profile.equipment-restrictions
+  id: snorri-with-his-printed-kit-is-admitted
+  # The legal kit: the printed Dwarf Axe and Hammer, the Drunk table fixed at 'no effect' (3); an omitted
+  # main weapon is the kit's first close-combat weapon, the axe.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.snorri-nosebiter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      trait_overrides: {snorri_drunk_result: 3}
+      owned_item_ids: [dwarf_axe, hammer]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.dwarf-axe
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.slayer-rules/profile.equipment-restrictions
+  id: snorri-wearing-armour-is-refused
+  # The 'armour' token: light armour worn and owned beside the printed kit.  The kit resolver refuses the
+  # ownership first (see the Discrimination note).
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.snorri-nosebiter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      trait_overrides: {snorri_drunk_result: 3}
+      armour_id: armour.light-armour
+      owned_item_ids: [dwarf_axe, hammer, light_armour]
+  expect_error: 'hireling active equipment and supplied ownership do not form a complete legal printed kit'
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.slayer-rules/profile.equipment-restrictions
+  id: snorri-with-a-pistol-is-refused
+  # The 'non-thrown-ranged' token: a pistol (blackpowder, not thrown) in the main hand.  The kit resolver
+  # refuses the ownership first.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2b
+      profile_id: hireling.dramatis.snorri-nosebiter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      trait_overrides: {snorri_drunk_result: 3}
+      main_weapon_id: weapon.pistol
+      owned_item_ids: [dwarf_axe, hammer, pistol]
+  expect_error: 'hireling active equipment and supplied ownership do not form a complete legal printed kit'
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.snorri-nosebiter.rule.slayer-rules/profile.equipment-restrictions
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  # The printed grant belongs to Snorri's profile; selecting it on another hireling is refused.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.snorri-nosebiter.rule.slayer-rules]
+  expect_error: 'special rule is not available to hirelings.hired-sword.1b'

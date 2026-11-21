@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/mechanic.fear-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (2026-11-18). The printed recipient is the Warrior Priest
+#   (user ruling 2026-11-18, recorded as `eligibility: [warrior-priest]` on the band row, the
+#   same projection as Rousing Sermon and Utter Determination): charged by a fear-causing
+#   enemy he takes no Fear test; the same priest without the skill is tested (control); a
+#   Templar selecting the skill is refused. REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the Fear immunity, its untested-without-the-skill control and the
+#   Warrior Priest recipient boundary.
+
+# The printed warrior "is hardened and immune to Fear": charged by a fear-causing enemy, the
+# Warrior Priest with the skill requests no Fear dice and both fighters strike normally.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/mechanic.fear-immunity
+  id: the-warrior-priest-with-unshakeable-faith-takes-no-fear-test
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: warrior-priest
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+      special_rule_ids: [band--special-skill-unshakeable-faith]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same Warrior Priest without the skill takes the charged Fear test (passed on
+# 1+1 against Leadership 8) before the same exchange.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/mechanic.fear-immunity
+  id: the-warrior-priest-without-the-skill-takes-the-fear-test
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: warrior-priest
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Recipient boundary: only the Warrior Priest may take the skill; a Templar is refused it.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/mechanic.fear-immunity
+  id: a-templar-is-refused-unshakeable-faith
+  fighters:
+    first:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: templar
+      special_rule_ids: [band--special-skill-unshakeable-faith]
+  expect_error: "special rule is not available to protectorate-of-sigmar-lotd3/templar"

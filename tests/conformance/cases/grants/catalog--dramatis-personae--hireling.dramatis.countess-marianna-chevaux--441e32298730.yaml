@@ -1,0 +1,119 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison/trait.poison-immune
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (poison-immunity family model + hireling family model,
+#   2026-11-18): a Nightshade-coated mace wounds the recipient and the poisoned-wound Initiative rider
+#   is suppressed; the Bard control takes the same wound and suffers the rider; and the refusal
+#   outside the profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the family models are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1a.yaml
+#
+# --- Authored scenarios ---
+#
+# Poison-immunity family model (the authored Clan Skryre Rat Ogre file of this directory, second
+# triage batch 2026-11-18, and the call-of-the-night-haint-mim revenants file): Nightshade is the
+# one admitted poison whose consequence is a state change on the warrior it wounds (one unsaved
+# wound lowers Initiative by one, carried as the lasting initiative_penalty field;
+# modular/attacks.py reads `poison.nightshade` on the attack and skips the rider when the defender's
+# global effects carry `poison_immune` / poison_immunity, compiled from the trait by roster-
+# construction compiler.py), so it is the rider the printed immunity must suppress: the coated mace
+# wounds the bearer as any mace would, and the penalty never lands.
+#
+# Hireling family model (P0, 2026-11-17): the recipient is the printed hireling profile compiled
+# through the hireling route (hirelings.dramatis-personae.1a / hireling.dramatis.countess-marianna-
+# chevaux-vampire-assassin) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Leadership
+# stays); its printed rule is granted by the profile itself, so nothing is selected.  The opponent
+# is the hand-built standard (WS3 S3 T3 W3 I2 A1 Ld7) with a Nightshade-coated mace.  No charge is
+# declared, so no Fear or psychology die is requested.  The control is the grade-1b Bard (dagger),
+# the same wound with the rider landing.  The refusal selects the printed rule on that control
+# through special_rule_ids.
+# Profile facts read (grade-1a record): a Vampire (creature_kind undead) whose other printed rules
+# are Immune to Psychology, No Pain (+ Jump Up), Causes Fear, Fighting Undead, Garlic-Coated Weapons
+# and the starting skills Combat Master, Step Aside, Leap, Acrobat, Lightning Reflexes, Dodge and
+# Scale Sheer Surfaces.  Only Step Aside touches an incoming hit: it is a 5+ special save
+# (`round.<i>.<side>.attack.<n>.special.ward`, as the Dark Emissary's Spiral file declares it),
+# rolled after the wound and before the damage, so the tape declares it failing.  Her kit's first
+# weapon is the rapier, which parries; the dagger of the same printed kit is named instead so no
+# parry die enters the tape (the recipient's own wound is what matters here).  Fear and the
+# psychology immunity request nothing without a charge; No Pain acts only at the injury roll, and
+# the fixture W2 keeps her standing (2 -> 1) so no injury die is requested.  Fighting Undead and the
+# garlic coating act on her own attacks or on a Vampire attacker, neither present.
+
+# The coated mace wounds the recipient: WS3 v WS3 hits on 4+, S3 v the fixture T3 wounds on 4+ (a
+# non-six, so no critical die).  The wound is taken as any wound would be (fixture wounds 2 -> 1, no
+# injury roll) and the poisoned-wound Initiative penalty is suppressed: initiative_penalty stays 0.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider-on-countess-marianna
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1a
+      profile_id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    # Step Aside (printed starting skill): a 5+ special save against the close-combat hit, declared failing on a 2.
+    - {key: round.0.second.attack.0.special.ward, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 1, state.first.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) takes the same unsaved wound and suffers the rider: S3 v T3 wounds on 4+ (the
+# Bard's kit light armour is owned, not worn, so no armour die is requested), and the poisoned
+# wound lowers his Initiative by one (initiative_penalty 1).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison/trait.poison-immune
+  id: a-hireling-without-the-immunity-suffers-the-nightshade-rider
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 1, state.first.initiative_penalty: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused
+# (the fragment is the common prefix of the eligibility gate's and the compiler's diagnostics).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison/trait.poison-immune
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

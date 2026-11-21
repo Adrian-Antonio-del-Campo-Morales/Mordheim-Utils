@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.fear-beastmen
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): a
+#   charged Beastman fails its Fear test and hits only on sixes, a charged Beastman passes and
+#   fights normally, a Beastman charging the bearer fails the charge test and is halted, a human
+#   enemy is never tested, and the same Beastman is never tested when the bearer lacks the
+#   mechanic.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: the printed Skull Rack ("The bearer causes fear in all Beastmen", Town Cryer 28) is
+#   Fear scoped to the enemy's species: only an enemy that is a Beastman (species.beastman) takes
+#   the ordinary Fear tests against the bearer.  Consumer: modular/psychology.py causes_fear()
+#   (mechanic.fear-beastmen on the fighter against species.beastman on the enemy), then
+#   resolve_fear()/needs_test() for the charge and charged tests.  REVIEWED still requires manual
+#   semantic review.
+
+# --- Authored scenarios ---
+# Hand-built fixtures: the bearer injects the shared mechanic through skill_ids (WS3 S3 T3 W2 I5
+# A1 Ld7); the enemy is the hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) that declares the
+# one fact the rule reads (species: beastman, or human for the absence case).  A 2D6 Fear test of
+# 5+4 fails Ld7 and 3+3 passes it; the failed charged test raises the enemy's hit target to 6, so
+# its declared 4 (a hit on the ordinary 4+) misses.  The bearer is silenced (attacks 0) where the
+# enemy's hit target is the observable.  A failed charge test cancels the charge: no blow is struck
+# and the duel ends disengaged.
+
+# The bearer charges a Beastman; the charged Beastman's 9 fails Ld7 and its 4 now needs a 6.
+- audit_id: mechanic/mechanic.fear-beastmen
+  id: a-charged-beastman-that-fails-its-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-beastmen]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 6 passes Ld7: the Beastman keeps its ordinary 4+ and its 4 hits and wounds.
+- audit_id: mechanic/mechanic.fear-beastmen
+  id: a-charged-beastman-that-passes-its-fear-test-fights-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-beastmen]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Beastman charging the bearer must pass first: 9 fails Ld7, the charge is cancelled and no blow
+# is struck.
+- audit_id: mechanic/mechanic.fear-beastmen
+  id: a-beastman-charging-the-bearer-that-fails-its-fear-test-is-halted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-beastmen]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.failed_charges: ['second'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The Fear is scoped to Beastmen: a charged human enemy is asked no Fear die and its 4 hits.
+- audit_id: mechanic/mechanic.fear-beastmen
+  id: a-human-enemy-is-not-frightened
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-beastmen]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Beastman charged by a bearer without the mechanic is asked no Fear die.
+- audit_id: mechanic/mechanic.fear-beastmen
+  id: without-the-rule-the-charged-beastman-is-not-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,138 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (operators-band-rules batch, 2026-11-18): the printed
+#   Imperial Assassin with the supplied unseen charge hits on a 2 in the first round of his charge,
+#   the same Assassin seen hits on a 3 (his Unstoppable Charge alone), his Injury roll is at +1, the
+#   Bard control with the same supplied fact gets no bonus, and the Bard selecting this profile rule
+#   is refused.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the Assassin's printed starting skill Unstoppable Charge
+#   (execution.yaml charge_ws_bonus 1) already turns his charge hit into a 3+ against WS3, so the
+#   Backstabber boundary on this profile is the 2 (hit_target 2 with the fact, 3 without); the
+#   Poisoner rule is checked before the kit, so every Assassin build declares main_poison_id
+#   poison.black-lotus (a tag that acts only on a natural hit six, never declared here).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Backstabber): "the Assassin may charge an opponent he cannot see as
+# long as the target is within his charge reach; he then receives +1 to hit with all attacks and +1
+# on Injury rolls for the first round of combat only.  The unseen charge is supplied as a duel fact".
+# The rule is grant: profile binding skill.backstabber (consumers: modular/contexts.py ~526-528 and
+# modular/attacks.py ~804-809, both gated on first_round, charging, skill.backstabber and
+# condition.unseen-charge).  Recipient: hirelings.hired-sword.1a / hireling.hired-sword.imperial-assassin
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays), the kit sword as main weapon
+# and the supplied fact through condition_ids.  Opponent: hand-built (WS3 S3 T3 I2 A1 Ld7, mace; W3
+# keeps a wound short of the injury roll, W1 reaches it), whose own blow is a natural 1 so the sword
+# offers no parry.  Arithmetic: Unstoppable Charge makes the charging Assassin WS4 against WS3 (3+);
+# Backstabber lowers it to 2+; S3 wounds T3 on 4+; the injury chart is 1-2 Knocked Down, 3-4 Stunned,
+# 5-6 Out of Action, so a declared 4 is the +1 boundary.  Control: the grade-1b Bard (dagger) with the
+# same supplied fact, WS3 against WS3 on 4+.  Refusal: the Bard selecting the Assassin's profile rule,
+# refused by the compiler with the other-package fragment.
+
+# The Assassin's unseen charge: the 2 hits.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+  id: the-assassin-hits-on-a-two-in-the-first-round-of-his-unseen-charge
+  fighters:
+    first: &assassin-unseen
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+      condition_ids: [condition.unseen-charge]
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 2, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Assassin seen (no supplied fact): only Unstoppable Charge remains, the 2 misses on 3+.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+  id: the-same-assassin-seen-hits-only-on-a-three
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 3, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Injury half: a declared 4 (Stunned on the ordinary chart) becomes 5, Out of Action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+  id: the-assassins-injury-roll-is-at-plus-one
+  fighters:
+    first: *assassin-unseen
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The hireling control: the Bard with the same supplied fact has no Backstabber, so his 3 misses on 4+.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+  id: the-bard-with-the-same-supplied-fact-gets-no-bonus
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      condition_ids: [condition.unseen-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A hireling of another package selecting the Assassin's profile rule is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.backstabber/backstabber
+  id: the-bard-selecting-the-assassins-rule-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [hireling.hired-sword.imperial-assassin.rule.backstabber]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

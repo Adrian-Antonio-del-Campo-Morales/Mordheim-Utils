@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from mordheim_knowledge.campaign import load_hirelings, load_hireling_traits
+from mordheim_knowledge.campaign import load_hirelings
 from mordheim_knowledge.loader import BandPackage, knowledge_root, load_bands
 
 
@@ -13,7 +13,6 @@ def combat_packages(collection, root=None):
     if collection != "mordheim":
         return
     catalogue = load_hirelings("mordheim", root)
-    traits = {row["profile_id"]: row["traits"] for row in load_hireling_traits("mordheim", root)}
     # Every normalized grade is its own package, in every kind. Admission is not
     # a grant: ``selection._profile`` still refuses a profile whose printed
     # intrinsic clause is pending, missing or unbound, and the refusal names the
@@ -64,18 +63,10 @@ def combat_packages(collection, root=None):
                                 "binding": {"kind": "compiler", "id": "compiler.sister-special-skills"}}]}
                     intrinsic.append(option)
             profile["rule_ids"] = list(dict.fromkeys((*source.get("rule_ids", ()), *(r["id"] for r in intrinsic))))
-            facts = set(traits.get(source["id"], ()))
-            combat = {"starting_skills": list(source.get("starting_skill_ids") or ())}
-            if "fear-causing" in facts:
-                combat["causes_fear"] = True
-            if "undead" in facts:
-                combat["creature_kind"] = "undead"
-            if "spellcaster" in facts:
-                combat["spellcaster"] = True
-            for species in ("human", "dwarf", "ogre", "orc", "goblin", "skaven", "halfling", "beastman"):
-                if species in facts:
-                    combat["species"] = species
-            profile["combat_traits"] = combat
+            # The duel identity is the profile's own `combat_traits`, as for a band
+            # profile; effects such as causing Fear come only from its printed rules.
+            profile["combat_traits"] = {**(source.get("combat_traits") or {}),
+                                        "starting_skills": list(source.get("starting_skill_ids") or ())}
             list_id = source["id"] + ".kit"
             equipment = profile["hireling_equipment"]
             entries = [*equipment.get("fixed_items", ()), *equipment.get("optional_items", ())]

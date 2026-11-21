@@ -1,0 +1,143 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.drug-immunity
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml
+# AUTHORED: 4 scenarios evidence the printed facet (the Crimson Shade pair added 2026-11-16 at the end
+#   is the discriminating one - see its note); which the earlier revision
+#   withheld on a claim that turned out to be false: a drug identity DOES exist to declare.  The shared
+#   construction stage carries the drug class itself - DRUG_PREPARATIONS in
+#   packages/python/roster-construction/mordheim_construction/_eligibility.js (mirrored by
+#   packages/typescript/domain/eligibility/index.ts) lists the four preparations the `forbid-item-categories`
+#   "drug" category is checked against: preparation.crimson-shade, preparation.mandrake-root,
+#   preparation.mad-cap-mushrooms and preparation.head-splitter-mushrooms - and the build channel is the
+#   `preparation_ids` field the sibling construct-poison-immunity fixtures already use.  The two scenarios
+#   below take the one drug whose whole contribution is a duel-start state (Mad Cap Mushrooms grants Frenzy,
+#   effect_id trait.frenzy at duel_start), so the change the clause suppresses is a state this contract can
+#   read: the construct supplied with that drug keeps `frenzy` false, and a hand-built neighbour of the same
+#   printed characteristics supplied with the identical declared drug takes it.  The bearer is the printed
+#   clockwork-fiend profile this clause names, and the immunised scenario declares no attack die beyond the
+#   attacker's own declared miss.  The construct record now binds mechanic.drug-immunity on this profile and the compiler consumes it (roster-construction compiler.py), so the earlier "unpromoted proposal, written to fail" note is withdrawn (2026-11-16). The register's warning still holds -
+#   the existing poison-immunity path guards incoming poison and the unconditional Mandrake injury flag is a
+#   third consumer, so a poison binding alone does not satisfy this clause.  If the KB later publishes a
+#   per-origin drug class rather than the shared stage's list, the declared identity follows that class.
+#
+# Scenarios split out on 2026-11-16 from the rule/mordheim/clockworkers-sc/clockwork-fiend--
+#   construct/trait.poison-immune file, which hosted them under that identity's header after the KB
+#   split this printed rule into one effect per consequence; inputs, dice and expectations are
+#   unchanged.
+
+# --- Authored scenarios ---
+
+# The control: the identical declared drug on a hand-built neighbour carrying the construct's own printed
+# characteristic line, which the drug does reach, so the difference between the two scenarios is the immunity
+# itself.  Its doubled pool is neutralised by the same zero-attack override, leaving the attacker's single
+# declared miss as the only die.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.drug-immunity
+  id: the-same-drug-reaches-an-ordinary-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mad-cap-mushrooms]
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 3, initiative: 1, attacks: 3}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.frenzy: True}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.frenzy: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "Constructs are unaffected by drugs", read on the one drug whose whole contribution is a
+# duel-start state: Mad Cap Mushrooms grants Frenzy.  The drug identity comes from the drug class the shared
+# construction stage itself carries (DRUG_PREPARATIONS in _eligibility.js / domain/eligibility), and the build
+# channel is `preparation_ids`.  The bearer is the printed clockwork-fiend profile this clause names and
+# declares no attack of its own (the poison scenarios above do the same), while the hand-built attacker
+# declares a miss, so the round resolves on the single declared die and the suppressed drug change is read as
+# the unchanged state.  The record binds mechanic.drug-immunity on this profile (2026-11-16); the earlier "written to fail" note is withdrawn.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.drug-immunity
+  id: the-supplied-drug-does-not-frenzy-the-construct
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clockworkers-sc
+      profile_id: clockwork-fiend
+      preparation_ids: [preparation.mad-cap-mushrooms]
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {second.frenzy: False}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.frenzy: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Discriminating repair (2026-11-16): the Mad Cap scenarios above cannot tell the drug immunity apart,
+#   because the same construct record also binds mechanic.psychology-immunity, which already keeps a
+#   Frenzy flag off the bearer, so the drug's only change is suppressed with or without this grant.
+#   The pair below reads the printed "unaffected by poison or drugs" through Crimson Shade instead,
+#   whose printed effect is not Psychology: "A model using Crimson Shade has his Initiative increased by
+#   +D3 points, and Movement and Strength by +1" (crimson_shade, catalog/items/combat-equipment.yaml).
+#   The printed clockwork-fiend (S5 I1) supplied with the drug therefore rolls no D3 and keeps its
+#   printed Initiative; the hand-built control with the same printed line does roll the
+#   D3 (declared as a 2) and starts at I3 (the Initiative is the observed value; the Strength
+#   bonus has no separate observation here).  Attack pools follow the Mad Cap pair above:
+#   the attacker's single declared miss, the bearer's declared miss, nothing else.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.drug-immunity
+  id: the-supplied-crimson-shade-does-not-reach-the-construct
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clockworkers-sc
+      profile_id: clockwork-fiend
+      preparation_ids: [preparation.crimson-shade]
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {second.initiative: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/mechanic.drug-immunity
+  id: the-same-crimson-shade-reaches-an-ordinary-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 3, initiative: 1, attacks: 3}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.initiative: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

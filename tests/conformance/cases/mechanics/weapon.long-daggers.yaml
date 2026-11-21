@@ -1,0 +1,126 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.long-daggers
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause is AUTHORED.  Two scenarios evidence the printed
+#   pair (one additional Attack) and the parry as a sword.  Corrected 2026-11-16: the two
+#   knife-fighting scenarios earlier expected Long Daggers to count as a Dagger because the
+#   engine parameters tag them `weapon.dagger` (contexts.py); the printed entry never says so
+#   ("stuck somewhere between dagger and sword ... special rules: pair, parry"), and if they
+#   were Daggers the printed dagger "+1 armour save / 6+ if none" would also apply.  Their
+#   bodies now assert the printed reading: Knife Fighting ("While using a Dagger or Yambiya")
+#   does not apply to Long Daggers.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios: the paired extra attack, the parry as a sword, and two scenarios
+#   showing that Knife Fighting's Dagger-only bonuses (+1 WS, +1 Injury) do not reach Long
+#   Daggers, which the print does not make Daggers (see authoring_progress).
+
+# --- Authored scenarios ---
+# mechanic/weapon.long-daggers - paired daggers: one additional Attack and a
+# parry as a sword.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.
+# The ordered tape carries two attack dice for the paired daggers.
+
+- audit_id: mechanic/weapon.long-daggers
+  id: long-daggers-grant-one-additional-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The pair may parry as a sword: the defender is offered the parry and a 5 blocks a hit landed on a 4.
+
+- audit_id: mechanic/weapon.long-daggers
+  id: long-daggers-parry-as-a-sword
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.long-daggers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Knife Fighting grants +1 Weapon Skill only "While using a Dagger or Yambiya"
+# (catalog/skills/warband.yaml).  Long Daggers are a separate printed weapon (pair,
+# parry) that the print never makes a Dagger, so the skill adds nothing: on an equal
+# Weapon Skill (3 against 3) the hit target stays four and the declared three misses.
+# Body corrected 2026-11-16; the id is historical (it described the engine's tag).
+- audit_id: mechanic/weapon.long-daggers
+  id: knife-fighting-reads-the-retained-dagger-tag-for-the-better-weapon-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      skill_ids: [skill.knife-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same on the injury branch: Knife Fighting's "+1 on the Injury roll" is also
+# Dagger-only, so an Injury roll of two against the unarmoured one-Wound defender
+# stays on the plain chart (1-2 Knocked Down).  No armour die is scripted: Long
+# Daggers carry no printed dagger "6+ armour save if he has none".
+# Body corrected 2026-11-16; the id is historical.
+- audit_id: mechanic/weapon.long-daggers
+  id: knife-fighting-reads-the-retained-dagger-tag-for-the-better-injury
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      skill_ids: [skill.knife-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

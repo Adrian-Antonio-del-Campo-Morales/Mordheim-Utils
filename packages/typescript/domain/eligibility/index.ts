@@ -183,7 +183,7 @@ export interface PoisonApplication {
 }
 
 export const EQUIPMENT_TAG_VOCABULARY: readonly string[] = [
-  "animal", "blackpowder", "bow", "crossbow", "poison", "thrown", "constant-save-cloak",
+  "animal", "blackpowder", "bow", "crossbow", "poison", "thrown", "constant-save-cloak", "difficult-to-use",
 ];
 const HEAVY_ARMOUR = ["armour.heavy-armour", "armour.gromril-armour", "armour.ithilmar-armour", "armour.plate-armour"];
 /**
@@ -208,6 +208,10 @@ const INTERPRETED_TOKENS = ["armour", "armour-suit", "heavy-armour", "ranged-wea
 export const NATURAL_ATTACK_ID = "weapon.natural-attacks";
 
 export function tokenForbids(token: string, itemId: string, item: ItemFacts | null): boolean {
+  // `item:<id>` names exactly one catalogue item and never a category, for the
+  // printed lines whose item id is also a category word ("Bow (not Gobbo
+  // Boyz)" forbids the Bow, not the Short Bow).
+  if (token.startsWith("item:")) return itemId === token.slice("item:".length);
   if (token === itemId || token === item?.mechanic_id) return true;
   if (itemId === NATURAL_ATTACK_ID || item?.mechanic_id === NATURAL_ATTACK_ID) return false;
   if (token === "non-thrown-ranged") return itemIsMissile(item) && !item?.tags?.includes("thrown");
@@ -397,7 +401,7 @@ export function equipmentIssue(args: {
     };
   }
   const resolvedItems = [...(profile.equipment_forbid_items ?? []), ...(args.band_forbid_items ?? [])];
-  const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && token !== itemId
+  const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && !token.startsWith("item:") && token !== itemId
     && !isEquipmentMechanic(token) && !resolvedItems.includes(token));
   if (unknown) return {
     code: "construction_clause_unstructured", subject_ids: subject, rule_id: unknown, owner_task: "KB",
@@ -594,6 +598,8 @@ export interface Binding { readonly id: string; readonly parameters?: RecordData
 export interface EditorialProfile {
   readonly id: string;
   readonly type?: string;
+  /** Set by `configuredProfile` when a canonical Henchman is promoted to a Hero (`promotion.hero`). */
+  readonly promoted?: boolean;
   readonly skill_access?: readonly string[];
   readonly equipment_lists?: readonly string[];
   readonly fixed_equipment?: readonly string[];
@@ -649,6 +655,12 @@ export interface EditorialRule {
   readonly id: string;
   readonly kind?: string;
   readonly eligibility?: readonly string[];
+  /** The `eligibility` list names the band's Heroes rather than a printed role, so a promoted Henchman
+   * (who is a Hero of the band) is admitted too (user ruling 2026-11-19). */
+  readonly eligibility_admits_promoted?: boolean;
+  /** Henchman profiles of the printed warrior type the list names ("Saurus only"), admitted only
+   * once promoted to Hero (user ruling 2026-11-19). */
+  readonly eligibility_promoted_ids?: readonly string[];
   /**
    * Supplied conditions that qualify a member the static list does not name:
    * the printed recipient may be a state ('only the current warband leader may
@@ -932,14 +944,18 @@ function blackGuardEquipment(catalogue: Catalogue): readonly string[] {
  * supplied ownership must equal a legal kit, not merely its availability union.
  */
 function weaponKnowledgeAllows(rules: readonly EditorialRule[], catalogue: Catalogue, id: string): boolean {
+  // "Any ... weapon that the warband members can get hold of": a weapon some ordinary catalogue item
+  // provides. Innate attacks (natural attacks, a Troll's vomit) have no such item, and another
+  // character's unique gear is a hireling item, so neither can be got hold of (ruling 2026-11-19,
+  // consistent with Weapons Training not manufacturing innate attacks or transferring unique gear).
+  const obtainable = id.startsWith("weapon.")
+    && Object.keys(catalogue.items ?? {}).some(key => !key.startsWith("hireling.") && (catalogue.mappings[key] ?? key) === id);
   return rules.some(rule => rule.runtime?.implemented === "YES" && rule.bindings?.some(binding => {
     if (binding.id !== "compiler.weapon-knowledge") return false;
     const kinds = strings(binding.parameters?.["allowed_kinds"]);
-    if (!kinds.length) return id.startsWith("weapon.") || ["poison.black-lotus", "poison.black-venom"].includes(id);
+    if (!kinds.length) return obtainable || ["poison.black-lotus", "poison.black-venom"].includes(id);
     const item = carriedItemFacts(catalogue, id);
-    return id.startsWith("weapon.") && item !== null
-      && Object.keys(catalogue.items ?? {}).some(key => !key.startsWith("hireling.") && (catalogue.mappings[key] ?? key) === id)
-      && kinds.some(kind => weaponSatisfiesKind(kind, id, item));
+    return obtainable && item !== null && kinds.some(kind => weaponSatisfiesKind(kind, id, item));
   }));
 }
 
@@ -1091,6 +1107,12 @@ export interface BuildContext {
 }
 
 export const BLACKPOWDER_WEAPONS = ["weapon.pistol", "weapon.duelling-pistol"];
+/**
+ * The two pistol mechanics the catalogue may name without an item row; every
+ * other missile weapon is recognised by its item kind (`itemIsMissile`), so a
+ * printed "no missile weapons" clause refuses bows, crossbows and thrown
+ * weapons as well. `compiler.no-blackpowder-weapons` is the narrower clause.
+ */
 export const MISSILE_WEAPONS = BLACKPOWDER_WEAPONS;
 /** 'A trapper starts with ONE of the following Special Skills'. */
 export const VETERAN_TRACKER_SKILLS: readonly string[] = [
@@ -1233,6 +1255,7 @@ function ruleRecipientsAdmit(
 ): boolean {
   if (!rule.eligibility?.length) return true;
   if (rule.eligibility.includes(profile.id)) return true;
+  if (promotedRecipient(rule, profile)) return true;
   const conditions = rule.eligible_condition_ids ?? [];
   return conditions.length > 0 && conditions.every((id) => (build?.condition_ids ?? []).includes(id));
 }
@@ -1263,8 +1286,26 @@ function backgroundEquipmentLists(
 }
 
 /** Supplied local advancement result, not a campaign promotion calculation. */
+/**
+ * Complete a Henchman's promotion to Hero (`promotion.hero`). A promoted Henchman may take special
+ * skills (user ruling 2026-11-19): he is marked `promoted` (so an eligibility list that names the
+ * band's Heroes admits him) and gains the band's special category when its Heroes print one, unless
+ * the band prints its own promotion lists (`compiler.promoted-hero-skill-access`), which then govern.
+ */
+export function promotedHero(profile: EditorialProfile, pack?: BandPackage): EditorialProfile {
+  // Idempotent: the Python compiler may already mark its promoted row `promoted` without the category.
+  const heroesSpecial = pack?.profiles.some(row => row.type === "hero" && (row.skill_access ?? []).includes("special")) ?? false;
+  // A printed promotion rule that enumerates the lists governs; one that only adds a list
+  // (`additive`, e.g. Born Marksmen) leaves the band's Hero lists open.
+  const printedPromotion = pack ? applicableRules(pack, profile).some(rule => rule.bindings?.some(binding =>
+    binding.id === "compiler.promoted-hero-skill-access" && binding.parameters?.["additive"] !== true)) : false;
+  const skillAccess = heroesSpecial && !printedPromotion && !(profile.skill_access ?? []).includes("special")
+    ? [...(profile.skill_access ?? []), "special"] : profile.skill_access;
+  return { ...profile, type: "hero", promoted: true, ...(skillAccess ? { skill_access: skillAccess } : {}) };
+}
+
 export function configuredProfile(profile: EditorialProfile, variants: readonly string[],
-  conditions: readonly string[] = []): EditorialProfile {
+  conditions: readonly string[] = [], pack?: BandPackage): EditorialProfile {
   // The selected facts travel with the profile so a printed entry conditional
   // on them is read by the same `entryReachesProfile` the offering layer uses.
   // The declared conditions of the member are the same kind of supplied fact,
@@ -1290,13 +1331,21 @@ export function configuredProfile(profile: EditorialProfile, variants: readonly 
   }
   if (!variants.includes("promotion.hero") || profile.type === "hero") return configured;
   if (profile.type !== "henchman") throw new Error("promotion.hero requires a canonical Henchman profile");
-  return { ...configured, type: "hero" };
+  return promotedHero({ ...configured, type: "hero" }, pack);
 }
+/** A promoted Henchman admitted by a recipient list that names the band's Heroes, or the printed
+ * warrior type he belongs to (user ruling 2026-11-19). */
+function promotedRecipient(rule: EditorialRule, profile: EditorialProfile): boolean {
+  return Boolean(profile.promoted) && (Boolean(rule.eligibility_admits_promoted)
+    || (rule.eligibility_promoted_ids ?? []).includes(profile.id));
+}
+
 export function applicableRules(pack: BandPackage, profile: EditorialProfile): readonly EditorialRule[] {
   const rules = applicableProfileRules(pack, profile);
   return [...rules, ...pack.special_rules.filter((rule) => !rules.includes(rule) && rule.runtime?.grant === "band"
     && recipientTypeMatches(rule, profile)
-    && rule.applies_to?.band === true && (!(rule.applies_to?.profile_ids?.length) || rule.applies_to.profile_ids.includes(profile.id)) && (!(rule.eligibility?.length) || rule.eligibility.includes(profile.id)))];
+    && rule.applies_to?.band === true && (!(rule.applies_to?.profile_ids?.length) || rule.applies_to.profile_ids.includes(profile.id)
+      || promotedRecipient(rule, profile)) && (!(rule.eligibility?.length) || rule.eligibility.includes(profile.id) || promotedRecipient(rule, profile)))];
 }
 
 /**
@@ -1575,6 +1624,10 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const selected: (string | null | undefined)[] = [...hands, b.armour_id, ...b.defence_ids,
     b.main_material_id, b.off_material_id, b.main_poison_id, b.off_poison_id, ...b.preparation_ids];
   const has = (id: string) => contracts.includes(id);
+  // A missile weapon is decided by the item's own kind; the bare pistol
+  // mechanics keep their verdict when the catalogue publishes no row for them.
+  const isMissile = (id: string | null | undefined) => Boolean(id)
+    && (MISSILE_WEAPONS.includes(id!) || tokenForbids("ranged-weapons", id!, carriedItemFacts(c, id!)));
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
   if (stage === "boundEquipment" && b.band_id === "marauders-of-chaos" && b.profile_id === "condemned") {
@@ -1617,9 +1670,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     // catalogue publishes no row for them. A direct selection therefore meets
     // the refusal the picker already applied instead of surviving because the
     // chosen id is neither of the two pistol mechanics.
-    const isMissile = (id: string) => MISSILE_WEAPONS.includes(id)
-      || tokenForbids("ranged-weapons", id, carriedItemFacts(c, id));
-    if (forbidden.includes("ranged-weapons") && selected.some((id) => Boolean(id) && isMissile(id!)))
+    if ((forbidden.includes("ranged-weapons") || has("compiler.no-missile-weapons")) && selected.some(isMissile))
       return `missile weapons are forbidden for ${who}`;
     if (forbidden.includes("heavy-armour") && HEAVY_ARMOUR.includes(b.armour_id)) return `heavy armour is forbidden for ${who}`;
     if (forbidden.includes("weapon.lance") && selected.includes("weapon.lance")) return `lance is forbidden for ${who}`;
@@ -1635,7 +1686,8 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     // such as `handgun` whose record publishes no mechanic. A token that names
     // no canonical item stays informational and never becomes a refusal.
     const sharedTokens = forbidden.filter((token) => !BOUND_STAGE_TOKENS.includes(token)
-      && (INTERPRETED_TOKENS.includes(token) || token.includes(".") || carriedItemFacts(c, token) !== null));
+      && (INTERPRETED_TOKENS.includes(token) || token.startsWith("item:") || token.includes(".")
+        || carriedItemFacts(c, token) !== null));
     // The profile's own printed kit travels with the prohibition: a clause that
     // forbids all equipment ('may only ever use its free pointy stick') forbids
     // what the bearer might be given, never the pieces the same profile prints
@@ -1676,7 +1728,6 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     return null;
   }
   if (stage === "categoryProhibitions") {
-    if (has("compiler.no-missile-weapons") && containsAny(hands, MISSILE_WEAPONS)) return `missile weapons are forbidden for ${who}`;
     if (has("compiler.no-blackpowder-weapons") && containsAny(hands, BLACKPOWDER_WEAPONS)) return `blackpowder weapons are forbidden for ${who}`;
     if (has("compiler.strictures") && ["dragon-monks", "warrior-monks"].includes(p.id) && (b.armour_id !== "armour.no-armour" || b.defence_ids.includes("defence.sea-dragon-cloak"))) return "Dragon Monks and Warrior Monks may never wear armour";
     const categories = compiler_bindings.filter((binding) => binding.id === "compiler.forbid-item-categories").flatMap((binding) => strings(binding.parameters?.["categories"]));
@@ -1756,13 +1807,13 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const knight = (p.rule_ids ?? []).some((id) => id.endsWith("--knight")) || b.variant_ids.includes("promotion.knight-errant");
   if (has("compiler.powder-s-expensive") && p.type !== "hero" && containsAny(hands, BLACKPOWDER_WEAPONS)) return `blackpowder weapons are forbidden for Bandit Henchmen: ${who}`;
   if (has("compiler.chivalry") && knight) {
-    if (containsAny(hands, MISSILE_WEAPONS)) return `missile weapons are forbidden for Knights: ${who}`;
+    if (hands.some(isMissile)) return `missile weapons are forbidden for Knights: ${who}`;
     if (b.main_poison_id || b.off_poison_id) return `poisons are forbidden for Knights: ${who}`;
     if (drugsForbidden(context) === "knight" && containsAny(b.preparation_ids, DRUG_PREPARATIONS)) return `drugs are forbidden for Knights: ${who}`;
   }
   if (has("compiler.haughty") && containsAny(equipment, ["material.gromril", "material.obsidian", "armour.gromril-armour"])) return `Dwarf-made equipment is forbidden for ${who}`;
   if (has("compiler.chaos-engineer") && Array.from(equipment).some((id) => id.includes("chaos"))) return `Chaos armour is forbidden for ${who}`;
-  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id) && containsAny(hands, MISSILE_WEAPONS)) return "missile weapons are forbidden for Saurus";
+  if (has("compiler.saurus-skill-prohibitions") && ["saurus-totem-warrior", "saurus-totem-warriors", "saurus-braves"].includes(p.id) && hands.some(isMissile)) return "missile weapons are forbidden for Saurus";
   // A preparation is decided by the bearer's own printed clause through the
   // same `preparationIssue` the picker reads, never by the band list the
   // neutral profile models below: a short weapon list is not a preparation ban.
@@ -1827,7 +1878,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
 }
 
 function profileTail(context: BuildContext): string | null {
-  const { build: b, profile: p, contracts } = context;
+  const { build: b, profile: p, contracts, package: pack } = context;
   const has = (id: string) => contracts.includes(id);
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
@@ -1835,7 +1886,10 @@ function profileTail(context: BuildContext): string | null {
   if (has("compiler.tracker-gear") && !["rope_hook", "bolas"].every((id) => (p.fixed_equipment ?? []).includes(id))) return "Trackers must begin with Rope and Hook and Bolas";
   if (has("compiler.vampiric-powers")) {
     const bloodline = p.id.endsWith("-vampire") ? p.id.slice(0, -8) : p.id;
-    const foreign = b.special_rule_ids.filter((id) => id.includes("-power-") && !id.includes(`band--${bloodline}-power-`));
+    // A power's printed bloodline list (`eligibility`) decides; the id prefix is the fallback.
+    const owners = (id: string) => pack.special_rules.find((rule) => rule.id === id)?.eligibility;
+    const foreign = b.special_rule_ids.filter((id) => id.includes("-power-")
+      && !(owners(id)?.length ? owners(id)!.includes(p.id) : id.includes(`band--${bloodline}-power-`)));
     if (foreign.length) return `Vampiric Powers must belong to the Vampire's bloodline: ${pythonList(foreign)}`;
   }
   if (has("compiler.warrior-s-code")) {
@@ -2433,6 +2487,9 @@ export function profileFactsProjection(args: {
         if (!promotionSkills.includes(category)) promotionSkills.push(category);
       }
     }
+    // The printed 'may never use missile weapons' clause is one token for the
+    // offer and the whole-set check alike, whichever binding kind declares it.
+    if (binding.id === "compiler.no-missile-weapons" && rule.runtime?.implemented === "YES" && !forbids.includes("ranged-weapons")) forbids.push("ranged-weapons");
     if (binding.id === "profile.active-weapon-restrictions") {
       // A permission clause ('may only use a sword, dagger or Mage Staff in
       // battle') carries no prohibition token: it is projected only as the
@@ -2590,11 +2647,21 @@ export function bandEquipmentLimits(pack: BandPackage): EquipmentLimits | null {
   return Object.keys(limits).length ? limits : null;
 }
 
-/** Band-wide prohibition tokens of the rules that apply to every member. */
-export function bandEquipmentForbids(pack: BandPackage): readonly string[] {
+/**
+ * Band-wide prohibition tokens of the band rules that reach one member.
+ *
+ * A band rule may narrow its printed recipients with `applies_to.profile_ids`
+ * ('Slayers may never use armour' is not the Rememberer's rule: 'A Rememberer
+ * is not a Slayer, and the slayer rules don't apply'). The same recipient test
+ * `applicableRules` applies decides here, so a member the rule does not name is
+ * not refused by its tokens. Without a profile the band-level summary keeps
+ * every band rule's tokens.
+ */
+export function bandEquipmentForbids(pack: BandPackage, profile?: EditorialProfile | null): readonly string[] {
   const result: string[] = [];
   for (const rule of pack.special_rules) {
     if (rule.runtime?.grant !== "band" || rule.applies_to?.band !== true) continue;
+    if (profile && rule.applies_to?.profile_ids?.length && !rule.applies_to.profile_ids.includes(profile.id)) continue;
     for (const binding of rule.bindings ?? []) {
       if (binding.id !== "profile.equipment-restrictions" || strings(binding.parameters?.["when_items"]).length) continue;
       for (const token of strings(binding.parameters?.["forbids"])) {
@@ -2635,8 +2702,16 @@ export function specialRuleRestriction(args: {
   readonly native_virtue: boolean;
   readonly starting_skills: readonly string[];
   readonly stage?: "recipients" | "prerequisites" | "access";
+  readonly package?: BandPackage;
 }): string | null {
-  const { build: b, profile: p, rule } = args;
+  const { build: b, rule } = args;
+  // The compiler sends the canonical row; a promoted Henchman is decided as the Hero it has become
+  // (`configuredProfile`), so it may take special skills (user ruling 2026-11-19).
+  const p = args.profile && b.variant_ids.includes("promotion.hero")
+    && (args.profile.type === "henchman" || args.profile.type === "hero" && !args.package?.profiles.some(row =>
+      row.id === args.profile!.id && row.type === "hero"))
+    ? promotedHero(args.profile, args.package)
+    : args.profile;
   const unavailable = `special rule is not available to ${b.band_id}/${b.profile_id}: ${rule.id}`;
   if (rule.id.startsWith("hireling.hired-sword.priest-of-verena.skill.")
       && !b.variant_ids.includes("deity.solkan"))
@@ -2710,7 +2785,19 @@ export function loadoutRestriction(args: {
   if (b.special_rule_ids.includes("band--renowned-virtue") && b.special_rule_ids.filter((id) => id.startsWith("band--virtue-of-")).length !== 1) return "Renowned Virtue requires exactly one Bretonnian Virtue";
   if (b.off_hand_id) {
     if (b.off_hand_id.startsWith("weapon.") && !off?.["off_hand"]) return "illegal off-hand selection";
-    if ((main["hands"] === 2 || main["paired"]) && !contracts.some((id) => ["compiler.ignore-difficult-to-use-restrictions", "compiler.master-of-arms"].includes(id))) return "main weapon occupies both hands";
+    // Master of Arms: 'may now wield a Difficult to Use weapon and a hand weapon at the same time,
+    // but not two Difficult to Use weapons'. Difficult to Use is the printed item property the
+    // catalogue declares as the `difficult-to-use` item tag (Morning Star, Broadsword, Ceremonial
+    // Scythe); the caller projects the carried item's tags on each weapon record as `item_tags`.
+    // The relaxation applies only to a Difficult to Use main weapon (ruling 2026-11-19), so it
+    // lifts neither the two-handed occupancy nor a restriction of any other weapon. A Difficult
+    // to Use off-hand weapon is refused as well, although none can be selected in the off hand
+    // today (off_hand: false).
+    const difficultToUse = (record: RecordData | null): boolean => strings(record?.["item_tags"]).includes("difficult-to-use");
+    const masterOfArms = difficultToUse(main) && b.off_hand_id.startsWith("weapon.") && !difficultToUse(off)
+      && contracts.includes("compiler.master-of-arms");
+    if ((main["hands"] === 2 || main["paired"]) && !masterOfArms
+        && !contracts.includes("compiler.ignore-difficult-to-use-restrictions")) return "main weapon occupies both hands";
     const restricted: Record<string, readonly string[]> = {
       "weapon.morning-star": [], "weapon.natural-attacks": [], "weapon.fist": [],
       "weapon.spear": ["defence.shield", "defence.buckler"],
@@ -2718,7 +2805,7 @@ export function loadoutRestriction(args: {
       "weapon.squig-prodder": ["defence.shield", "weapon.spiked-gauntlet"],
       "weapon.boar-spear": ["defence.shield", "defence.buckler"],
     };
-    if (restricted[b.main_weapon_id] && !restricted[b.main_weapon_id]!.includes(b.off_hand_id)) return `${b.main_weapon_id} cannot be combined with ${b.off_hand_id}`;
+    if (restricted[b.main_weapon_id] && !masterOfArms && !restricted[b.main_weapon_id]!.includes(b.off_hand_id)) return `${b.main_weapon_id} cannot be combined with ${b.off_hand_id}`;
     if (["armour.toughened-leathers", "armour.ninja-robes"].includes(b.armour_id) && ["defence.shield", "defence.kite-shield"].includes(b.off_hand_id)) return "toughened leathers cannot be combined with a shield";
     if (["armour.wizard-s-robe", "armour.eshin-assassin-robes"].includes(b.armour_id) && ["defence.shield", "defence.buckler", "defence.kite-shield"].includes(b.off_hand_id)) return `${b.armour_id} cannot be combined with other armour except a helmet`;
   }

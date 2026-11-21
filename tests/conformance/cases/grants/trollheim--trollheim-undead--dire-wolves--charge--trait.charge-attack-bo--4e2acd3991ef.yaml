@@ -1,0 +1,70 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-undead/dire-wolves--charge/trait.charge-attack-bonus
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+# rule and the recorded contract: the charging turn carries two attack dice and a turn in which the
+# bearer does not charge carries one, with the profile's printed single attack as the fixture base, so
+# only the charge explains the second die.  The bearer is the band's printed dire-wolves profile, whose
+# own rule list prints Fear, so the charging scenario declares the Leadership dice the charged fixture
+# must take.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed "2 Attacks instead of 1 during the turn in which it
+#   charges".  Attack 1 is the bearer's printed profile value, so the second die can only come from the
+#   charge, and every strike is a natural 1, so the tape carries only attack dice and the attack count
+#   itself is the evidence.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profile; no engine output
+# was consulted.  The bearer is the band's own dire-wolves profile (WS3/S4/T3/W1/I2/A1/Ld4) and the
+# opponent is a hand-built fixture; because the profile prints Fear, the charging scenario declares the
+# Leadership dice the charged fixture takes (3+3 passes Leadership 7).
+- audit_id: rule/trollheim/trollheim-undead/dire-wolves--charge/trait.charge-attack-bonus
+  id: the-charging-bearer-strikes-twice
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-undead/dire-wolves--charge/trait.charge-attack-bonus
+  id: in-a-turn-it-does-not-charge-the-bearer-strikes-once
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

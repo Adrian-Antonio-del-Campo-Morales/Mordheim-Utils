@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/poison.giggle-juice
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the supplied
+#   coating adds one Strength (a 3 wounds Toughness 3), the same 3 does not wound without it, and the
+#   coating adds one to the Injury roll (a 4 takes the target out).  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Record note (close-combat.yaml, poison.giggle-juice, Giggle Juice Coating): "Supplied weapon coating
+# adds +1 Strength and +1 Injury for the current battle; producing a vial and counting its two-battle
+# supply are excluded" (The Foole's Master Craftsman, Fanatic Online 89: "Giggle Juice (+1 weapon
+# Strength and +1 Injury, enough for two battles)").  Execution: execution.yaml poison.giggle-juice
+# (strength_bonus 1, injury_modifier 1, trigger attack), merged into the coated hand's attack effect
+# by the ordinary poison pipeline; no operator reads the tag itself.  Fixture: hand-built bearer (WS3
+# S3 T3 W2 I5 A1, mace, main_poison_id poison.giggle-juice) charging a hand-built opponent (WS3 S3 T3
+# I2 A1 Ld7, mace; W3 keeps a wound short of the injury roll, W1 reaches it).  WS3 against WS3 hits
+# on 4+; S4 wounds T3 on 3+ where S3 needs 4+; the chart's 4 (Stunned) becomes 5 (Out of Action).
+
+# +1 Strength: the coated mace wounds Toughness 3 on the 3.
+- audit_id: mechanic/poison.giggle-juice
+  id: the-coating-adds-one-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.giggle-juice
+      characteristics: &gjc-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &gjc-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same mace without the coating does not wound on the 3.
+- audit_id: mechanic/poison.giggle-juice
+  id: without-the-coating-the-same-three-does-not-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gjc-bearer
+    second: *gjc-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# +1 Injury: a declared 4 (Stunned on the ordinary chart) becomes 5, Out of Action.
+- audit_id: mechanic/poison.giggle-juice
+  id: the-coating-adds-one-to-the-injury-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.giggle-juice
+      characteristics: *gjc-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

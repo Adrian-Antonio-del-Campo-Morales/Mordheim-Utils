@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed refusal on the band grant route: with the
+#   skill selected no parry die is requested at all from a buckler-armed opponent, while the
+#   identical attack without the skill does request it and the declared five blocks the blow.
+#   The refusal is the printed cannot_be_parried term; the tape of each scenario is its evidence,
+#   because the pair differs only in the selected rule.
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole'];
+#   clauses still pending or unrepresentable in this file: [].  REVIEWED requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("Enemy models may not parry attacks made by the Hero") and the
+# recorded contract (cannot_be_parried, recipient: Norse Hero).  The bearer is a printed Hero of
+# the band with the band skill selected, and the opponent is hand-built carrying the buckler,
+# whose parry the engine resolves before the wound; the control repeats the identical attack
+# without the skill, where the same declared five does parry.  The bearer's own attacks are
+# suppressed so the tape is the attacker's chain alone.
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow
+  id: the-opponent-may-not-parry-the-hero
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-crushing-blow]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow
+  id: the-same-attack-without-the-skill-is-parried
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

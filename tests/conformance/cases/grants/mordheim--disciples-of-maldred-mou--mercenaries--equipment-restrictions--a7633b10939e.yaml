@@ -1,0 +1,68 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/disciples-of-maldred-mou/mercenaries--equipment-restrictions/compiler.mercenary-equipment-at-creation
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/disciples-of-maldred-mou/special-rules.yaml
+#
+# AUTHORED: 2 scenarios.  Printed: 'May be equipped from the Mercenary Equipment list before the first game of a
+#   new campaign; after that only from the Squire or Men-at-Arms Equipment Lists.'  (The same rule's 'May not use
+#   missile weapons' is its sibling binding profile.equipment-restrictions, authored in its own file.)  The contract
+#   has a duel-build gate of its own: contractEquipment (index.ts) adds the ordinary Human Mercenary lists to the
+#   profile's access while the build does not declare the post-creation phase, and the supplied variant
+#   `equipment.post-creation` (docs/reference/eligibility.md: supplies the post-creation equipment stage without
+#   simulating acquisition) withdraws them; the profileSelections stage then checks each slot against the access
+#   set.  Admission: a Mercenary at creation with heavy armour constructs - heavy_armour is on the
+#   mercenary-equipment-lists and on neither the squires- nor the men-at-arms-equipment-list.  Refusal: the same
+#   build with variant_ids [equipment.post-creation] is refused with `equipment is not available to
+#   disciples-of-maldred-mou/mercenaries: ['armour.heavy-armour']`.  No tag-presence face is needed because the
+#   rule has its own reachable admission and refusal (the Proud-to-a-Fault precedent does not apply).
+# authoring_progress: 2 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+# Creation phase (no variant declared): the Mercenary Equipment list is open, and heavy armour is on it alone.
+- audit_id: rule/mordheim/disciples-of-maldred-mou/mercenaries--equipment-restrictions/compiler.mercenary-equipment-at-creation
+  id: a-mercenary-at-creation-with-heavy-armour-from-the-mercenary-list-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: disciples-of-maldred-mou
+      profile_id: mercenaries
+      main_weapon_id: weapon.sword
+      armour_id: armour.heavy-armour
+    second:
+      collection: mordheim
+      band_id: disciples-of-maldred-mou
+      profile_id: mercenaries
+      main_weapon_id: weapon.sword
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# Post-creation phase: only the Squire and Men-at-Arms lists remain, and neither offers heavy armour.
+- audit_id: rule/mordheim/disciples-of-maldred-mou/mercenaries--equipment-restrictions/compiler.mercenary-equipment-at-creation
+  id: the-same-mercenary-after-the-first-game-is-refused-the-mercenary-list-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: disciples-of-maldred-mou
+      profile_id: mercenaries
+      main_weapon_id: weapon.sword
+      armour_id: armour.heavy-armour
+      variant_ids: [equipment.post-creation]
+  expect_error: "equipment is not available to disciples-of-maldred-mou/mercenaries: ['armour.heavy-armour']"

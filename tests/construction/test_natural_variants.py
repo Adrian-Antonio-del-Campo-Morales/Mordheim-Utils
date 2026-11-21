@@ -129,11 +129,13 @@ def test_an_armed_profile_that_lacks_the_free_dagger_keeps_an_empty_hand(band, p
 
 @pytest.mark.parametrize("band,profile", PUBLISHED_NATURAL)
 def test_a_published_natural_weapon_grant_dresses_the_fighter(band, profile):
-    """The band declares `profile.natural-attacks`; the compiler consumes it."""
-    grants = [binding for rule in PACKAGES[band].special_rules
-              if profile in ((rule.get("applies_to") or {}).get("profile_ids") or ())
-              for binding in runtime_bindings(rule, "profile")]
-    assert "profile.natural-attacks" in {binding["id"] for binding in grants}
+    """A profile with no equipment lists fights with its natural attacks.
+
+    That compiler convention is the single source (2026-11-16): the printed
+    Natural Weapons rule of these profiles is `covered.elsewhere` instead of
+    binding the same `profile.natural-attacks` a second time.
+    """
+    assert not row(band, profile).get("equipment_lists")
     printed = row(band, profile)["characteristics"]
     unit = compiled(band, profile)
     assert NATURAL in unit.main_weapon.tags
@@ -160,8 +162,11 @@ def test_the_shared_natural_weapons_declaration_reaches_every_band_that_cites_it
                 if rule.get("rule_ref") != "shared-rule.natural-weapons":
                     continue
                 cited += 1
-                assert "profile.natural-attacks" in {
-                    binding["id"] for binding in runtime_bindings(rule, "profile")}
+                # The no-equipment-list convention delivers the natural attacks;
+                # the rule's own effect defers to it (single source, 2026-11-16).
+                effects = {effect["id"]: effect for effect in (rule.get("runtime") or {}).get("effects") or ()}
+                natural = effects.get("profile.natural-attacks")
+                assert natural is None or natural.get("reason") == "covered.elsewhere"
     assert cited >= 2
 
 

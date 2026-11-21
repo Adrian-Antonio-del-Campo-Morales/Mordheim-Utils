@@ -1,0 +1,169 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.fear-of-elves
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   bearer charged by a Dark Elf fails his Fear test and hits only on sixes, charged by a High Elf
+#   he passes and fights normally, charging a Wood Elf he fails the charge test and is halted, an
+#   Elf of no named kind still frightens him, a human enemy prompts no test, and the same Dark Elf
+#   prompts no test when the bearer lacks the mechanic.  REVIEWED still requires manual semantic
+#   review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: the printed Fear Elves (Chaos in the Streets p.133, Goblin Warriors) is Fear whose
+#   direction is inverted: the BEARER fears, and any Elf enemy causes it.  Consumer:
+#   modular/psychology.py causes_fear() (mechanic.fear-of-elves on the enemy of a fighter tagged
+#   species.elf, species.high-elf, species.dark-elf or species.wood-elf), then
+#   resolve_fear()/needs_test() for the bearer's charge and charged tests; the compiler materialises
+#   species.elf from any trait_overrides elf_kind and the kind tag from high|dark|wood.  REVIEWED
+#   still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Hand-built fixtures: the bearer injects the shared mechanic through skill_ids (WS3 S3 T3 W2 I5
+# A1 Ld7); the enemy is the hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) declaring the one
+# fact the rule reads (elf_kind; human for the absence case).  A 2D6 Fear test of 5+4 fails Ld7
+# and 3+3 passes; the failed charged test raises the bearer's hit target to 6, so his declared 4
+# misses where it hit before.  The enemy is silenced (attacks 0) where the bearer's hit target is
+# the observable.  A failed charge test cancels the charge and the duel ends disengaged.
+
+# A Dark Elf charges the bearer; his 9 fails Ld7 and his 4 now needs a 6.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: the-bearer-charged-by-a-dark-elf-that-fails-his-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-of-elves]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {elf_kind: dark}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A High Elf charges the bearer; 6 passes Ld7 and his 4 hits and wounds.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: the-bearer-charged-by-a-high-elf-that-passes-his-fear-test-fights-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-of-elves]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {elf_kind: high}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bearer charging a Wood Elf must pass first: 9 fails, the charge is cancelled and no blow is
+# struck.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: the-bearer-charging-a-wood-elf-that-fails-his-fear-test-is-halted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-of-elves]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {elf_kind: wood}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Any Elf: an Elf of no named kind (species.elf alone) still forces the test, which 1+1 passes.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: an-elf-of-no-named-kind-still-frightens-the-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-of-elves]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {elf_kind: other}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 1}
+    - {key: round.0.first.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Fear is scoped to Elves: a charging human enemy prompts no Fear die and the bearer's 4 hits.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: a-human-enemy-does-not-frighten-the-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-of-elves]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Dark Elf charge against a warrior without the mechanic prompts no Fear die.
+- audit_id: mechanic/mechanic.fear-of-elves
+  id: without-the-rule-a-dark-elf-prompts-no-fear-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {elf_kind: dark}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

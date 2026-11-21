@@ -1,0 +1,130 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.all-seeing-eye-of-numas
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios pin the printed additional 6+ save on a hand-built
+#   bearer: the ward die 6 saves and the 5 is one face short (compiled ward_save
+#   observed alongside); the save is additional to a worn armour save (the armour die
+#   fails first, then the ward die 6 saves); and a Strength 5 blow that would worsen an
+#   armour save leaves the 6+ untouched.  The shooting half, the bearer's sight and the
+#   Exploration die are excluded campaign consequences.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios cover the printed 6+ boundary pair, its composition
+#   after a worn armour save and its immunity to the Strength modifier.
+
+# --- Authored scenarios ---
+# mechanic/defence.all-seeing-eye-of-numas - the Magical Artefacts Table's
+# All-Seeing Eye of Numas (mordheimer.net, Campaigns / Income): "The bearer has an
+# additional 6+ save against strikes in close combat that is not modified by
+# Strength or weapon modifiers".  The execution entry carries ward_save 6 and the
+# artefact is carried through defence_ids; the ward resolves after the armour save
+# on the key `round.<i>.<side>.attack.<n>.special.ward` (the Step Aside / Spiral
+# convention).
+#
+# Expectations come from the printed text, never from engine output.  The ward
+# die 6 is the boundary.  Light armour (6+) supplies the preceding armour die; a
+# Strength 5 blow wounds T3 on a 2+ and would worsen an armour save by two, but
+# the printed 6+ is not modified.
+
+# The printed save on its own face: the ward die 6 turns the wound after the hit
+# and wound have landed, with no armour worn.
+- audit_id: mechanic/defence.all-seeing-eye-of-numas
+  id: the-eye-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &en-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.all-seeing-eye-of-numas]
+      characteristics: &en-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &en-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.global_effects.ward_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/defence.all-seeing-eye-of-numas
+  id: one-face-below-the-eye-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *en-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.all-seeing-eye-of-numas]
+      characteristics: *en-defender
+  duel_context: *en-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Additional": with light armour worn the armour die is asked first and fails on
+# a 5 (6+), then the Eye's own die 6 saves the wound.
+- audit_id: mechanic/defence.all-seeing-eye-of-numas
+  id: the-eye-is-additional-to-a-worn-armour-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *en-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      defence_ids: [defence.all-seeing-eye-of-numas]
+      characteristics: *en-defender
+  duel_context: *en-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Not modified by Strength": a Strength 5 attacker (wounds T3 on a 2+) would push
+# an armour save two points worse, but the Eye still saves on the printed 6.
+- audit_id: mechanic/defence.all-seeing-eye-of-numas
+  id: strength-does-not-modify-the-eye
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.all-seeing-eye-of-numas]
+      characteristics: *en-defender
+  duel_context: *en-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

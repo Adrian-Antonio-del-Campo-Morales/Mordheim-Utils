@@ -1,0 +1,132 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (construction pair plus the purchases it authorises, B12
+#   construction-skills batch 2026-11-18): a Marauder Hero selecting Mutant may buy one printed
+#   Possessed mutation and compiles with it (the Great Claw's own additional attack); the same Hero
+#   buying the mutation without the skill is refused; the printed "may take this skill more than once"
+#   is read as one Mutant selection per purchased mutation, so two mutations compile with the skill
+#   selected twice and are refused with it selected once; and a henchman of the band is refused the
+#   skill itself.  The skill's only printed content is the purchase permission; its compiler contract
+#   adds nothing to the fighter and each mutation's duel effect belongs to the mutation's own identity.
+# AUTHORED: the admissions, the two purchase refusals and the henchman refusal are declared below;
+#   REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the printed Mark of Onogal alternative ("may choose a Blessing of Nurgle
+#   instead except the Mark of Nurgle") is not encoded by the construction gate (the Blessings are
+#   gated to the Carnival's Tainted Ones) and is not represented here.  The repeated selection relies
+#   on the gate counting the raw `special_rule_ids` list; the compiler applies a repeated id once.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
+#
+# Clause: whole (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# --- Authored scenarios ---
+# Family model (Chaos "Mutant" special skills, construction face).  The record is a `warband_skill`
+# with `grant: selectable`, `applies_to.band: true`, no eligibility list and the compiler binding
+# `special-rule.band--marauder-special-skills-mutant` (an empty contract).  Every Hero of the band
+# prints the `special` skill access the warband-skill gate reads; the henchmen print none.  A
+# `band--mutations-*` selection on a Marauder build is admitted only when at least as many Mutant
+# selections accompany it ("each purchased mutation requires <skill>").  The Great Claw (one
+# additional attack entry tagged `rule.great-claw` at Strength +1) and the Tentacle (the bearer's
+# incoming-attacks modifier -1) are the purchased mutations because their compiled consequences are
+# stable fields.  Recipient: the printed Champion (WS 4, S 4, T 3, W 1, I 4, A 1, no profile rules)
+# with a sword; the opponent is hand-built and contributes no attacks; every Hero blow is a natural
+# one so no wound die is on the tape.
+
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+  id: a-hero-with-mutant-may-buy-a-mutation-and-compiles-with-it
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--marauder-special-skills-mutant, band--mutations-great-claw]
+      main_weapon_id: weapon.sword
+    second:
+      &marauder-mutant-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: ['rule.great-claw']
+    first.extra_attacks.0.strength_bonus: 1
+    first.characteristics.attacks: 1
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The purchase needs the skill: the same Hero buying the mutation without Mutant is refused.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+  id: a-mutation-without-the-mutant-skill-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.sword
+    second: *marauder-mutant-opponent
+  expect_error: each purchased mutation requires band--marauder-special-skills-mutant
+
+# "Marauder Heroes may take this skill more than once": the skill selected twice admits two purchased
+# mutations, each compiled with its own consequence.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+  id: the-skill-taken-twice-admits-two-mutations
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--marauder-special-skills-mutant, band--marauder-special-skills-mutant, band--mutations-great-claw, band--mutations-tentacle]
+      main_weapon_id: weapon.sword
+    second: *marauder-mutant-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: ['rule.great-claw']
+    first.global_effects.incoming_attacks_modifier: -1
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One selection of the skill does not pay for two mutations.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+  id: two-mutations-with-the-skill-taken-once-are-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--marauder-special-skills-mutant, band--mutations-great-claw, band--mutations-tentacle]
+      main_weapon_id: weapon.sword
+    second: *marauder-mutant-opponent
+  expect_error: each purchased mutation requires band--marauder-special-skills-mutant
+
+# The skill is a Hero's: a henchman of the band (no `special` skill access) is refused the selection.
+- audit_id: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: chaos-marauders
+      special_rule_ids: [band--marauder-special-skills-mutant]
+      main_weapon_id: weapon.sword
+    second: *marauder-mutant-opponent
+  expect_error: "special rule is not available to marauders-of-chaos/chaos-marauders: band--marauder-special-skills-mutant"

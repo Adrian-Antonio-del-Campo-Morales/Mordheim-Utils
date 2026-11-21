@@ -1,0 +1,196 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.disability-2
+# authoring_status: AUTHORED
+# authoring_progress: 8 authored scenarios (supplied-condition batch, 2026-11-18): the compiled
+#   Weapon Skill pair (one lower with result 2; intact with a sibling result), the two printed loadout
+#   refusals (two one-handed weapons; a weapon and a shield) with the eligibility module's own
+#   sentences, the admitted single weapon fighting at the lower Weapon Skill against its sibling-result
+#   control, the admitted single two-handed weapon (the 2026-10-15 ruling), and the refusal of the
+#   result on a build without the Cripples' Disability.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-2): "Parkinson:
+#   minus one Weapon Skill; cannot use two weapons or a weapon and shield.  Permanent supplied result;
+#   no group creation or reroll."  Source: Chaos in the Streets p149, result 2.
+# AUTHORED: the row's content sits in two sibling effects (the first triage batch's "Disability 2 and
+#   5 were a false triage flag"): condition.disability-2.characteristics (profile.characteristics,
+#   weapon_skill -1, applied to the compiled statline by compiler.py's supplied_stat_bonuses) and
+#   condition.disability-2.weapons (profile.equipment-restrictions, max_active_one_handed_weapons 1 and
+#   forbids defence.shield / defence.kite-shield).  The supplied profile bindings reach the shared
+#   eligibility stage (compiler.py passes supplied.profile_bindings to _validate_profile_selections;
+#   packages/typescript/domain/eligibility/index.ts renders "<band>/<profile> may use at most 1
+#   one-handed weapon at a time." and '"<token>" is forbidden for <band>/<profile>.'), so both refusals
+#   are quoted from that module for the printed Cripples profile.  The ruling of 2026-10-15 states that
+#   Parkinson "does not forbid a single two-handed weapon or equate a buckler with a shield": the
+#   two-handed admission is authored on the outcasts list's great weapon (item great_weapon,
+#   mechanic weapon.double-handed-weapon); the buckler is not on the Cripples' printed list, so its
+#   admission cannot be authored on the native profile and is recorded here, not asserted.  The
+#   recipient gate is the compiler's own ("Disability result requires a Cripple with Disability").
+
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile with the corpus fixture characteristics, armed from the
+# outcasts list; the opponent is the hand-built mace fixture.  Hit arithmetic: WS2 against WS5 needs
+# 5+ (the defender's Weapon Skill is more than double the attacker's), WS3 against WS5 needs 4+.
+
+# The characteristic half of the result: the compiled Cripple carries Weapon Skill 2.
+- audit_id: mechanic/condition.disability-2
+  id: the-parkinsons-cripple-compiles-with-weapon-skill-one-lower
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 2
+    first.characteristics.strength: 3
+    first.characteristics.initiative: 5
+
+# The "without" half: the same Cripple carrying a sibling result (4, Sickly) keeps Weapon Skill 3.
+- audit_id: mechanic/condition.disability-2
+  id: a-sibling-result-leaves-weapon-skill-intact
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+
+# The printed prohibition, first face: a club and a dagger are two one-handed weapons, refused by
+# the eligibility module's own sentence for the Cripples profile.
+- audit_id: mechanic/condition.disability-2
+  id: two-one-handed-weapons-are-refused-to-the-parkinsons-cripple
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      off_hand_id: weapon.dagger
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "chaos-streets-mordheim-inhabitants/cripples may use at most 1 one-handed weapon at a time."
+
+# The printed prohibition, second face: a weapon and a shield.  The shield is on the outcasts list, so
+# only the result's own forbids token refuses it.
+- audit_id: mechanic/condition.disability-2
+  id: a-weapon-and-a-shield-are-refused-to-the-parkinsons-cripple
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      off_hand_id: defence.shield
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: '"defence.shield" is forbidden for chaos-streets-mordheim-inhabitants/cripples.'
+
+# The admitted loadout: one club.  The Cripple fights at the lower Weapon Skill, so against a WS5
+# opponent its declared 4 misses (5+ needed).
+- audit_id: mechanic/condition.disability-2
+  id: the-single-weapon-is-admitted-and-fights-at-the-lower-weapon-skill
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 5, state.first.weapon_skill: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control of the swing above: the same Cripple with a sibling result (4, Sickly) keeps Weapon
+# Skill 3 and the same 4 hits the WS5 opponent (4+), so the miss belongs to result 2.
+- audit_id: mechanic/condition.disability-2
+  id: with-a-sibling-result-the-same-four-hits
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 4, attacks.0.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The ruling's boundary: a single two-handed weapon is one weapon, not two, so the great weapon of the
+# outcasts list is admitted to the Parkinson's Cripple and the build compiles at Weapon Skill 2.
+- audit_id: mechanic/condition.disability-2
+  id: a-single-two-handed-weapon-is-admitted
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.double-handed-weapon
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 2
+
+# The result is a Cripple's: on a build without the band's Disability mechanic the compiler refuses
+# it with its own sentence.
+- audit_id: mechanic/condition.disability-2
+  id: the-result-on-a-build-without-the-cripples-disability-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.disability-2]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "Disability result requires a Cripple with Disability"

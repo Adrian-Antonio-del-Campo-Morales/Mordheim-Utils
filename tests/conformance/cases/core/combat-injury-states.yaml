@@ -1,0 +1,357 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: core/combat-injury-states
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause below has requirement-complete
+#   scenarios contrasted against the printed rule text, the recorded semantic
+#   contracts and the design rulings. REVIEWED is authoring/semantic contrast
+#   only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: chart (scope: YES)
+# AUTHORED[chart]: 9 scenarios cover every chart band (1-2 knocked down, 3-4
+#   stunned, 5-6 out of action) at the exact band edges, the save-before-injury
+#   ordering, and the recovery clock across two turns.
+#
+# Clause: highest-result (scope: YES)
+# AUTHORED[highest-result]: 3 scenarios cover the highest result winning when it
+#   is the second roll (twice) and when it is the first roll (a sword, so the
+#   lower second roll is a different band and a last-roll-wins reading fails).
+#
+# Clause: stand-up-strikes-last (scope: YES)
+# AUTHORED[stand-up-strikes-last]: 1 scenario covers the knocked-down fighter
+#   standing up on its own turn, striking last in that turn despite the higher
+#   Initiative, and striking first again on the opponent's turn; the priority
+#   consequence is also exercised under core/combat-order.
+#
+# --- Migrated authored scenarios ---
+# Source: cases/core/injury-states.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# core/combat-injury-states — chart bands, highest result and recovery timing.
+#
+# Expectations come from the accepted clauses of
+# the knowledge-base clause contracts (sources/knowledge) (identity
+# core/combat-injury-states, clauses chart / highest-result /
+# stand-up-strikes-last) and the permanent design rulings, never from engine
+# output.
+#
+# Every band edge of the printed chart has its own scenario: 1 and 2 knocked
+# down, 3 and 4 stunned, 5 and 6 out of action.  A sword keeps the chart
+# unmodified; a mace would add its concussion clause and turn an injury result
+# of 2-4 into Stunned.
+#
+# The first scenario declares the shared WS3/S3/T3 I2 and I5 profiles as YAML
+# anchors; siblings alias them and keep their own dice and expectations.
+#
+
+- audit_id: core/combat-injury-states
+  id: chart-knocked-down-on-two
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: &ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      # A one-Wound defender is the shortest route to an injury roll: one
+      # unsaved wound leaves it at zero Wounds.
+      characteristics:
+        <<: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+        wounds: 1
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN, state.round_index: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: core/combat-injury-states
+  id: chart-knocked-down-on-one
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: core/combat-injury-states
+  id: chart-stunned-on-three
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: core/combat-injury-states
+  id: chart-stunned-on-four
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: core/combat-injury-states
+  id: chart-out-on-five
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT, state.round_index: 1}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: core/combat-injury-states
+  id: chart-out-on-six
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# Several unsaved wounds from one hit force more than one injury roll; the
+# highest result applies.  The S4 attacker needs a 3+ to wound, so a natural
+# six is a critical whose basic-table damage of two overkills the one-Wound
+# target and demands two injury rolls.
+
+- audit_id: core/combat-injury-states
+  id: highest-injury-result-applies
+  covers: [highest-result]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, strength: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, attacks.0.damage: 2, attacks.0.critical: true}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
+    - {kind: roll, key: round.0.first.attack.0.critical, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.injury.0, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.injury.1, sides: 6, value: 5}
+
+# The highest result, not the first one, decides: the first roll is a Knocked
+# Down and the second a Stunned, so the fighter ends Stunned.  The attacker
+# carries a sword, so the chart is unmodified; a critical result of 1 adds no
+# injury modifier and the critical's damage of two forces both rolls.
+
+- audit_id: core/combat-injury-states
+  id: highest-injury-result-beats-the-first-roll
+  covers: [highest-result]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, attacks.0.damage: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recovery phase belongs to the fighter whose turn it is, and "a
+# knocked-down warrior that stands up strikes last only on the turn it stood up".
+# Body corrected 2026-11-16: the earlier body (both fighters Stunned, two turns)
+# showed only the Stunned-to-Knocked-Down step and never a stand-up or a strike
+# order although it covers stand-up-strikes-last; that recovery evidence now
+# lives in a-stunned-warrior-recovers-only-on-its-own-turn below.  Here the
+# Knocked Down I5 fighter stands up on its own turn (turn 0) and, without any
+# charge, strikes after the standing I2 opponent; on the opponent's turn (turn
+# 1) the penalty is gone and the higher Initiative strikes first again.  The
+# strict tape order is the observable; every attack misses.
+
+- audit_id: core/combat-injury-states
+  id: recovery-belongs-to-the-fighters-own-turn
+  covers: [stand-up-strikes-last, chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  initial_state:
+    first: {condition: KNOCKED_DOWN}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_initial: {first.condition: KNOCKED_DOWN, second.condition: STANDING}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.wounds: 2, state.first.wounds: 2}
+    1: {state.first.condition: STANDING, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
+
+# The recovery phase belongs to the fighter whose turn it is: a Stunned warrior
+# only drops to Knocked Down on its own turn, one turn at a time.  Both start
+# Stunned so neither is yet standing to press an attack.  (Moved here unchanged
+# from the earlier body of recovery-belongs-to-the-fighters-own-turn.)
+
+- audit_id: core/combat-injury-states
+  id: a-stunned-warrior-recovers-only-on-its-own-turn
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  initial_state:
+    first: {condition: STUNNED}
+    second: {condition: STUNNED}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  expect_initial: {first.condition: STUNNED, second.condition: STUNNED}
+  expect_rounds:
+    0: {state.first.condition: KNOCKED_DOWN, state.second.condition: STUNNED}
+    1: {state.first.condition: KNOCKED_DOWN, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The chart applies to an *unsaved* wound: when the armour save holds the last
+# Wound, no injury roll is offered at all (the strict tape would fail if one
+# were requested) and the defender stays standing and fighting.
+- audit_id: core/combat-injury-states
+  id: no-injury-roll-when-the-last-wound-is-saved
+  covers: [chart]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The highest result decides whichever order it is rolled: a Stunned first roll
+# and a Knocked Down second roll still leave the fighter Stunned.  Corrected
+# 2026-11-16: the attacker carries a sword (no Concussion) at Strength 3; with
+# the earlier mace, Concussion made the second roll of 2 Stunned as well, so a
+# "last roll wins" engine passed.  S3 against T3 needs a 4, so the natural six
+# is still a critical (result 1: no Injury modifier) forcing two Injury rolls.
+- audit_id: core/combat-injury-states
+  id: the-highest-injury-result-wins-even-when-it-comes-first
+  covers: [highest-result]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.injury.1, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, attacks.0.damage: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

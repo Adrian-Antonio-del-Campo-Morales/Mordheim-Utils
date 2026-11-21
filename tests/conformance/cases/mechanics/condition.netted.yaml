@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.netted
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 3 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "The supplied victim
+#   caught in a net counts as Knocked Down and is hit automatically in combat; the attacker must still
+#   wound. In its next own Recovery, unless Stunned or Out of Action, it cuts free, performs no other
+#   action and strikes last as if it stood up" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.netted) under the ruling "Netter consumes a supplied victim" (design-rulings.md: keep
+#   condition.netted and its close-combat/recovery consequences; no net-throwing technique).  The
+#   victim is a hand-built fixture with the supplied condition_ids entry - the row has no compiler
+#   recipient gate - and the attacker a hand-built netter.  Scenarios: the netted victim starts Knocked
+#   Down (expect_initial second.condition/second.netted), the charger's blow asks for no hit die and
+#   its wound die of 4 wounds the still-Knocked-Down victim; the control without the condition stands
+#   and the same blow asks for a hit die (a natural 1 misses); the victim's own recovery cuts it free
+#   (state.<side>.netted false, Standing) and the netter's blow asks for a hit die again.  Removing the
+#   supplied id (the mechanic probe) changes the dice and the condition.  REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkles (recorded, not asserted): "performs no other action and strikes last" is the stood-up
+#   fighter's own strike-last rule; the freed victim is silenced (attacks: 0) in the recovery scenario so
+#   no strike-order reading is asserted.  The Stunned exception ("unless Stunned") needs a Stunned
+#   netted victim at its own recovery, which these one-round tapes do not reach.  The net throw, the
+#   escape roll and the failed-charge movement are the excluded producer.
+
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+.  The victim declares two Wounds so a single
+# wound leaves it at 1 without an injury die; its Knocked-Down state gives it no attack, so every die in
+# the first two tapes is the netter's.
+
+# The supplied victim counts as Knocked Down: the charger's blow is automatic (no hit die is asked),
+# the wound die is still rolled and the victim stays caught and Knocked Down.
+- audit_id: mechanic/condition.netted
+  id: the-netted-victim-counts-as-knocked-down-and-is-hit-automatically-but-must-still-be-wounded
+  fighters:
+    first:
+      &netter
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.netted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_initial: {second.condition: KNOCKED_DOWN, second.netted: true}
+  expect_rounds:
+    # A knocked-down warrior that suffers a wound is taken out of action (core injury rule).
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control: the same victim without the supplied net stands, so the same charge asks for a hit die
+# and the natural 1 misses; the standing victim strikes back (another natural 1).
+- audit_id: mechanic/condition.netted
+  id: without-the-supplied-net-the-same-victim-stands-and-the-hit-die-is-asked
+  fighters:
+    first: *netter
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {second.condition: STANDING, second.netted: false}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The victim's own recovery: with the netted side active, it cuts free in round 0 (netted false) and
+# stands as a stood-up fighter, so the netter's blow is no longer automatic - the hit die is asked and
+# the natural 1 misses.  The freed victim is silenced so only the netter's die is in the tape.
+- audit_id: mechanic/condition.netted
+  id: in-its-own-recovery-the-victim-cuts-free-stands-and-is-no-longer-hit-automatically
+  fighters:
+    first: *netter
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.netted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.condition: KNOCKED_DOWN, second.netted: true}
+  expect_rounds:
+    0: {state.second.netted: false, state.second.condition: STANDING, attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

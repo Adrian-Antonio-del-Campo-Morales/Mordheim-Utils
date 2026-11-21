@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (Aquatic Mutants family, survival-injury-and-immunity batch
+#   2026-11-18): a Hero of the band taking Electrical Touch forfeits its attack for an automatic
+#   Strength 3 jolt that recharges for D3 rounds; against metal armour the jolt is Strength 5 and
+#   ignores the armour; declining the forfeit keeps the ordinary attack; the same Hero without the
+#   selection is offered no forfeit; a henchman of the band is refused the mutation.  REVIEWED still
+#   requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# AUTHORED: the record is a `mutation` with `grant: selectable`, `applies_to.profile_types: [hero]`
+#   ("Any Hero may start the campaign with a single mutation from the following ... electrical touch
+#   ...") binding mechanic.electrical-touch ("May forfeit one close-combat attack to jolt at +1
+#   Initiative: automatic Strength 3 hit, ignores all armour; Strength 5 against metal armour. Recharge
+#   D3 turns after use").  Consumer: packages/python/combat-engine/mordheim_combat/modular/rounds.py
+#   (the forfeit decision round.<r>.<side>.electrical-touch.forfeit.<n>, the jolt event at Initiative
+#   +1, the recharge round.<r>.<side>.electrical-touch.recharge on a three-sided die) and
+#   pools.py electrical_touch_weapon (automatic hit, fixed Strength 3 or 5 against
+#   condition.metal-armour, ignore_armour).  The +1 Initiative face and the fixed-Strength contrast
+#   are evidenced on the hand-built fixture of cases/mechanics/mechanic.electrical-touch.yaml.
+#
+# Family model (Aquatic Mutants; the Great Claw and Tentacle files of this band are the construction
+# models).  Recipient: the printed Buccaneer (WS4 S4 T4 W1 I4 A1 Ld8) with a club from its own list and
+# the mutation selected through special_rule_ids.  Opponent: hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace),
+# in heavy armour (5+, metal) where stated.  The jolt (Initiative 4+1) precedes the opponent's blow and
+# the forfeited club swing requests no die; fixed Strength 3 wounds T3 on 4+, Strength 5 on 2+; no
+# wound die is a natural six; the opponent's blows are declared natural ones so the one-Wound Hero is
+# never hit.  The strict tape and decision list reject an undeclared request, so the absent round-1
+# forfeit decision during the recharge, and the absent decision on the unselected Hero, are the
+# assertions.  A henchman is refused by the recipients gate.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+  id: a-hero-taking-electrical-touch-jolts-instead-of-striking-and-recharges-for-d3-rounds
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-electrical-touch]
+      main_weapon_id: weapon.club
+    second:
+      &touch-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    # Automatic hit: no hit die.  4 wounds T3 at the fixed Strength 3 (the Hero's own S4 is not used).
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 4}
+    # Recharge D3 = 2: unavailable in round 1, so no forfeit decision is asked there.
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 1}
+    1: {state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# Against a target in metal armour the jolt is Strength 5 (a 3 wounds on 2+) and the heavy armour's
+# 5+ save is ignored: no armour die is requested.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+  id: against-metal-armour-the-heros-jolt-is-strength-5-and-ignores-the-armour
+  fighters:
+    first: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: true}
+  rolls:
+    - {key: round.0.first.electrical-touch.attack.0.wound, value: 3}
+    - {key: round.0.first.electrical-touch.recharge, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Declining the forfeit keeps the club attack and requests no jolt or recharge die.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+  id: declining-the-forfeit-keeps-the-heros-ordinary-attack
+  fighters:
+    first: *recipient
+    second: *touch-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.electrical-touch.forfeit.0, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Hero without the selection is offered no forfeit decision.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+  id: the-same-hero-without-the-mutation-is-offered-no-forfeit
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+    second: *touch-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-electrical-touch/mechanic.electrical-touch
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-electrical-touch]
+      main_weapon_id: weapon.mace
+    second: *touch-opponent
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-electrical-touch"

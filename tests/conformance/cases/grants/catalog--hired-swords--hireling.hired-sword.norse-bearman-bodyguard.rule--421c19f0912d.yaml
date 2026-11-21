@@ -1,0 +1,141 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Bearman's kit shield (6+) saves on a five in close combat; a four is one face short; worn kit
+#   light armour stacks under the same +1 (4+ holds on a four); the Bard control wearing his own kit
+#   light armour (6+) fails the same five; the rule is refused outside its printed profile.  REVIEWED
+#   still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Norse Bearman Bodyguard / Bulwark): "Bearmen fight expertly with a
+# shield in one hand and an axe in the other.  The Bearman Bodyguard gets an additional +1 bonus on
+# his armour saving roll in close combat."  The grant is profile; the execution entry carries the tag
+# mechanic.norse-bulwark, read by packages/python/combat-engine/mordheim_combat/modular/contexts.py
+# (~819-822): the close-combat armour save improves by one when the defender is tagged, his main
+# weapon is tagged weapon.axe and the shield is in his shield-and-skill provenance (defence.shield).
+# The model is the authored mechanics file cases/mechanics/mechanic.norse-bulwark.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Bearman compiled through the
+# hireling route (hirelings.hired-sword.2b / hireling.hired-sword.norse-bearman-bodyguard) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); his omitted main weapon is the kit's
+# axe, and his kit shield is carried in the hand (off_hand_id defence.shield: the printed stance the
+# rule names).  His kit light armour is owned, not worn, unless a scenario names it (armour_id).  His
+# other printed rules: Shieldmaster lets the shield parry, so one parry die is declared after every
+# enemy hit and fails on 1; Drunken rolls its D6 only at the start of his own turn, and the opponent
+# is the active participant here, so no drunken die is requested.  He contributes no swing
+# (initial_state).  The attacker is hand-built (WS3 S3 T3 W3 I5 A1 Ld7, mace): 4+ to hit, 4+ to wound
+# (fours, no critical die).  The control is the grade-1b Bard (dagger) wearing his own kit light
+# armour, the only 6+ save his printed kit offers, so the same face is shown failing without the rule.
+# Saves: shield alone 6+, +1 Bulwark 5+; light armour and shield 5+, +1 Bulwark 4+.
+
+# The kit shield alone saves on 6+; Bulwark makes it 5+, so the five holds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+  id: the-bearman-s-axe-and-shield-save-holds-on-five
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &bearman
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.norse-bearman-bodyguard
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &attacker-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Shieldmaster: the shield's parry die must beat the four; a 1 fails.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: a four is not a 5+ even with the bonus, so the wound is taken.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+  id: one-face-below-the-improved-save-is-not-enough
+  fighters:
+    first: *attacker
+    second: *bearman
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Wearing the kit light armour as well: 5+ for armour and shield, 4+ with Bulwark, so the four holds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+  id: the-bonus-stacks-on-worn-kit-light-armour-and-shield
+  fighters:
+    first: *attacker
+    second:
+      <<: *bearman
+      armour_id: armour.light-armour
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard wearing his kit light armour saves on 6+ and no rule improves it, so the same
+# five fails (his dagger has no parry, so no parry die is requested).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+  id: a-hireling-without-the-rule-fails-the-same-five
+  fighters:
+    first: *attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *attacker-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Bearman's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark/mechanic.norse-bulwark
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

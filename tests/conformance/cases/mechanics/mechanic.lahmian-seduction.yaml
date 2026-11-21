@@ -1,0 +1,200 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.lahmian-seduction
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the Vampire's
+#   own test passes and the chosen enemy fails its own, which bars it; the Vampire's own test fails so
+#   the enemy is left alone; both tests pass and nothing is barred; a Psychology-immune enemy requests no
+#   die at all; declining the choice after the own test leaves the enemy alone; the control persists
+#   into the victim's own turn where the printed regain test fails, or passes and frees it.  REVIEWED
+#   still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the printed "if the Vampire attacks the seduced warrior,
+#   control ends automatically" is left to the band file, so the two-round scenarios silence the Vampire;
+#   the Khemri copy prints no male qualifier and no Undead/Daemon exemption, so none is declared here.
+# AUTHORED: 7 scenarios cover the Vampire's own test first, the chosen enemy's own test, the Psychology-immune exemption, the declined choice and the regain test.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Khemri p.90, Lahmian Vampire Special Skills / Seduction, bound by
+# band--lahmian-special-skills-seduction): at the start of the Combat phase the Vampire first takes a
+# Leadership test; if she passes she chooses an enemy in base contact, which must pass its own Leadership
+# test or is controlled by the Vampire's player; the original owner may try to regain control in each
+# Recovery phase by passing a Leadership test; if the Vampire attacks the seduced warrior the control ends.
+# Operator model (the authored band file ...e460df03ebdf is the template): the Vampire's own dice are
+# round.<r>.<owner>.lahmian-seduction.own-test.0/.1, the choice is a decision at
+# round.<r>.<target>.lahmian-seduction, the enemy's own dice are .0/.1, a failure sets
+# state.<target>.charm_attack_blocked and a lasting control, and the regain test on the victim's own turn
+# is a decision at round.<r>.<target>.lahmian-seduction.regain-control with dice .0/.1.
+
+# The printed order: the Vampire's own test (1+1 against Ld8) passes, then the chosen enemy's own test
+# (6+6 against Ld7) fails and bars it for the round.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: the-vampires-own-test-passes-and-the-target-fails-its-own
+  fighters:
+    first:
+      &vampire
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.lahmian-seduction]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      &target
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: true}
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.second.lahmian-seduction.0, value: 6}
+    - {key: round.0.second.lahmian-seduction.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true, state.second.condition: STANDING, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Vampire's own test fails (6+6 against Ld8): the enemy is left alone and no target die exists.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: a-failed-own-test-leaves-the-victim-unbarred
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 6}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Both tests pass (1+1 and 1+1): nothing is barred and both pools ask for their To Hit die.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: both-tests-pass-and-nothing-is-barred
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: true}
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.second.lahmian-seduction.0, value: 1}
+    - {key: round.0.second.lahmian-seduction.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a Psychology-immune enemy is unaffected, so neither test is requested.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: a-psychology-immune-target-skips-the-seduction
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The choice of victim is the Vampire's: after her own test passes, declining it requests no target die.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: declining-the-choice-after-the-own-test-leaves-the-victim-alone
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      <<: *target
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: false}
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: false, attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control lasts: in the victim's own turn the printed regain test is taken and fails (6+6), so it
+# stays barred.  The Vampire is silenced so no attack of hers ends the control first.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: the-controlled-warrior-fails-the-regain-test-and-stays-barred
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      <<: *target
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: true}
+    - {key: round.1.second.lahmian-seduction.regain-control, value: true}
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.second.lahmian-seduction.0, value: 6}
+    - {key: round.0.second.lahmian-seduction.1, value: 6}
+    - {key: round.1.second.lahmian-seduction.regain-control.0, value: 6}
+    - {key: round.1.second.lahmian-seduction.regain-control.1, value: 6}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true}
+    1: {state.second.charm_attack_blocked: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The regain test passed (1+1): the original owner regains control and the warrior attacks again.
+- audit_id: mechanic/mechanic.lahmian-seduction
+  id: the-controlled-warrior-passes-the-regain-test-and-is-freed
+  fighters:
+    first:
+      <<: *vampire
+    second:
+      <<: *target
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.second.lahmian-seduction, value: true}
+    - {key: round.1.second.lahmian-seduction.regain-control, value: true}
+  rolls:
+    - {key: round.0.first.lahmian-seduction.own-test.0, value: 1}
+    - {key: round.0.first.lahmian-seduction.own-test.1, value: 1}
+    - {key: round.0.second.lahmian-seduction.0, value: 6}
+    - {key: round.0.second.lahmian-seduction.1, value: 6}
+    - {key: round.1.second.lahmian-seduction.regain-control.0, value: 1}
+    - {key: round.1.second.lahmian-seduction.regain-control.1, value: 1}
+    # The Vampire attempts her own test again in the new round; 6+6 fails it.
+    - {key: round.1.first.lahmian-seduction.own-test.0, value: 6}
+    - {key: round.1.first.lahmian-seduction.own-test.1, value: 6}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: true}
+    1: {state.second.charm_attack_blocked: false, attacks.0.hit: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

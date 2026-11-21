@@ -1,0 +1,107 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.ranalds-luck
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios: the once-per-battle +1 turning a near-miss into a hit
+#   (and the spent resource closing the offer at his next roll), the -1 direction passing a
+#   charged Fear test one pip over Leadership, and declined offers recurring at the next own roll
+#   with nothing spent.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# mechanic/mechanic.ranalds-luck - authored from the printed Mark of Ranald clause on the
+# Trickster-Priest (Liber Malefic p8): "once during each battle the Priest may influence the
+# result of any dice roll he makes by +1 or -1".  The choice belongs to the roller, so every one
+# of the bearer's own modifiable rolls carries the +1 declaration and, when that is declined, the
+# -1 declaration, until the single resource is spent (the `ranalds-luck` entry of
+# resources_spent); an expressly unmodifiable roll (the Ranald's Duck 6+ of the sibling mechanic,
+# per the Djinn's Curse ruling of 2026-10-15) is never offered the pip - that absence is evidenced
+# on the real Priest in his rule file.  The bearer is hand-built with the mechanic injected
+# through skill_ids; both sides WS3/S3/T3 with maces, so hits and wounds face 4+, and a 2D6
+# Leadership test passes at or under the printed value.
+- audit_id: mechanic/mechanic.ranalds-luck
+  id: plus-one-turns-a-near-miss-into-a-hit-and-spends-the-resource
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ranalds-luck]
+      characteristics: &ranald-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ranald-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.ranalds-luck.plus, value: true}
+  rolls:
+    # The declared 3 misses the 4+ face; the accepted +1 makes it a hit.
+    - {key: round.0.first.attack.0.hit, value: 3}
+    # The wound die carries no declaration: the once-per-battle resource is already spent.
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [ranalds-luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed influence is "+1 or -1": lowering his own second Fear die by one passes 4+4 against
+# Leadership 7.  The Leadership dice are rolls he makes, so each carries the declaration in turn.
+- audit_id: mechanic/mechanic.ranalds-luck
+  id: minus-one-on-his-own-fear-die-passes-the-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ranalds-luck]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.0.ranalds-luck.plus, value: false}
+    - {key: round.0.second.fear.charged.0.ranalds-luck.minus, value: false}
+    - {key: round.0.second.fear.charged.1.ranalds-luck.plus, value: false}
+    - {key: round.0.second.fear.charged.1.ranalds-luck.minus, value: true}
+  rolls:
+    # 4+4 would fail Leadership 7; the accepted -1 on the second die makes it 4+3=7, a pass.
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.second.resources_spent: [ranalds-luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining both directions spends nothing: the offer recurs at his next own roll and the battle
+# ends with the resource intact.
+- audit_id: mechanic/mechanic.ranalds-luck
+  id: declined-offers-recur-and-spend-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ranalds-luck]
+      characteristics: *ranald-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ranald-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.ranalds-luck.plus, value: false}
+    - {key: round.0.first.attack.0.hit.ranalds-luck.minus, value: false}
+    - {key: round.0.first.attack.0.wound.ranalds-luck.plus, value: false}
+    - {key: round.0.first.attack.0.wound.ranalds-luck.minus, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

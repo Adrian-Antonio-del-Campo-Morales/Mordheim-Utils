@@ -1,0 +1,112 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia/mechanic.oracle
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): the selected Mark's
+#   once-per-battle re-roll turning her missed hit into a hit (and no second offer at her wound
+#   die), a declined offer letting the miss stand with nothing spent, the same Priestess without
+#   the selection rolling with no offer at all, and the refusal outside the printed profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed War-Priestess of Myrmidia
+# compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.war-priestess-of-myrmidia) with the fixture facts (WS3 S3 T3 W2 I5 A1; the
+# printed Ld8 stays); the Mark of Myrmidia (Oracle) is selectable, so the recipient selects it
+# through special_rule_ids and the control is the same profile without the selection.  Printed
+# Oracle: the Priestess "may re-roll any one dice roll she makes during a battle" - each of her
+# own rolls carries the declaration until the single `one-roll-reroll` resource is spent, and the
+# second result stands.  Her printed kit is the ceremonial dagger (its target gains the printed 6+
+# save).  Her always-on War-Honed rule (fear immunity and the first-failed-Leadership re-roll)
+# adds no request here: the hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace) causes no Fear and
+# no Leadership test is ever taken.  The refusal selects the printed Mark on the grade-1b Bard.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia/mechanic.oracle
+  id: the-oracles-missed-hit-is-rolled-again-and-the-resource-is-spent
+  fighters:
+    first:
+      &oracle-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia]
+    second:
+      &oracle-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    # The wound die carries no declaration: the once-per-battle resource is already spent.
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # The printed dagger grants its target a 6+ save; the declared 1 fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2, state.first.resources_spent: [one-roll-reroll]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining the offer lets the miss stand and spends nothing.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia/mechanic.oracle
+  id: the-declined-reroll-lets-the-miss-stand-and-spends-nothing
+  fighters:
+    first: *oracle-recipient
+    second: *oracle-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control is the same profile without the selection: her rolls carry no offer at all.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia/mechanic.oracle
+  id: the-same-priestess-without-the-mark-rolls-with-no-offer
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *oracle-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # The printed dagger grants its target a 6+ save; the declared 1 fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The Mark is printed for the War-Priestess; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia/mechanic.oracle
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

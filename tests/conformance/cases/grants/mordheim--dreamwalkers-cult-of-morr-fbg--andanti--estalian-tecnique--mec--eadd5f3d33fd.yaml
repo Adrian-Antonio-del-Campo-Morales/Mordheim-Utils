@@ -1,0 +1,115 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--estalian-tecnique/mechanic.estalian-technique
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (2026-11-18): the real Andanti with rapier and main gauche
+#   parries an unparryable natural 6 by rolling under his Weapon Skill 4, the printed "under" is
+#   strict (a die of 4 fails against Weapon Skill 4), and the same Andanti with a sword instead
+#   parries only as per the normal rules, which offer no parry die against a 6.  The former blocker
+#   (no roll-under parry mode) no longer applies: the runtime carries the inverted success condition
+#   for this mechanic (packages/python/combat-engine/mordheim_combat/modular/contexts.py,
+#   _estalian_parry, and packages/python/combat-engine/mordheim_combat/phases.py, resolve_parry's
+#   strict `value < roll_under`).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dreamwalkers-cult-of-morr-fbg/special-rules.yaml
+#   (andanti--estalian-tecnique): "The Andanti may parry using his rapier and Main Gauche if he can
+#   roll under his weapon skill as opposed to over his opponent's highest hit roll as per the normal
+#   rules."
+# AUTHORED: the rule is grant: profile on the Andanti, so the real profile carries it by itself and
+#   nothing is selected.  The printed trigger names both blades: the operator requires a
+#   weapon.rapier and a weapon.main-gauche in the hands (both on the band's own hero equipment list,
+#   Andanti only), so the sword control below is the same bearer outside the printed trigger.  The
+#   printed word is "under", so the success condition is strictly below the bearer's own Weapon
+#   Skill, never equal to it; the ordinary 2x-Strength parry bar is untouched by the print (both
+#   sides are Strength 3 here, so it never binds).
+
+# --- Authored scenarios ---
+# Fixture arithmetic: the attacker is a hand-built WS3 mace fixture; the Andanti keeps his printed
+# Weapon Skill 4 in the fixture characteristics, so the attacker hits on 4+ and the parry succeeds
+# on a die of 1-3 (under 4).  The Andanti's own swings (two with the paired blades, one with the
+# sword) are scripted misses; W2 keeps the landed blows short of an injury roll.
+
+# The printed inversion on the real bearer: a natural 6, which the ordinary rules could never parry
+# at all, is blocked by a die of 3 rolled under his Weapon Skill 4.
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--estalian-tecnique/mechanic.estalian-technique
+  id: the-andanti-parries-a-natural-six-by-rolling-under-his-weapon-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dreamwalkers-cult-of-morr-fbg
+      profile_id: andanti
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "under" is strict: a die of 4 is not under Weapon Skill 4, so the parry fails and the
+# hit carries through to the wound.
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--estalian-tecnique/mechanic.estalian-technique
+  id: a-die-equal-to-his-weapon-skill-does-not-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dreamwalkers-cult-of-morr-fbg
+      profile_id: andanti
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Andanti with a sword instead of the printed pair parries "as per the normal
+# rules", and the normal rules offer no parry die at all against a natural 6 - the tape that carries
+# none resolves straight to the wound.  The rule stays granted; its printed trigger (rapier and main
+# gauche in hand) is what is absent.
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--estalian-tecnique/mechanic.estalian-technique
+  id: with-a-sword-instead-the-ordinary-parry-offers-no-die-against-a-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dreamwalkers-cult-of-morr-fbg
+      profile_id: andanti
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

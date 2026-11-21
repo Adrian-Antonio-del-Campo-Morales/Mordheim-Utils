@@ -1,0 +1,112 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.power-grab-majority
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 4 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "The supplied race
+#   that outnumbers the other gains one Leadership at match start" (sources/knowledge/catalog/rules/
+#   conditions.yaml, condition.power-grab-majority: binding profile.characteristics, bonuses
+#   {leadership: 1}) through the supplied condition_ids entry.  The compiler gate "the supplied Power
+#   Grab adjustment requires an Underworld Alliance duelist" (compile_fighter's supplied-condition
+#   checks) needs a build of that band, so the recipient is the printed Goblin Bully (Leadership 7)
+#   carrying the fixture's characteristics.  The raised point is read twice: as the compiled Leadership
+#   (expect_fighters first.characteristics.leadership, the channel the Remasen officer file
+#   grants/mordheim--tileans--band--remasen-officer-leadership--... uses) and at a Leadership boundary -
+#   the Fear test of the charged Bully, where 4+4 = 8 passes the supplied 8 and fails the printed 7
+#   (state.<side>.fear_hit_sixes).  The control is the same Bully without the supplied result; the two
+#   refusals are the one-result-per-table sentence of the supplied-result resolver and the band gate
+#   on a hand-built fixture.  Removing the supplied id (the mechanic probe) changes the compiled value
+#   and the Fear outcome.  REVIEWED still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): which race outnumbers the other is the caller's fact (the
+#   composition producer is out-of-scope.group, see the band record); the compiler gate admits any
+#   Underworld Alliance duelist, not only a member of the counted race.  "At match start" is the duel's
+#   start, so the point is a compiled characteristic, not a round-time modifier.
+
+# --- Authored scenarios ---
+# Fear 2D6 test: a total at or under Leadership passes.  The fear-causer charges and is silenced
+# (attacks: 0), so the tape is the Bully's charged Fear pair and its single hit die (a natural 1, so no
+# wound die exists); the Bully carries the band list's club.
+
+# The majority race is supplied Leadership 8 and passes the charged Fear test on an 8.
+- audit_id: mechanic/condition.power-grab-majority
+  id: the-majority-race-is-supplied-leadership-eight-and-passes-the-fear-test-on-an-8
+  fighters:
+    first:
+      &power-grab-majority-bully
+      collection: mordheim
+      band_id: underworld-alliance-mim
+      profile_id: goblin-bully
+      main_weapon_id: weapon.club
+      condition_ids: [condition.power-grab-majority]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &power-grab-majority-fear-causer
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 4}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters: {first.characteristics.leadership: 8}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the supplied majority the printed Leadership 7 stands and the same 8 fails the
+# charged Fear test, so the Bully hits only on sixes this round.
+- audit_id: mechanic/condition.power-grab-majority
+  id: without-the-supplied-majority-the-printed-leadership-seven-fails-the-same-8
+  fighters:
+    first:
+      collection: mordheim
+      band_id: underworld-alliance-mim
+      profile_id: goblin-bully
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *power-grab-majority-fear-causer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 4}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters: {first.characteristics.leadership: 7}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: true, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A race is either the majority or the minority at match start, never both: the supplied-result
+# resolver refuses the pair with its own sentence.
+- audit_id: mechanic/condition.power-grab-majority
+  id: the-majority-and-minority-results-cannot-both-be-supplied
+  fighters:
+    first:
+      collection: mordheim
+      band_id: underworld-alliance-mim
+      profile_id: goblin-bully
+      main_weapon_id: weapon.club
+      condition_ids: [condition.power-grab-majority, condition.power-grab-minority]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  expect_error: "choose only one supplied result of the same potion table"
+
+# The recipient gate: the adjustment belongs to the Underworld Alliance, so a hand-built fixture is
+# refused by the compiler's own sentence.
+- audit_id: mechanic/condition.power-grab-majority
+  id: the-supplied-majority-is-refused-outside-the-underworld-alliance
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.power-grab-majority]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 7}
+  expect_error: "the supplied Power Grab adjustment requires an Underworld Alliance duelist"

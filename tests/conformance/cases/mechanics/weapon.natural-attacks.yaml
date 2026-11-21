@@ -1,0 +1,383 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.natural-attacks
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the innate attack pool, the model's own Strength and the refused off-hand. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Note (2026-11-16): a profile with no equipment lists fights with its natural attacks (compiler
+#   convention, the single source). The printed Natural Weapons rules, the Raging Peasants' penalty-free
+#   unarmed rule and the Plague Cart Guardian's unarmed waiver now defer to it (covered.elsewhere);
+#   their scenarios were moved here with the source entry in the id.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the innate attack pool, the model's own Strength and the refused off-hand weapon.
+
+# --- Authored scenarios ---
+# mechanic/weapon.natural-attacks - innate claws that use the model profile and
+# leave no off-hand weapon.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.
+# The innate profile resolves one attack, the model's own Attacks characteristic, with no weapon allocation.
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: natural-attacks-use-the-model-profile
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# No weapon bonus leaks into the innate profile: Strength 3 wounds Toughness 3 on the ordinary 4+, so the 3 fails.
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: natural-attacks-keep-the-model-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed absence of an off-hand weapon is declared as a refusal.
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: natural-attacks-leave-no-off-hand-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "weapon.natural-attacks cannot be combined with weapon.dagger"
+
+# The printed profile rule is not the Unarmed Fighting skill: it keeps the printed
+# Strength and Attacks and does not grant the enemy the dagger-class +1 save.  The
+# profile build below is what the compiler selects for this origin.
+# The fist attack resolves at the bearer's printed Strength 3, so a four wounds an
+# equal Toughness 3 where a penalised unarmed attack (Strength 2) would need a five.
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-profile-fist-attacks-at-its-printed-strength--battle-monks-of-cathay--raging-peasants--unarmed
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The second printed consequence: the enemy wears light armour, which saves on its own
+# 6+, and the profile's fist does not hand it the dagger-class +1 save; with that +1 the
+# same five would have saved.  The bearer's fists are still the printed unarmed attack,
+# so the wound face above is the one a penalised fist would miss.
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-fist-does-not-grant-the-enemy-the-dagger-save-bonus--battle-monks-of-cathay--raging-peasants--unarmed
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+      main_weapon_id: weapon.fist
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-warhound-attacks-at-its-printed-strength--beastmen-raiders--warhounds-of-chaos--natural-weapons
+  fighters:
+    first:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same nominal Strength 4 through the ordinary Fist contraction, where the
+# printed penalty applies, so the identical wound die misses the same Toughness.
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-fist-contraction-misses-with-the-same-die--beastmen-raiders--warhounds-of-chaos--natural-weapons
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: with-the-trait-the-bare-fist-keeps-its-printed-strength--carnival-of-chaos--plague-cart--guardian-unarmed
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      trait_overrides: {guardian_unarmed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 8, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: without-the-trait-the-fist-loses-one-strength-and-the-same-four-fails--carnival-of-chaos--plague-cart--guardian-unarmed
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 8, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: with-the-trait-the-fist-is-not-capped-at-one-attack--carnival-of-chaos--plague-cart--guardian-unarmed
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      trait_overrides: {guardian_unarmed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 8, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-warhound-fights-at-its-own-strength-without-the-unarmed-penalty--marauders-of-chaos--warhounds-of-chaos--natural-weapons
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Strength 4 and the same declared faces on a hand-built fist fighter, whose
+# ordinary unarmed penalty the printed rule is what waives, so the three no longer wounds.
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: without-the-row-the-unarmed-penalty-leaves-the-same-roll-unwounded--marauders-of-chaos--warhounds-of-chaos--natural-weapons
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-wulfen-fights-with-two-natural-attacks-at-its-own-strength--norse-explorers-btb--wulfen--natural-weapons
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: wulfen
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The printed Wulfen also causes Fear (wulfen--fear), and it is the charger, so the charged
+  # warrior takes the compulsory round-0 Fear test first; its Leadership is therefore supplied.
+  # The two faces total its Leadership exactly, which is a passed test: a failed one would
+  # force the warrior to hit on sixes, so the pair is not a double and the flag stays false.
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same declared faces through the ordinary fist instead of the granted natural attacks: the
+# unarmed penalty the printed rule waives is what the difference isolates, so the three no longer
+# wounds the Toughness 3 target.  The fist's own one-attack cap leaves the single declared attack.
+- audit_id: mechanic/weapon.natural-attacks
+  id: without-the-row-the-unarmed-penalty-leaves-the-same-roll-unwounded--norse-explorers-btb--wulfen--natural-weapons
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-wulfen-fights-with-two-natural-attacks-at-its-own-strength--norse-explorers-lustria--wulfen--natural-weapons
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # The printed Wulfen also causes Fear (wulfen--fear), and it is the charger, so the charged
+  # warrior takes the compulsory round-0 Fear test first; its Leadership is therefore supplied.
+  # The two faces total its Leadership exactly, which is a passed test: a failed one would
+  # force the warrior to hit on sixes, so the pair is not a double and the flag stays false.
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Re-authored 2026-11-16 on the real recipient (the scenario
+# `the-printed-plague-cart-guardian-keeps-its-fist-strength` of the retired Guardian Unarmed identity was
+# lost while that identity was folded into this one).  The printed Plague Cart "and its Guardian cannot use
+# weapons or wear armour"; a profile with no equipment lists fights with its natural attacks, so the Guardian
+# strikes at its printed Strength 3 with no unarmed penalty: a wound roll of 4 wounds Toughness 3, where a
+# penalised fist (Strength 2) would need 5.  No armour die: natural attacks give the target no +1 save.
+- audit_id: mechanic/weapon.natural-attacks
+  id: the-printed-plague-cart-guardian-strikes-at-its-printed-strength
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 8, wounds: 4, initiative: 3, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

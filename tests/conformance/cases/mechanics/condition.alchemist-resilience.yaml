@@ -1,0 +1,97 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.alchemist-resilience
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied Potion
+#   of Resilience raises the drinker's Toughness by one so the opponent's four fails to wound, the same
+#   four wounds without it, and the gate refuses a hand-built recipient.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md (Alchemist attempts at the start of the owner's
+#   turn, 2026-10-15)
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.alchemist-resilience, "Potion of
+#   Resilience": "+1 Toughness for the duration of the battle.")
+# Discrimination note (2026-11-18, recorded): the band rule mad-scientist--alchemist binds this condition
+#   with `grant: none` only to name the printed rule that produces it (the game-start potion roll stays
+#   unbound); it is never a compile route.  The condition is reached through the supplied condition_ids
+#   entry these scenarios declare, which the rule-removal probe deletes from every id list, so the
+#   with/without pairs below discriminate for this mechanic identity.  TODO.md ("Printed-source checks
+#   before de-duplicating") records that the five band-level alchemist identities probe
+#   non-discriminating; the band grant files (grants/mordheim--masters-of-horror-sylv--mad-scientist--
+#   alchemist--...) carry the Petru-style note for that.
+# Compiler gate (quoted, compiler.py:1139-1142): a hand-built bearer is refused - "the Alchemist's supplied
+#   potion requires the Mad Scientist recipient" - so the real masters-of-horror-sylv/mad-scientist (a Hero
+#   that causes Fear and is immune to psychology through its printed Lunatic and Immune to Psychology
+#   grants) carries the condition; no charge is declared, so no Fear die exists.
+# AUTHORED: the 3 scenarios below cover the grant, the control and the refusal; REVIEWED still requires
+#   manual semantic review.  Consumer: modular/state.py:302-310 (the Toughness bonus is applied once at
+#   initialization); the compiled characteristic pair is observed as the initial state.
+#
+# --- Authored scenarios ---
+# Fixtures: the printed Mad Scientist with fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays), mace; hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace); already engaged, no charge.  WS3
+# against WS3 hits on 4+; S3 wounds T3 on 4+ and T4 on 5+; no armour die exists.  The Scientist strikes
+# first (I5 over I2), so attacks.0 is his declared miss and attacks.1 the opponent's blow.
+
+# The potion: Toughness 4 at initialization, so the opponent's declared four fails to wound.
+- audit_id: mechanic/condition.alchemist-resilience
+  id: the-supplied-potion-raises-toughness-by-one-so-a-four-fails-to-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-resilience]
+      characteristics: &ar-scientist {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ar-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_initial: {first.toughness: 4}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the potion the identical four wounds Toughness 3.
+- audit_id: mechanic/condition.alchemist-resilience
+  id: without-the-potion-the-same-four-wounds
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      characteristics: *ar-scientist
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ar-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_initial: {first.toughness: 3}
+  expect_rounds:
+    0: {attacks.1.wounded: true, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The gate: a hand-built recipient of the supplied potion is refused with the compiler's own sentence.
+- audit_id: mechanic/condition.alchemist-resilience
+  id: the-supplied-potion-is-refused-outside-the-mad-scientist
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "the Alchemist's supplied potion requires the Mad Scientist recipient"

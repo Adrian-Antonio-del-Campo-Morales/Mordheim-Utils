@@ -1,0 +1,99 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.blessed-sight
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole-rule clause carries three authored scenarios derived from the printed rule and the recorded contract (a failed characteristic test rerolled into a pass and rerolled into a second failure, and a missed close-combat hit rerolled); the excluded Exploration dice stay outside the duel. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the reroll of a failed characteristic test (the reroll saving the turn and the reroll failing so the second result is the one that stands) and the reroll of a missed To Hit roll in close combat.
+#
+# Clause: exploration-dice (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The admitted clause grants one reroll where the printed rule names a failure:
+# a failed characteristic test and a missed To Hit roll in close combat.  The
+# reroll is a second die whose result is accepted, so the pair below shows the
+# same failed Leadership-free characteristic test saved by its reroll and lost
+# when the reroll also fails; the paralysis test of the warrior on his own turn
+# is the round-pipeline characteristic test every fighter takes, and it is
+# resolved with this skill's reroll argument.  The printed Exploration dice are
+# a post-battle campaign calculation and are not part of a duel.
+- audit_id: mechanic/skill.blessed-sight
+  id: blessed-sight-reroll-saves-the-failed-characteristic-test
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {condition: PARALYZED}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.paralysis, value: 6}
+    - {key: round.0.first.paralysis.reroll, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The reroll also fails, and the second result is the one that stands: the
+# warrior stays paralysed and makes no attack at all this turn, so the opponent
+# takes no wound and only its own attack resolves.
+- audit_id: mechanic/skill.blessed-sight
+  id: blessed-sight-the-rerolled-failure-stands
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {condition: PARALYZED}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.paralysis, value: 6}
+    - {key: round.0.first.paralysis.reroll, value: 6}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.first.condition: PARALYZED, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The other printed failure: a missed close-combat To Hit roll is taken again,
+# and the six of the second die lands the hit the one missed.
+- audit_id: mechanic/skill.blessed-sight
+  id: blessed-sight-rerolls-a-missed-to-hit-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.blessed-sight]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

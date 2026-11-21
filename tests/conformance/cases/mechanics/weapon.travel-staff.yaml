@@ -1,0 +1,133 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.travel-staff
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios pin the printed Balanced +1 Initiative in close combat
+#   on a hand-built bearer (equipment-items batch 2026-11-18): an Initiative-3 bearer
+#   with the staff resolves before an Initiative-3 opponent with no tie roll, the same
+#   pair with a mace needs the printed tie roll, an Initiative-2 bearer with the staff
+#   only reaches the tie (the bonus is exactly one point), and the staff wounds at the
+#   user's own Strength.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios cover the +1 Initiative strike-order boundary with its
+#   mace control and its exactly-one-point sibling, and the unboosted Strength.
+# Semantic wrinkle (2026-11-18, recorded): "Arcane Society spellcasters only" is
+#   a purchase restriction (construction) not evidenced on a hand-built bearer.
+
+# --- Authored scenarios ---
+# mechanic/weapon.travel-staff - Trollheim / Arcane Society: "Range: Close Combat
+# Strength: As user  Balanced: +1 Initiative in close combat."  Execution:
+# initiative_bonus 1 on the weapon, read by the strike-order resolution (the
+# compiled main weapon's initiative_bonus joins the bearer's Initiative).
+#
+# Expectations come from the printed text and the core combat-order contract
+# (equal priority and equal Initiative fall to the round.<i>.priority-tie die, a
+# 4+ letting the first fighter act first), never from engine output.  Bearer I3
+# +1 = 4 beats an opponent's I3 outright; the same bearer with a mace ties and
+# the tie die is requested; a bearer I2 +1 = 3 only reaches the tie against I3.
+
+# The staff's +1 Initiative: an I3 bearer resolves before an I3 opponent with no
+# tie roll requested - the tape is exactly the two hit dice.
+- audit_id: mechanic/weapon.travel-staff
+  id: the-travel-staff-lifts-an-equal-initiative-above-the-opponent
+  fighters:
+    first:
+      main_weapon_id: weapon.travel-staff
+      characteristics: &ts-bearer-i3 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ts-opponent-i3 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  duel_context: &ts-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_fighters:
+    first.main_weapon.initiative_bonus: 1
+    first.main_weapon.strength_bonus: 0
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The mace control: the same I3 against I3 is a tie, so the printed tie die is
+# requested (a 4 lets the first fighter act first) before either hit die.
+- audit_id: mechanic/weapon.travel-staff
+  id: the-same-initiatives-tie-without-the-staff
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ts-bearer-i3
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ts-opponent-i3
+  duel_context: *ts-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# Exactly one point: an I2 bearer with the staff reaches I3 and only ties the I3
+# opponent, so the tie die is requested (a 3 sends the opponent first); without
+# the staff I2 would simply lose the order with no die at all.
+- audit_id: mechanic/weapon.travel-staff
+  id: the-staff-adds-exactly-one-point-of-initiative
+  fighters:
+    first:
+      main_weapon_id: weapon.travel-staff
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ts-opponent-i3
+  duel_context: *ts-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 3}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# Strength as user: the wound die 3 is one face below the unboosted S3 target
+# against T3 and the 4 would be needed, exactly as with a bare mace.
+- audit_id: mechanic/weapon.travel-staff
+  id: the-travel-staff-wounds-at-the-users-own-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.travel-staff
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

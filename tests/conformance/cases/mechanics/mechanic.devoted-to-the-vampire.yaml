@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.devoted-to-the-vampire
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred batch, 2026-11-18): the supplied "Vampire Knocked
+#   Down" fact gives the bearer Frenzy and doubles its attacks; the supplied "Vampire killed" fact gives
+#   the Frenzy and the first-round Hatred re-roll against her killer; without a supplied fact the bearer
+#   never frenzies; the supplied fact without the mechanic is refused by construction.  REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the Frenzy's own ending - when the Vampire stands up or her
+#   killer dies - needs the supplied fact to change between rounds, which the corpus cannot declare; the
+#   movement compulsion is scope NO.
+# AUTHORED: 4 scenarios cover the Frenzy and doubled attacks from the supplied Vampire condition, the killer-hatred re-roll, the no-fact control and the construction refusal.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Khemri p.86, Lahmian Brotherhood / Beloved and Lackeys / Devoted to the Vampire, bound
+# by beloved--devoted-to-the-vampire and lackeys--devoted-to-the-vampire): while the Vampire is Knocked
+# Down or has been taken out of action the devoted warrior is subject to Frenzy, and he Hates the warrior
+# who killed her.  Operator model (the authored band files ...ec6dc77b108b and ...b426aaaaee0c are the
+# template): the Vampire's condition is a supplied build fact of the bearer (trait_overrides
+# devoted_vampire_down / devoted_vampire_killed), Frenzy doubles a supplied attacks 1 into two To Hit
+# dice, and the killer-hatred re-roll is the ordinary first-round key round.0.<side>.attack.<n>.hit.reroll
+# of the bearer's own misses.  The bearer is a hand-built fixture carrying the mechanic through skill_ids.
+# The opponent charges so its single strike (a natural 1) is consumed first; both the bearer's To Hit dice
+# come before the wound die of the attack that connected.
+
+# The Vampire is Knocked Down: the bearer is frenzied and strikes twice (two To Hit dice, both misses).
+- audit_id: mechanic/mechanic.devoted-to-the-vampire
+  id: the-supplied-vampire-knocked-down-fact-activates-the-frenzy-and-doubles-the-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.devoted-to-the-vampire]
+      trait_overrides: {devoted_vampire_down: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &killer
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.2.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Vampire was killed by this opponent: the frenzied bearer's two first-round misses are each offered
+# the printed Hatred re-roll; the first re-roll hits and wounds, the second misses again.
+- audit_id: mechanic/mechanic.devoted-to-the-vampire
+  id: the-supplied-vampire-killed-fact-gives-the-frenzy-and-the-killer-hatred-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.devoted-to-the-vampire]
+      trait_overrides: {devoted_vampire_killed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *killer
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.1.hit.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.1.hit: true, attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without a supplied Vampire condition the bearer never frenzies and strikes once.
+- audit_id: mechanic/mechanic.devoted-to-the-vampire
+  id: without-the-supplied-fact-the-bearer-never-frenzies
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.devoted-to-the-vampire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *killer
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied Vampire condition belongs to this mechanic: without it the fact is refused by construction.
+- audit_id: mechanic/mechanic.devoted-to-the-vampire
+  id: the-supplied-vampire-fact-without-the-mechanic-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {devoted_vampire_down: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *killer
+  expect_error: "supplied Vampire condition requires Devoted to the Vampire"

@@ -235,11 +235,17 @@ export function promotionTablesForWarrior(document: CampaignDocument, reader: Ca
   const warrior=document.campaign.warriors.find((item)=>item.id===warriorId);
   const granted=additionalSkillListsFor(reader,document.campaign.identity.band_id,warrior?.profile_id??null);
   const facts=warrior?.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
-  // The printed promotion rule (`compiler.promoted-hero-skill-access`) states
-  // the tables this profile may choose once promoted; it substitutes the band's
-  // generic hero tables, which otherwise would offer unrelated lists.
-  if(facts?.promotion_skill_access.length) return [...new Set([...facts.promotion_skill_access,...granted])];
+  // A printed promotion rule (`compiler.promoted-hero-skill-access`) that names
+  // tables of its own substitutes the band's generic hero tables (the Ostlanders
+  // Ogre "may choose Combat and Strength skills"). When an additive advance-access
+  // grant already covers every promotion-gated table (Born Marksmen: Shooting is
+  // "one of his two skill list choices"), nothing substitutes: the other choice
+  // still comes from the band's hero lists.
+  const promotion=facts?.promotion_skill_access??[];
+  const additive=new Set(granted);
+  if(promotion.some((table)=>!additive.has(table))) return [...new Set([...promotion,...granted])];
   const tables=new Set<string>(promotionHeroTables(document,reader));
+  for(const table of promotion) tables.add(table);
   for(const table of granted) tables.add(table);
   return [...tables];
 }

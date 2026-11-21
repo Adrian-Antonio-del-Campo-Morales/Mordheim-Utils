@@ -1,0 +1,116 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead/mechanic.fighting-undead
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, survival-injury-and-immunity batch
+#   2026-11-18): a Vampire attacking the Countess re-rolls its missed first-round hit, a non-Vampire
+#   attacker gets no re-roll against her, the same Vampire gets no re-roll against the plain-hireling
+#   control, and the rule is refused outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1a.yaml
+#
+# AUTHORED: the printed rule (recorded as "Uses the source anti-Undead rule", Town Cryer 22 / Revenge is
+#   Eternal / Marianna / Fighting Undead) is a profile grant of mechanic.fighting-undead, whose recorded
+#   contract (packages/python/combat-engine/mordheim_combat/modular/contexts.py, "imposed_hatred") is
+#   carried by the Countess as DEFENDER: an attacker tagged species.vampire re-rolls its failed hits
+#   against her in the first round of combat, the Vampires' ordinary psychology immunity
+#   notwithstanding.  Semantic wrinkle: the KB effect text is a stub, so the rule's direction (Vampires
+#   hate her) is taken from the consumer and should be confirmed against the print at review; the
+#   record's effect-level `reason: out-of-scope.construction` sits beside an admitted binding.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed profile compiled through the
+# hireling route (hirelings.dramatis-personae.1a /
+# hireling.dramatis.countess-marianna-chevaux-vampire-assassin) with the fixture characteristics
+# (WS3 S3 T3 W2 I5 A1); she contributes no attack of her own (initial_state), so her garlic coating
+# (Vampires only, on her own strikes) never acts.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace) and declares the one fact the rule reads, trait_overrides {vampire: true}.  WS3 against WS3
+# hits on 4+ (a 2 misses, a re-rolled 4 hits); her kit rapier parries, so a parry die is requested and
+# fails on 1 (it must beat the hit die of 4); Strength 3 wounds T3 on 4+ with no critical face; she
+# wears no armour; her Step Aside is a 5+ special save, declared and failed on 1.  Nobody charges, so
+# her Causes Fear tests nobody.  The control is the grade-1b Bard (dagger: no parry; kit armour owned,
+# not worn) with the same fixture; the refusal selects the printed rule on the Bard.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead/mechanic.fighting-undead
+  id: a-vampire-attacking-countess-marianna-rerolls-its-missed-hit
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1a
+      profile_id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &vampire
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit.reroll, value: 4}
+    # Her kit rapier parries: the 1 does not beat the hit die.
+    - {key: round.0.second.attack.0.parry, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    # Step Aside (printed starting skill): the 5+ special save fails.
+    - {key: round.0.second.attack.0.special.ward, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The grant reads the attacker's identity: a fighter that is not a Vampire is given no re-roll against her.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead/mechanic.fighting-undead
+  id: an-attacker-that-is-not-a-vampire-gets-no-reroll-against-countess-marianna
+  fighters:
+    first: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) is attacked by the same Vampire: the miss stands, no re-roll die is requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead/mechanic.fighting-undead
+  id: a-vampire-attacking-a-hireling-without-the-rule-gets-no-reroll
+  fighters:
+    first:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *vampire
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Countess's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead/mechanic.fighting-undead
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead]
+    second: *vampire
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

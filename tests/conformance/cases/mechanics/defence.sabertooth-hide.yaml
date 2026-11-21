@@ -1,0 +1,118 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.sabertooth-hide
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios pin the printed 6+ close-combat save on a hand-built
+#   wearer (the armour die 6 saves, the 5 is one face short, the compiled armour_save
+#   observed alongside) and on the real Drenok wearing his printed hide through the
+#   hireling route.  The printed 5+ missile face is out of scope (shooting) and is not
+#   evidenced.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the printed 6+ armour-save boundary pair on a
+#   hand-built wearer and the real Drenok's worn hide.
+
+# --- Authored scenarios ---
+# mechanic/defence.sabertooth-hide - Drenok Johansen's Sabertooth Tiger Hide (Town
+# Cryer 15 p27): "Worn hide grants a 6+ armour save in close combat; its 5+ missile
+# save remains outside the duel."  Design ruling 2026-10-15 ("Drenok's Berserker is
+# not the Slayer skill"): the hide supplies ordinary 6+ melee armour and gear
+# effects belong to the actual active pieces, so the hide is worn through
+# defence_ids, never an innate profile grant.
+#
+# Expectations come from the printed text and the ruling, never from engine
+# output.  The execution entry carries armour_save_bonus 1 (7 - 1 = the printed
+# 6+); with no other armour the compiled save is exactly 6, so the armour die 6
+# is the boundary.  The attacker's Strength 3 adds no save modifier.
+
+# The printed save on its own face: the armour die 6 turns the wound after the hit
+# and wound have landed.
+- audit_id: mechanic/defence.sabertooth-hide
+  id: the-hide-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &sh-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.sabertooth-hide]
+      characteristics: &sh-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &sh-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/defence.sabertooth-hide
+  id: one-face-below-the-hide-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *sh-attacker
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.sabertooth-hide]
+      characteristics: *sh-defender
+  duel_context: *sh-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The real Drenok (Town Cryer 15; hireling route, fixture characteristics, printed
+# Ld8 stays) wears his printed hide through defence_ids and wields the Axe of
+# Icefang by its mechanic id (the unique kit piece).  His attacks are silenced so
+# the attacker's tape is the only one.  Companion printed rules: Fearsome makes
+# the charging opponent test for Fear (3+3 passes Ld7); Step Aside would only
+# roll once a wound got past the armour, and the die 6 turns it first; Strongman
+# and Combat Master request nothing here.  The compiled save is the printed 6+.
+- audit_id: mechanic/defence.sabertooth-hide
+  id: the-real-drenok-saves-on-his-printed-hide
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+      main_weapon_id: weapon.icefang-axe
+      defence_ids: [defence.sabertooth-hide]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *sh-charging-first
+  maximum_rounds: 1
+  rolls:
+    # Fearsome (skill.fearsome -> causes fear): the charger's Fear test, passed.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

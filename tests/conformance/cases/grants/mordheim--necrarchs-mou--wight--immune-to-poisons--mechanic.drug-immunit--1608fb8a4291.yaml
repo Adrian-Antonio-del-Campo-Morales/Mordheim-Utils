@@ -1,0 +1,120 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-mou/wight--immune-to-poisons/mechanic.drug-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (drug-immunity family model, band form, 2026-11-18): the
+#   printed bearer supplied with a drug shows none of its change, a hand-built control with the
+#   bearer's printed line takes the same drug's change, and another profile of the band selecting
+#   the rule is refused.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/necrarchs-mou/special-rules.yaml
+#
+# --- Authored scenarios ---
+#
+# Drug-immunity family model (the authored clockworkers-sc construct files of this directory): the
+# printed bearer is compiled from its band record, which binds mechanic.drug-immunity on this
+# profile's Immune to Poisons rule (rule_ref shared-rule.immune-to-drugs-and-poisons), and is
+# supplied with a drug through `preparation_ids`; the drug's change is read as the unchanged state.
+# The control is a hand-built fighter with the bearer's printed characteristic line and the
+# identical declared drug, which the drug does reach, so the difference between the two scenarios is
+# the immunity itself. The attacker is the hand-built fixture (WS10 S8 I10) declaring a miss, the
+# bearer is silenced (`attacks: 0`), so each tape is the single declared miss.  The refusal selects
+# the printed profile rule on another profile of the band (not selectable: `special rule is not
+# available to <band>`).
+# Consumer read (never executed): roster-construction compiler.py, `drug_ids` / "mechanic.drug-
+# immunity" (lines 859-866): when the compiled fighter's global ids carry mechanic.drug-immunity,
+# every drug id (preparation.crimson-shade, preparation.mandrake-root, preparation.mad-cap-
+# mushrooms, preparation.head-splitter-mushrooms and the six Fungus Brew conditions) is removed from
+# the global and innate id lists BEFORE the execution effects are applied, so the drug's EffectSet
+# never reaches the fighter: no duel-start tag, bonus or flag, and no drug die is requested (Crimson
+# Shade's +D3 Initiative, modular/state.py `<side>.crimson-shade` with sides 3, is rolled only when
+# the tag is present).  The bearer carries the drug in `preparation_ids` (the channel the authored
+# clockworkers-sc construct files use), and the construction gate only refuses a drug where a band
+# rule forbids the category or the profile's own restriction forbids the item.
+# Undead bearers and the drug choice (2026-11-18): every Necrarch bearer of this grant is
+# creature_kind undead, and compiler.py (lines 867-873) already makes preparation.crimson-shade and
+# preparation.mad-cap-mushrooms inert on undead and possessed bearers whether or not this mechanic
+# is bound, so those two drugs cannot discriminate the grant here (the authored clockworkers-sc
+# files use them on living constructs).  The remaining drugs the compiler strips only through this
+# mechanic are Mandrake Root (+1 Toughness, Stunned becomes Knocked Down) and Head-Splitter
+# Mushrooms (Frenzy). Semantic wrinkle to record for KB review: Mandrake Root's own printed text
+# ("Mandrake Root has no effect on Undead, such as Vampires and Zombies, or on the Possessed",
+# catalog/items/miscellaneous.yaml) is not in the compiler's undead-inert set, so a scenario that
+# reads Mandrake on an undead bearer discriminates this grant only through that gap; and more
+# generally the printed drug clauses already pre-empt a drug immunity on an undead bearer, which may
+# make these bindings candidates for a `covered.elsewhere` ruling (the Poltergeists' No Pain
+# precedent).  Head-Splitter Mushrooms print no undead exclusion ("Frenzy; also allows the use of a
+# Ball and Chain", combat-equipment.yaml), so they are the clean reading wherever the bearer has no
+# Psychology immunity.
+# The Wight prints Immune to Psychology, which keeps a Frenzy flag off it with or without this
+# grant, so Head-Splitter Mushrooms cannot discriminate it here; Mandrake Root's +1 Toughness is the
+# drug change this bearer can show (modular/state.py folds the compiled toughness_bonus into the
+# state's toughness, the path the authored mechanic/preparation.mandrake-root file reads): the
+# immune Wight supplied with it keeps its printed T4; a hand-built neighbour with its printed line
+# and the same drug starts at T5.  No restriction forbids the preparation; the omitted main weapon
+# is the free dagger of its list, silenced by `attacks: 0`; the attacker declares a miss.
+
+# The immune bearer with the drug keeps its printed Toughness 4 (printed WS3 BS2 S3 T4 W1 I3 A1 Ld7).
+- audit_id: rule/mordheim/necrarchs-mou/wight--immune-to-poisons/mechanic.drug-immunity
+  id: the-supplied-mandrake-root-does-not-reach-the-wight
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: wight
+      preparation_ids: [preparation.mandrake-root]
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.toughness: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.toughness: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same printed line, hand-built, with the same drug starts at Toughness 5.
+- audit_id: rule/mordheim/necrarchs-mou/wight--immune-to-poisons/mechanic.drug-immunity
+  id: the-same-mandrake-root-reaches-an-ordinary-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mandrake-root]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.toughness: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.toughness: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the wight profile (`applies_to.profile_ids`), not selectable:
+# another profile of the band selecting it is refused.
+- audit_id: rule/mordheim/necrarchs-mou/wight--immune-to-poisons/mechanic.drug-immunity
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      special_rule_ids: [wight--immune-to-poisons]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to necrarchs-mou"

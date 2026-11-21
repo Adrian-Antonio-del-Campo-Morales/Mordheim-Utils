@@ -1,0 +1,70 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.rule.marks-of-solkan/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction admission/control pair, B11/B12 skill-access
+#   batch 2026-11-18): the War-Priest of Solkan (variant deity.solkan) declaring a Strength skill through
+#   `skill_ids` compiles, and the Priest of Verena without the variant declaring the same skill is refused
+#   with the shared skill-availability sentence.  REVIEWED still requires manual semantic review.
+# AUTHORED: the admission and the control refusal are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the grant is `grant: none` and is not selected through
+#   special_rule_ids; the binding names the supplied variant (`variant_ids: [deity.solkan]`), so the
+#   selection is the build's variant and the removal probe (which filters the binding) should turn the
+#   admission into the control's refusal: construction-only, expected.  The War-Priest variant also
+#   reshapes the kit (eligibility/index.ts configuredProfile: the Verena sword leaves the fixed items and
+#   the Strictures rule is dropped), so the admission takes the configured kit's default weapon (the
+#   ceremonial dagger) by omission, while the unmarked control must name the sword explicitly because its
+#   Strictures refuse the dagger ("weapon.dagger may not be used by hirelings.hired-sword.2b/…").
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2b.yaml, hireling.hired-sword.priest-of-verena.rule.marks-of-solkan): "War-Priests of
+# Solkan may choose skills from the Strength skills list"; binding profile.skill-access {category:
+# strength, profile_ids: [hireling.hired-sword.priest-of-verena], variant_ids: [deity.solkan]}.  The
+# Priest of Verena prints Academic access only.  The Marks themselves (Witch-finder, Inquisitor) are
+# separate selectable identities.  Hireling conventions (README, Hireling recipients): band
+# hirelings.hired-sword.2b, the real profile, the fixture characteristics.
+
+# Admission: the War-Priest of Solkan takes a Strength skill (skill.mighty-blow, a catalogue strength row).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.rule.marks-of-solkan/profile.skill-access
+  id: the-war-priest-of-solkan-is-admitted-to-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      variant_ids: [deity.solkan]
+      skill_ids: [skill.mighty-blow]
+    second: {}
+  # Construction is the observation: no charge is declared and the bearer is out of action before the
+  # first phase (the corpus's construction-only shape), so the duel requests no die.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Control: the Priest of Verena without the variant declaring the same skill is refused.  His printed kit
+# weapon (the sword) is declared explicitly: the no-options build is refused by his Strictures.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.rule.marks-of-solkan/profile.skill-access
+  id: the-priest-of-verena-without-the-variant-is-refused-the-same-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.mighty-blow]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "skills are not available to hirelings.hired-sword.2b/hireling.hired-sword.priest-of-verena: ['skill.mighty-blow']"

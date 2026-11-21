@@ -1,0 +1,165 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the Weapon Skill rolled when the blow needs it drives the hit target (a 1 makes WS3's
+#   ordinary 4+ a 5+; a 6 makes it 3+) and the Strength rolled when the wound needs it drives the wound;
+#   the rolled Attacks and Weapon Skill hold for the whole turn (two blows, one WS die); a new turn
+#   rolls the profile again; the Bard control rolls no characteristic die; the rule is refused outside
+#   Belandysh's profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the fixture facts (WS3 S3 T3 W2 I5 A1) replace the printed
+#   random line (WS D6, S D6, T D6, I D6, A D3) only as the compiled base; the printed dice rows survive
+#   and the rolled face, not the fixture, is the value the duel uses (state.<side>.weapon_skill etc.).
+#   Belandysh's Broadsword of Damnation (two-handed, +2 Strength) would strike last, but his printed
+#   Strongman keeps the ordinary order, so the uncharged duel ties on priority and his random Initiative
+#   is the first die of each round.  The duel is uncharged so his printed Fear (Fearsome) asks nothing.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1c.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1c.yaml, hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency, grant
+# profile): "His variable attributes are determined whenever needed, once every turn" - binding
+# mechanic.inconsistency over the printed random line (WS D6, S D6, T D6, I D6, A D3).  Hireling family
+# model (README, Hireling recipients): the real Belandysh through the hireling route
+# (hirelings.dramatis-personae.1c) with the fixture facts and the printed kit's default Broadsword of
+# Damnation; nothing is selected.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour)
+# and silenced (attacks 0) so every die is Belandysh's own.  The control is the grade-1b Bard.  Dice
+# (the Belandysh convention of the authored survival/leadership files): the strike order needs the
+# random Initiative first (round.<i>.first.characteristic.I.0), the pool needs the random Attacks
+# (round.<i>.first.characteristic.A.0, a D3), the blow needs the random Weapon Skill
+# (round.<i>.first.attack.<n>.attacker.characteristic.WS.0) and a hit needs the random Strength
+# (round.<i>.first.attack.<n>.attacker.characteristic.S.0).  To-hit chart: WS1 against WS3 needs 5+
+# (the defender's WS exceeds twice the attacker's), WS6 against WS3 needs 3+.  S6 (+2 broadsword)
+# against T3 wounds on 2+; a wound die never shows a 6 so no critical die follows.
+
+# A Weapon Skill of 1 rolled when the blow needs it: the 4 that would hit the fixture's 4+ misses the 5+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: a-weapon-skill-of-one-rolled-when-needed-sets-the-hit-target-to-five
+  fighters:
+    first:
+      &inconsistency-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1c
+      profile_id: hireling.dramatis.belandysh-condemned-champion-of-chen
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &inconsistency-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.I.0, value: 6}
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.weapon_skill: 1, state.first.initiative: 6, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Weapon Skill of 6: the 3 hits the 3+; the Strength rolled when the wound needs it (6, +2 for the
+# broadsword) wounds T3 on the 5.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: a-weapon-skill-of-six-sets-the-hit-target-to-three-and-the-rolled-strength-wounds
+  fighters:
+    first: *inconsistency-recipient
+    second: *inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.I.0, value: 6}
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.attacker.characteristic.S.0, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit_target: 3, attacks.0.hit: True, attacks.0.wounded: True, state.first.weapon_skill: 6, state.first.strength: 6, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Once every turn: the D3 gives two Attacks and the Weapon Skill is rolled once for both blows - the
+# second blow asks for no WS die and keeps the 5+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: the-rolled-attacks-and-weapon-skill-hold-for-the-whole-turn
+  fighters:
+    first: *inconsistency-recipient
+    second: *inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.characteristic.I.0, value: 6}
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 2}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.1.hit_target: 5, attacks.1.hit: False, state.first.attacks: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A new turn rolls the profile again: the first round's WS1 (5+) gives way to the second round's WS6 (3+).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: a-new-turn-rolls-the-variable-profile-again
+  fighters:
+    first: *inconsistency-recipient
+    second: *inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.characteristic.I.0, value: 6}
+    - {key: round.0.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.attacker.characteristic.WS.0, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.1.first.characteristic.I.0, value: 6}
+    - {key: round.1.first.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.1.first.attack.0.attacker.characteristic.WS.0, value: 6}
+    - {key: round.1.first.attack.0.hit, value: 3}
+    - {key: round.1.first.attack.0.attacker.characteristic.S.0, value: 6}
+    - {key: round.1.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: False, state.first.weapon_skill: 1}
+    1: {attacks.0.hit_target: 3, attacks.0.wounded: True, state.first.weapon_skill: 6, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control (Bard) has a fixed profile: no characteristic die, the ordinary 4+ and the wound die (1 fails).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: a-hireling-with-a-fixed-profile-rolls-no-characteristic-die
+  fighters:
+    first:
+      &inconsistency-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *inconsistency-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: True, attacks.0.wounded: False, state.first.weapon_skill: 3, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Belandysh's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency/mechanic.inconsistency
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *inconsistency-control
+      special_rule_ids: [hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency]
+    second: *inconsistency-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,0 +1,131 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.hatred-beastmen
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hatred batch, 2026-11-18): the first-round miss against a
+#   Beastman is re-rolled; the same miss stands against a human; the re-roll is first-round only; a
+#   Psychology-immune bearer is not subject to the Hatred (design ruling); the control without the
+#   mechanic.  REVIEWED still requires manual semantic review.
+# AUTHORED: 5 scenarios cover the first-round re-roll against a Beastman, the human boundary, the later round, the Psychology-immune bearer and the control.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Town Cryer 28, Beast Hunter / Beastmen Vengeance, bound by
+# hireling.hired-sword.beast-hunter.rule.beastmen-vengeance): "Subject to Hatred against Beastmen only."
+# Hatred model (the authored hireling file ...99bd3ea4081b is the template): a natural 2 misses WS3 against
+# WS3; the Hatred re-roll of the first round is requested at round.0.<side>.attack.0.hit.reroll, a 4 hits
+# and S3 wounds T3 on a 4; outside the hated kind the strict tape holds no re-roll key.  The hated kind is
+# the opponent's supplied species (trait_overrides species: beastman).  The bearer is a hand-built fixture
+# carrying the mechanic through skill_ids; the real Beast Hunter is exercised by the hireling file
+# ...3daa3a0603d2.  The immunity scenario applies the generic ruling "Strigoi Psychology immunity
+# suppresses Hatred against everyone" (design-rulings.md): a bearer immune to Psychology is not subject
+# to this Hatred either.
+
+# The first-round miss against a Beastman is re-rolled, hits and wounds.
+- audit_id: mechanic/mechanic.hatred-beastmen
+  id: a-first-round-miss-against-a-beastman-is-rerolled
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hatred-beastmen]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &beastman
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human is outside the hated kind: the same miss stands and no re-roll key exists.
+- audit_id: mechanic/mechanic.hatred-beastmen
+  id: the-same-miss-stands-against-a-human
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred is a first-round effect: the round-0 miss is re-rolled (and misses again), the round-1 miss
+# against the same Beastman stands with no re-roll key.
+- audit_id: mechanic/mechanic.hatred-beastmen
+  id: the-reroll-is-not-offered-in-a-later-round
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *beastman
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+    1: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# A bearer immune to Psychology is not subject to Hatred (design ruling), so the miss stands.
+- audit_id: mechanic/mechanic.hatred-beastmen
+  id: a-psychology-immune-bearer-is-not-subject-to-the-hatred
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hatred-beastmen, mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *beastman
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the mechanic the identical miss against the Beastman stands.
+- audit_id: mechanic/mechanic.hatred-beastmen
+  id: without-the-mechanic-the-miss-against-a-beastman-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *beastman
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

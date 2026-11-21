@@ -177,6 +177,10 @@ class PreparedAttack:
     #: granted success (Mark of the Old Ones) substitutes the target number.
     #: Six-triggered rules read this, never the substituted value.
     natural: np.ndarray | None = None
+    #: Index of each ``hit_rows`` entry inside ``active`` when known (the
+    #: preparation records it); ``None`` means "derive it with searchsorted".
+    #: Any change of ``hit_rows`` must reset it.
+    hit_positions: np.ndarray | None = None
 
 @dataclass(slots=True)
 class VectorAttackObservation:
@@ -230,6 +234,35 @@ def _has_weapon_tag(fighter: CompiledFighter, mechanic_id: str) -> bool:
         *fighter.extra_attacks,
     ))
 
+def fighter_memo(function):
+    """Memoise a pure function of one (frozen) fighter by object identity.
+
+    The cache holds the fighter itself, so its id cannot be reused while the
+    entry lives; it is cleared once it reaches ``_MEMO_LIMIT`` entries (rows
+    with their own projected fighter create many short-lived objects).
+    """
+    cache: dict[int, tuple[object, object]] = {}
+
+    def memoised(fighter):
+        entry = cache.get(id(fighter))
+        if entry is not None and entry[0] is fighter:
+            return entry[1]
+        value = function(fighter)
+        if len(cache) >= _MEMO_LIMIT:
+            cache.clear()
+        cache[id(fighter)] = (fighter, value)
+        return value
+
+    memoised.__wrapped__ = function
+    memoised.__name__ = function.__name__
+    memoised.__doc__ = function.__doc__
+    return memoised
+
+
+_MEMO_LIMIT = 4096
+
+
+@fighter_memo
 def _parry_capacity(fighter: CompiledFighter) -> int:
     """Return the number of parries available in a close-combat phase."""
     effects = fighter.global_effects

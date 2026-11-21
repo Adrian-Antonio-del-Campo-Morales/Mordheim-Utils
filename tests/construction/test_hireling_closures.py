@@ -141,6 +141,7 @@ def test_the_promoted_ogre_pit_fighter_opens_its_three_lists_only_after_promotio
 # --- 5. the Bloodfather's remaining consequences -----------------------------
 
 
+@pytest.mark.covers("mechanic/mechanic.mark-of-arkhar", "whole--scope--bloodfather-role")
 def test_the_bloodfather_role_keeps_frenzy_and_classifies_the_closed_consequences():
     seer = compile_fighter(build("marauders-of-chaos", "seer",
         special_rule_ids=("band--mark-of-arkhar",)), ROOT)

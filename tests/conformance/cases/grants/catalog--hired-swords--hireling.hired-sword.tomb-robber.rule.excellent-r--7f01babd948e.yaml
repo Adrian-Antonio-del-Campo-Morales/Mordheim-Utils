@@ -1,0 +1,127 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.tomb-robber.rule.excellent-reflexes/mechanic.excellent-reflexes
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the real
+#   Tomb Robber compiles with global_effects.ward_save 5 and, after an unsaved wound, his special
+#   save die of five turns the wound while a four lets it through; the Bard control (ward_save 7) is
+#   asked no special save die; the rule is refused on a hireling outside its printed profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): "against any attack, including close combat, traps and spells" -
+#   traps and spells have no producer in a duel, so only close combat is evidenced.  "If he learns
+#   Dodge this improves to 4+" is the supplied fact condition.tomb-robber-dodge-known (its own
+#   mechanics file), restricted by the compiler to this profile.  The rule belongs to the Bard's own
+#   package (grade 1b), so the refusal is the eligibility gate's "<band>/<profile>" diagnostic; the
+#   fragment declared is the common prefix.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Tomb Robber / Excellent Reflexes; Town Cryer 19 p.21): "The Tomb
+# Robber has a special 5+ save against any attack, including close combat, traps and spells.  If he
+# learns Dodge this improves to 4+."  The grant is profile; the binding is mechanic.excellent-reflexes
+# (execution.yaml: effect-set ward_save 5, tag mechanic.excellent-reflexes; model file
+# cases/mechanics/mechanic.excellent-reflexes.yaml).  Compiler: the mechanic's ward_save merges into
+# global_effects.ward_save.  Engine: modular/attacks.py ~733-747 prepares the special save after a
+# failed or absent armour save; contexts.py _supplied_ward (~618-627) reads the tag; phases.py
+# resolve_special_save (~669-673) asks round.<i>.<attacker>.attack.<n>.special.ward while the ward
+# is 6 or better.
+# Hireling family model (README, Hireling recipients): the recipient is the printed Tomb Robber
+# compiled through the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.tomb-robber)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); his kit's first close-combat
+# weapon, the sword, is named (the crossbow pistol and rope and hook stay owned), so every enemy hit
+# is followed by his sword's parry die, declared a one; he wears no armour, so no armour die is asked
+# and the special save is the next request after the wound.  He contributes no swing
+# (initial_state).  The attacker is hand-built (mace, WS3 S3 T3 W3 I2 A1 Ld7): 4+ to hit, 4+ to
+# wound (fours, never a six).  The duel is uncharged.  The control is the grade-1b Bard (dagger,
+# nothing worn); the refusal selects this rule on the Bard.
+
+# The compiled Tomb Robber carries the 5+ ward and the five turns the unsaved wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.tomb-robber.rule.excellent-reflexes/mechanic.excellent-reflexes
+  id: the-tomb-robbers-five-plus-special-save-turns-the-wound-on-five
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &tomb-robber
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.tomb-robber
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # The kit sword parries; a one does not beat the four.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+  expect_fighters:
+    second.global_effects.ward_save: 5
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the 5+ fails and the wound lands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.tomb-robber.rule.excellent-reflexes/mechanic.excellent-reflexes
+  id: one-face-below-the-five-plus-lets-the-wound-through
+  fighters:
+    first: *attacker
+    second: *tomb-robber
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard (dagger, no parry; nothing worn) is asked no special save die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.tomb-robber.rule.excellent-reflexes/mechanic.excellent-reflexes
+  id: a-hireling-without-the-rule-is-asked-no-special-save-die
+  fighters:
+    first: *attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_fighters:
+    second.global_effects.ward_save: 7
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Tomb Robber's profile; selecting it on another hireling of the same
+# package is refused by the eligibility gate.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.tomb-robber.rule.excellent-reflexes/mechanic.excellent-reflexes
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.tomb-robber.rule.excellent-reflexes]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

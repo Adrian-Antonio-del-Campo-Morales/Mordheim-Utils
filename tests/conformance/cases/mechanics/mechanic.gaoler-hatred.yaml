@@ -1,0 +1,139 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.gaoler-hatred
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the first-round
+#   re-roll against a member of an Undead warband (a human Dreg), of a Skaven warband (a Verminkin) and of the
+#   Cult of the Possessed (a human Brethren); the same miss standing against an Undead creature outside those
+#   warbands and against a plain opponent.  REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed Hatred is of warband membership ("every member of
+#   Skaven, Possessed, Beastmen, Carnival of Chaos and Undead warbands, regardless of that member's own
+#   species"), so the fact read is the opponent's band identity (warband-group / band tags of a compiled
+#   band profile), not its species or creature kind: an Undead creature declared by trait alone is not hated.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Hatred family model (the AUTHORED hireling hatred files): the bearer is a hand-built fighter carrying only
+# this mechanic through skill_ids (WS3 S3 T3 W2 I5 A1, mace), charging so it strikes first; a natural 2
+# misses WS3 and the first-round Hatred re-roll is requested under `round.0.first.attack.0.hit.reroll`;
+# the re-rolled 4 hits, S3 wounds T3 on 4+, and the opponent's fixture W3 keeps the tape off the injury
+# table.  The hated opponents are compiled band profiles with fixture characteristics (WS3 S3 T3 W3 I2 A1,
+# printed Ld) and a printed kit weapon; the controls are hand-built (Ld7, mace).
+
+# A Dreg of the Undead warband is human, and hated all the same.
+- audit_id: mechanic/mechanic.gaoler-hatred
+  id: a-first-round-miss-is-rerolled-against-a-member-of-an-undead-warband
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.gaoler-hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: undead
+      profile_id: dregs
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Verminkin of a Skaven warband.
+- audit_id: mechanic/mechanic.gaoler-hatred
+  id: a-first-round-miss-is-rerolled-against-a-member-of-a-skaven-warband
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      collection: mordheim
+      band_id: skaven-clan-eshin
+      profile_id: verminkin
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human Brethren of the Cult of the Possessed.
+- audit_id: mechanic/mechanic.gaoler-hatred
+  id: a-first-round-miss-is-rerolled-against-a-member-of-the-cult-of-the-possessed
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: brethren
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The hatred reads warband membership: an Undead creature outside those warbands is not hated and the
+# strict tape holds no re-roll key.
+- audit_id: mechanic/mechanic.gaoler-hatred
+  id: the-same-miss-stands-against-an-undead-creature-outside-the-hated-warbands
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A plain opponent: the miss stands.
+- audit_id: mechanic/mechanic.gaoler-hatred
+  id: the-same-miss-stands-against-an-opponent-outside-the-hated-warbands
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

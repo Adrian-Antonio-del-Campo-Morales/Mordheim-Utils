@@ -3,16 +3,17 @@ band_id: house-guard-sc
 rules:
 - id: band--chain-of-command
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.house-guard-sc.band.chain-of-command
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Chain of Command
   effect: >-
     If the warband's leader is taken out of action, immediately determine a new temporary leader as
@@ -42,9 +43,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.personal-guard
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Personal Guard
   effect: >-
     Every hero and henchman in a House Guard has a range of 3 inches instead of the normal 2 inches
@@ -73,9 +72,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.houses
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Houses
   effect: >-
     As a House Guard warband you must decide which of the expedition's financiers you fight for.
@@ -125,16 +122,15 @@ rules:
     band: true
 - id: band--martial-finesse
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
     effects:
-    - id: unimplemented.house-guard-sc.band.martial-finesse
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.web-of-steel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.web-of-steel
   name: Martial Finesse (House Fierezza)
   effect: The Commander starts with the 'Web of Steel' skill.
   source:
@@ -148,6 +144,8 @@ rules:
     es: El Comandante comienza con la habilidad 'Telón de Acero' (Web of Steel).
   applies_to:
     band: true
+    profile_ids:
+    - commander
 - id: band--sharp-aim
   runtime:
     scope: 'NO'
@@ -157,8 +155,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.sharp-aim
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.shooting
   name: Sharp Aim (House Halcon)
   effect: >-
     All warriors from House Halcon ignore modifiers for long range when firing missile weapons.
@@ -184,9 +181,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.merchantry
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Merchantry (House Halcon)
   effect: The Commander starts with the 'Haggle' skill.
   source:
@@ -209,9 +204,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.baluardo-armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Armour (House Baluardo)
   effect: Baluardo Heroes do not suffer movement penalties for wearing armour.
   source:
@@ -234,9 +227,7 @@ rules:
     - id: unimplemented.house-guard-sc.band.battle-seasoned
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.group
   name: Battle Seasoned (House Baluardo)
   effect: The Commander starts with the 'Battle Tongue' skill.
   source:
@@ -262,7 +253,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6 inches of the Commander may use his Leadership instead of his own.
   source:
     manual: broheim.net
     printed_page: 3
@@ -270,11 +260,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: Cualquier guerrero a 6 pulgadas del Comandante puede usar su Liderazgo en lugar del propio.
   applies_to:
     profile_ids:
     - commander
+  rule_ref: shared-rule.leader
 - id: adjutant--relay-orders
   runtime:
     scope: 'YES'
@@ -337,18 +326,18 @@ rules:
     - pikemen
 - id: warhounds--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.house-guard-sc.warhounds.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
-  effect: Warhounds are animals and thus do not gain experience.
   source:
     manual: broheim.net
     printed_page: 4
@@ -356,8 +345,7 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los Perros de Guerra son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - warhounds
+  rule_ref: shared-rule.animal

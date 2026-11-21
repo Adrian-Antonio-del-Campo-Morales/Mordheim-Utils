@@ -129,6 +129,7 @@ def test_the_reconciled_rows_keep_their_existing_verdicts():
             skill_ids=(STRENGTH_SKILL,)), ROOT)
 
 
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills", "black-hunger--scope--skill-list-access")
 def test_the_moulder_heroes_reach_their_list_and_henchmen_do_not():
     pack = package(MOULDER)
     for profile_id in ("packmaster", "stormvermin", "apprentices"):
@@ -145,6 +146,7 @@ def test_the_moulder_heroes_reach_their_list_and_henchmen_do_not():
     assert "mechanic.black-hunger" in hero.global_effects.tags
 
 
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-moulder-web/band--mutations/unimplemented.skaven-of-clan-moulder-web.band.mutations")
 def test_the_rat_ogre_buys_exactly_one_possessed_mutation():
     pack = package(MOULDER)
     rat_ogre = profile_of(pack, "rat-ogres")
@@ -172,6 +174,8 @@ def test_the_rat_ogre_buys_exactly_one_possessed_mutation():
 TWISTKIN = "band--clan-moulder-special-skills-twistkin"
 
 
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills", "black-hunger--scope--skill-list-access")
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-moulder-web/band--mutations/unimplemented.skaven-of-clan-moulder-web.band.mutations")
 def test_twistkin_is_the_stormvermin_route_to_one_possessed_mutation():
     """'upon taking this skill the Hero must buy a Mutation': the choice is
     construction; its price and its recruitment producer stay external."""

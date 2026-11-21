@@ -1,0 +1,97 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/mechanic.emissary-tzeentch
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the Tzeentch Emissary is a spellcaster in the duel, so a Burn-the-Witch enemy's
+#   first-round miss against him is re-rolled; the same Emissary under another patron is no spellcaster
+#   and the same miss stands; the patron is refused outside the Emissary's package.  The Academic
+#   skill-access half of the patron is authored in its sibling binding file (...tze--b2e093ef8f81).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the recorded contract is identity tags only
+#   (identity.chaos-follower, identity.spellcaster); the printed "spell casting is excluded" means the
+#   Emissary casts nothing, so the only duel consequence is being read as a spellcaster (and a Chaos
+#   follower) by an enemy's rule.  identity.chaos-follower is shared by all four patrons, so the
+#   Righteous Fury reading of it cannot discriminate this patron and is not declared here.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.emissary-of-chaos.patron.tzeentch, grant selectable): "The
+# Tzeentch Emissary also has Academic skill access; spell casting is excluded" - binding
+# mechanic.emissary-tzeentch (the spellcaster identity).  Hireling family model (README, Hireling
+# recipients): the real Emissary through the hireling route with the fixture facts (WS3 S3 T3 W2 I5 A1;
+# printed Ld9 stays), the printed kit's default sword and exactly one patron selected with
+# special_rule_ids; he is silenced (attacks 0) so the only dice are the enemy's.  The enemy is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and carries Burn the Witch (skill_ids), the Witch Hunters'
+# Hatred of spellcasters: a first-round miss against a spellcaster is re-rolled
+# (round.0.second.attack.0.hit.reroll).  The control is the same Emissary under the Nurgle patron,
+# uncharged so his Fear asks nothing.  WS3 against WS3 hits on 4+; every declared face misses.
+
+# Uncharged first round: the Witch-burner's 2 misses the Tzeentch Emissary and the Hatred re-roll is
+# requested (1, another miss).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/mechanic.emissary-tzeentch
+  id: a-witch-burner-rerolls-a-first-round-miss-against-the-tzeentch-emissary
+  fighters:
+    first:
+      &tzeentch-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+    second:
+      &witch-burner
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.burn-the-witch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: under the Nurgle patron the Emissary is no spellcaster; the same 2 misses and the strict tape
+# holds no re-roll.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/mechanic.emissary-tzeentch
+  id: the-same-miss-stands-against-the-emissary-under-another-patron
+  fighters:
+    first:
+      <<: *tzeentch-recipient
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.nurgle]
+    second: *witch-burner
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The patron belongs to the Emissary's own package; selecting it on a hireling of another package is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.tzeentch/mechanic.emissary-tzeentch
+  id: the-patron-is-refused-on-a-hireling-outside-the-emissary-package
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

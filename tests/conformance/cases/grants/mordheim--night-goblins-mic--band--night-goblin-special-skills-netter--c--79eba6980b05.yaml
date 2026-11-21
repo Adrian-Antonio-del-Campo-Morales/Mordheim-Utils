@@ -1,0 +1,82 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/condition.netted
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-18, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule
+#   band--night-goblin-special-skills-netter binds condition.netted with `grant: none` only to name the
+#   printed rule that produces the condition; it is never a compile route.  The condition's one operator
+#   is its row in sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied
+#   condition_ids entry these scenarios declare, so the scenarios test it through its condition id, as
+#   intended.  Removing the band binding cannot change a build; removing the catalogue row refuses the
+#   build.  The row has no compiler recipient gate (any victim may be supplied as caught), so the band
+#   rule is not observable even at construction; the Netter skill itself is the excluded producer and is
+#   not selectable, so no `mechanic.netter` sibling identity is authored or duplicated here.
+# Record: sources/knowledge/bands/mordheim/night-goblins-mic/special-rules.yaml
+# AUTHORED: 2 scenarios (supplied-conditions batch, 2026-11-18) read the printed Netter consequence
+#   (mordheimer.net, Night Goblins / Netter) under the ruling "Netter consumes a supplied victim" (design-rulings.md): the band's own
+#   Night Goblin (printed profile, fixture characteristics, the band list's club) charges a hand-built
+#   victim supplied as caught in the net - the victim starts Knocked Down, the blow asks for no hit die
+#   and the wound die of 4 still has to be rolled ("the goblin must still roll to wound just as with a
+#   knocked down enemy") - and the same charge without the supplied net asks for a hit die (a natural 1
+#   misses) against a standing victim.  The victim's own recovery (cutting free, striking last) is
+#   authored on the shared operator, mechanics/condition.netted.yaml.  The band's Animosity asks the
+#   active Night Goblin for its own-turn die first (round.0.first.animosity, a 4 passes).  REVIEWED
+#   still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+.  The victim declares two Wounds so a single
+# wound leaves it at 1 without an injury die, and is silenced (attacks: 0) so every die is the goblin's.
+
+# The caught victim is hit automatically and the goblin still rolls to wound.
+- audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/condition.netted
+  id: the-netted-victim-is-hit-automatically-and-the-goblin-still-rolls-to-wound
+  fighters:
+    first:
+      &mic-netter-goblin
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: night-goblins
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.netted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_initial: {second.condition: KNOCKED_DOWN, second.netted: true}
+  expect_rounds:
+    # A knocked-down warrior that suffers a wound is taken out of action (core injury rule).
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control: the same charge on a victim not supplied as caught asks for a hit die, and the natural 1
+# misses a standing victim.
+- audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/condition.netted
+  id: without-the-supplied-net-the-same-charge-asks-for-a-hit-die
+  fighters:
+    first: *mic-netter-goblin
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

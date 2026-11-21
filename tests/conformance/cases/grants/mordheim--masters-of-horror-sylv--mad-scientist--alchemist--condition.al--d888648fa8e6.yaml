@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-aberrantius-vigortia
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule mad-scientist--alchemist binds
+#   condition.alchemist-aberrantius-vigortia with `grant: none` only to name the printed rule that
+#   produces the condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
+# Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# Disposition (recorded as PARTIAL until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
+#   horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist, whose
+#   KB effect is now unbound (a supplied-condition split: the start-of-game potion roll stays unbound,
+#   each potion is a bound condition); the duel behaviour they exercise is this identity's.  Inputs,
+#   dice and expectations are unchanged by the move; each scenario's own comments carry its derivation
+#   and may still name the placeholder record they were authored against.  One scenario shows the
+#   supplied potion raises both Strength and Toughness on the printed Mad Scientist.  Gap: this identity
+#   has no contrast of its own; the no-potion control lives in condition.alchemist-resilience.
+
+# Status corrected 2026-11-18: the only pending item recorded below is the absence control, which is
+#   not an applicable requirement of this identity: this band rule's single route is the supplied
+#   condition, and the no-potion contrast together with the catalogue row's own boundaries are authored
+#   on the operator identity mechanic/condition.alchemist-aberrantius-vigortia
+#   (tests/conformance/cases/mechanics/condition.alchemist-aberrantius-vigortia.yaml, AUTHORED).  The
+#   disposition block above is kept as the record of that decision.
+# AUTHORED: the scenario below reads both printed halves of "6: Aberrantius Vigortia - Adds +1 to both
+#   Strength and Toughness." on the printed Mad Scientist, this identity's only observable route.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-aberrantius-vigortia
+  id: aberrantius-vigortia-raises-both-strength-and-toughness
+  # "6: Aberrantius Vigortia - Adds +1 to both Strength and Toughness."  Both printed halves are read on
+  # the one supplied result, which is what tells this entry apart from entries 1 and 2.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-aberrantius-vigortia]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 4, first.toughness: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

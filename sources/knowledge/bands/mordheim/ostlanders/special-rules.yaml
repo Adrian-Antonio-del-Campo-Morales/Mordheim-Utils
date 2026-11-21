@@ -3,9 +3,6 @@ band_id: ostlanders
 rules:
 - id: elder--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Elder may use his Leadership characteristic when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Anciano puede usar su característica de Liderazgo al realizar
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - elder
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: priest-of-taal--prayers
   name: Prayers
   source:
@@ -50,8 +44,7 @@ rules:
     - id: unimplemented.ostlanders.priest-of-taal.prayers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
   rule_ref: shared-rule.prayers
 - id: priest-of-taal--strictures
   name: Strictures
@@ -76,7 +69,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: heavy-armour
+          forbids:
+          - heavy-armour
   rule_ref: shared-rule.strictures
 - id: ruffians--drunk
   name: Drunk
@@ -128,8 +122,7 @@ rules:
     - id: unimplemented.ostlanders.ruffians.no-respect
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: ogre--fear
   name: Fear
   effect: The Ogre causes Fear.
@@ -175,15 +168,19 @@ rules:
     profile_ids:
     - ogre
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.ostlanders.ogre.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: ogre--skills
   name: Skills
   effect: >-
@@ -244,8 +241,7 @@ rules:
     - id: unimplemented.ostlanders.ogre.slow-witted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: band--self-sufficient
   name: Self-Sufficient
   effect: Ostlanders may never hire Mercenaries/Hired Swords except Ogres.
@@ -268,9 +264,7 @@ rules:
     - id: unimplemented.ostlanders.band.self-sufficient
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--ostlander-special-skills-bull-rush
   kind: warband_skill
   name: Bull Rush
@@ -312,13 +306,6 @@ rules:
 - id: band--ostlander-special-skills-foul-odour
   kind: warband_skill
   name: Foul Odour
-  effect: >-
-    Ostlanders are prodigious drinkers and none too hygienic! This warrior rises head and shoulders
-    above the rest. After a lifetime of drinking, liquor has little effect on him any more... not
-    that this stops him from consuming massive quantities! His unwashed clothes and sweat reek of
-    alcohol and all living enemies (not Undead or Possessed) are at -1 to hit him in hand-to-hand
-    combat. In addition, the warrior cannot carry any open flames (torch, lantern, etc) and fire
-    attacks made against him are resolved at +1 Strength as his booze soaked clothing burns readily.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -326,15 +313,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Hedor
-  effect_i18n:
-    es: >-
-      ¡Los ostlandeses son bebedores prodigiosos y poco higiénicos! Este guerrero sobresale por
-      encima del resto. Tras toda una vida de bebida, el licor apenas le afecta ya... lo que no le
-      impide consumir cantidades masivas. Sus ropas sin lavar y su sudor huelen a alcohol, y todos
-      los enemigos vivos (no Muertos Vivientes ni Poseídos) sufren -1 para impactarlo en combate
-      cuerpo a cuerpo. Además, el guerrero no puede portar llamas abiertas (antorcha, farol, etc.) y
-      los ataques de fuego contra él se resuelven con +1 de Fuerza, ya que sus ropas empapadas de
-      bebida arden con facilidad.
   applies_to:
     band: true
   runtime:
@@ -347,6 +325,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.foul-odour
+  rule_ref: shared-rule.foul-odour
 - id: band--ostlander-special-skills-taunt
   kind: warband_skill
   name: Taunt
@@ -380,23 +359,22 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-taunt
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.movement
+      clauses:
+      - id: taunt--scope--shooting-phase-producer
+        scope: 'NO'
+      - id: taunt--scope--leadership-test
+        scope: 'NO'
 - id: band--ostlander-special-skills-animal-friendship
   kind: warband_skill
   name: Animal Friendship
-  effect: >-
-    Having grown up amidst the animals of the forest, this warrior exudes a certain charm to all
-    'normal' animals (ie, warhorses, warhounds, etc) Animals will never attack him and up to two
-    wardogs (see Mordheim book, page 54) that the warrior owns do not count against the maximum
-    number of models in the warband.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -404,12 +382,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Amistad Animal
-  effect_i18n:
-    es: >-
-      Habiéndose criado entre los animales del bosque, este guerrero desprende un cierto encanto
-      para todos los animales 'normales' (es decir, corceles de guerra, perros de guerra, etc). Los
-      animales nunca lo atacarán y hasta dos perros de guerra (ver el libro de Mordheim, página 54)
-      que posea el guerrero no cuentan contra el número máximo de modelos de la banda.
   applies_to:
     band: true
   runtime:
@@ -422,6 +394,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.animal-friendship
+      clauses:
+      - id: whole--scope--animal-attack-protection
+        scope: 'YES'
+      - id: whole--scope--wardog-count
+        scope: 'NO'
+  rule_ref: shared-rule.animal-friendship
 - id: band--ostlander-special-skills-blood-oath
   kind: warband_skill
   name: Blood Oath
@@ -454,13 +432,9 @@ rules:
     - id: unimplemented.ostlanders.band.ostlander-special-skills-blood-oath
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.group
 - id: ruffians--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Ruffians may never use missile weapons, even if an Advance would otherwise allow them to do so.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -468,9 +442,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matones jamás pueden usar armas de proyectil, incluso si una Mejora les permitiera acceder a ellas.
   applies_to:
     profile_ids:
     - ruffians
@@ -484,3 +455,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.flagellants-no-missile-weapons

@@ -3,9 +3,6 @@ band_id: outlaws-of-stirwood-forest
 rules:
 - id: bandit-leader--leader
   name: Leader
-  effect: >-
-    Any model in the warband within 6" of the Bandit Leader may use the Leader's Leadership instead
-    of its own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier miniatura de la banda a 6" del Líder bandido puede usar el Liderazgo del líder en
-      lugar del suyo propio.
   applies_to:
     profile_ids:
     - bandit-leader
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: cleric--disciple-of-sigmar
   name: Disciple of Sigmar
   effect: >-
@@ -96,7 +90,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: crossbow
+          forbids:
+          - crossbow
           max_missile_weapons: 1
           required_tag: bow
           exempt_profile_ids:
@@ -127,9 +122,7 @@ rules:
     - id: unimplemented.outlaws-of-stirwood-forest.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--cleric-hero-slot
   name: Cleric Hero Slot
   effect: >-
@@ -156,5 +149,4 @@ rules:
     - id: unimplemented.outlaws-of-stirwood-forest.band.cleric-hero-slot
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction

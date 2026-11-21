@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 3 authored scenarios derived from the printed rule,
+#   the recorded contract and the accepted editorial specification
+#   tests/specs/semantic/grants/editorial-tomb-scorpion-sting.yaml
+#   (editorial-mordheim-tomb-scorpion-sting): a natural six to hit wounds without needing the wound face,
+#   an ordinary five does not, and a poison-immune bearer cancels the automatic wound.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios read the printed sting.  The striker is the band's own Tomb Scorpions
+#   profile, whose rule binding is what delivers the shared Black Lotus operator to its natural attack, so
+#   no weapon is supplied by hand and the profile's attack is the sting under test; its fixture
+#   characteristics fix a single attack so the tape holds one attack chain.  A natural six to hit wounds
+#   whatever the optional wound die says (the accepted specification is explicit that the wound die decides
+#   the critical and not the success), an ordinary five still depends on the wound face and fails on one,
+#   and the poison-immune bearer (the admitted Tears of Shallaya preparation) cancels the automatic wound so
+#   the same one fails again.  The natural six is not read as a critical hit here because the accepted
+#   specification records that the sting's wound die decides the critical.  REVIEWED still requires manual
+#   semantic review.
+
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted editorial specification; no
+# engine output was consulted.  The target is hand-built with two Wounds so an unsaved wound leaves one and
+# no injury die is requested, which keeps each tape to the hit and wound dice under test.
+
+- audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+  id: a-natural-six-stings-whatever-the-wound-die-says
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An ordinary hit keeps the accepted boundary: the wound face decides, and a one fails.
+
+- audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+  id: an-ordinary-hit-still-needs-the-wound-roll
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed poison is refused by an immune bearer, which the accepted specification records as the
+# immunity case: the automatic wound is cancelled and the same wound face of one fails.
+
+- audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+  id: poison-immunity-cancels-the-automatic-wound
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.tears-of-shallaya]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

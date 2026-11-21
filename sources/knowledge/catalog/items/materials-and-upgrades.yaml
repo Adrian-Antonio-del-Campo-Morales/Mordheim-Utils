@@ -2,10 +2,41 @@ schema_version: 2
 ruleset: mordheim
 items:
 - id: dark_elf_blade_weapon_upgrade
+  # Price: the equipment lists charge +15 gc (mordheimer.net), which is authoritative by user
+  # decision of 2026-11-11; the Dark Elves PDF prints +20 gc / Rare 9 in the entry shown below.
   kind: material-or-upgrade
   name: Dark Elf Blade Weapon Upgrade
   name_i18n:
     es: 'Mejora de Arma: Arma Elfa Oscura'
+  # Printed entry: Dark Elves, Lustria (broheim.net, unofficial/Dark Elves.pdf). The PDF prints +20 gc;
+  # the mordheimer.net list, which the equipment list follows, prints +15 gc.
+  effect: >-
+    Dark Elf Blades are forged in the city of Hag Graef, the Dark Crag. They are fashioned from
+    Blacksteel, a rare form of steel found deep within the mountains around the city. Dark Elf
+    Blades have wicked protrusions and serrated edges, which inflict serious damage on an opponent.
+    Any Dark Elf can upgrade a sword or dagger to a Dark Elf blade by paying an additional 20 gc at
+    the time of purchase. Weapons upgraded to a Dark Elf Blade retain all of their abilities (i.e.
+    swords can parry, daggers grant an armour save of 6). Range: Close Combat Strength: As user
+    Special Rules: Critical Damage, Wicked Edge. Critical Damage: Dark Elf blades inflict serious
+    damage on their opponents; when rolling on the critical hit chart a Dark Elf blade will add +1
+    to the result. Wicked Edge: Dark Elf blades are set with sharp protrusions and serrated edges
+    which inflict serious damage on an opponent; a roll of 2-4 on the injury table is a Stunned
+    result.
+  effect_i18n:
+    es: >-
+      Las Hojas Elfas Oscuras se forjan en la ciudad de Hag Graef, el Risco Oscuro. Están hechas de
+      Acero Negro, una forma rara de acero que se encuentra en lo más profundo de las montañas que
+      rodean la ciudad. Las Hojas Elfas Oscuras tienen protuberancias perversas y filos dentados que
+      causan graves daños al oponente. Cualquier Elfo Oscuro puede mejorar una espada o una daga a
+      Hoja Elfa Oscura pagando 20 co adicionales en el momento de la compra. Las armas mejoradas
+      conservan todas sus capacidades (es decir, las espadas pueden parar y las dagas conceden una
+      salvación por armadura de 6). Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Reglas
+      especiales: Daño crítico, Filo perverso. Daño crítico: las hojas elfas oscuras causan graves
+      daños a sus oponentes; al tirar en la tabla de impactos críticos, una hoja elfa oscura añade
+      +1 al resultado. Filo perverso: las hojas elfas oscuras tienen protuberancias afiladas y filos
+      dentados que causan graves daños al oponente; un resultado de 2-4 en la tabla de heridas es un
+      resultado de Aturdido.
+  # states only what its equipment list records.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -21,12 +52,12 @@ items:
   effect: >-
     Gromril : A gromril weapon has an extra -1 save modifier, and costs four times the price of a
     normal weapon of its kind. You may choose which type of hand-to-hand weapon is offered to you as
-    explained in the Trading section. ❓
+    explained in the Trading section.
   effect_i18n:
     es: >-
       Gromril: Un arma de gromril tiene un modificador de salvación adicional de -1 y cuesta cuatro
       veces el precio de un arma normal de su tipo. Puedes elegir qué tipo de arma cuerpo a cuerpo
-      se te ofrece como se explica en la sección Comercio. ❓
+      se te ofrece como se explica en la sección Comercio.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -42,6 +73,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   combat_status: implemented
   mechanic_id: material.gromril
+  clauses:
+  - id: whole--scope--extra-armour-modifier
+    scope: 'YES'
+  - id: whole--scope--price
+    scope: 'NO'
 - id: ithilmar_weapon
   kind: material-or-upgrade
   name: Ithilmar Weapon
@@ -50,12 +86,12 @@ items:
   effect: >-
     Ithilmar : An ithilmar weapon gives its user +1 Initiative in hand-to-hand combat, and costs
     three times the price of a normal weapon of its kind. You may choose which hand-to-hand weapon
-    is offered to you as explained in the Trading section. ❓
+    is offered to you as explained in the Trading section.
   effect_i18n:
     es: >-
       Ithilmar: Un arma de Ithilmar otorga a su usuario +1 de iniciativa en combate cuerpo a cuerpo
       y cuesta tres veces el precio de un arma normal de su tipo. Puedes elegir qué arma cuerpo a
-      cuerpo se te ofrece como se explica en la sección Comercio. ❓
+      cuerpo se te ofrece como se explica en la sección Comercio.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -93,6 +129,13 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   combat_status: implemented
   mechanic_id: material.obsidian
+  clauses:
+  - id: whole--scope--combat-profile
+    scope: 'YES'
+  - id: whole--scope--blemished-flavour
+    scope: 'NO'
+  - id: bearer-prohibition
+    scope: 'YES'
 - id: darksteel_blade
   kind: material-or-upgrade
   name: Darksteel Blade

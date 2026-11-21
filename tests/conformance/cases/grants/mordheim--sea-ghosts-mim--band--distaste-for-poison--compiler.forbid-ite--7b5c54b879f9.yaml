@@ -1,0 +1,105 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sea-ghosts-mim/band--distaste-for-poison/compiler.forbid-item-categories
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/sea-ghosts-mim/special-rules.yaml
+#
+# AUTHORED: 4 scenarios.  Printed: 'Warriors in a Sea Elf Rangers warband may not use poisons of any type.'  The
+#   band binding carries categories [poison] only.  A Sea Ranger (henchman) and the Wayfinder (hero) with a
+#   poisoned sword are refused with `poisons are forbidden for sea-ghosts-mim/<profile>` - two recipients of the
+#   band-wide grant.  The control constructs the Sea Ranger without poison against an unaffiliated fighter carrying
+#   it, and the parameter face constructs a Sea Ranger taking Crimson Shade (poison, not drugs, is what the print
+#   bans; the 'various drugs' sentence is Dark Elf colour, as the KB binding records).
+# authoring_progress: 4 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11, category ban): compiler.forbid-item-categories carries the printed
+#   categories as its parameter; the shared eligibility stage categoryProhibitions (index.ts, buildRestriction;
+#   mordheim_construction/restrictions.py calls it before the list gate) refuses a coated weapon when the
+#   categories include `poison` (`poisons are forbidden for <band>/<profile>`) and a drug preparation when they
+#   include `drug` (drugsForbidden == "category": `drugs are forbidden for <band>/<profile>`).  The
+#   lothern-sea-patrol-sar Honourable file is the authored precedent.  The control shows the same bearer without
+#   the item constructs while an unaffiliated fighter carrying it constructs too, so the refusal belongs to the rule,
+#   not to the item.  The opponent's Crimson Shade rolls its D3 at duel start (key `<side>.crimson-shade`, as in the
+#   authored precedent); the face is irrelevant to the construction asserted.
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/sea-ghosts-mim/band--distaste-for-poison/compiler.forbid-item-categories
+  id: a-sea-ranger-with-a-poisoned-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: sea-rangers
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for sea-ghosts-mim/sea-rangers
+
+- audit_id: rule/mordheim/sea-ghosts-mim/band--distaste-for-poison/compiler.forbid-item-categories
+  id: the-wayfinder-with-a-poisoned-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: wayfinder
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for sea-ghosts-mim/wayfinder
+
+# Control: the Sea Ranger without poison constructs; the unaffiliated opponent carries the poison and constructs too.
+- audit_id: rule/mordheim/sea-ghosts-mim/band--distaste-for-poison/compiler.forbid-item-categories
+  id: the-same-sea-ranger-without-poison-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: sea-rangers
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# Parameter face: categories [poison] leave a drug preparation to the band's warriors.
+- audit_id: rule/mordheim/sea-ghosts-mim/band--distaste-for-poison/compiler.forbid-item-categories
+  id: a-sea-ranger-taking-a-drug-is-not-refused-by-the-poison-only-parameter
+  fighters:
+    first:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: sea-rangers
+      main_weapon_id: weapon.sword
+    second:
+      collection: mordheim
+      band_id: sea-ghosts-mim
+      profile_id: sea-rangers
+      main_weapon_id: weapon.sword
+      preparation_ids: [preparation.crimson-shade]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 1}
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

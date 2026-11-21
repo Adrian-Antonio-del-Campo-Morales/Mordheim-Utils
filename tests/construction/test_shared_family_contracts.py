@@ -78,4 +78,6 @@ def test_arms_master_censer_bearer_skill_access_and_pit_fighter_trait():
         skill_ids=("skill.mighty-blow",),
     ), ROOT)
     assert ogre.global_effects.strength_bonus == 1
-    assert "pit_fighter" in arms_master.global_effects.tags
+    # The Pit King's printed "Pit Fighter" only grants the band's Pit Fighter skill, which carries
+    # the effect (design ruling 2026-11-17); the grant no longer projects a trait of its own.
+    assert "pit_fighter" not in arms_master.global_effects.tags

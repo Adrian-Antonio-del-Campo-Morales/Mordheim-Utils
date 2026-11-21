@@ -1,0 +1,158 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.solkan-inquisitor
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the judgement
+#   die of 6 brands the opponent with the D66 Random Mutation (12, Emaciated Appearance: Toughness halved) and
+#   the bearer's wound roll reads the branded Toughness; a judgement below 6 brands nothing; no die is rolled
+#   for an Undead or a Chaos-follower opponent; the Inquisitor's Immunity to Psychology removes the Fear test
+#   when charged by a Fear-causer; the control without the mechanic rolls no judgement.  REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the brand is applied through the canonical D66 Random Mutation
+#   chart (catalog/campaign/mutations.yaml); the branded result is chosen for an observable duel effect
+#   (Emaciated Appearance halves Toughness, T3 -> 2, so S3 wounds on 3+ instead of 4+).  "Inquisitors may
+#   never leave combat" is outside the duel.  The judgement die is requested at the start of every round,
+#   the first included (`round.<i>.<side>.inquisitor.judgement`, then `.mutation.tens` / `.mutation.units`).
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Inquisitor): "At the beginning of each new round of combat roll a D6 for an
+# opponent who is neither Undead nor a follower of Chaos. On a 6 apply a D66 Random Mutation as a brand.
+# The Inquisitor is immune to Psychology."  Family model: the bearer is a hand-built fighter carrying only
+# this mechanic through skill_ids (WS3 S3 T3 W2 I5 A1, mace), charging so it strikes first; the opponent is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) plus the one fact a clause reads.  Arithmetic: 4 hits (WS3 vs
+# WS3); S3 wounds T3 on 4+ and the branded T2 on 3+, so the declared wound roll of 3 separates the branded
+# opponent from the unbranded one; no save is owned and the fixture W3 keeps the tape off the injury table.
+
+# The judgement die of 6 brands the opponent: tens 1 + units 2 = 12 (Emaciated Appearance, Toughness halved
+# to 2) and the bearer's 3 now wounds.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: a-judgement-of-six-brands-the-opponent-and-the-wound-roll-reads-the-brand
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.solkan-inquisitor]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 6}
+    - {key: round.0.first.inquisitor.mutation.tens, value: 1}
+    - {key: round.0.first.inquisitor.mutation.units, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2,
+        state.second.toughness: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A judgement below 6 brands nothing: the same 3 fails against the unbranded T3.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: a-judgement-below-six-brands-nothing
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No judgement die is rolled for an Undead opponent: the strict tape holds none.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: no-judgement-is-rolled-for-an-undead-opponent
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Nor for a follower of Chaos.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: no-judgement-is-rolled-for-a-chaos-follower
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {chaos_follower: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Immune to Psychology: charged by a Fear-causer the Inquisitor takes no Fear test (no 2D6 is requested) and
+# keeps its ordinary To Hit; the judgement die is still rolled for the living, non-Chaos charger.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: the-inquisitor-takes-no-fear-test-when-charged-by-a-fear-causer
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.1.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control without the mechanic rolls no judgement and its 3 fails against T3.
+- audit_id: mechanic/mechanic.solkan-inquisitor
+  id: without-the-mechanic-no-judgement-is-rolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

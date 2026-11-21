@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios derived from the
+# printed rule and the printed profile: this bearer's own 3+ stun save converts a Stunned injury
+# result on its threshold face and leaves it on one face below, the printed helmet raises that same
+# save to 2+, and a 1 on the raised save leaves the Stunned result standing with no helmet die in
+# the tape, so the strict tape itself shows the helmet's ordinary reaction never ran.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenario(s) cover the clause: the printed 3+ save converts a Stunned result
+# on 3 and leaves it on 2; the helmet raises the same save to 2, and a failure on 1 leaves the
+# bearer Stunned with the helmet's own reaction absent from the tape.
+
+# --- Authored scenarios ---
+# Family model (Thick Skull stun save): the bearer is the printed recipient of this band record,
+# built from its own band and profile and selecting the band rule row named in the audit id, so the
+# granted effect is what the scenario exercises.  Its physical characteristics are supplied as
+# fixture facts (WS3 S3 T3 W1 I2 A1) so the dice thresholds and the strike order are fixed, while
+# its printed Leadership stays in place; the bearer's own attack pool is declared empty because a
+# Stunned or Knocked Down bearer contributes no attack of its own.  Every expectation is read from
+# the printed rule (3+ save, Stunned becomes Knocked Down, helmet improves the save to 2+ instead of
+# the helmet's own rule) and the recorded parameters, never from engine output; the roll tape is
+# derived statically and stays unexecuted.  The Thick Skull row selected here is the same printed
+# sentence as the band's True Grit neighbour, a separate rule with its own Knocked Down threshold,
+# which no scenario below asserts.
+
+# The bearer's printed 3+ save is taken on the injury chart's Stunned result and the three is the
+# threshold face itself, so the Stunned outcome is converted to Knocked Down.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+  id: the-printed-three-converts-the-stun
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed threshold: the save fails and the Stunned result stands.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+  id: one-face-below-the-printed-threshold-stays-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed helmet sentence: the same save becomes 2+, so the die that failed above now converts.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+  id: the-helmet-raises-the-save-to-two
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.helmet]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The replacing half of the printed helmet sentence: a helmeted bearer whose raised save fails on 1
+# stays Stunned, and the strict tape holds no helmet reaction die at all, so the helmet's own rule
+# is not resolved as well as this save.
+- audit_id: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+  id: the-helmet-reaction-is-replaced-not-added
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.helmet]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-animal-friendship/mechanic.animal-friendship
+# authoring_status: AUTHORED
+# authoring_progress: the admitted animal-attack-protection clause carries one authored scenario pair
+# derived from the printed rule and this band's own binding (special-rules.yaml id
+# band--ostlander-special-skills-animal-friendship, a selectable warband skill, effect
+# mechanic.animal-friendship): a normal animal's whole attack pool is removed against the bearer, and
+# the same animal's declared sixes land against a warrior without the trait.  The scope-NO wardog
+# roster count stays outside the duel.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--animal-attack-protection (scope: YES)
+# AUTHORED[whole--scope--animal-attack-protection]: 2 scenarios show the printed protection on the
+# Ostlander hero this band grants it to (ostlanders / the Animal Friendship warband skill bound to
+# mechanic.animal-friendship, selected by the fixture on the admitted Elder profile).  The printed
+# "Animals" is the attacker's own kind: the supplied normal-animal trait is the fact the protection
+# reads and it is held constant in both scenarios, so the bearer's trait is the only difference.  The
+# bearer is given no attack of its own, so the whole tape is the animal's pool and its removal is the
+# observation; in the control the same animal attacks a warrior without the lasting condition and lands
+# its declared wound.  REVIEWED still requires manual semantic review.
+#
+# Clause: whole--scope--wardog-count (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-animal-friendship/mechanic.animal-friendship
+  id: the-animals-whole-pool-never-attacks-the-bearer
+  covers: [whole--scope--animal-attack-protection]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: ostlanders
+      profile_id: elder
+      special_rule_ids: [band--ostlander-special-skills-animal-friendship]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_rounds:
+    0: {attacks: [], state.second.wounds: 3, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-animal-friendship/mechanic.animal-friendship
+  id: the-same-animal-attacks-a-warrior-without-the-trait
+  covers: [whole--scope--animal-attack-protection]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  # Strength 3 against Toughness 3 hits and wounds on a 4+, so the declared faces are ordinary successes.
+  # They are deliberately not sixes: a natural six to hit opens the critical die before the damage step,
+  # which would put an unrelated request between the animal's hit and the wound this control reads.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,181 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+# authoring_status: AUTHORED
+# authoring_progress: 8 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the War-Priest of Solkan who chose Inquisitor brands an opponent on a judgement of 6 and
+#   wounds the branded Toughness; a lower judgement brands nothing; no die for an Undead opponent; Immunity to
+#   Psychology against a Fear-causing charger; the unselected control; the refusal without the Solkan variant;
+#   the refusal on another hireling.  REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Marks of Solkan are selectable only on the printed War-Priest
+#   of Solkan variant (`variant_ids: [deity.solkan]`); the kit gate refuses the selection on the unmarked Priest
+#   of Verena ("a Mark of Solkan requires the War-Priest of Solkan variant").  The variant reshapes the kit (the
+#   Verena sword and its Strictures leave), so the omitted main weapon is the ceremonial dagger, whose printed
+#   6+ save for the target adds an armour die after a wound.  The brand is the canonical D66 Random Mutation
+#   chart; 12 (Emaciated Appearance) is chosen because it halves Toughness and is observable in the duel.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Priest of Verena compiled
+# through the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.priest-of-verena) as the
+# War-Priest of Solkan (variant deity.solkan) with the selectable Inquisitor chosen through
+# special_rule_ids; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8 stays).  Printed text: "At the
+# beginning of each new round of combat roll a D6 for an opponent who is neither Undead nor a follower of
+# Chaos. On a 6 apply a D66 Random Mutation as a brand. The Inquisitor is immune to Psychology."  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) plus the one fact a clause reads.  Arithmetic: 4
+# hits (WS3 vs WS3); S3 wounds T3 on 4+ and the branded T2 on 3+; the dagger grants its target a 6+ save,
+# so a declared 1 fails it; the fixture W3 keeps the tape off the injury table.  The unselected control is
+# the same War-Priest without the Mark; the refusals are the unmarked Priest (sword in hand, since his
+# Strictures bar the dagger) and the grade-1b Bard selecting the skill.
+
+# The judgement die of 6 brands the opponent (12: Emaciated Appearance, Toughness halved to 2): the
+# War-Priest's 3 wounds, the dagger's 6+ save fails on a 1.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: the-inquisitors-judgement-of-six-brands-the-opponent-and-the-wound-roll-reads-the-brand
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.inquisitor]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 6}
+    - {key: round.0.first.inquisitor.mutation.tens, value: 1}
+    - {key: round.0.first.inquisitor.mutation.units, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # The ceremonial dagger grants its target a 6+ save; the declared 1 fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2,
+        state.second.toughness: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A judgement below 6 brands nothing: the same 3 fails against the unbranded T3 and no save die follows.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: a-judgement-below-six-brands-nothing
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No judgement die is rolled for an Undead opponent.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: no-judgement-is-rolled-for-an-undead-opponent
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Immune to Psychology: charged by a Fear-causer the Inquisitor takes no Fear test and keeps its ordinary
+# To Hit; the judgement die is still rolled for the living, non-Chaos charger.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: the-inquisitor-takes-no-fear-test-when-charged-by-a-fear-causer
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.inquisitor.judgement, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.1.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unselected control: the same War-Priest without the Mark rolls no judgement and its 3 fails.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: the-war-priest-without-the-mark-rolls-no-judgement
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      variant_ids: [deity.solkan]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 3, state.second.toughness: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Mark belongs to the War-Priest of Solkan: the unmarked Priest of Verena (sword in hand) is refused it.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: the-priest-of-verena-without-the-solkan-variant-is-refused-the-mark
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-verena
+      main_weapon_id: weapon.sword
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.inquisitor]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  expect_error: "requires the War-Priest of Solkan variant"
+
+# The selectable skill is the Priest's own; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-verena.skill.inquisitor/mechanic.solkan-inquisitor
+  id: the-skill-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-verena.skill.inquisitor]
+    second:
+      <<: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

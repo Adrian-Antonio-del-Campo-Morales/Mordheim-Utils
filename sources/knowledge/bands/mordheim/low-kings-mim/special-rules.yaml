@@ -3,16 +3,17 @@ band_id: low-kings-mim
 rules:
 - id: band--underworld-contacts
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.low-kings-mim.band.underworld-contacts
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Underworld Contacts
   effect: >-
     A Hero visiting a bordello, casino, dream parlour etc (see Infamous Haunts) can re-roll any dice
@@ -32,16 +33,14 @@ rules:
     band: true
 - id: band--mobsmen-special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.low-kings-mim.band.mobsmen-special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-implementation
   name: Mobsmen Special Skills
   effect: >-
     Mobsmen may choose to use the following skill list instead of the standard skill lists:
@@ -90,16 +89,14 @@ rules:
     band: true
 - id: band--mobsmen-special-equipment
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.low-kings-mim.band.mobsmen-special-equipment
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: pending-implementation
   name: Mobsmen Special Equipment
   effect: >-
     This equipment is only available to Criminal Gangs, and no other warband may purchase it.
@@ -165,9 +162,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Racketeer may use his Leadership value instead of his own when
-    taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -175,25 +169,23 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Tirono puede usar su valor de Liderazgo en los chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - racketeer
+  rule_ref: shared-rule.leader
 - id: racketeer--looter
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.low-kings-mim.racketeer.looter
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Looter
   effect: >-
     The Hero is an expert in finding valuables on a victim before moving on. If the Hero takes any
@@ -219,16 +211,17 @@ rules:
     - racketeer
 - id: fence--sham
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.low-kings-mim.fence.sham
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Sham
   effect: >-
     A Fence has an eclectic range of items procured from sources best left unspoken. Offered at
@@ -262,16 +255,17 @@ rules:
     - fence
 - id: guttersnipes--tea-leaf
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.low-kings-mim.guttersnipes.tea-leaf
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: tea-leaf
+        scope: 'NO'
   name: Tea-Leaf!
   effect: >-
     Naturally thieves are most adept at picking pockets! A Guttersnipe may attempt to steal one item
@@ -303,16 +297,17 @@ rules:
     - guttersnipes
 - id: rapscallions--hide-in-shadows
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.low-kings-mim.rapscallions.hide-in-shadows
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.movement
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Hide in Shadows
   effect: >-
     Rapscallions can blend into the shadows so that opponents will not see them before a mugging. As

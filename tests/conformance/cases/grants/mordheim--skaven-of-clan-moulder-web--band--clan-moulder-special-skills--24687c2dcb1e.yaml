@@ -1,0 +1,90 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-twistkin/compiler.twistkin-single-mutation-at-recruitment
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction-skills-and-profile batch, 2026-11-18): a
+#   Stormvermin taking Twistkin with no Mutation is refused, with two Mutations is refused, with exactly
+#   one Mutation constructs, and Twistkin is refused on a Packmaster (Stormvermin only).  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Twistkin is a construction rule (a required single purchase,
+#   no die); un-selecting it turns the admission into a refusal (the Mutation rows are imported for the
+#   band only through this contract), so the construction-only verdict is the rule's own effect (README,
+#   Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the gate's own recipient sentence ("Twistkin is available only to
+#   Stormvermin: <band>/<profile>", the requiredInitial stage) is pre-empted for a Packmaster by the
+#   record's `applies_to: profile_ids: [stormvermin]` through the recipients stage of the selected-rule
+#   loop ("special rule is not available to <band>/<profile>"); the fourth scenario records the printed
+#   outcome with the reachable fragment, which survives the removal of this binding (the duplicate
+#   carrier is the record's applies_to).  The Mutation rows are the Cult of the Possessed's, imported
+#   for a build whose selected bindings carry this contract (index.ts selectedRules, `mutationGrants`),
+#   as the Rat Ogres' It's Alive! file (...7a8703e42a72) uses them; the half-cost purchase is outside
+#   the duel.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Twistkin): "Twistkin (Stormvermin only): upon taking this skill the
+# Hero must buy a Mutation from the list in the Mordheim Rulebook (see Possessed Warband) at half the
+# listed cost."  The binding is compiler.twistkin-single-mutation-at-recruitment, a selectable warband
+# skill; the shared requiredInitial stage (packages/typescript/domain/eligibility/index.ts) refuses when
+# the count of selected `band--mutations-*` ids is not one: "exactly one mutation is required for
+# <band>/<profile>".  The recipient is the band's own Stormvermin (skaven-of-clan-moulder-web/stormvermin,
+# a Hero); the Packmaster is the band's other Hero.  The admission uses the construction-only shape (no
+# charge, the bearer out of action before the first phase, so no die is requested).
+
+# Twistkin taken, no Mutation bought: the printed obligation is a floor.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-twistkin/compiler.twistkin-single-mutation-at-recruitment
+  id: a-twistkin-stormvermin-without-a-mutation-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: stormvermin
+      special_rule_ids: [band--clan-moulder-special-skills-twistkin]
+  expect_error: "exactly one mutation is required for skaven-of-clan-moulder-web/stormvermin"
+
+# Twistkin taken, two Mutations bought: "a Mutation" is a ceiling too.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-twistkin/compiler.twistkin-single-mutation-at-recruitment
+  id: a-twistkin-stormvermin-with-two-mutations-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: stormvermin
+      special_rule_ids: [band--clan-moulder-special-skills-twistkin, band--mutations-extra-arm, band--mutations-hideous]
+  expect_error: "exactly one mutation is required for skaven-of-clan-moulder-web/stormvermin"
+
+# Twistkin with exactly one Mutation (Extra Arm): the Stormvermin constructs.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-twistkin/compiler.twistkin-single-mutation-at-recruitment
+  id: a-twistkin-stormvermin-with-a-single-mutation-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: stormvermin
+      special_rule_ids: [band--clan-moulder-special-skills-twistkin, band--mutations-extra-arm]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# "Stormvermin only": a Packmaster taking Twistkin is refused (see the Semantic wrinkle on the fragment).
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-twistkin/compiler.twistkin-single-mutation-at-recruitment
+  id: twistkin-is-refused-on-a-packmaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      special_rule_ids: [band--clan-moulder-special-skills-twistkin, band--mutations-extra-arm]
+  expect_error: "special rule is not available to skaven-of-clan-moulder-web/packmaster"

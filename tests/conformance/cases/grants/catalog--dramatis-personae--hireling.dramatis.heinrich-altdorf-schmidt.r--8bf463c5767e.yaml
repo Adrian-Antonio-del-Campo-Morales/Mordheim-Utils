@@ -1,0 +1,175 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, psy-tests-and-enemy-effects
+#   batch, 2026-11-18): Heinrich charged by a snake fails his Fear test (9 against his printed
+#   Ld8) and is clamped to sixes, charged by a serpent he passes on 8, charging a snake he fails
+#   the charge test and is halted, a human charger prompts no test, the Bard control charged by the
+#   same snake is never tested, and the rule is refused on a hireling outside its printed profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Printed text ("Oh no, not Snakes", Khemri Dramatis Personae p.18): Heinrich FEARS snakes - the
+# direction is inverted from ordinary Fear.  The binding is the shared mechanic.fear-of-snakes: a
+# snake enemy (species.snake or species.serpent) causes Fear in the bearer and in nobody else.
+# Consumer: modular/psychology.py causes_fear() and resolve_fear()/needs_test().
+# Hireling family model (P0, 2026-11-17).  Heinrich is compiled through the hireling route
+# (hirelings.dramatis-personae.1b / hireling.dramatis.heinrich-altdorf-schmidt) with the fixture
+# facts (WS3 S3 T3 W2 I5 A1; his printed Ld8 stays).  His kit's first close-combat weapon is the
+# whip, whose Whip Master grant would add hit-reroll requests, so the kit sword is declared as his
+# main weapon (as his authored Luck file does).  Heinrich is silenced (attacks 0) in every scenario:
+# his printed Luck would offer a reroll decision on any failed hit of his own, and the observable
+# here is his Fear test and its state flag; his Lightning Reflexes, Step Aside and Dodge request
+# nothing against the enemy's declared natural-1 miss.  The enemy is hand-built (mace, WS3 S3 T3
+# W3 I2 A1 Ld7) and declares the one fact the rule reads (species: snake or serpent; human for the
+# absence case).  Dice: a 2D6 Fear test of 5+4 = 9 fails his Ld8 and 4+4 = 8 passes it; a failed
+# charge test cancels the charge.  The control is the grade-1b Bard; the refusal selects the printed
+# rule on the Bard (the compiler's fragment, another package).
+
+# A snake charges Heinrich; his 9 fails Ld8 and he is clamped to sixes for the round.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: heinrich-charged-by-a-snake-that-fails-his-fear-test-is-clamped-to-sixes
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.heinrich-altdorf-schmidt
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: snake}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # Heinrich's printed Luck offers a reroll of his own fear die; declined.
+    - {key: round.0.first.fear.charged.0.luck, value: false}
+    - {key: round.0.first.fear.charged.1.luck, value: false}
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The serpent spelling: 8 passes his Ld8 and he is not clamped.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: heinrich-charged-by-a-serpent-that-passes-his-fear-test-is-not-clamped
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: serpent}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  decisions:
+    # Heinrich's printed Luck offers a reroll of his own fear die; declined.
+    - {key: round.0.first.fear.charged.0.luck, value: false}
+    - {key: round.0.first.fear.charged.1.luck, value: false}
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 4}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Heinrich charging a snake must pass first: 9 fails, the charge is cancelled and no blow is struck.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: heinrich-charging-a-snake-that-fails-his-fear-test-is-halted
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: snake}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    # Heinrich's printed Luck offers a reroll of his own fear die; declined.
+    - {key: round.0.first.fear.charge.0.luck, value: false}
+    - {key: round.0.first.fear.charge.1.luck, value: false}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Only snakes: a charging human enemy prompts no Fear die from Heinrich.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: a-human-charger-does-not-frighten-heinrich
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charged by the same snake: no Fear die is requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: a-hireling-without-the-rule-is-not-frightened-by-a-snake
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: snake}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Heinrich's profile; selecting it on a hireling of another package is
+# refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear/mechanic.fear-of-snakes
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,0 +1,143 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.enchanting-beauty
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the printed -1
+#   Leadership on a contacting living enemy turns a passing Stupidity total into a failure; the identical
+#   total passes without the rule; an Undead and a Daemon contacting enemy keep their printed Leadership;
+#   a Possessed-natured mortal is still affected because the print exempts only those two natures.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: 5 scenarios cover the printed -1 Leadership on a contacting living enemy, its control, the Undead and Daemon exemptions and the non-exempt Possessed nature.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Chaos in the Streets p.183, Lahmia Vampire / Enchanting Beauty, bound by
+# trollheim/chaos-streets-undead-bloodlines lahmia-vampire--enchanting-beauty): "Any living enemy in base
+# contact with the Lahmia Vampire suffers -1 Leadership.  This has no effect on Undead or Daemons."
+# Operator model (the authored band file ...bf0831b513c7 is the template): rounds.py's opponent-supplied
+# Leadership step marks a contacting enemy that is neither nature.undead nor nature.daemon with
+# condition.enchanting-beauty, and leadership.py subtracts one from the value that enemy tests with while
+# in contact.  The tested request is a Stupidity test of the contacting enemy taken on its own turn
+# (active_participant: second): 3+4 = 7 passes its printed Leadership 7 unaided, so a recorded failure is
+# the penalty itself.  The bearer is a hand-built fixture carrying the mechanic through skill_ids; the
+# band's real Lahmia Vampire is exercised by the band file.  The charge's own out-of-contact test is
+# deliberately not used: the print demands base contact.  Not representable in the duel: a nearby leader's
+# borrowed value (the penalty applies to whatever value the contacting model rolls with).
+
+# The printed -1 on the contacting living enemy: 3+4 = 7 passes Ld7 unaided, so the recorded failure is
+# the penalty.  Its attacks are barred by the failed Stupidity, so only the bearer's To Hit die follows.
+- audit_id: mechanic/mechanic.enchanting-beauty
+  id: the-printed-penalty-turns-a-passing-stupidity-total-into-a-failure
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.enchanting-beauty]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the mechanic the identical total of seven passes and the enemy attacks normally.
+- audit_id: mechanic/mechanic.enchanting-beauty
+  id: the-same-total-passes-without-the-mechanic
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: "no effect on Undead", so the Undead contacting enemy keeps Ld7 and passes.
+- audit_id: mechanic/mechanic.enchanting-beauty
+  id: an-undead-contacting-enemy-keeps-its-printed-leadership
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption's other half: "or Daemons", so a Daemon contacting enemy passes the same total.
+- audit_id: mechanic/mechanic.enchanting-beauty
+  id: a-daemon-contacting-enemy-keeps-its-printed-leadership
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The print names only Undead and Daemons: a Possessed-natured mortal is still a living enemy in base
+# contact and suffers the penalty, so the same seven fails.
+- audit_id: mechanic/mechanic.enchanting-beauty
+  id: a-possessed-natured-contacting-enemy-is-still-penalised
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: possessed}
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking any
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Príncipe Bandido puede usar su característica de Liderazgo cuando
-      realice cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - bandit-prince
+  rule_ref: shared-rule.leader
 - id: footpads--concealment
   runtime:
     scope: 'NO'
@@ -39,8 +33,7 @@ rules:
     - id: unimplemented.hochland-bandits.footpads.concealment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Concealment
   effect: >-
     Enemy warriors often find it difficult to detect a Footpad until he strikes. If an enemy warrior
@@ -145,8 +138,10 @@ rules:
     - id: unimplemented.hochland-bandits.huckster.convincing-manner
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: convincing-manner
+        scope: 'NO'
   name: Convincing Manner
   effect: >-
     Hucksters specialize in convincing strangers of their benevolent intentions. When an enemy
@@ -184,8 +179,7 @@ rules:
     - id: unimplemented.hochland-bandits.huckster.slick-operator
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Slick Operator
   effect: >-
     In between games the player may choose to have the huckster run a con on the local inhabitants
@@ -218,8 +212,7 @@ rules:
     - id: unimplemented.hochland-bandits.looters.looting-the-dead
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: injuries.
+      reason: out-of-scope.non-duel
   name: Looting the Dead
   effect: >-
     Normally when a warrior is killed or his wounds cause him to leave the warband and he is taken
@@ -301,8 +294,7 @@ rules:
     - id: unimplemented.hochland-bandits.poachers.trailblazers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Trailblazers
   effect: >-
     Poachers are experts at finding new game or safe campsites for the warband. In the game this is
@@ -333,8 +325,7 @@ rules:
     - id: unimplemented.hochland-bandits.gutterscum.utterly-inept
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Utterly Inept
   effect: >-
     Gutterscum have turned to a life of crime because they lack the ability to fit into normal
@@ -364,9 +355,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: The warband may hire any Hired Sword available to a Human Mercenary warband.
   source:
@@ -421,8 +410,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.foragers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Foragers
   effect: >-
     When determining Income, use the next lower warband-size category than the warband's actual
@@ -449,8 +437,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.know-who-to-sell-to
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Know Who to Sell To
   effect: >-
     When selling equipment, the warband receives half of any random component of the item's cost in
@@ -478,8 +465,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-banditry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Banditry
   effect: >-
     Between missions, the bandit goes off and robs travelers or other innocent victims. Instead of
@@ -521,13 +507,8 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Hide in Shadows
-  effect: >-
-    The Bandit has become an expert at concealing himself from his enemies (and potential victims!).
-    An enemy warrior attempting to detect this warrior when he is Hidden must halve his Initiative
-    (round up) before measuring the distance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -535,13 +516,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     es: Ocultarse en las Sombras
-  effect_i18n:
-    es: >-
-      El Bandido se ha convertido en un experto ocultándose de sus enemigos (¡y de sus potenciales
-      víctimas!). Un guerrero enemigo que intente detectar a este guerrero cuando esté Oculto debe
-      dividir a la mitad su Iniciativa (redondeando hacia arriba) antes de medir la distancia.
   applies_to:
     band: true
+  rule_ref: shared-rule.hide-in-shadows
 - id: band--bandit-special-skills-jump-back
   kind: warband_skill
   runtime:
@@ -552,10 +529,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-jump-back
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
-        Associated movement, interception, re-engagement and campaign injury clauses
-        are also outside the 1v1 combat scope (user ruling 2026-10-04).
+      reason: out-of-scope.movement
   name: Jump Back
   effect: >-
     This warrior is an expert at getting himself out of sticky situations. If the warrior is in
@@ -595,9 +569,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-sniper
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.shooting
   name: Sniper
   effect: >-
     The bandit is an expert at shooting his victims from the comfort of cover. When Hiding, the
@@ -627,8 +599,7 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-throw-voice
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Throw Voice
   effect: >-
     This rogue has mastered the art of misdirecting enemies who get too close by making them hear

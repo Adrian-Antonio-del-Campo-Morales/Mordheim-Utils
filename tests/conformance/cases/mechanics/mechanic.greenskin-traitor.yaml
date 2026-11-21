@@ -1,0 +1,138 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.greenskin-traitor
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (operators-hirelings batch, 2026-11-18): an Orc attacker's
+#   first-round miss against the bearer is re-rolled; a Goblin attacker's likewise; a human attacker's
+#   miss stands; the same Orc gets no re-roll against a fixture without the mechanic; the re-roll is
+#   the first round's only.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed clause names Orcs, Goblins and Black Orcs; the
+#   consumer reads species.orc, species.goblin and species.black-orc on the attacker, but no supplied
+#   fact produces species.black-orc (compiler.py `species` admits orc and goblin only), so the Black
+#   Orc member is not evidenced here.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Operator model: the mechanic is carried by the DEFENDER (the hated traitor) and read on the
+# attacker's side of the hit roll (modular/contexts.py `_hit_reroll`: "has_tag(defender.global_effects,
+# 'mechanic.greenskin-traitor') and {species.orc, species.goblin, species.black-orc} intersects the
+# attacker's tags", under the ordinary first-round Hatred gate).  So the evidence is the opposing
+# greenskin's `round.0.<side>.attack.0.hit.reroll`, requested only in the first round and only when the
+# attacker declares a greenskin species.  The bearer is a hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7,
+# mace) carrying the mechanic through skill_ids; the attacker is the hand-built opponent fixture (WS3
+# S3 T3 W3 I2 A1 Ld7, mace) declaring the one fact the clause reads (trait_overrides species).  Dice: a
+# natural 2 misses WS3-vs-WS3 (4+), the re-roll of 4 hits, S3 wounds T3 on a 4; the bearer's own swing
+# is a declared natural 1; no armour is worn, so no save die joins the tape.
+
+# An Orc charging the traitor misses on a 2, is offered the Hatred re-roll, hits on the 4 and wounds.
+- audit_id: mechanic/mechanic.greenskin-traitor
+  id: an-orc-attackers-first-round-miss-against-the-bearer-is-rerolled
+  fighters:
+    first:
+      &orc
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: orc}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.greenskin-traitor]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Goblin is the second printed hater.
+- audit_id: mechanic/mechanic.greenskin-traitor
+  id: a-goblin-attackers-first-round-miss-against-the-bearer-is-rerolled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human attacker is outside the printed haters: the same miss stands and no re-roll is requested.
+- audit_id: mechanic/mechanic.greenskin-traitor
+  id: a-human-attackers-miss-against-the-bearer-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Orc against the same fixture without the mechanic gets no re-roll.
+- audit_id: mechanic/mechanic.greenskin-traitor
+  id: the-same-orc-gets-no-reroll-against-a-fixture-without-the-mechanic
+  fighters:
+    first:
+      <<: *orc
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred re-rolls only in the first round: the Orc's round-0 miss is re-rolled (and misses again on a
+# 1); its round-1 miss on the same face is not offered a re-roll.
+- audit_id: mechanic/mechanic.greenskin-traitor
+  id: the-orcs-reroll-belongs-to-the-first-round-only
+  fighters:
+    first:
+      <<: *orc
+    second:
+      <<: *bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+    1: {state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

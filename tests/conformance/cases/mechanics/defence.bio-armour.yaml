@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.bio-armour
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios pin the printed 4+ armour save on the real Clan
+#   Skryre Rat Ogre (the die 4 saves the wound, the 3 is one face short) and the
+#   Bard control shows the same attack requests no armour die without the innate
+#   grant.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the printed 4+ armour save boundary pair on the
+#   real Rat Ogre and the Bard control without an armour die.
+
+# --- Authored scenarios ---
+# mechanic/defence.bio-armour - the Clan Skryre Rat Ogre's print (Town Cryer 25):
+# "The part-mechanical body of the Rat Ogre is very hardy and confers a 4+
+# armour save."  An ordinary 4+ melee armour save in the same pipeline as the
+# Sabertooth Hide's 6+; the profile grants it innately (grant: profile, design
+# ruling 2026-11-18: the save is the body itself, not removable gear), so the
+# real Rat Ogre always carries it and no build selects anything.
+#
+# The recipient is the printed hireling profile compiled through the hireling
+# route with fixture characteristics (WS3 S3 T3 W2 I5 A1; the printed Ld10
+# stays); its attacks are silenced so the attacker's tape is the only one.  The
+# attacker charges, so its own 2D6 Fear test against the fear-causing Rat Ogre
+# is declared as a passing 3+3 against its Ld7; the charged Rat Ogre is
+# psychology-immune (Bio Machinery) and tests nothing.
+
+# The printed save on its own face: the armour die 4 turns the wound away.
+- audit_id: mechanic/defence.bio-armour
+  id: the-rat-ogres-innate-save-holds-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ba-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &ba-rat-ogre
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &ba-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 4
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 3 is not a 4+ and the wound is taken.
+- audit_id: mechanic/defence.bio-armour
+  id: one-face-below-the-innate-save-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ba-attacker
+    second:
+      <<: *ba-rat-ogre
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ba-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same attack against a hireling without the innate grant (the
+# grade-1b Bard, no fear, no armour) requests no armour die - the strict tape
+# ends at the wound and the damage goes straight through.
+- audit_id: mechanic/defence.bio-armour
+  id: a-hireling-without-the-bio-armour-has-no-armour-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ba-attacker
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *ba-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_fighters:
+    second.armour_save: 7
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

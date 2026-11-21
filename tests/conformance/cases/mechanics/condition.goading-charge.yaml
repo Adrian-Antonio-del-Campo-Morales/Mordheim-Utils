@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.goading-charge
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 2 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "This supplied
+#   Moulder beast is actually charging as the result of successful Goading. Such a charge bypasses
+#   Hypnotic Musk. Goading rolls, movement and other results are not produced"
+#   (sources/knowledge/catalog/rules/conditions.yaml, condition.goading-charge).  The condition's one
+#   duel reader is the Hypnotic Musk charge gate (the Musk bearer's printed "unless the charge results
+#   from Goading"), so the operator is read with the AUTHORED mechanics/mechanic.hypnotic-musk.yaml
+#   fixtures: a hand-built Musk bearer (skill_ids) and a hand-built animal charger (normal_animal).
+#   The goaded animal charges without the round.0.<charger>.hypnotic-musk-charge Leadership die and the
+#   combat resolves; the same animal without the supplied fact owes the die and 4+3 = 7 fails its
+#   Leadership 5, cancelling the charge (termination_reason disengaged).  The row has no compiler
+#   recipient gate, so the hand-built animal is admitted.  Removing the supplied id (the mechanic
+#   probe) restores the gate die, so the pair discriminates.  REVIEWED still requires manual semantic
+#   review.
+# Semantic wrinkles (recorded, not asserted): the Goading roll, its difficulty by beast and the Goading
+#   Results Chart are the excluded producer (deferred.psychology on the band record); the caller
+#   supplies the fact that the charge results from Goading.  The compiler does not restrict the fact to
+#   a Moulder beast (no recipient gate), unlike the other supplied charges (Nuttaz, Impetuous).
+
+# --- Authored scenarios ---
+# Both builds are weaponless fixtures and compile to fists; every strike is a natural 1 so no wound die
+# exists.  Fear 2D6 / Leadership: a total at or under Leadership passes.
+
+# The goaded animal charges the Musk bearer without a Leadership die and the combat resolves.
+- audit_id: mechanic/condition.goading-charge
+  id: the-goaded-animal-charges-the-musk-bearer-without-a-leadership-die
+  fighters:
+    first:
+      &goading-musk-bearer
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      trait_overrides: {normal_animal: true}
+      condition_ids: [condition.goading-charge]
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: true, state.second_charged: true, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same animal without the supplied Goading fact owes the Musk gate; 4+3 = 7 fails its
+# Leadership 5 and the charge is cancelled, so the round holds no combat dice.
+- audit_id: mechanic/condition.goading-charge
+  id: without-the-goading-the-same-animal-owes-the-musk-test-and-its-charge-is-cancelled
+  fighters:
+    first: *goading-musk-bearer
+    second:
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false, state.second_charged: false, state.failed_charges: ['second']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

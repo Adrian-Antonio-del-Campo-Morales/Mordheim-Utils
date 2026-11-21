@@ -1,0 +1,110 @@
+﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--no-pain/skill.ignore-pain
+# authoring_status: AUTHORED
+# authoring_progress: the admitted undead-class-no-pain clause carries one authored
+#   scenario whose bearer is the printed recipient of the band's rule (read statically from the
+#   band eligibility declaration).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Note (2026-11-16): this band rule is the single source of its effect for every Undead profile of the
+#   band. Each profile's printed 'Undead' rule ("follows all the rules for the Undead") now defers to
+#   the band rules (covered.elsewhere) instead of re-granting them through mechanic.undead, and the
+#   scenarios that exercised this effect on each profile were moved here (ids suffixed with the profile;
+#   exact duplicates dropped).
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: every profile this band rule reaches (skeleton-warriors, nehekharan-vultures, necromantic-abomination) also carries its own <profile>--undead rule in sources/knowledge/bands/trollheim/khemri-necromancers/special-rules.ya...
+#
+# AUTHORED: 1 scenario evidences the conversion (see the closing note above).
+
+
+# --- Authored scenarios ---
+
+# Derived from the printed rule and the printed profile (the printed recipient that binds the
+# rule is read statically from the band's eligibility and applies_to declaration); no engine
+# output was consulted. The fixture's Initiative is higher and the bearer contributes no
+# attacks of its own (initial_state), so the die of 3 at the injury table is Stunned,
+# converted to Knocked Down by the bearer's rule.
+- audit_id: rule/trollheim/khemri-necromancers/band--no-pain/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: skeleton-warriors
+  initial_state:
+    second:
+      wounds: 1
+      attacks: 0
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 5
+  - key: round.0.first.attack.0.injury.0
+    value: 3
+  expect_rounds:
+    0:
+      state.second.wounds: 0
+      state.second.condition: KNOCKED_DOWN
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+- audit_id: rule/trollheim/khemri-necromancers/band--no-pain/skill.ignore-pain
+  id: a-stunned-injury-result-becomes-knocked-down--necromantic-abomination
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
+  initial_state:
+    second: {wounds: 1, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--no-pain/skill.ignore-pain
+  id: a-stunned-injury-result-becomes-knocked-down--skeleton-warriors
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+  initial_state:
+    second: {wounds: 1, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

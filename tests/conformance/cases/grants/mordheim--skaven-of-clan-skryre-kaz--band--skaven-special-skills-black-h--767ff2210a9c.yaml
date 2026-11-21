@@ -1,0 +1,100 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the band's printed
+#   Master Engineer selecting Black Hunger strikes twice in his invoked turn and takes the end-of-turn 1D3
+#   Strength 3 backlash with no armour die, the same Hero without the selection strikes once and takes
+#   no backlash, and a henchman the printed table excludes is refused the selection.  The dice mirror
+#   the AUTHORED mechanic file (cases/mechanics/mechanic.black-hunger.yaml) on the real profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-skryre-kaz/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Rule (special-rules.yaml, band--skaven-special-skills-black-hunger, warband_skill, grant selectable,
+# applies_to profile_types [hero], Karak Azgal p.41 Skaven Special Skills, rule_ref
+# shared-rule.black-hunger): the rulebook Black Hunger - the Skaven may invoke it in his own turn for
+# +1 Attack that turn and at the end of the turn suffers 1D3 Strength 3 hits with no armour save.  The
+# row binds mechanic.black-hunger (consumers: modular/rounds.py ~463-468, the documented automatic
+# activation convention on the bearer's own turn - design-rulings.md "One combat-phase iteration per
+# player turn" - adding attacks_bonus 1 and the active tag; modular/aftermath.py _black_hunger ~245-275,
+# the end-of-turn 1D3 Strength 3 automatic unparryable armour-ignoring non-critical hits on the bearer,
+# a synthetic hit per the "Fire and other synthetic hits are hits" ruling).  Recipient: the band's
+# printed Master Engineer (skaven-of-clan-skryre-kaz / master-engineer) with the fixture facts (WS3 S3 T3 W2 I5 A1), a
+# list sword and the selection through special_rule_ids; the record applies to Heroes only, so the
+# band's Clanrats are refused with the band/profile fragment (the shape of the band's AUTHORED
+# tail-fighting sibling).  Opponent: hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) whose blow is a natural
+# 1 (so the sword offers no parry).  WS3 against WS3 hits on 4+; S3 wounds T3 on 4+ on both sides of
+# the backlash; the Hero charges so his turn is the first player turn and the whole pool's hit dice
+# precede its wound dice.
+
+# The invoked Hero strikes twice and takes the backlash (one Strength 3 hit, no armour die).
+- audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+  id: the-hero-with-black-hunger-strikes-twice-and-takes-the-backlash
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-skryre-kaz
+      profile_id: master-engineer
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The selectable control: the same Hero without the selection strikes once and takes no backlash (the
+# strict tape declares no D3).
+- audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+  id: the-same-hero-without-the-selection-strikes-once-and-takes-no-backlash
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-skryre-kaz
+      profile_id: master-engineer
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are the band's Heroes; a henchman is refused the selection.
+- audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-skryre-kaz
+      profile_id: clanrats
+      special_rule_ids: [band--skaven-special-skills-black-hunger]
+      main_weapon_id: weapon.sword
+    second: *opponent
+  expect_error: "special rule is not available to skaven-of-clan-skryre-kaz/clanrats: band--skaven-special-skills-black-hunger"

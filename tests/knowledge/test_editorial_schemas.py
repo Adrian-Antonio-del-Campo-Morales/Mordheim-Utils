@@ -6,7 +6,7 @@ registry tables — has its format defined once in
 ``contracts/knowledge-editorial-v1``. These tests keep the committed knowledge
 base validating against the schemas, prove that no document escapes the
 contract, and keep the schemas honest about the code-level contracts they
-mirror (the effect-set fields, the trait registry, the runtime classification
+mirror (the effect-set fields, the runtime classification
 of ``registry/runtime-schema.yaml`` and the campaign documents a post-battle
 step can name).
 """
@@ -190,6 +190,9 @@ def test_runtime_enums_match_the_registry_contract():
         definitions["runtime_binding"]["properties"]["kind"]["enum"]
         == registry["selectable_rule"]["binding_kinds"]
     )
+    assert definitions["runtime_effect"]["properties"]["reason"]["enum"] == [
+        row["id"] for row in registry["reason_codes"]
+    ]
 
 
 def test_a_stray_band_key_is_rejected():
@@ -258,15 +261,6 @@ def test_every_post_battle_step_resolves_a_document_of_its_directory():
     step = schema["$defs"][declared]["properties"]["steps"]["items"]["$ref"].removeprefix("#/$defs/")
     resolved_enum = schema["$defs"][step]["properties"]["resolves"]["enum"]
     assert set(resolved_enum) == available, set(resolved_enum) ^ available
-
-
-def test_the_hireling_traits_schema_matches_the_trait_registry():
-    """The trait vocabulary is closed: the schema lists exactly the traits the catalogue uses."""
-    schema = editorial_schemas.schema_for("hirelings-traits.yaml.schema.json")
-    declared = schema["$defs"]["profile_traits"]["properties"]["traits"]["items"]["enum"]
-    registry = read(CATALOG / "hirelings" / "traits.yaml")
-    used = {trait for row in registry["traits"] for trait in row["traits"]}
-    assert declared == sorted(used), set(declared) ^ used
 
 
 def test_hireling_skill_lists_are_a_subset_of_the_band_vocabulary():

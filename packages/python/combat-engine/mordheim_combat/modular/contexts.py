@@ -413,8 +413,13 @@ def _parry_context(
         for weapon in (defender.main_weapon, defender.off_hand)
         if weapon is not None
     ) == ["axe", "sword"]
-    sword_master_reroll = phases.has_tag(defender.global_effects, "skill.sword-master") and (
-        not phases.has_tag(defender.global_effects, "rule.dwarf-axe-parry-reroll") or dwarf_axes
+    # Sword Master's single failed-parry reroll; Master of Blades' own clause
+    # (rule.dwarf-axe-parry-reroll) rerolls only with two Dwarf axes and does
+    # not need skill.sword-master to be present.
+    dwarf_axe_variant = phases.has_tag(defender.global_effects, "rule.dwarf-axe-parry-reroll")
+    sword_master_reroll = (
+        (phases.has_tag(defender.global_effects, "skill.sword-master") and not dwarf_axe_variant)
+        or (dwarf_axe_variant and dwarf_axes)
     )
     reroll = (reroll or sword_and_buckler or sword_master_reroll or dwarf_axes
               or axe_and_sword or phases.has_tag(defender.main_weapon, "weapon.fighting-claws"))

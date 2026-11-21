@@ -1,0 +1,118 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.massively-built-lost-turn
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied lost
+#   turn silences the bearer's own turn once (no attack of its own, the state spent) while its
+#   retaliation in the opponent's turn and its following own turn are untouched; the pending state
+#   waits for the bearer's own turn when it is supplied on the non-active side; the control without
+#   the state strikes in its own turn.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md (Conformance triage decisions 2026-11-18: "Busty"
+#   Gwen's printed kit)
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.massively-built-lost-turn,
+#   "Massively Built - Lost Turn": "The supplied target of a failed Massively Built check loses its
+#   entire next turn as it stands dumbfounded. The shooting-phase check, its 12-inch range and the
+#   visible male target are excluded; the caller supplies the failed outcome. The printed exemptions
+#   belong to that supplied fact: females, Skaven, Orcs and other non-human races are immune, Vampires
+#   and Necromancers are not, and Elves and Dwarves are affected.")
+# AUTHORED: the 3 scenarios below cover the spent own turn, the pending state on the non-active side
+#   and the control; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the consumer carries the supplied fact as the lasting
+#   FighterState field `massively_built_lost_turn` (modular/state.py:347-348 from the compiled tag),
+#   reads it once at the start of the round (modular/rounds.py:312-313), withholds every optional
+#   own-turn action behind it (rounds.py:343, 430, 443, 617, 819, 1311) and spends it on the bearer's
+#   own turn by zeroing its attack pool and clearing the state (rounds.py:1435-1443); the bearer is
+#   never treated as Knocked Down or Stunned and the opponent's turn is never suppressed.  The producer
+#   (Gwen's shooting-phase check) is out-of-scope.shooting in her hireling row
+#   (catalog/hirelings/dramatis-personae/grade-2a.yaml, hireling.dramatis.busty-gwen.rule.massively-
+#   built, grant: none), so the condition is reached through condition_ids only; the printed racial
+#   exemptions belong to the supplied fact and are not gated by the compiler (a hand-built bearer with no
+#   sex or species compiles).  Movement of the lost turn is outside the duel.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built bearer (WS3 S3 T3 W2 I5 A1 Ld7, mace) and hand-built opponent (WS3 S3 T3 W3 I2
+# A1 Ld7, mace), already engaged (no charge), so no Fear or charge die exists.  WS3 against WS3 hits on
+# 4+, S3 against T3 wounds on 4+, no armour die exists; the bearer strikes first (I5 over I2).  Every
+# round is one combat phase of an alternating player turn, so round 0 and round 2 are the first
+# participant's own turns and round 1 is the second's.
+
+# The spent own turn: in round 0 (the bearer's turn) no attack die of its own is requested at all while
+# the opponent still strikes; the state is spent there, the bearer retaliates normally in round 1 and
+# strikes again in its next own turn.
+- audit_id: mechanic/condition.massively-built-lost-turn
+  id: the-supplied-lost-turn-silences-the-bearers-own-turn-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.massively-built-lost-turn]
+      characteristics: &mb-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &mb-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.0.hit, value: 4}
+    - {key: round.2.first.attack.0.wound, value: 4}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_initial: {first.massively_built_lost_turn: true}
+  expect_rounds:
+    0: {state.first.massively_built_lost_turn: false, state.first.condition: STANDING, state.second.wounds: 3, state.first.wounds: 2}
+    1: {state.second.wounds: 2}
+    2: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The pending state on the non-active side: round 0 is the opponent's turn, so the bearer still strikes
+# and the state is still pending afterwards; its own turn (round 1) is the one it loses.
+- audit_id: mechanic/condition.massively-built-lost-turn
+  id: the-pending-state-waits-for-the-bearers-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mb-opponent
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.massively-built-lost-turn]
+      characteristics: *mb-bearer
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.massively_built_lost_turn: true, state.first.wounds: 2}
+    1: {state.second.massively_built_lost_turn: false, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: without the supplied state the identical bearer strikes in its own turn.
+- audit_id: mechanic/condition.massively-built-lost-turn
+  id: without-the-supplied-state-the-bearer-strikes-in-its-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mb-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *mb-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.massively_built_lost_turn: false}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

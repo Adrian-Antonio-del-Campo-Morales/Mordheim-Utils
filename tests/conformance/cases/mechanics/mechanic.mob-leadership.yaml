@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.mob-leadership
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 2 authored scenarios derived from the printed
+#   Mob rule of the Battle Monks' Raging Peasants ("+1 Leadership for each other allied Peasant
+#   within 3 inches"): with two counted allies the carrier's Leadership 6 becomes 8 and the declared
+#   seven passes; without them the same seven fails on the bare 6.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# Probe note (2026-11-18): the removal probe reports construction-only. Deleting the mechanic from
+#   skill_ids leaves the supplied mob_allies fact without its gate (the compiler refuses a counted
+#   ally total whose bearer lacks the mechanic), so the build genuinely cannot exist without the
+#   rule; the with/without boundary inside the rule is carried by the two scenarios' ally counts.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: the per-ally bonus is added to every Leadership test of the carrier; the count of allied
+#   mob members within the printed three inches travels as the admitted mob_allies fact the caller
+#   counted (the duel never simulates the group or any table position), and the compiler refuses a
+#   supplied count without this mechanic.  The canonical mechanic is injected on a hand-built carrier
+#   through skill_ids, as the mechanic-origin convention records; the band grant travels in the
+#   AUTHORED raging-peasants--mob file.  The vehicle is the Fear test of a received charge from a
+#   hand-built fear-causer, whose printed failure consequence is state.second.fear_hit_sixes.  Dice:
+#   2d6 <= Leadership passes, so the declared 3+4=7 passes only against 6+2=8.
+
+# --- Authored scenarios ---
+# Two counted allies raise the carrier's Leadership 6 to 8, so the declared seven passes and the
+# received charge leaves its hits unclamped.
+- audit_id: mechanic/mechanic.mob-leadership
+  id: two-counted-mob-allies-raise-the-tested-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mob-leadership]
+      trait_overrides: {mob_allies: 2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same carrier with no counted ally tests its bare Leadership 6, the identical
+# seven fails and the received charge clamps its hits to sixes.
+- audit_id: mechanic/mechanic.mob-leadership
+  id: without-a-counted-ally-the-same-seven-fails
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mob-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

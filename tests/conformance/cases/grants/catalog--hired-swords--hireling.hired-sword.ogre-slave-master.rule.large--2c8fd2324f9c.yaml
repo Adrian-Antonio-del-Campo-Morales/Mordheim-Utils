@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-slave-master.rule.large-target/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model): the printed Large Target grant exposes
+#   size.large to a charging Slay Large Creature bearer, the Bard control is not wounded by the same
+#   roll, and the refusal outside the profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), Large variant.  The recipient is the printed Ogre Slave Master
+# (band_id hirelings.hired-sword.2a), fixture characteristics WS3 S3 T3 W2 I5 A1 with the printed Ld7;
+# the omitted main weapon is the kit's own (the axe, its first close-combat item) and the kit's light
+# armour is owned, not worn (worn armour is a build's armour_id, compiler.py; the printed kit itself
+# grants no innate save), so being wounded requests no armour die - his fear sibling file shows the same
+# dice conventions.  The printed grant ("Counts as a large target.") binds condition.large-target, whose
+# execution entry tags the bearer [size.large].  The observer is a hand-built charger carrying the
+# printed Slay Large Creature bonus through skill_ids ("+1S when charging a Large sized creature",
+# grade-2a Halfling Knight) - the same kind:profile route as cases/mechanics/mechanic.shallya-
+# strictures.yaml.  Arithmetic: S3 wounds T3 on 4+, the +1S of the charge against a Large target
+# (S4 vs T3) on 3+, so the declared wound roll of 3 separates recipient and control.  The Ogre causes
+# fear, so the charger (Ld7) declares the 2D6 charge test; 3+3 passes.  The recipient's own blows are
+# silenced (attacks: 0); the Bard control (grade-1b, no Large rule, dagger kit) causes no fear and is
+# simply not wounded by the same 3.
+
+# The Slay Large Creature charger wounds the Large Ogre Slave Master on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-slave-master.rule.large-target/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-ogre-slave-master-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.ogre-slave-master
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The Ogre Slave Master causes fear: the charger's 2D6 charge test of 3+3 passes Ld7.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard is not Large, so the same charge carries no bonus and the same 3 does not wound
+# (S3 vs T3 needs 4+).  He causes no fear, so no other die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-slave-master.rule.large-target/condition.large-target
+  id: a-hireling-without-the-large-target-grant-is-not-wounded-by-the-same-3
+  fighters:
+    first:
+      <<: *charger
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-slave-master.rule.large-target/condition.large-target
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.ogre-slave-master.rule.large-target]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

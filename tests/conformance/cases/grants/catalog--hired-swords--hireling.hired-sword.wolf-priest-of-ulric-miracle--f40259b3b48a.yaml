@@ -1,0 +1,99 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric/profile.fist
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, B12 construction-skills batch
+#   2026-11-18): the Wolf-Priest selecting the Son of Ulric mark fights unarmed without the usual
+#   penalties (the fist wounds at the bearer's own Strength and grants its target no save), the same
+#   priest without the selection keeps the ordinary unarmed penalties on the identical dice, and a
+#   hireling of the same package outside the mark's printed recipient is refused the selection.  The
+#   mark's -1 Ballistic Skill, its "cannot be disarmed" and its cold immunity are outside the duel
+#   (the record's `.non-duel` effect, scope NO) and are not represented.
+# AUTHORED: the admission, the unselected control and the refusal are declared below; REVIEWED still
+#   requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Printed clause: "can fight unarmed without the usual penalties" (Liber Malefic, Priests for Every
+# Occasion / Wolf-Priest of Ulric).  Recorded contract: a selectable `profile.fist` binding with
+# `ignore_penalties: true`; the compiler projects it as the bearer's `rule.unarmed-without-penalties`
+# tag, read by the unarmed-penalty waiver (fist Strength -1 and the target's +1 armour save are both
+# lifted).  The selection does not replace the carried kit weapon, so the bearer declares the empty
+# hand itself (`main_weapon_id: weapon.fist`, a neutral item for the printed-kit resolver).
+# Hireling conventions (README, Hireling recipients): `band_id: hirelings.hired-sword.2b`, the real
+# profile, fixture characteristics WS 3, S 3, T 3, W 2, I 5, A 1; the opponent is hand-built with a
+# mace, T 3, W 3, I 2 and contributes no attacks.  Dice: WS 3 against WS 3 hits on 4+; a fist at S 2
+# wounds T 3 on 5+, the penalty-free fist at S 3 on 4+, so the declared 4 discriminates the mark.
+# With the mark the fist grants no save, so no armour die is on the tape; the control's wound die
+# fails, so none is on its tape either.
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric/profile.fist
+  id: the-marked-priest-punches-at-his-own-strength-and-grants-no-save
+  fighters:
+    first:
+      &son-of-ulric-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers
+      main_weapon_id: weapon.fist
+      special_rule_ids: [hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &son-of-ulric-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # S 3 against T 3 wounds on 4+: the penalty-free fist wounds where the ordinary fist (S 2, 5+)
+    # would not.  The fist's +1 to the target's save is lifted too, so no armour die follows.
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unselected control: the same priest, the same empty hand and the same dice keep the ordinary
+# unarmed penalty, so the declared 4 fails to wound at S 2.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric/profile.fist
+  id: the-same-priest-without-the-mark-keeps-the-unarmed-penalty
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *son-of-ulric-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mark is the Wolf-Priest's own: another priest of the same Miracle Workers package selecting it
+# is refused.  A rule of the recipient's own package is refused by the eligibility gate
+# (`<band>/<profile>`), one of another package by the compiler (`<band>` only); the fragment is their
+# common prefix.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric/profile.fist
+  id: the-mark-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      special_rule_ids: [hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *son-of-ulric-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.2b"

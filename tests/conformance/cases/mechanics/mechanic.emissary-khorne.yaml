@@ -1,0 +1,70 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.emissary-khorne
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): a hand-built
+#   warrior carrying the mechanic is frenzied from initialisation and swings four times ((1 + 1) x 2); the
+#   same warrior without it is not frenzied and swings once.  The real Emissary of Chaos carrier is
+#   evidenced in its grant file (catalog--hired-swords--...patron.kho--7e22a6757190).  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the recorded contract is one effect-set (frenzy: true,
+#   attacks_bonus: 1); the four strikes evidence the composition and no build isolates the +1 from the
+#   doubling.  The removal probe reports a skill_ids injection inert by design (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Fanatic Online 94, Emissary of Chaos, Patron Khorne): "Frenzy and +1 Attack".  The
+# shared mechanic is injected through skill_ids on a hand-built warrior (WS3 S3 T3 W2 I5 A1 Ld7, mace)
+# against a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace).  WS3 against WS3 hits on 4+; every
+# attack is declared a natural 1 so no wound die follows.  A frenzied warrior doubles his Attacks.
+
+# The bearer charges: frenzied from initialisation, his pool holds (1 + 1) x 2 = 4 strikes before the
+# opponent's single reply.
+- audit_id: mechanic/mechanic.emissary-khorne
+  id: the-bearer-is-frenzied-and-swings-four-times
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.emissary-khorne]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &khorne-mechanic-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.3.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: True}
+  expect_rounds:
+    0: {attacks.3.hit: False, attacks.4.hit_target: 4, state.first.frenzy: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the mechanic the same warrior is not frenzied and his single Attack is the whole pool.
+- audit_id: mechanic/mechanic.emissary-khorne
+  id: the-same-warrior-without-the-mechanic-swings-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *khorne-mechanic-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: False}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,68 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/compiler.veteran-tracker-skill-choice
+# authoring_status: AUTHORED
+# authoring_progress: the admitted starting-skill-choice clause carries 3 authored scenarios (refusal of
+#   a Trapper with no starting choice, refusal of a Trapper with two, and the accepted control with
+#   exactly one).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: starting-skill-choice (scope: YES)
+# AUTHORED[starting-skill-choice]: 3 scenarios.  Printed text: "A trapper starts with ONE of the following
+#   Special Skills: Infiltration (max 1), Set Traps, Netter, or Scent Hound. You must choose this skill
+#   upon the hero's purchase."  The earlier blocker in this note was FALSE and is corrected: the four
+#   choice identities exist as this band's own rows (band--ogre-hunting-skills-infiltration, -set-traps,
+#   -netter, -scent-hound in sources/knowledge/bands/mordheim/ogre-hunting-party-web/special-rules.yaml),
+#   the row binds compiler.veteran-tracker-skill-choice (not null), the build declares the choice through
+#   special_rule_ids, and the shared exactly-one guard exists:
+#   packages/python/roster-construction/mordheim_construction/_eligibility.js (requiredInitial stage,
+#   VETERAN_TRACKER_SKILLS) returns "Veteran Tracker requires exactly one starting special skill: <who>"
+#   when the count of declared choices is not one; compiler.py records the chosen row as an inert
+#   construction fact.  The scenarios bracket the count: zero and two are refused, one constructs.
+#
+# Clause: infiltration-warband-limit (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# A Trapper purchased without any of the four printed starting choices is refused.
+- audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/compiler.veteran-tracker-skill-choice
+  id: a-trapper-without-a-starting-choice-is-refused
+  covers: [starting-skill-choice]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: trappers
+  expect_error: Veteran Tracker requires exactly one starting special skill
+# A Trapper declaring two of the printed choices is refused: the rule grants ONE.
+- audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/compiler.veteran-tracker-skill-choice
+  id: a-trapper-with-two-starting-choices-is-refused
+  covers: [starting-skill-choice]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: trappers
+      special_rule_ids: [band--ogre-hunting-skills-set-traps, band--ogre-hunting-skills-scent-hound]
+  expect_error: Veteran Tracker requires exactly one starting special skill
+# Control: the same Trapper with exactly one printed choice constructs.  It is put out of action
+# before the first phase, so no die is needed.
+- audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/compiler.veteran-tracker-skill-choice
+  id: a-trapper-with-exactly-one-starting-choice-constructs
+  covers: [starting-skill-choice]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: trappers
+      special_rule_ids: [band--ogre-hunting-skills-scent-hound]
+    second: {main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

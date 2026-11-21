@@ -1,0 +1,259 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (supplied-leader family model, 2026-11-18): a friendly
+#   borrower within the canonical six inches adopts the Knight's Leadership 9 for its charged Fear
+#   test and passes with it; the same borrower declining the optional use; the Knight one inch beyond
+#   the radius; a Knight that is not standing; a same-package no-Pride control supplied in his place, which offers
+#   no borrow decision at all; and the refusal outside the profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the supplied-leader family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# The KB prints Pride as "Uses source pride rule" bound to mechanic.leader-six, the canonical Local
+# Leader (6 Inches) supplied-leader contract (sources/knowledge/catalog/mechanics/close-combat.yaml):
+# a friendly warrior within the printed radius may use the bearer's Leadership for its own required
+# Leadership test, mirroring the authored leader files of this directory (mercenaries
+# mercenary-captain--leader, lizardmen skink-priest--leader).  The Knight is the printed hireling
+# profile compiled through the hireling route (hirelings.hired-sword.2a /
+# hireling.hired-sword.knight-of-the-white-wolf) and supplied as a nearby participant of the
+# borrower's own side; his printed Leadership 9 is the borrowed value and the fixture facts
+# (WS3 S3 T3 W2 I5 A1) pin his other characteristics.  His omitted main weapon is the kit's own huge
+# hammer, which by its printed text counts as the implemented Horseman's Hammer (second triage
+# batch, 2026-11-18); as a nearby provider he strikes no blow, so it adds no dice.  The borrower is
+# a same-package comrade (the Imperial Tactician, Ld pinned 7, dagger) and the enemy is a
+# hand-built fear-causer that charges
+# it, so the test under evidence is the borrower's charged Fear test: 4+4 = 8 fails its own Ld7 and
+# passes the Knight's Ld9, and the printed consequence of a standing failure is explicit in
+# state.second.fear_hit_sixes.  Every declared attack is a natural 1, a miss.
+
+# The charged borrower fails against its own Leadership and passes with the Knight's supplied
+# value, so the charge it received leaves its hits unclamped.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: a-friendly-warrior-within-six-inches-borrows-the-knights-leadership
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      # The borrower is a comrade of the Knight's own hireling package
+      # (band.hirelings.hired-sword.2a), the supplied-leader same-warband fact
+      # the engine reads; his Leadership is pinned at 7 as a fixture fact so
+      # the borrowed 9 is separable from his own.
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.2a
+          profile_id: hireling.hired-sword.knight-of-the-white-wolf
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The use is optional: the same dice are tested against the borrower's own Leadership when it
+# declines, so the received charge clamps its hits to sixes.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: declining-the-knights-leadership-keeps-the-borrowers-own
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.2a
+          profile_id: hireling.hired-sword.knight-of-the-white-wolf
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: false}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the canonical six-inch radius no use is offered at all, which the strict decision tape
+# itself proves.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: a-knight-beyond-the-printed-radius-supplies-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.2a
+          profile_id: hireling.hired-sword.knight-of-the-white-wolf
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed provider must be in action; a knocked-down Knight lends nothing.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: a-knight-that-is-not-standing-supplies-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: knocked-down
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.2a
+          profile_id: hireling.hired-sword.knight-of-the-white-wolf
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (an Imperial Tactician, a same-package hireling without Pride) supplied in the
+# Knight's place at the same distance offers no borrow decision at all, so the grant is the
+# Knight's rule and not the supplied presence.  (The Bard is no control here: his own printed
+# Songster offers a cross-band reroll of its own.)
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: a-hireling-without-pride-supplies-no-leadership
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.2a
+          profile_id: hireling.hired-sword.imperial-tactician
+          main_weapon_id: weapon.dagger
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Knight's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.knight-of-the-white-wolf.rule.pride/mechanic.leader-six
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.knight-of-the-white-wolf.rule.pride]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

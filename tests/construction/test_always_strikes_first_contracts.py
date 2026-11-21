@@ -33,10 +33,10 @@ def lahmia_vampire():
                    special_rule_ids=("band--lahmia-power-lost-innocence",))
 
 
-def test_the_fanatic_compiles_the_printed_always_strikes_first_tag():
+def test_the_fanatic_compiles_the_printed_frantic_mechanic():
     compiled = fanatic()
-    assert "skill.always-strikes-first" in compiled.global_effects.tags
-    assert compiled.global_effects.priority == 10
+    assert "mechanic.frantic" in compiled.global_effects.tags
+    assert "skill.always-strikes-first" not in compiled.global_effects.tags
 
 
 def test_lost_innocence_is_selectable_for_the_lahmia_vampire_alone():

@@ -1,0 +1,146 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the once-only limit is NOT unobservable - construction enforces it with its
+#   own diagnostic (packages/typescript/domain/eligibility/index.ts: "Big Bully may only be taken once by
+#   <band>/<profile>"), so the earlier "advancement scope with no construction field" note was stale and
+#   contradicted the recorded scope_reason that admits the limit. It is authored below; every printed
+#   requirement of this identity is now represented.
+# authoring_progress: 5 authored scenario(s) in this file.  The admitted whole clause carries the printed
+# incompatibility term (the refusal of a BigSnot that declares the printed pair, and the accepted control
+# that declares neither skill of it) and, since 2026-11-16, the printed immediate grant of ONE Strength
+# skill on the construction route (Big Bully + one Strength skill admitted; the same Strength skill
+# without Big Bully refused; Big Bully with two Strength skills refused).  The pair guard reads the
+# build's declared `special_rule_ids`, so the refusal tape declares both printed ids, Frustratingly Tiny
+# first.  Only the once-only limit stays pending (advancement scope).  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 6 scenarios cover the incompatibility, the one-Strength-skill grant and the once-only limit.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): [E] the remaining printed consequence (the once-only limit) is excluded by accepted scope rather than
+#   CRITERION CORRECTION (final reconciliation): the wording "excluded by an accepted scope decision" above
+#   is replaced by the precise record.  This requirement is NOT out of the admitted scope: its own recorded
+#   scope_reason admits it - "The BigSnot's immediate grant of one Strength skill, the once-only limit, the BigSnotz recipient and the printed incompatibility with Frustratingly Tiny are all construction and legal-combination consequences of that bearer." - and nothing here is concluded from a scope-LATER / implemented-NO /
+#   null binding, which belongs to another row and carries its own recorded reason.  What blocks a tape is
+#   the concrete requirement named above in this marker; the clause stays recorded as withheld and is not
+#   dropped, aliased to another origin or counted as covered.  Where this file also quotes a register
+#   exclusion, that exclusion applies to the campaign, roster or advancement faces it names.
+# unwritten: the once-only limit on this skill is advancement scope with no construction field in the
+# corpus vocabulary - a campaign progression concern the register excludes from the 1v1 duel.
+# Correction (2026-11-16): the immediate grant of ONE Strength skill, earlier recorded here as an
+# unobservable advancement coupling, IS observable at construction: the BigSnot's printed tables carry no
+# Strength list, so only Big Bully admits a Strength skill, and exactly one.  It is authored below.  The
+# incompatible-pair refusal (Frustratingly Tiny cannot be combined with Big Bully) is authored too.  A
+# lone declaration of the sibling Frustratingly Tiny is not a control: its KB row records
+# `implemented: NO`, so it is refused as outside the executable duel runtime before any effect.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# The printed incompatibility, asserted through the shared eligibility stage's own literal refusal
+# for this pair of rule ids.  Both printed skills are declared because the guard reads the build's
+# declared `special_rule_ids`; Frustratingly Tiny is declared first, so the pair sentence is raised in
+# that row's `prerequisites` stage before the sibling's own runtime gate is reached.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: a-bigsnot-carrying-both-printed-skills-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bullied-goblin--frustratingly-tiny, bigsnotz--big-bully]
+  expect_error: Frustratingly Tiny cannot be combined with Big Bully
+
+# Accepted control: the same printed bearer declaring neither skill of the pair constructs and fights,
+# so the refusal above belongs to the declared pairing and is not a blanket rejection of the profile or
+# of the Frustratingly Tiny row.  The sibling id cannot serve as a lone control: its KB row records
+# `grant: profile` with `implemented: NO`, so declaring it alone is refused as outside the executable
+# duel runtime before any effect.  The scenario keeps its original collected id; the build it
+# declares carries neither skill of the pair, which is what the comment above states.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: the-bigsnot-with-big-bully-alone-constructs-and-fights
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: snotling-mobs
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant itself ("The BigSnot immediately learns ONE Strength Skill"), on the construction
+# route.  The BigSnot's own printed skill tables (profiles.yaml: combat, speed, special) carry no
+# Strength list, so the Strength skill is reachable only through Big Bully: with the rule selected the
+# BigSnot is built carrying one Strength skill (Mighty Blow); the same BigSnot without Big Bully may
+# not take it; and since the rule grants exactly ONE Strength skill, declaring Big Bully with two is
+# refused.  The admitted build is put out of action at the outset so no die is requested.
+
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: big-bully-lets-the-bigsnot-learn-one-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully]
+      skill_ids: [skill.mighty-blow]
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: without-big-bully-the-bigsnot-may-not-take-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to snotlings-web/bigsnotz: ['skill.mighty-blow']"
+
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: big-bully-grants-only-one-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully]
+      skill_ids: [skill.mighty-blow, skill.resilient]
+  expect_error: Big Bully grants exactly one Strength skill to snotlings-web/bigsnotz
+
+# "A BigSnot may only take this skill once each": declaring Big Bully a second time is refused by
+# construction's own once-only check, so a second take can buy no second Strength skill.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/profile.skill-access
+  id: big-bully-may-only-be-taken-once
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully, bigsnotz--big-bully]
+      skill_ids: [skill.mighty-blow]
+  expect_error: Big Bully may only be taken once by snotlings-web/bigsnotz

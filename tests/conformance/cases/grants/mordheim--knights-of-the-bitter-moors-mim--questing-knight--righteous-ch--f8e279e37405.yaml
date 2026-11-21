@@ -1,0 +1,95 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/questing-knight--righteous-charge/mechanic.righteous-charge
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   printed Questing Knight compiles on foot and is refused when the Righteous Charge activation is
+#   supplied to him unmounted; charging on foot he hits at the plain 4+ and imposes no Fear.  Both
+#   declared clauses are outside the admitted scope (see PARTIAL), so the mounted duel effect is not
+#   evidenced.  REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until
+#   the suite runs.
+# Disposition (recorded as PARTIAL until 2026-11-18): the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges,
+#   if he has at least 1 other model within 2 inches, all friendly charging mounted warriors (including
+#   the Questing Knight) within 4 inches gain +1 to Hit, cause fear and are immune to all Psychology for
+#   the first round of combat") and `friendly-aura` - because the rule acts only on a mounted charger
+#   and mounts are deferred (`deferred.mounts`; the profile's Ride rule is scope LATER for the same
+#   reason).  The Knight's printed warhorse is fixed equipment the duel does not seat him on, and the
+#   compiler refuses the only activation path on foot: "Righteous Charge requires a mounted recipient"
+#   (packages/python/roster-construction/mordheim_construction/compiler.py, read on the supplied
+#   `righteous_charge_active` trait).  The round operator (rounds.py, gated on `fighter.mounted` and
+#   `condition.righteous-charge`; +1 to hit in contexts.py prepare_hit_context) never fires without a
+#   mounted build.  The scenarios below evidence that construction gate and the unchanged duel on
+#   foot; the mounted +1/Fear/immunity and the 2"/4" aura wait for the mounts schema.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating.
+#   Both printed clauses are deferred.mounts (the recipient must be mounted), so only the unmounted
+#   refusal and the inert foot face are declarable; removing the binding changes neither. PARTIAL.
+#   Recorded in TODO.md.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/knights-of-the-bitter-moors-mim/special-rules.yaml
+#
+# Clause: friendly-aura (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: whole (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Status corrected 2026-11-18: the identity declares no `scope: YES` clause - `whole` and
+#   `friendly-aura` are both excluded (`deferred.mounts`), so the mounted +1 to Hit, Fear and
+#   Psychology immunity and the 2"/4" aura are not applicable requirements of this corpus.  What the
+#   printed rule does make checkable with an unmounted recipient is authored below: the construction
+#   refusal of a supplied Righteous Charge activation on foot, and the unchanged foot duel.  The
+#   disposition block above is kept as the record of the deferral.
+# AUTHORED: 2 scenarios cover every applicable face of this identity under the mount deferral - the
+#   named refusal on an unmounted recipient and the plain 4+ / no-Fear foot charge.
+
+# --- Authored scenarios ---
+# The recipient is the band's printed Questing Knight (knights-of-the-bitter-moors-mim /
+# questing-knight; his Righteous Charge is a profile grant, so nothing is selected) with the corpus
+# characteristics (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and the sword of the Knights equipment
+# list; his fixed warhorse stays owned (the duel is fought on foot).  His Leader rule lends Leadership
+# to nobody here and Knight's Virtue adds no die.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7,
+# mace).  WS3 against WS3 hits on 4+; the opponent, charged by a warrior that does not cause Fear,
+# takes no Fear test.
+
+# The printed Knight with the Righteous Charge activation supplied, but not mounted: refused by name.
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/questing-knight--righteous-charge/mechanic.righteous-charge
+  id: the-unmounted-questing-knight-with-a-supplied-righteous-charge-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: questing-knight
+      main_weapon_id: weapon.sword
+      trait_overrides: {righteous_charge_active: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "Righteous Charge requires a mounted recipient"
+
+# The Knight charging on foot: the plain 4+ to hit and no Fear test for the opponent.
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/questing-knight--righteous-charge/mechanic.righteous-charge
+  id: the-questing-knight-charging-on-foot-hits-on-four-and-imposes-no-fear
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: questing-knight
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: false, state.second.fear_hit_sixes: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

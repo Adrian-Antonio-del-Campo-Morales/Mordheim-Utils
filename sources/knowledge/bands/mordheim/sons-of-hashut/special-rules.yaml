@@ -3,9 +3,6 @@ band_id: sons-of-hashut
 rules:
 - id: apprentice-sorcerer--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Apprentice Sorcerer may use his Leadership when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,10 +10,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Hechicero aprendiz puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - apprentice-sorcerer
@@ -30,6 +23,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: apprentice-sorcerer--rituals-of-chaos
   name: Rituals of Chaos
   effect: >-
@@ -58,9 +52,7 @@ rules:
     - id: unimplemented.sons-of-hashut.apprentice-sorcerer.rituals-of-chaos
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.magic
 - id: bull-centaur--large-target
   name: Large Target
   effect: >-
@@ -83,15 +75,19 @@ rules:
     profile_ids:
     - bull-centaur
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.sons-of-hashut.bull-centaur.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: hobgoblins--skinny
   name: Skinny
   effect: >-
@@ -119,9 +115,7 @@ rules:
     - id: unimplemented.sons-of-hashut.hobgoblins.skinny
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
 - id: hobgoblins--nobody-cares-about-them
   name: Nobody Cares About Them
   effect: >-
@@ -142,15 +136,17 @@ rules:
     profile_ids:
     - hobgoblins
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sons-of-hashut.hobgoblins.nobody-cares-about-them
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--hard-head
   name: Hard Head
   effect: >-
@@ -210,14 +206,9 @@ rules:
     - id: unimplemented.sons-of-hashut.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.movement
 - id: band--hard-to-kill
   name: Hard to Kill
-  effect: >-
-    Chaos Dwarfs and Bull Centaurs are taken Out of Action only on a 6 on the Injury chart; 1-2 is
-    Knocked Down and 3-5 is Stunned.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,10 +216,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Difíciles de Matar
-  effect_i18n:
-    es: >-
-      Los Enanos del Caos y los Centauros toro se retiran del combate solo con un 6 en la tabla de
-      Heridas; 1-2 es Derribado y 3-5 es Aturdido.
   applies_to:
     profile_ids: *id001
   runtime:
@@ -241,6 +228,7 @@ rules:
       binding:
         kind: mechanic
         id: skill.hard-to-kill
+  rule_ref: shared-rule.hard-to-kill
 - id: band--slavers
   name: Slavers
   effect: >-
@@ -273,8 +261,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.slavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: band--uncommon
   name: Uncommon
   effect: >-
@@ -302,8 +289,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.uncommon
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--indentured-servants
   name: Indentured Servants
   effect: >-
@@ -332,15 +318,9 @@ rules:
     - id: unimplemented.sons-of-hashut.band.indentured-servants
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--hired-swords
   name: Hired Swords
-  effect: >-
-    The warband may hire an Ogre Bodyguard, Pit Fighter, Warlock, Imperial Assassin, Hobgoblin
-    Scout, any Hired Sword described as available to all, and Hired Swords allowed to Orc or Chaos
-    warbands. It may never hire Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -348,12 +328,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Espadas a Sueldo
-  effect_i18n:
-    es: >-
-      La banda puede contratar un Guardaespaldas ogro, un Luchador de fosa, un Brujo, un Asesino
-      imperial, un Explorador hobgoblin, cualquier Espada a sueldo descrita como disponible para
-      todas, y las Espadas a sueldo permitidas a bandas de orcos o del Caos. Nunca puede contratar
-      elfos.
   applies_to:
     band: true
   runtime:
@@ -364,9 +338,8 @@ rules:
     - id: unimplemented.sons-of-hashut.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
+  rule_ref: shared-rule.chaos-dwarf-hired-swords
 - id: band--sons-of-hashut-maximum-characteristics
   name: Sons of Hashut Maximum Characteristics
   effect: >-
@@ -400,9 +373,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.sons-of-hashut-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--chaos-dwarfs-special-skills-true-grit
   kind: warband_skill
   name: True Grit
@@ -424,6 +395,7 @@ rules:
   - apprentice-sorcerer
   - bull-centaur
   - chaos-dwarf-champions
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -467,9 +439,7 @@ rules:
     - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
 - id: band--chaos-dwarfs-special-skills-unlimited-hatred
   kind: warband_skill
   name: Unlimited Hatred
@@ -487,6 +457,7 @@ rules:
   - apprentice-sorcerer
   - bull-centaur
   - chaos-dwarf-champions
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -520,6 +491,7 @@ rules:
   - apprentice-sorcerer
   - bull-centaur
   - chaos-dwarf-champions
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -532,10 +504,13 @@ rules:
       binding:
         kind: mechanic
         id: skill.thick-skull
+      clauses:
+      - id: stun-to-knocked-down-on-three
+        scope: 'YES'
+      - id: helmet-improves-to-two-and-replaces
+        scope: 'YES'
 - id: apprentice-sorcerer--no-armoured-casting
   name: No Armour Casting
-  effect: >-
-    An Apprentice Sorcerer may not cast spells while wearing armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -543,9 +518,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
   name_i18n:
     es: Sin Conjuros con Armadura
-  effect_i18n:
-    es: >-
-      Un Hechicero Aprendiz no puede lanzar conjuros mientras lleva armadura.
   applies_to:
     profile_ids:
     - apprentice-sorcerer
@@ -557,8 +529,8 @@ rules:
     - id: unimplemented.sons-of-hashut.apprentice-sorcerer.no-armoured-casting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
+  rule_ref: shared-rule.no-armoured-casting
 - id: blunderbuss-chaos-dwarfs--equipment-restrictions
   name: Equipment Restrictions
   effect: >-

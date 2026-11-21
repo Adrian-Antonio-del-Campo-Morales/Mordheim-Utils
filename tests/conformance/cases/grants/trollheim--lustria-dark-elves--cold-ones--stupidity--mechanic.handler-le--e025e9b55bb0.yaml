@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/mechanic.handler-leadership
+# authoring_status: AUTHORED
+# authoring_progress: the admitted handler-leadership binding carries 2 authored scenarios derived
+#   from the printed Lustria rule ("A Cold One may use the Beastmaster's own Leadership if it is
+#   within 6\" of him. It may never use the warband leader's Leadership, directly or indirectly",
+#   p.64) and the recorded handler-leadership contract: the supplied Beastmaster value 8 is the one
+#   tested and the declared seven passes, and with no supplied value the Cold One's own printed 4 is
+#   tested and the same seven fails while a standing same-band Dark Prince four inches away is never
+#   offered.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/lustria-dark-elves/special-rules.yaml
+#
+# AUTHORED: the bearer is the printed Cold One (Leadership 4; its own rule grants the Stupidity it
+#   tests and this handler-only Leadership), the Stupidity test happens on the bearer's own active
+#   turn, so the Cold One is the charging active participant as its stupidity siblings are.  The
+#   Beastmaster's printed Leadership 8 travels as the supplied stupidity_leadership fact, as the
+#   druchii-mic Slavehounds and Kislevite Trained Bear files record: the band's Beastmaster profile
+#   binds no runtime provider flag (its Cold One Handler row is out-of-scope construction), so his
+#   presence, standing status and printed six inches stay caller-supplied facts the handler value
+#   asserts.  The printed source limit ("never the warband leader's, directly or indirectly") is read
+#   through the strict tape: a supplied standing Dark Prince (Leader, printed Leadership 9) is never
+#   offered - a wrongly offered borrow would request an undeclared leader decision.  The indirect
+#   half (a Beastmaster value itself derived from the leader) is a fact the caller must not supply;
+#   no duel input can distinguish it, so it stays an authoring obligation on the supplier.  Dice: 2d6
+#   <= Leadership passes; 3+4=7 passes only the supplied 8 and fails the printed 4.  The Cold One's
+#   printed Fear makes the charged opponent (Leadership 7) test, declared 1+1.
+
+# --- Authored scenarios ---
+# The supplied Beastmaster value is the one tested: the declared seven passes against his printed 8,
+# which the Cold One's own printed 4 would fail, so the charge, the opponent's Fear test and the
+# Cold One's attack all stand.
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/mechanic.handler-leadership
+  id: the-supplied-beastmasters-value-carries-the-cold-ones-stupidity
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+      trait_overrides: {stupidity_leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed source limit: with no Beastmaster value supplied the same seven is tested against the
+# Cold One's own printed Leadership 4 and fails, cancelling the charge, even though the band's own
+# standing Dark Prince is supplied four inches away - the warband leader is never the source and no
+# borrow is offered for him, which the strict decision tape proves.
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/mechanic.handler-leadership
+  id: the-warband-leader-is-never-the-source-of-this-test
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, dark-prince, 4]],
+    nearby: [{participant_id: dark-prince, side_id: first, condition: standing,
+              fighter: {collection: trollheim, band_id: lustria-dark-elves, profile_id: dark-prince}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

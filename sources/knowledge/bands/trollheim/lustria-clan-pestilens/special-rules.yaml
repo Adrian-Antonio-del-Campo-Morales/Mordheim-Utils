@@ -4,7 +4,7 @@ rules:
 - id: band--fog-warpstone-censer-requirement
   name: Fog Warpstone Fragments Require a Censer
   name_i18n:
-    es: Los Fragmentos de Piedra Bruja de Niebla requieren un Incensario
+    es: Los Fragmentos de Piedra Bruja de Niebla Requieren un Incensario
   effect: Fog-enhancing warpstone fragments require a Censer.
   effect_i18n:
     es: >-
@@ -32,19 +32,12 @@ rules:
           - weapon.censer
 - id: plague-priest--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership
-    tests.
   source:
     manual: lustria
     printed_page: 78
     section: Heroes / 1 Plague Priest / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Sacerdote de la peste puede usar su Liderazgo al
-      realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - plague-priest
@@ -58,6 +51,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: pestilens-sorcerer--spellcaster
   name: Spellcaster
   effect: >-
@@ -85,8 +79,7 @@ rules:
     - id: unimplemented.lustria-clan-pestilens.pestilens-sorcerer.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: plague-priest--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -102,21 +95,16 @@ rules:
           forbids:
           - rat_familiar_scroll
   name: Equipment Restrictions
-  effect: >-
-    May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell.
   source:
     manual: lustria
     printed_page: 78
     section: "1 Plague Priest"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su
-      conjuro.
   applies_to:
     profile_ids:
     - plague-priest
+  rule_ref: shared-rule.pestilens-rat-familiar-restriction
 - id: plague-monks--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -132,21 +120,16 @@ rules:
           forbids:
           - rat_familiar_scroll
   name: Equipment Restrictions
-  effect: >-
-    May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell.
   source:
     manual: lustria
     printed_page: 78
     section: "0-2 Plague Monks"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su
-      conjuro.
   applies_to:
     profile_ids:
     - plague-monks
+  rule_ref: shared-rule.pestilens-rat-familiar-restriction
 - id: monk-initiates--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -162,21 +145,16 @@ rules:
           forbids:
           - rat_familiar_scroll
   name: Equipment Restrictions
-  effect: >-
-    May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell.
   source:
     manual: lustria
     printed_page: 78
     section: "0-2 Monk Initiates"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su
-      conjuro.
   applies_to:
     profile_ids:
     - monk-initiates
+  rule_ref: shared-rule.pestilens-rat-familiar-restriction
 - id: giant-rats--animal
   name: Animal
   source:
@@ -196,8 +174,7 @@ rules:
     - id: unimplemented.lustria-clan-pestilens.giant-rats.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
   rule_ref: shared-rule.animal
 - id: rat-ogre--fear
   name: Fear
@@ -262,9 +239,8 @@ rules:
     - id: unimplemented.lustria-clan-pestilens.rat-ogre.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
-  rule_ref: shared-rule.experience
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.never-gain-experience
 - id: rat-ogre--large-target
   name: Large Target
   effect: >-
@@ -284,38 +260,34 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.lustria-clan-pestilens.rat-ogre.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--clan-pestilens-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: >-
-    At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
-    and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3
-    Strength 3 hits with no armour save.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Black Hunger
   name_i18n:
     es: Hambre Negra
-  effect_i18n:
-    es: >-
-      Al comienzo de su turno, el Héroe puede invocar el Hambre negra. Durante ese turno gana +1
-      Ataque y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre 1D3
-      impactos de Fuerza 3 sin tirada de salvación por armadura.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
   - plague-monks
   - monk-initiates
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -328,26 +300,29 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.black-hunger
+      clauses:
+      - id: attack-and-backlash
+        scope: 'YES'
+      - id: movement
+        scope: 'NO'
+  # Not shared: this source prints the metric Movement bonus (1D6 x 0.4" + 1"), not the +D3" of the
+  # shared text, and the two are different magnitudes.
+  rule_ref: shared-rule.black-hunger-trollheim
 - id: band--clan-pestilens-special-skills-censer-bearer
   kind: warband_skill
   name: Censer Bearer
-  effect: >-
-    Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Censer Bearer
   name_i18n:
     es: Portador de Incensario
-  effect_i18n:
-    es: >-
-      Requiere Hambre negra. El Héroe gana Frenesí y solo puede usar un Incensario como arma de
-      combate cuerpo a cuerpo.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
   - plague-monks
   - monk-initiates
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -360,6 +335,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.censer-bearer-loadout
+  rule_ref: shared-rule.censer-bearer
 - id: band--clan-pestilens-special-skills-rotten-body
   kind: warband_skill
   name: Rotten Body
@@ -383,6 +359,7 @@ rules:
   - pestilens-sorcerer
   - plague-monks
   - monk-initiates
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -397,11 +374,15 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: immune-to-poison-and-disease
+        scope: 'YES'
+      - id: recovers-from-a-censer-failure
+        scope: 'NO'
     - id: campaign.censer-recovery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: post-battle recovery and Serious Injury.
+      reason: out-of-scope.campaign
 - id: band--clan-pestilens-special-skills-contagious
   kind: warband_skill
   name: Contagious
@@ -427,6 +408,7 @@ rules:
   - pestilens-sorcerer
   - plague-monks
   - monk-initiates
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -441,6 +423,11 @@ rules:
         id: trait.contagious
         parameters:
           value: true
+      clauses:
+      - id: contagious-reaction
+        scope: 'YES'
+      - id: contagious-rotten-body-prerequisite
+        scope: 'YES'
 - id: band--clan-pestilens-special-skills-ignore-pain
   kind: warband_skill
   runtime:
@@ -454,26 +441,21 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: Ignore Pain
-  effect: >-
-    Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as
-    Knocked Down.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Ignore Pain
   name_i18n:
     es: Ignorar el Dolor
-  effect_i18n:
-    es: >-
-      Requiere la habilidad Fuerza resiliente. El Héroe trata un resultado Aturdido de la tabla de
-      Heridas como Derribado.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
   - plague-monks
   - monk-initiates
+  eligibility_admits_promoted: true
   applies_to:
     band: true
+  rule_ref: shared-rule.ignore-pain
 - id: band--clan-pestilens-special-skills-natural-climber
   kind: warband_skill
   name: Natural Climber
@@ -504,8 +486,7 @@ rules:
     - id: unimplemented.lustria-clan-pestilens.band.clan-pestilens-special-skills-natural-climber
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
 
 - id: rat-ogre--natural-weapons
   runtime:
@@ -523,10 +504,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: Rat Ogres fight with jaws, claws and brute force and never use weapons or armour.
   source:

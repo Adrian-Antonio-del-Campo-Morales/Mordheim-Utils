@@ -1,0 +1,131 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): an enemy charging the Nurgle Emissary takes the Fear test and a failure cancels the
+#   charge; his natural 6 to hit wounds automatically as Black Lotus (no wound die); the printed choice
+#   of rolling the wound die for a critical instead; the same Emissary under another patron is charged
+#   without a test and his natural 6 rolls an ordinary wound die; the patron is refused outside the
+#   Emissary's package.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the recorded contract tags the bearer himself with
+#   poison.black-lotus, so every attack he makes (any weapon) carries the Lotus guarantee - the printed
+#   "all attacks are poisoned as Black Lotus"; the Lotus operator itself (natural 6 wounds automatically
+#   unless the bearer rolls for a critical) is the catalogue poison's own and is only exercised here.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.emissary-of-chaos.patron.nurgle, grant selectable): "All
+# attacks are poisoned as Black Lotus and the Emissary causes Fear" - binding mechanic.emissary-nurgle.
+# Hireling family model (README, Hireling recipients): the real Emissary through the hireling route with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld9 stays), the printed kit's default sword and exactly
+# one patron selected with special_rule_ids.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace,
+# no armour so no save die).  The control is the same Emissary under the Tzeentch patron (identity tags
+# only).  Dice: WS3 against WS3 hits on 4+, S3 wounds T3 on 4+; a 2D6 Leadership test of 5+4 fails Ld7;
+# a wound die never shows a 6 so no critical die is requested.  Fear: the charger tests before contact
+# (round.0.<side>.fear.charge.{0,1}); a failed charge test ends in termination_reason disengaged.
+
+# An enemy volunteering a charge against the Fear-causing Emissary must pass Leadership first; 9 fails
+# Ld7, the charge is cancelled and the round carries no attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+  id: an-enemy-charging-the-nurgle-emissary-fails-its-fear-test-and-the-charge-is-cancelled
+  fighters:
+    first:
+      &nurgle-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.emissary-of-chaos
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.nurgle]
+    second:
+      &nurgle-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.second_charged: False, state.failed_charges: ['second'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Black Lotus: the Emissary's natural 6 to hit wounds automatically.  The printed critical attempt is
+# declined (lotus-critical false), so no wound die is requested and the unsaved wound lands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+  id: a-natural-six-to-hit-wounds-automatically-as-black-lotus
+  fighters:
+    first: *nurgle-recipient
+    second: *nurgle-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed choice: the bearer may roll the wound die instead, hoping for a critical; the declared 2
+# fails the ordinary 4+ and the Lotus guarantee is forgone.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+  id: the-printed-critical-attempt-rolls-the-wound-die-instead-of-the-guarantee
+  fighters:
+    first: *nurgle-recipient
+    second: *nurgle-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: true}
+  expect_rounds:
+    # The attempted critical rolls the wound die (a 2 is no critical), and the printed
+    # guaranteed-wound fallback still wounds (attacks.py: the Lotus keeps its fallback).
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: under the Tzeentch patron the charging enemy tests nothing, strikes first as the charger, and
+# the Emissary's own natural 6 is followed by an ordinary wound die (the declared 1 fails).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+  id: the-same-emissary-under-another-patron-causes-no-fear-and-rolls-to-wound
+  fighters:
+    first:
+      <<: *nurgle-recipient
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.tzeentch]
+    second: *nurgle-opponent
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.wounded: False, state.second.wounds: 3, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The patron belongs to the Emissary's own package; selecting it on a hireling of another package is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.emissary-of-chaos.patron.nurgle/mechanic.emissary-nurgle
+  id: the-patron-is-refused-on-a-hireling-outside-the-emissary-package
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.emissary-of-chaos.patron.nurgle]
+    second: *nurgle-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

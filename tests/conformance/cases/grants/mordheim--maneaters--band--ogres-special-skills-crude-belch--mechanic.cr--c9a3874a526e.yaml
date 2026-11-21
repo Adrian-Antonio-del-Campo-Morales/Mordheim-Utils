@@ -1,0 +1,165 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios derived from the printed skill and the 2026-11-18
+#   ruling (docs/decisions/design-rulings.md, Conformance triage decisions, second batch:
+#   "Crude Belch's 'for the turn' is the duel round", and in a one-against-one duel the spent
+#   resource not returning carries the printed "must wait until a new enemy engages").  The
+#   earlier PARTIAL note claimed the KB rule carried no bound mechanic, no Leadership-test
+#   operator and no -1 to-hit term; all three exist now: the band rule binds
+#   mechanic.crude-belch-ogre (sources/knowledge/bands/mordheim/maneaters/special-rules.yaml),
+#   the operator tests the enemy's Leadership and applies the hit penalty for the phase
+#   (packages/python/combat-engine/mordheim_combat/modular/rounds.py), and the penalty is
+#   observable through attacks.<n>.hit_target.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 5 scenarios cover the printed Hero skill: the enemy's failed Leadership test raises
+#   its To Hit target from 4 to 5 for that round; the passed test leaves the 4 alone; the
+#   penalty expires at the next combat phase and the belch is not re-offered (the printed
+#   new-enemy limit in a one-against-one duel); a control without the selection requests no
+#   belch decision; and the selection is refused on a henchman (the band's Heroes carry special
+#   skill access, its Bulls do not).  The recipient build copies the authored Maneaters model
+#   (mordheim--maneaters--band--ogres-special-skills-bull-charge--mechanic.bu--397ae2b344e0.yaml):
+#   the printed Youngbloods Hero with fixture characteristics, weapon.club (the band's lists do
+#   not offer the fixture mace) and the band rule selected through special_rule_ids.
+
+# --- Authored scenarios ---
+# The Ogre declares the belch at the start of the combat phase
+# (decision round.0.first.crude-belch-ogre), and the engaged enemy tests its own Leadership 7 on
+# 2D6 (round.0.first.crude-belch-ogre.leadership.{0,1}).  Two sixes fail, so the enemy suffers
+# the printed -1 to hit for the turn: its target against WS3 rises from 4 to 5 and its declared
+# 4 misses.  The Ogre's own attack is a declared natural miss.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+  id: a-failed-leadership-test-gives-the-engaged-enemy-minus-one-to-hit
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: youngbloods
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--ogres-special-skills-crude-belch]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "those that do not pass a Ld test": two ones pass Leadership 7, so the enemy keeps
+# its ordinary 4+ and its 4 hits (the wound of 1 then fails against Toughness 3).
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+  id: a-passed-leadership-test-leaves-the-enemy-to-hit-alone
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: youngbloods
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--ogres-special-skills-crude-belch]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 1}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The 2026-11-18 ruling fixes the printed "for the turn" as the duel round: the same declared 4
+# that misses under the round-0 penalty hits again in round 1.  The resource is spent for the
+# rest of the duel - the printed "must wait until a new enemy engages him" in a one-against-one
+# duel - so no belch decision is requested in round 1 at all, which the strict tape's complete
+# consumption makes assertive.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+  id: the-penalty-expires-with-the-round-and-the-belch-is-not-reoffered
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: youngbloods
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--ogres-special-skills-crude-belch]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false}
+    1: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: the same Youngbloods build without the selection carries no belch, so no
+# crude-belch decision is requested anywhere in the tape (complete consumption makes the
+# absence assertive) and the enemy keeps its ordinary 4+.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+  id: without-the-selection-no-belch-decision-is-requested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: youngbloods
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.club
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, attacks.1.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "A Hero with this 'condition'": the band's Bulls are henchmen without special
+# skill access, so selecting the band skill on them is refused by the eligibility gate.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/mechanic.crude-belch-ogre
+  id: the-selection-is-refused-on-a-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: bulls
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--ogres-special-skills-crude-belch]
+  expect_error: "special rule is not available to maneaters/bulls"

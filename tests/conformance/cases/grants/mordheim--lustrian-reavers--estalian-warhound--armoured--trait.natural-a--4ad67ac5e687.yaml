@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--armoured/trait.natural-armour-save
+# authoring_status: AUTHORED
+# authoring_progress: the admitted five-plus-armour-save clause carries 2 authored scenarios derived from
+# the printed rule and the printed profile.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the printed save in the armour phase: the mace's
+#   Strength 3 face leaves the printed threshold unmodified, so a die at the threshold is saved
+#   and a die one face below it is not.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The bearer retains its printed W1; a saved wound leaves it standing, and an
+# unsaved wound resolves the explicitly supplied injury face of 1 (knocked down).  The attacker's Weapon Skill
+# 10, Initiative 10 and Strength 3 are hand-built fixture facts, not profile values: Strength 3
+# leaves the printed save unmodified and the higher Initiative with no charge declared lets the
+# attacker strike first, so the bearer declares no attack of its own and the tape holds only the
+# attacker's own dice.
+
+- audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--armoured/trait.natural-armour-save
+  id: the-printed-save-holds-at-its-threshold
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--armoured/trait.natural-armour-save
+  id: one-face-below-the-printed-save-is-a-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

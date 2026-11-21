@@ -169,7 +169,7 @@ def test_teeny_hands_forbids_armour_without_emptying_the_shared_list():
     )
     binding = _binding(rule, "profile.equipment-restrictions")
     assert binding is not None, "runts--teeny-hands publishes no equipment prohibition"
-    assert (binding.get("parameters") or {}).get("forbids") == "armour"
+    assert (binding.get("parameters") or {}).get("forbids") == ["armour"]
     # The prohibition is a profile token: the shared list keeps offering armour
     # to the other slots that use it.
     shared = [
@@ -232,10 +232,8 @@ def test_hired_swords_clause_is_published_with_stable_ids():
     assert KNIGHTS in [str(value) for value in human.get("band_ids") or ()], (
         "Bretonnians count as Humans; the group membership carries that"
     )
-    traits = {
-        str(row["profile_id"]): {str(value) for value in row.get("traits") or ()}
-        for row in read_yaml(KB / "catalog" / "hirelings" / "traits.yaml").get("traits", [])
-    }
+    from mordheim_knowledge.campaign import hireling_traits
+    traits = {profile_id: set(values) for profile_id, values in hireling_traits("mordheim", KB).items()}
     vocabulary = _tag_vocabulary()
     excluded_traits = {str(value) for value in clause.get("exclude_traits") or ()}
     assert excluded_traits == {"spellcaster"}, clause

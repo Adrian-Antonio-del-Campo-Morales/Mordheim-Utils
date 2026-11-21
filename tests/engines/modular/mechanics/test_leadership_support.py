@@ -85,6 +85,7 @@ def leadership_test(compile_fighter, recipient, providers, faces, decisions=None
 
 # --- Dim-Witted ------------------------------------------------------------
 
+@pytest.mark.covers("rule/mordheim/adventurers-kaz/barbarian--dim-witted/mechanic.leader-six")
 def test_dim_witted_leader_lends_his_seven_within_six_inches(precompiled, compiled_builds):
     leader = precompiled().first
     assert {"mechanic.leader-six", "mechanic.dim-witted-leader"} <= set(leader.global_effects.tags)
@@ -102,6 +103,7 @@ def test_dim_witted_leader_lends_his_seven_within_six_inches(precompiled, compil
 
 # --- Dark Majesty ----------------------------------------------------------
 
+@pytest.mark.covers("rule/trollheim/chaos-streets-undead-bloodlines/band--von-carstein-power-dark-majesty/mechanic.leader-twelve")
 def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve(precompiled, compiled_builds):
     compiled = precompiled()
     vampire, plain = compiled.first, compiled.second
@@ -118,6 +120,8 @@ def test_dark_majesty_widens_the_supplied_leader_radius_to_twelve(precompiled, c
 
 # --- Mob -------------------------------------------------------------------
 
+@pytest.mark.covers("rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/mechanic.mob-leadership")
+@pytest.mark.covers("rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/mechanic.own-leadership")
 def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule(precompiled, compiled_builds):
     peasant = led(compiled_builds.fighter, "battle-monks-of-cathay", "raging-peasants", 5,
                   trait_overrides={"mob_allies": 2})
@@ -136,6 +140,7 @@ def test_mob_adds_the_supplied_ally_count_and_denies_the_leader_rule(precompiled
 
 # --- Songster --------------------------------------------------------------
 
+@pytest.mark.covers("rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/mechanic.songster")
 def test_songster_rerolls_one_failed_leadership_test_at_plus_one(precompiled, compiled_builds):
     compiled = precompiled()
     bard, silent = compiled.first, compiled.second
@@ -158,6 +163,9 @@ def test_songster_rerolls_one_failed_leadership_test_at_plus_one(precompiled, co
 
 # --- Poetry ----------------------------------------------------------------
 
+@pytest.mark.covers("rule/mordheim/ghutani-rel/scholar--field-of-scholarship/condition.poetry-victorious-leader")
+@pytest.mark.covers("rule/mordheim/muzil-rel/scholar--field-of-scholarship/condition.poetry-victorious-leader")
+@pytest.mark.covers("rule/mordheim/turjuk-rel/scholar--field-of-scholarship/condition.poetry-victorious-leader")
 def test_supplied_victorious_poetry_raises_the_leaders_first_test_once(precompiled, compiled_builds):
     # The Scholar produces the campaign qualification; it does not receive
     # the leader's supplied bonus automatically on its own profile.

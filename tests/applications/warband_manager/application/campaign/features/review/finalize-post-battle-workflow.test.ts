@@ -60,7 +60,7 @@ describe("finalizePostBattle projections (desktop projected_*)", () => {
 
   it("blocks the commit while equipment obligations are pending", () => {
     const doc = makePending();
-    (doc.campaign.post_battles[0] as any).equipment_obligations = [
+    (doc.campaign.post_battles[0] as unknown as { equipment_obligations: unknown[] }).equipment_obligations = [
       { warrior_id: "hench-1", item_id: "hammer", item_name: "Hammer", copies_per_model: 1 },
     ];
     const result = finalizePostBattle(doc);
@@ -70,7 +70,7 @@ describe("finalizePostBattle projections (desktop projected_*)", () => {
 
   it("blocks the commit before experience/advances are resolved", () => {
     const doc = makePending();
-    (doc.campaign.post_battles[0] as any).pending_advances = [
+    (doc.campaign.post_battles[0] as unknown as { pending_advances: unknown[] }).pending_advances = [
       { warrior_id: "hero-1", committed: false },
     ];
     const result = finalizePostBattle(doc);

@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any Warrior within 6" of the Beastman Chieftain may use his Leadership characteristic when
-    taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier Guerrero a 6" del Jefe Hombre bestia puede usar su característica de Liderazgo al
-      realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - beastmen-chieftain
+  rule_ref: shared-rule.leader
 - id: beastmen-shaman--wizard
   runtime:
     scope: 'NO'
@@ -39,8 +33,7 @@ rules:
     - id: unimplemented.beastmen-raiders.beastmen-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Beastmen Shaman is a Wizard and may use Chaos Rituals .
   source:
@@ -99,8 +92,7 @@ rules:
     - id: unimplemented.beastmen-raiders.centigors.woodland-dwelling
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Woodland Dwelling
   effect: >-
     Centigors are creatures of the deep, dark forests. They suffer no movement penalties for moving
@@ -158,8 +150,7 @@ rules:
     - id: unimplemented.beastmen-raiders.ungor.lowest-of-the-low
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Lowest of the Low
   effect: >-
     Ungor are on the lowest rung of Beastmen society and regardless of how much Experience they
@@ -182,15 +173,14 @@ rules:
     - ungor
 - id: warhounds-of-chaos--natural-weapons
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: Chaos Hounds have no weapons, but can fight without any penalties.
   source:
@@ -214,10 +204,8 @@ rules:
     - id: unimplemented.beastmen-raiders.warhounds-of-chaos.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
-  effect: Chaos Hounds are animals and never gain Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,11 +213,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Animales
-  effect_i18n:
-    es: Los Sabuesos del Caos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - warhounds-of-chaos
+  rule_ref: shared-rule.animal
 - id: minotaur--fear
   runtime:
     scope: 'YES'
@@ -264,8 +251,7 @@ rules:
     - id: unimplemented.beastmen-raiders.minotaur.bloodgreed
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved duel: future Frenzy after every opponent is Out of Action.
+      reason: out-of-scope.group
   name: Bloodgreed
   effect: >-
     If a Minotaur puts all of its enemies out of action in hand-to-hand combat, it becomes frenzied
@@ -293,8 +279,7 @@ rules:
     - id: unimplemented.beastmen-raiders.minotaur.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
   effect: >-
     A Minotaur is far more bestial than its Beastmen brethren and, although it may gain Experience,
@@ -315,17 +300,20 @@ rules:
     - minotaur
 - id: minotaur--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.beastmen-raiders.minotaur.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
-  effect: Minotaurs are Large Targets as defined in the shooting rules .
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -333,11 +321,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los Minotauros son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - minotaur
+  rule_ref: shared-rule.large-target
 - id: band--animals
   runtime:
     scope: 'NO'
@@ -347,8 +334,7 @@ rules:
     - id: unimplemented.beastmen-raiders.band.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animals
   effect: >-
     Animals: Beastmen are fearsome creatures of Chaos that do not interact with other races other
@@ -382,6 +368,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+      clauses:
+      - id: six-plus-save
+        scope: 'YES'
+      - id: combines-with-armour
+        scope: 'YES'
+      - id: stacks-per-hide
+        scope: 'YES'
     - id: trait.natural-armour-stacks
       scope: 'YES'
       binding:
@@ -419,6 +412,9 @@ rules:
       binding:
         kind: compiler
         id: special-rule.band--beastmen-special-skills-mutant
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Mutant
   effect: The Beastman may buy one mutation. See Mutants section on special rules.
   source:
@@ -446,12 +442,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.fear-immunity
+      clauses:
+      - id: fear-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
     - id: excluded.beastmen-raiders.all-alone
       scope: 'NO'
       binding: null
-      reason: >-
-        All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed
-        individual Fear clause is implemented separately.
+      reason: out-of-scope.group
   name: Fearless
   effect: Immune to fear and All Alone tests.
   source:
@@ -504,9 +503,7 @@ rules:
     - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-bellowing-roar
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.group
   name: Bellowing Roar
   effect: Only the Beastmen Chief may have this skill. He may re-roll any failed Rout tests.
   source:
@@ -549,8 +546,6 @@ rules:
     band: true
 - id: beastmen-shaman--no-armour
   name: No Armour
-  effect: >-
-    A Beastmen Shaman never wears armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -558,9 +553,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Chamán Hombre Bestia nunca lleva armadura.
   applies_to:
     profile_ids:
     - beastmen-shaman
@@ -575,4 +567,6 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
+  rule_ref: shared-rule.no-armour

@@ -1,0 +1,120 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the same 5+ unarmed critical is also delivered by
+# sources/knowledge/bands/mordheim/battle-monks-of-cathay/profiles.yaml, profile dragon-monks,
+# combat_traits.starting_skills: [skill.unarmed-critical-strikes]; the row applies only to dragon-monks,
+# so no buildable recipient lacks the duplicate and removing this row cannot change any scenario.
+#
+# AUTHORED: 4 scenarios cover the unarmed To Wound five that is a critical, the
+#   quarter-staff five that is not (only the unarmed attacks keep the 5+ threshold) and
+#   the same unarmed five staying ordinary without the skill.
+# Real recipient (2026-11-16): one further scenario builds the band's printed Dragon Monk from the band
+# package, so the KB grant itself (not an injected mechanic id) is exercised.
+
+# --- Authored scenarios ---
+# The origin binds skill.unarmed-critical-strikes, whose engine threshold branch
+# additionally requires the fist, which is exactly the printed quarter-staff rider: with
+# a staff only the unarmed attacks critical on 5+.
+- audit_id: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes
+  id: an-unarmed-five-is-a-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.unarmed-critical-strikes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed rider: with a quarter staff the five is not a critical, because the skill
+# only reaches the unarmed attacks.
+- audit_id: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes
+  id: a-quarter-staff-five-is-not-a-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.quarter-staff
+      skill_ids: [skill.unarmed-critical-strikes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without the skill the same unarmed five is an ordinary wound, which isolates the
+# lowered threshold to the printed training.
+- audit_id: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes
+  id: an-unarmed-five-without-the-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the band's printed Dragon Monk is built from the band package bare-handed
+# (characteristics overridden only to keep the dice math), so the profile's Art of Silent Death grant
+# (this row and, redundantly, its combat_traits; see the header note) supplies the 5+ critical.  The
+# profile's Unarmed Fighting adds a second attack, which misses on a declared 1.
+# Unarmed Fighting also removes the bare-hand penalty, so the unarmoured target is offered no armour save.
+- audit_id: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes
+  id: the-printed-dragon-monk-criticals-on-an-unarmed-five
+  fighters:
+    first:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/dance.storm-of-blades
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 scenarios (the extra attack and the undanced contrast); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios contrast the performed dance's single extra
+#   attack against the same bearer performing no dance.
+
+# --- Authored scenarios ---
+# mechanic/dance.storm-of-blades - the canonical Shadow Dance operator, selected for the
+# combat phase through the decision `round.<round>.<side>.dance.<name>`.
+#
+# Expectations come from the printed rule and the admitted `whole` clause,
+# never from engine output.  The dance is supplied as the shared operator
+# through `skill_ids`, exactly as the core pilot supplies
+# `skill.always-strikes-first`; each performed dance must be declared, and the
+# strict tape records that declaration.
+
+- audit_id: mechanic/dance.storm-of-blades
+  id: the-performed-dance-grants-one-extra-attack
+  fighters:
+    first:
+      skill_ids: [dance.storm-of-blades]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.dance.storm-of-blades, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.dance.storm-of-blades, value: true}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# Control: the same bearer performing no dance rolls only its one profile attack,
+# so the second die above is the dance's own contribution.
+- audit_id: mechanic/dance.storm-of-blades
+  id: an-undanced-bearer-keeps-its-single-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

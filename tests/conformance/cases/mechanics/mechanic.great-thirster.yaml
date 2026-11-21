@@ -1,0 +1,85 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.great-thirster
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the grant of Frenzy when the bearer takes the opponent out of action, the loss of the flag when the bearer is knocked down by the reply, and the same out-of-action result without the rule.
+
+# --- Authored scenarios ---
+# mechanic/mechanic.great-thirster — every expectation below comes from the
+# printed rule (gains Frenzy after taking an enemy out of action; lost when
+# knocked down, stunned or out of action) and the recorded semantic contract,
+# never from engine output.  Frenzy is observed as the bearer's own state flag;
+# the printed loss is the ordinary injury transition, so a knocked-down bearer
+# is the case the rule names.
+- audit_id: mechanic/mechanic.great-thirster
+  id: taking-the-opponent-out-of-action-grants-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT, state.first.frenzy: True}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed loss: the bearer starts the round with the granted Frenzy and the
+# reply leaves him knocked down, so the flag is clear again.
+- audit_id: mechanic/mechanic.great-thirster
+  id: a-knocked-down-bearer-loses-the-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state:
+    first: {frenzy: true}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_initial: {first.frenzy: true}
+  expect_rounds:
+    0: {state.first.condition: KNOCKED_DOWN, state.first.frenzy: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same out-of-action result without the rule grants nothing.
+- audit_id: mechanic/mechanic.great-thirster
+  id: without-the-rule-an-out-of-action-result-grants-no-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT, state.first.frenzy: False}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

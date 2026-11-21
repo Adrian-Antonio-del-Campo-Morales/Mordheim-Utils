@@ -126,13 +126,16 @@ def test_profile_characteristics_projects_selected_bonuses():
     assert middenheimer.characteristics.strength == ordinary.characteristics.strength + 1
 
 
-def test_profile_fist_overrides_the_unarmed_profile_fallback():
+def test_a_penalty_free_unarmed_profile_fights_with_natural_attacks():
+    # "fight unarmed without penalty": a profile with no equipment lists fights
+    # with its natural attacks (single source since 2026-11-16; the former
+    # penalty-free profile.fist binding was the same fact a second time).
     peasant = compile_fighter(FighterBuild(
         "mordheim", band_id="battle-monks-of-cathay", profile_id="raging-peasants",
     ))
-    assert "weapon.fist" in peasant.main_weapon.tags
-    assert peasant.main_weapon.strength_bonus == -1
-    assert peasant.main_weapon.target_armour_bonus == 1
+    assert "weapon.natural-attacks" in peasant.main_weapon.tags
+    assert peasant.main_weapon.strength_bonus == 0
+    assert peasant.main_weapon.target_armour_bonus == 0
 
 
 def test_profile_natural_attacks_selects_the_natural_weapon():
@@ -167,7 +170,7 @@ def test_profile_equipment_restrictions_have_a_legal_and_an_illegal_case():
 
 
 def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
-    # Every profile printed with "May not wear armour." offers armour suits on
+    # Every profile whose entry forbids body armour offers armour suits on
     # its own equipment list, so the restriction must refuse them at construction
     # instead of relying on the legacy prose match.
     for band, profile in (
@@ -189,7 +192,7 @@ def test_profile_armour_prohibition_covers_the_pirate_equipment_lists():
 
 
 def test_pirate_armour_prohibition_leaves_hand_held_defences_selectable():
-    # "May not wear armour" forbids armour suits, not the shield and helmet the
+    # The body-armour prohibition forbids armour suits, not the shield and helmet the
     # same printed list offers, so the restriction must use the armour-suit token.
     compile_fighter(FighterBuild(
         "mordheim", band_id="bretonnian-buccaneers-sar", profile_id="captain",

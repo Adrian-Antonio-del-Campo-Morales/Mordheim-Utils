@@ -9,22 +9,56 @@ from mordheim_knowledge.loader import load_bands, load_shared_rules
 
 
 #: How many band rules reference each fused id. The counts pin the consolidation:
-#: the promoted supplement packages add references to these ids (and only to these), so
-#: the numbers are the pre-promotion pins plus the references published with them.
+#: every band rule whose printed text is the shared rule (identical, or differing only
+#: in the recipient's name) references it instead of restating the prose.
 FUSED_REFERENCE_COUNTS = {
-    "shared-rule.animal": 16,
-    "shared-rule.burn-the-witch": 2,
-    "shared-rule.fear": 26,
-    "shared-rule.immune-to-poison": 23,
-    "shared-rule.immune-to-psychology": 16,
-    "shared-rule.large-target": 11,
-    "shared-rule.leader": 37,
-    "shared-rule.may-not-run": 9,
-    "shared-rule.no-pain": 19,
+    "shared-rule.animal": 48,  # 2026-11-13 sharing review
+    # 2026-11-11 armour correction: each text says what its binding forbids. `no-armour` members bind
+    # `forbids: armour` (every armour item, shields and helmets included); `no-body-armour` members
+    # bind `forbids: armour-suit` (body armour only). The Estalian list keeps its own text.
+    "shared-rule.no-armour": 19,  # 2026-11-13 sharing review
+    "shared-rule.no-body-armour": 7,
+    # 2026-11-11 correction: the two members whose printed entry also names who may not take the
+    # skill, and the two that print the metric Movement bonus, keep their own prose.
+    "shared-rule.infiltration": 16,
+    "shared-rule.black-hunger": 4,  # 2026-11-13 sharing review
+    # 2026-11-11 correction: the two Strigoi bats print only 'Equipment: None', and the two Lustria
+    # elf bands print the Spanish centimetre distance, so they keep their own prose.
+    # 2026-11-11 equipment-restriction consolidation: members whose whole text is the prohibition
+    # (recipient name aside) reference the shared texts; texts carrying a reason, a list or extra
+    # mechanics keep their own prose. Record: docs/archive/prose-consolidation-2026-11-11-equipment.json.
+    "shared-rule.no-weapons-or-armour": 11,
+    "shared-rule.no-weapons-or-armour-unarmed": 6,
+    "shared-rule.no-missile-weapons": 10,  # 2026-11-13 sharing review
+    "shared-rule.no-missiles-or-armour": 4,
+    "shared-rule.no-equipment-but-bones": 3,
+    "shared-rule.no-equipment-unarmed": 2,
+    "shared-rule.no-weapons-unarmed": 2,
+    "shared-rule.excellent-sight": 2,
+    "shared-rule.burn-the-witch": 3,  # 2026-11-13 sharing review
+    "shared-rule.fear": 52,  # 2026-11-13 sharing review
+    "shared-rule.immune-to-poison": 39,  # 2026-11-13 sharing review
+    "shared-rule.immune-to-psychology": 33,  # 2026-11-13 sharing review
+    "shared-rule.large-target": 15,  # 2026-11-13 sharing review
+    "shared-rule.leader": 146,  # 2026-11-13 sharing review
+    "shared-rule.may-not-run": 27,  # 2026-11-13 sharing review
+    "shared-rule.no-pain": 52,  # 2026-11-13 sharing review
     "shared-rule.thick-skull": 7,
 }
 
 RETIRED_RULE_IDS = {
+    # 2026-11-11 prose consolidation: numbered variants renamed, "never gains Experience" texts fused.
+    "shared-rule.armour-2",
+    "shared-rule.brainless",
+    "shared-rule.cause-fear-2",
+    "shared-rule.dead",
+    "shared-rule.experience",
+    "shared-rule.hard-head-2",
+    "shared-rule.immune-to-poison-3",
+    "shared-rule.immune-to-psychology-4",
+    "shared-rule.may-not-run-2",
+    "shared-rule.no-pain-4",
+    "shared-rule.stupidity-2",
     "shared-rule.animal-2",
     "shared-rule.animals",
     "shared-rule.animals-2",
@@ -49,12 +83,15 @@ RETIRED_RULE_IDS = {
     "shared-rule.may-not-run-3",
     "shared-rule.no-pain-2",
     "shared-rule.no-pain-3",
+    # 2026-11-11 equipment-restriction consolidation: renamed to the neutral
+    # shared-rule.no-weapons-or-armour-unarmed when non-Wulfen members joined it.
+    "shared-rule.wulfen-no-equipment",
 }
 
 
 def test_fused_shared_rules_are_the_only_reference_targets() -> None:
     shared = load_shared_rules("mordheim")
-    assert len(shared) == 68
+    assert len(shared) == 228
     assert set(FUSED_REFERENCE_COUNTS) <= set(shared)
     assert RETIRED_RULE_IDS.isdisjoint(shared)
 

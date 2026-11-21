@@ -1,0 +1,134 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.disability-1
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-condition batch, 2026-11-18): the compiled
+#   statline pair (Movement and Initiative one lower on the Cripple carrying result 1; a sibling
+#   result leaves both intact), the lower Initiative as the duel's starting value, and the two
+#   construction refusals (the result on a build without the Cripples' Disability; a Cripple with no
+#   supplied result).  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-1): "Lame and
+#   arthritic: minus one Movement and Initiative.  Permanent supplied result; no group creation or
+#   reroll."  Source: Chaos in the Streets p149, Henchmen / Cripples / Disability, result 1.
+# AUTHORED: the Cripples' band rule (sources/knowledge/bands/trollheim/chaos-streets-mordheim-
+#   inhabitants/special-rules.yaml, cripples--disability, grant: profile) compiles mechanic.disability
+#   onto the Cripples profile, and the ruling "Disability consumes a permanent supplied result"
+#   (2026-10-15) makes the duel consume exactly one condition.disability-1..6 once at compile time.
+#   The row's content travels in its sibling effect (condition.disability-1.characteristics, a
+#   profile.characteristics binding with movement -1 and initiative -1), which the compiler applies to
+#   the compiled statline (packages/python/roster-construction/mordheim_construction/compiler.py,
+#   supplied_stat_bonuses), so the pair is asserted through expect_fighters; the mechanic tag itself
+#   only marks the result (modular/state.py reads it as the `disability.1` resource).  The compiler
+#   gates the pairing both ways: "Disability requires one permanent supplied result
+#   (condition.disability-1..6)" on a Cripple with no result and "Disability result requires a Cripple
+#   with Disability" on any build without the band mechanic, so the "without" half of the pair is a
+#   Cripple carrying a sibling result (the probe's removal of this id leaves a result-less Cripple,
+#   which is refused by construction).  A nonzero Movement bonus on an unknown base is refused by the
+#   compiler, so the fixture states the printed Movement 4 explicitly.
+
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile with the corpus fixture characteristics (M4 stated for the
+# Movement penalty), armed with the outcasts list's club; the opponent is the hand-built mace fixture.
+
+# The result's content: the compiled Cripple carries Movement 3 and Initiative 4 - one below the
+# supplied 4 and 5 - while the characteristics the result does not name stay as supplied.
+- audit_id: mechanic/condition.disability-1
+  id: the-lame-cripple-compiles-with-movement-and-initiative-one-lower
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-1]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.movement: 3
+    first.characteristics.initiative: 4
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+    first.characteristics.toughness: 3
+
+# The "without" half of the pair: the same Cripple carrying a sibling result (4, Sickly) keeps
+# Movement 4 and Initiative 5, so the two penalties above belong to result 1 and not to the profile
+# or to the Disability mechanic itself.
+- audit_id: mechanic/condition.disability-1
+  id: a-sibling-result-leaves-movement-and-initiative-intact
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.movement: 4
+    first.characteristics.initiative: 5
+
+# The permanent penalty is the duel's starting Initiative: the initialized state reads 4, applied
+# once at compilation and never rolled again (the opponent is supplied already out, so no round runs).
+- audit_id: mechanic/condition.disability-1
+  id: the-lower-initiative-is-the-duels-starting-value
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-1]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.initiative: 4, first.strength: 3, first.toughness: 3}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# The result is a Cripple's: on a build without the band's Disability mechanic the compiler refuses
+# it with its own sentence.
+- audit_id: mechanic/condition.disability-1
+  id: the-result-on-a-build-without-the-cripples-disability-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.disability-1]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+  expect_error: "Disability result requires a Cripple with Disability"
+
+# The other direction of the gate: a Cripple compiled with no supplied result is refused, because
+# the group's roll was made at creation and the duel never rolls it (the 2026-10-15 ruling).
+- audit_id: mechanic/condition.disability-1
+  id: a-cripple-without-a-supplied-result-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+  expect_error: "Disability requires one permanent supplied result (condition.disability-1..6)"

@@ -1,0 +1,130 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-mou/banshee--immune-to-poisons/mechanic.drug-immunity
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker is the accepted disposition of design-rulings.md, "A printed rule
+#   pre-empted by the profile's own sibling rule is `covered.elsewhere`" (the Poltergeists' No Pain /
+#   Incorporeal precedent).  The Banshee's own printed restriction "Banshees never carry any
+#   equipment, as they cannot hold them" (banshee--equipment-restrictions) refuses every build that
+#   would carry a drug to her, so this immunity's suppression is vacuous on its bearer rather than
+#   unauthored.  The refusal that pre-empts it, a hand-built control showing the same drug acting on
+#   an ordinary bearer, and the off-profile refusal are all authored below.
+# authoring_progress: 3 scenarios (2026-11-18) under PARTIAL: the drug cannot be carried to this bearer.
+#   Blocker (precise): the Banshee's own printed restriction "Banshees never carry any equipment, as
+#   they cannot hold them" is bound as profile.equipment-restrictions `forbids: [equipment]`
+#   (banshee--equipment-restrictions), and the construction gate applies that token to every
+#   `preparation_ids` entry (_eligibility.js preparationIssue -> equipmentIssue -> tokenForbids:
+#   `if (token === "equipment") return true`), refusing the build with
+#   '"equipment" is forbidden for necrarchs-mou/banshee.'  No legal build therefore carries a drug to
+#   this immunity, so its suppression cannot be observed on the bearer; the refusal is declared as
+#   evidence that the drug never reaches her, a hand-built control shows the same drug acting on an
+#   ordinary bearer, and the off-profile refusal is declared.  The effect is pre-empted by the sibling
+#   rule exactly as the Poltergeists' No Pain is by their Incorporeal (design-rulings, second triage
+#   batch), so a `covered.elsewhere` ruling naming banshee--equipment-restrictions would retire this
+#   blocker; until then PARTIAL.  REVIEWED still requires manual semantic review.
+# AUTHORED: 3 scenarios cover what the printed immunity can require of this bearer: the
+#   construction refusal '"equipment" is forbidden for necrarchs-mou/banshee.' that keeps any drug
+#   from reaching her, the hand-built control in which the same drug acts on an ordinary bearer, and
+#   the off-profile refusal.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the immunity's suppression is unobservable on this bearer because a drug cannot be carried to
+#   her ('"equipment" is forbidden for necrarchs-mou/banshee.' from banshee--equipment-restrictions);
+#   the refusal, the hand-built control and the off-profile refusal are declared below.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/necrarchs-mou/special-rules.yaml
+#
+# --- Authored scenarios ---
+#
+# Drug-immunity family model (the authored clockworkers-sc construct files of this directory): the
+# printed bearer would be supplied with a drug through `preparation_ids` and the drug's change read
+# as the unchanged state, against a hand-built control with the bearer's printed line and the
+# identical drug.  For the Banshee the first half is unreachable (see the blocker above); the
+# declared refusal asserts that the drugged Banshee cannot be built, so the immunity is never
+# silently gained or silently bypassed.  Head-Splitter Mushrooms are the drug chosen for the Banshee
+# because she prints no Psychology immunity, so their Frenzy would be the change the immunity
+# suppresses; the control shows that change on an ordinary bearer with her printed line (Initiative
+# 1 as a fixture fact, since the hand-built form needs a number for her blank Initiative).
+# Consumer read (never executed): roster-construction compiler.py, `drug_ids` / "mechanic.drug-
+# immunity" (lines 859-866): when the compiled fighter's global ids carry mechanic.drug-immunity,
+# every drug id (preparation.crimson-shade, preparation.mandrake-root, preparation.mad-cap-
+# mushrooms, preparation.head-splitter-mushrooms and the six Fungus Brew conditions) is removed from
+# the global and innate id lists BEFORE the execution effects are applied, so the drug's EffectSet
+# never reaches the fighter: no duel-start tag, bonus or flag, and no drug die is requested (Crimson
+# Shade's +D3 Initiative, modular/state.py `<side>.crimson-shade` with sides 3, is rolled only when
+# the tag is present).  The bearer carries the drug in `preparation_ids` (the channel the authored
+# clockworkers-sc construct files use), and the construction gate only refuses a drug where a band
+# rule forbids the category or the profile's own restriction forbids the item.
+# Undead bearers and the drug choice (2026-11-18): every Necrarch bearer of this grant is
+# creature_kind undead, and compiler.py (lines 867-873) already makes preparation.crimson-shade and
+# preparation.mad-cap-mushrooms inert on undead and possessed bearers whether or not this mechanic
+# is bound, so those two drugs cannot discriminate the grant here (the authored clockworkers-sc
+# files use them on living constructs).  The remaining drugs the compiler strips only through this
+# mechanic are Mandrake Root (+1 Toughness, Stunned becomes Knocked Down) and Head-Splitter
+# Mushrooms (Frenzy). Semantic wrinkle to record for KB review: Mandrake Root's own printed text
+# ("Mandrake Root has no effect on Undead, such as Vampires and Zombies, or on the Possessed",
+# catalog/items/miscellaneous.yaml) is not in the compiler's undead-inert set, so a scenario that
+# reads Mandrake on an undead bearer discriminates this grant only through that gap; and more
+# generally the printed drug clauses already pre-empt a drug immunity on an undead bearer, which may
+# make these bindings candidates for a `covered.elsewhere` ruling (the Poltergeists' No Pain
+# precedent).  Head-Splitter Mushrooms print no undead exclusion ("Frenzy; also allows the use of a
+# Ball and Chain", combat-equipment.yaml), so they are the clean reading wherever the bearer has no
+# Psychology immunity.
+
+# The Banshee supplied with a drug is refused at construction by her own equipment restriction: the
+# drug never reaches the immunity.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--immune-to-poisons/mechanic.drug-immunity
+  id: a-banshee-supplied-with-a-drug-is-refused-by-her-own-equipment-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: banshee
+      preparation_ids: [preparation.head-splitter-mushrooms]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: '"equipment" is forbidden for necrarchs-mou/banshee.'
+
+# The control: a hand-built fighter with the Banshee's printed line (WS4 S3 T4 W1 A1 Ld5; Initiative 1
+# as a fixture fact) and the same drug is frenzied from initialisation; the attacker declares a miss
+# and the frenzied doubled pool of 0 stays 0.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--immune-to-poisons/mechanic.drug-immunity
+  id: the-same-head-splitter-mushrooms-frenzy-an-ordinary-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.head-splitter-mushrooms]
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 1, initiative: 1, attacks: 1, leadership: 5}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {second.frenzy: True}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.frenzy: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the banshee profile (`applies_to.profile_ids`), not selectable:
+# another profile of the band selecting it is refused.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--immune-to-poisons/mechanic.drug-immunity
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      special_rule_ids: [banshee--immune-to-poisons]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to necrarchs-mou"

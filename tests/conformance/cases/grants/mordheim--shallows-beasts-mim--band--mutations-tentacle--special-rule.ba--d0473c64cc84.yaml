@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-tentacle/special-rule.band--mutations-tentacle
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction pair, B12 construction-skills batch
+#   2026-11-18): a Hero of the band taking the Tentacle from the Aquatic Mutants pool compiles the
+#   grapple as the bearer's incoming-attacks modifier -1, and a henchman of the band is refused the
+#   mutation.  The grapple's duel resolution (the nominated lost attack die) is evidenced on the Cult
+#   of the Possessed origin of the same shared mutation and is not duplicated here.
+# AUTHORED: the admission and the henchman refusal are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Family model (Aquatic Mutants, construction face; the Suckers file of this band is the model).  The
+# record is a `mutation` with `grant: selectable`, `applies_to.profile_types: [hero]` ("Any Hero may
+# start the campaign with a single mutation from the following ... tentacle ...") and the compiler
+# binding `special-rule.band--mutations-tentacle`, whose contract is `incoming_attacks_modifier: -1`
+# beside the tag `rule.tentacle-grapple` (the printed grapple: the opponent loses one attack).  A
+# henchman is refused by the recipients gate.  Recipient: the printed Buccaneer with a club from its
+# own list; the opponent is hand-built.  Neither side strikes, so the grapple nominates nothing and
+# the compiled modifier is the whole evidence (the Suckers model shows the same Hero's unselected
+# compile carries no such modifier).
+
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-tentacle/special-rule.band--mutations-tentacle
+  id: a-hero-taking-the-tentacle-compiles-the-grapple-modifier
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-tentacle]
+      main_weapon_id: weapon.club
+    second:
+      &tentacle-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.global_effects.incoming_attacks_modifier: -1
+    first.extra_attacks: []
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-tentacle/special-rule.band--mutations-tentacle
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-tentacle]
+      main_weapon_id: weapon.mace
+    second: *tentacle-opponent
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-tentacle"

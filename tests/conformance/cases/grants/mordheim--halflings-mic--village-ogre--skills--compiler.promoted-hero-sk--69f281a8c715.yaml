@@ -1,0 +1,83 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+# authoring_status: AUTHORED
+# authoring_progress: three scenarios: the promoted Ogre-kin admitted a Strength skill and a
+#   Combat skill (the two printed lists) and refused an Academic skill.  Corrected 2026-11-16:
+#   the earlier progress line said no scenario was authorable while the body below already
+#   authored them (contradiction removed), and the Combat-list case was missing.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the promoted recipient is declared with the fixture's own promotion variant: this
+#   origin names the band's Ogre-kin profile (halflings-mic/village-ogre, a Henchman with no
+#   printed skill lists) and the runner turns `variant_ids: [promotion.hero]` into the promoted
+#   build.  The printed Combat and Strength admissions are discriminating (without the rule the
+#   promoted Henchman has no list at all).
+# Discrimination note (2026-11-16): the restrictive half ("may only choose") cannot be
+#   discriminated by any legal build: the construction model gives a promoted Henchman no
+#   skill list except through rules such as this one (_eligibility.js profile access: the
+#   promoted-hero grant is additive to the profile's own empty skill_access), so the Academic
+#   refusal holds with or without the rule.  The generic promoted-Henchman access to the
+#   warband's Hero lists, which the rule restricts, is not modelled; the refusal is kept as
+#   the printed outcome, not as discriminating evidence.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence ("An Ogre-kin who becomes a Hero may only choose from Combat and
+# Strength skill-lists"); no engine output was consulted.  The recipient is the band's own Ogre-kin
+# profile carrying the supplied promotion result the runner converts, and the two declared skills are
+# the canonical Strength skill and a canonical Academic skill outside the printed two lists.
+- audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-kin-may-take-a-strength-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: village-ogre
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-kin-is-refused-an-academic-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: village-ogre
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.haggle]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to halflings-mic/village-ogre: ['skill.haggle']"
+
+# The other printed list: a Combat skill (Strike to Injure) is admitted for the promoted
+# Ogre-kin exactly like the Strength skill above.
+- audit_id: rule/mordheim/halflings-mic/village-ogre--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-kin-may-take-a-combat-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: village-ogre
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.strike-to-injure]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}

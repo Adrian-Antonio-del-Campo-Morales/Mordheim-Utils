@@ -67,6 +67,7 @@ def mechanic(item_id: str):
     return row.get("mechanic_id") or ENGINE_OPTIONS.get(row.get("engine_option"))
 
 
+@pytest.mark.covers("rule/mordheim/snotlings-web/band--pointy-stick/pointy-stick-dagger-alias")
 @pytest.mark.parametrize("band", ["crooked-moon-kep", "night-goblins-kaz"])
 def test_the_snotling_mob_fights_with_the_printed_pointy_stick_as_a_dagger(band):
     """The printed Dagger equivalence reaches the mob's own attack."""
@@ -125,6 +126,8 @@ def test_the_sylvania_shovel_uses_the_halberd_profile():
         assert (wielder.main_weapon.strength_bonus, wielder.main_weapon.two_handed) == (1, True)
 
 
+@pytest.mark.covers("rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-to-kill", "inherited-dwarf-axe")
+@pytest.mark.covers("rule/mordheim/dwarf-slayers-kaz/band--town-crier-6-inheritance/inherited.dwarf-slayers-kaz.band.town-crier-6-inheritance.hard-to-kill", "inherited-dwarf-axe")
 def test_the_ironbreaker_and_the_gromril_allowance_reach_their_dwarf_lists():
     """The fixed kit is offered and the material composes its own -1."""
     assert mechanic("gromril_armour") == "armour.gromril-armour"

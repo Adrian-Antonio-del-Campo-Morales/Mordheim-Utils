@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.anvil-head
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; the pair differs only in the declaration and in the 1D3 die the accepted replacement rolls, so the separate wound rolls are what the pair isolates. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--special-attack (scope: YES)
+# AUTHORED[whole--scope--special-attack]: 2 scenarios cover the accepted charge-time replacement reaching a declared 1D3 of three separate To Wound attacks, and the declined declaration leaving the printed pool that resolves a single wound instead.
+#
+# Clause: whole--scope--advancement-roll-and-cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# The declaration is accepted, so the charge-time replacement holds: the pool is
+# one attack and, because it hit, the printed 1D3 is rolled on a three-sided die.
+# A result of three means three separate To Wound attacks in total, and the wound
+# die of four wounds Toughness 3 from Strength 3 in each of them, taking the
+# four-Wound defender down to one.  The defender's reply is a declared miss, so
+# the round's only damage is the replacement's.
+- audit_id: mechanic/mechanic.anvil-head
+  id: the-declared-replacement-inflicts-separate-wound-rolls
+  covers: [whole--scope--special-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.anvil-head]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.anvil-head, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.anvil-hits, sides: 3, value: 3}
+    - {key: round.0.first.attack.0.anvil.0.wound, value: 4}
+    - {key: round.0.first.attack.0.anvil.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining the printed option removes it for that phase: the same charge then
+# resolves the ordinary one-attack pool, so the same wound die produces one
+# wound instead of three and the defender keeps three of his four Wounds.
+- audit_id: mechanic/mechanic.anvil-head
+  id: declining-keeps-the-ordinary-attack-pool
+  covers: [whole--scope--special-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.anvil-head]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.anvil-head, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

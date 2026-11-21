@@ -1,0 +1,50 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lizardmen-lus/band--skink-henchman-poison-application/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 2 scenarios (2026-11-18). By user ruling the missile-weapon use of Reptile
+#   Venom is outside the duel (shooting), while the printed "never applied to a close combat
+#   weapon" is kept as a construction restriction, encoded like the Skink Heroes' rule
+#   (band--skink-poison-application): the binding's governed set (poison.reptile-venom,
+#   weapon_kinds ranged-weapon) is read by the shared stage's poison-application check in
+#   _eligibility.js. A Skink Brave coating a close-combat weapon is refused; the same build
+#   without the coating is accepted, which frames the refusal as the poison's own consequence.
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/lizardmen-lus/special-rules.yaml
+#
+# AUTHORED: 2 scenarios cover the printed close-combat ban (refusal) with its uncoated control.
+
+- audit_id: rule/mordheim/lizardmen-lus/band--skink-henchman-poison-application/profile.equipment-restrictions
+  id: skink-brave-coating-a-close-combat-weapon-with-reptile-venom-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: skink-braves
+      main_weapon_id: weapon.axe
+      main_poison_id: poison.reptile-venom
+  expect_error: '"poison.reptile-venom" may only be applied to ranged-weapon by lizardmen-lus/skink-braves'
+
+- audit_id: rule/mordheim/lizardmen-lus/band--skink-henchman-poison-application/profile.equipment-restrictions
+  id: skink-brave-carried-without-a-coating-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: skink-braves
+      main_weapon_id: weapon.axe
+    second:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: skink-braves
+      main_weapon_id: weapon.axe
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

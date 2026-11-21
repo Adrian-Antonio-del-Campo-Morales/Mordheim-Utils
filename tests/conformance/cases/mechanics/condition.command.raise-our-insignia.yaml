@@ -1,0 +1,126 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.command.raise-our-insignia
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied
+#   active command offers a re-roll of a failed charged-Fear test and the re-roll passes; without the
+#   command no re-roll is offered; the command is spent in the round it is supplied, so the bearer's
+#   next own-turn Stupidity test gets no re-roll.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.command.raise-our-insignia, "Raise
+#   Our Insignia Active": "The supplied eligible friendly recipient may reroll Leadership during the
+#   current Recovery/Movement period. This command expires at the beginning of the next Shooting
+#   phase, before the ensuing close combat. The command/casting and other models are not produced.")
+#   Printed source (bands/mordheim/mazzalupo-web/special-rules.yaml, wandering-knight--command-raise-
+#   our-insignia, out-of-scope.magic as a Command): "Until the beginning of the next Shooting phase,
+#   every model of the Mazzalupo warband ... who has line of sight to the Squire can reroll failed
+#   Leadership tests".
+# AUTHORED: the 3 scenarios below cover the re-roll, the control and the expiry; REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the consumer activates the supplied command at round 0 only
+#   (modular/rounds.py:383-384 adds the -active tag), reads it as a Leadership re-roll eligibility
+#   (modular/leadership.py:316) and strips it after the first round's Fear resolution, before melee
+#   (modular/rounds.py:733-739).  The tests that fall inside that window in a duel are the start-of-turn
+#   Stupidity test and the charge/charged Fear tests of round 0; the printed Rout test and the Squire's
+#   line of sight are outside the duel (the supplied fact stands for them).  No compiler gate exists for
+#   the condition, so a hand-built recipient carries it; the Mazzalupo band rule itself is out of scope
+#   (a Command) and binds nothing.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built recipient (WS3 S3 T3 W2 I5 A1 Ld7, mace) and hand-built opponent (WS3 S3 T3 W3
+# I2 A1 Ld7, mace).  2d6 <= Leadership passes: 4+4 = 8 fails Ld7, 3+3 = 6 and 1+1 pass.  A failed
+# charged-Fear test leaves state.<side>.fear_hit_sixes true; the re-roll decision and dice follow the
+# documented protocol `<test>.reroll` / `<test>.reroll.0/.1`.  Every declared attack die is a natural 1.
+
+# The re-roll: the charged recipient fails 8 against Ld7, the active command offers the re-roll and
+# the re-rolled 6 passes, so the hits are not clamped to sixes.
+- audit_id: mechanic/condition.command.raise-our-insignia
+  id: the-active-command-rerolls-a-failed-charged-fear-test
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: &roi-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.command.raise-our-insignia]
+      characteristics: &roi-recipient {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the supplied command no re-roll decision is offered (the strict tape proves it)
+# and the failed eight clamps the recipient's hits to sixes.
+- audit_id: mechanic/condition.command.raise-our-insignia
+  id: without-the-command-no-reroll-is-offered
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: *roi-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *roi-recipient
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The expiry: a stupid recipient supplied with the command re-rolls its failed start-of-turn Stupidity
+# test in the round the command is active (6+6 fails, the re-rolled 1+1 passes, the charge stands);
+# the command has expired by its next own turn, so the same failed 6+6 in round 2 is offered no re-roll
+# at all and the Stupidity applies.
+- audit_id: mechanic/condition.command.raise-our-insignia
+  id: the-command-is-spent-before-the-recipients-next-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true}
+      condition_ids: [condition.command.raise-our-insignia]
+      characteristics: *roi-recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 3
+  decisions:
+    - {key: round.0.first.stupidity.reroll, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.first.stupidity.reroll.0, value: 1}
+    - {key: round.0.first.stupidity.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.stupidity.0, value: 6}
+    - {key: round.2.first.stupidity.1, value: 6}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first.condition: STANDING}
+    2: {state.first.stupidity_failed: true, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}

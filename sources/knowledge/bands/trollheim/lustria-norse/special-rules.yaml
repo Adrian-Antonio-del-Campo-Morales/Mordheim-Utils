@@ -3,18 +3,12 @@ band_id: lustria-norse
 rules:
 - id: jarl--leader
   name: Leader
-  effect: >-
-    Any warband warrior within 6" of the Jarl may use his Leadership when taking Leadership tests.
   source:
     manual: lustria
     printed_page: 108
     section: Heroes / 1 Jarl / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero de la banda a 6" del Jarl puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - jarl
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: berserkers--frenzy
   runtime:
     scope: 'YES'
@@ -135,15 +130,12 @@ rules:
     - wulfen
 - id: wolves--animal
   name: Animal
-  effect: Wolves are animals and never gain Experience.
   source:
     manual: lustria
     printed_page: 110
     section: Henchmen / 0-5 Wolves / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Lobos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - wolves
@@ -155,8 +147,8 @@ rules:
     - id: unimplemented.lustria-norse.wolves.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: wolves--pack-leader
   name: Pack Leader
   effect: >-
@@ -185,8 +177,7 @@ rules:
     - id: unimplemented.lustria-norse.wolves.pack-leader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--seafarers
   name: Seafarers
   effect: Every Norse warrior gains +2 Strength when rowing a boat.
@@ -215,8 +206,7 @@ rules:
     - id: unimplemented.lustria-norse.band.seafarers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
 - id: band--norse-special-skills-shield-mastery
   kind: warband_skill
   runtime:
@@ -248,6 +238,7 @@ rules:
   - berserkers
   - wulfen
   - bondsmen
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 - id: band--norse-special-skills-northern-weapons
@@ -281,6 +272,7 @@ rules:
   - berserkers
   - wulfen
   - bondsmen
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 - id: band--norse-special-skills-battle-tongue
@@ -321,9 +313,7 @@ rules:
     - id: mechanic.leader-twelve
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: Battle Tongue range extensions are excluded from the resolved duel (user
-        decision 2026-10-21). Innate Leader radii remain separate.
+      reason: out-of-scope.group
 
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
@@ -352,8 +342,10 @@ rules:
     - id: unimplemented.lustria-norse.band.norse-special-skills-barbarian-courage
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: barbarian-courage
+        scope: 'NO'
 - id: band--norse-special-skills-crushing-blow
   kind: warband_skill
   runtime:
@@ -382,6 +374,7 @@ rules:
   - berserkers
   - wulfen
   - bondsmen
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 
@@ -410,7 +403,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      No puede elegir el Flagelo; es solo para Héroes.
   applies_to:
     profile_ids:
     - marauders
@@ -431,10 +424,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: >-
     Wulfen never use weapons or armour; their claws are natural attacks and they suffer no penalty
@@ -469,10 +461,9 @@ rules:
           - weapons
           - armour
     - id: profile.natural-attacks
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.natural-attacks
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Natural Weapons
   effect: Wolves never use weapons or armour; their attacks are natural.
   source:

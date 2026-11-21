@@ -66,9 +66,8 @@ CASES = [
      "refused": [], "allowed": ["blunderbuss"]},
     {"band": "snotlings-web", "profile": "bullied-goblin",
      "refused": ["elf_bow"], "allowed": ["weapon.dagger"]},
-    # Strigoi Skeletons: no missile weapons.
-    {"band": "strigoi-kaz", "profile": "skeletons",
-     "refused": ["crossbow"], "allowed": ["weapon.sword"]},
+    # Strigoi Skeletons bind the shared compiler.no-missile-weapons contract since
+    # 2026-11-13; the contract tests cover that refusal.
     # Slayers: no armour, no constant-save cloak, no thrown-else missiles;
     # the printed Lucky Charm exception is not forbidden.
     {"band": "dwarf-slayer-cult-web", "profile": "giant-slayer",
@@ -212,3 +211,28 @@ def test_slayers_use_lucky_charms_and_keep_the_armour_and_cloak_ban():
                                            profile_id="giant-slayer",
                                            defence_ids=("defence.lucky-charm",)))
     assert fighter is not None
+
+
+def test_band_forbids_of_the_slayer_rules_do_not_reach_the_rememberer():
+    # Ruling A1 (2026-11-18): 'No Armour, No Toys! Slayers may never use armour of any kind' is
+    # narrowed by `applies_to.profile_ids`, and 'A Rememberer is not a Slayer, and the slayer rules
+    # don't apply'. The band-forbid collection honours the same recipient test as the rule itself.
+    package = PACKAGES["dwarf-slayer-cult-web"]
+
+    def band_forbids(profile_id):
+        row = next(profile for profile in package.profiles if profile["id"] == profile_id)
+        build = FighterBuild("mordheim", band_id="dwarf-slayer-cult-web", profile_id=profile_id)
+        return desktop_call("bandFacts", build, ROOT, package=package, profile=row)["equipment_forbids"]
+
+    assert band_forbids("rememberer") == []
+    for profile in ("giant-slayer", "doomseeker", "troll-slayers", "stubbles", "axe-hurlers"):
+        assert band_forbids(profile) == ["armour", "constant-save-cloak", "non-thrown-ranged"], profile
+    # The Rememberer's own list carries armour and missile weapons; a carried kit of them constructs.
+    fighter = compile_fighter(FighterBuild(
+        "mordheim", band_id="dwarf-slayer-cult-web", profile_id="rememberer",
+        owned_item_ids=("light_armour", "helmet", "shield", "crossbow"),
+    ))
+    assert fighter is not None
+    with pytest.raises(ValueError, match="armour is forbidden for dwarf-slayer-cult-web/giant-slayer"):
+        compile_fighter(FighterBuild("mordheim", band_id="dwarf-slayer-cult-web",
+                                     profile_id="giant-slayer", armour_id="armour.light-armour"))

@@ -1,0 +1,156 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.bear-handler-recipient
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 5 authored scenarios derived from the printed
+#   Kislevite sentence "will automatically pass its stupidity tests when within 6\" of the Bear Tamer
+#   (even if the Tamer has been Knocked Down or Stunned)": the waiver holds at six inches and with a
+#   knocked-down provider, and is withheld beyond six inches, with an out-of-action provider and for
+#   a warrior that does not carry this recipient flag.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: this flag marks the animal-side recipient of the Bear Handler waiver: while a same-side
+#   provider that carries mechanic.bear-handler is within six inches and not out of action, the
+#   recipient's Stupidity test is automatically passed with no die at all, so the strict tape of the
+#   waiver scenarios declares no stupidity roll and a wrongly requested one fails the fixture.  The
+#   provider and his distance are caller-supplied duel facts.  Dice: 2d6 <= Leadership passes, so
+#   the declared 3+4=7 fails the recipient's own 6 in every withheld-waiver control.
+
+# --- Authored scenarios ---
+# The waiver itself at the printed six inches: a flagged recipient (own Leadership 6, supplied
+# Stupidity) beside a bear-handler provider rolls no stupidity die, charges and lands its attack.
+- audit_id: mechanic/mechanic.bear-handler-recipient
+  id: the-recipient-flag-waives-stupidity-beside-a-bear-handler
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-handler-recipient]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 6]],
+    nearby: [{participant_id: handler, side_id: first, condition: standing,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed parenthesis: a provider who is merely Knocked Down still waives; only Out of Action
+# disqualifies him.  Still no stupidity die.
+- audit_id: mechanic/mechanic.bear-handler-recipient
+  id: a-knocked-down-bear-handler-still-waives-the-stupidity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-handler-recipient]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 6]],
+    nearby: [{participant_id: handler, side_id: first, condition: knocked-down,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed six-inch boundary: the same provider at seven inches waives nothing, so the recipient
+# tests its own Leadership 6, the declared 3+4=7 fails and the charge is cancelled.
+- audit_id: mechanic/mechanic.bear-handler-recipient
+  id: beyond-six-inches-the-waiver-does-not-hold
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-handler-recipient]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 7]],
+    nearby: [{participant_id: handler, side_id: first, condition: standing,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# An out-of-action provider is the printed end of the waiver: the recipient tests its own value and
+# fails the identical seven.
+- audit_id: mechanic/mechanic.bear-handler-recipient
+  id: an-out-of-action-handler-waives-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-handler-recipient]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 6]],
+    nearby: [{participant_id: handler, side_id: first, condition: out,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The flag gates the recipient side: the same stupid warrior without this recipient flag gains no
+# waiver from the identical nearby bear-handler, so the test is taken and fails.
+- audit_id: mechanic/mechanic.bear-handler-recipient
+  id: without-the-recipient-flag-the-handler-alone-waives-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, handler, 6]],
+    nearby: [{participant_id: handler, side_id: first, condition: standing,
+              fighter: {main_weapon_id: weapon.mace, skill_ids: [mechanic.bear-handler],
+                        characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

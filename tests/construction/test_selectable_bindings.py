@@ -67,18 +67,19 @@ def test_arms_master_lifts_the_two_handed_offhand_restriction():
     assert "compiler.ignore-difficult-to-use-restrictions" in accepted.construction_tags
 
 
-def test_master_of_arms_lifts_the_same_restriction_for_maneaters():
-    kwargs = dict(
-        main_weapon_id="weapon.double-handed-weapon", off_hand_id="weapon.sword",
-    )
-    with pytest.raises(ValueError, match="occupies both hands"):
-        compile_fighter(build("maneaters", "captain", **kwargs))
-    accepted = compile_fighter(build(
-        "maneaters", "captain", **kwargs,
-        special_rule_ids=("band--ogres-special-skills-master-of-arms",),
-    ))
+def test_master_of_arms_relaxes_only_a_difficult_to_use_weapon_for_maneaters():
+    # Ruling 2026-11-19: Master of Arms applies only to a Difficult to Use main weapon.
+    skill = ("band--ogres-special-skills-master-of-arms",)
+    star = dict(main_weapon_id="weapon.morning-star", off_hand_id="weapon.club")
+    with pytest.raises(ValueError, match="cannot be combined"):
+        compile_fighter(build("maneaters", "captain", **star))
+    accepted = compile_fighter(build("maneaters", "captain", **star, special_rule_ids=skill))
     assert accepted.off_hand_attacks
     assert "compiler.master-of-arms" in accepted.construction_tags
+    # A great weapon is not Difficult to Use, so the skill does not free its second hand.
+    great = dict(main_weapon_id="weapon.double-handed-weapon", off_hand_id="weapon.sword")
+    with pytest.raises(ValueError, match="occupies both hands"):
+        compile_fighter(build("maneaters", "captain", **great, special_rule_ids=skill))
 
 
 def test_master_of_throwing_weapons_changes_the_compiled_limit():

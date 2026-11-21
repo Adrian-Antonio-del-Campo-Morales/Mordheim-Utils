@@ -590,6 +590,7 @@ def test_m17_undead_or_possessed_skips_infection_test(precompiled):
     assert result.defender.wounds == 3
 
 
+@pytest.mark.covers("mechanic/weapon.disease-dagger")
 def test_d13_the_infection_wound_takes_no_save_but_the_dagger_keeps_its_own(precompiled):
     from mordheim_combat_lab.verification.dice import StrictDice
     compiled = precompiled()

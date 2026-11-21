@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.quarter-staff
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the +1 Initiative and the parry plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the +1 Initiative through the exact tie it creates, the parry and one refusal for the two-handed occupancy.
+
+# --- Authored scenarios ---
+# mechanic/weapon.quarter-staff - Balanced: +1 Initiative in close combat, and
+# a parry with a two-handed grip.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The Initiative bonus is pinned by the exact tie it creates:
+# the scripted tie die is consumed only when the two fighters are level.
+# Initiative 3 plus the printed +1 exactly equals the defender's 4, so the round must fall to a tie roll; without the bonus the defender would resolve first and the scripted tie die would go unused.
+
+- audit_id: mechanic/weapon.quarter-staff
+  id: quarter-staff-raises-its-bearers-initiative-by-one
+  fighters:
+    first:
+      main_weapon_id: weapon.quarter-staff
+      characteristics: &a-ws3-s3-t3-w2-i3 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i4 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The staff may parry: a 5 blocks a hit landed on a 4.
+
+- audit_id: mechanic/weapon.quarter-staff
+  id: quarter-staff-parries-a-hit-that-beats-the-to-hit-roll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.quarter-staff
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed two-handed occupancy is declared as a refusal.
+
+- audit_id: mechanic/weapon.quarter-staff
+  id: quarter-staff-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.quarter-staff
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

@@ -1,0 +1,269 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.gaoler-grapple
+# authoring_status: AUTHORED
+# authoring_progress: 11 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the declared
+#   grapple holds a victim that fails the escape test; the escape boundary (strictly under Strength -1) at S3
+#   and S4; a declined grapple and a missed grapple hit; the two-round repeat of the escape test at the start
+#   of the next phase (released, and still held with the holder only holding); the printed immunities (Large,
+#   Undead, Daemon, pain-immune).  REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the grapple's hit is an ordinary To Hit roll under the key
+#   `round.<i>.<side>.grapple.hit` and the victim's escape test is `round.<i>.<side>.grapple.strength`
+#   (the holder's side); the repeated test at the start of the next phase is keyed on the victim's side
+#   (`round.<i>.<victim>.grapple-escape`).  "Dead targets are immune" is unobservable in a duel that ends
+#   when a warrior is out of action.  The pain-immune immunity is reached through the only catalogue
+#   carrier of `mechanic.pain-immunity` (Veskit's No Pain, injected through skill_ids on a hand-built
+#   target); should that injection be refused by construction, the scenario names the carrier to replace.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Torturer's Grapple): "May replace all normal attacks with one grapple hit
+# dealing no damage. Target must roll strictly under Strength with -1 penalty; failure prevents all
+# actions. Repeat the escape test at the beginning of the next melee phase; on success the target acts
+# while still engaged. Holder can only hold. Dead, pain-immune, Undead, Daemon and Large targets are
+# immune."  Family model: the bearer is a hand-built fighter carrying only this mechanic through
+# skill_ids (WS3 S3 T3 W2 I5 A1, mace), charging so it strikes first; the victim is the hand-built
+# opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace) plus the one fact a clause reads.  Arithmetic: the grapple hit
+# needs 4+ (WS3 vs WS3); the escape test is a D6 strictly under S-1, so an S3 victim escapes only on a 1
+# (a 2 fails) and an S4 victim escapes on a 1 or 2.  A held victim strikes nothing (its tape holds no
+# attack die) and a holder only holds (no decision and no attack is requested while the hold lasts).
+# Large Target is the uniform `condition.large-target` binding (design ruling 2026-11-18).
+
+# The declared grapple hits (4) and the S3 victim's 2 is not strictly under S-1 = 2: held, no damage, no
+# action.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-declared-grapple-hit-holds-the-victim-that-fails-its-escape-test
+  fighters:
+    first:
+      &grappler
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.gaoler-grapple]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &victim
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 4}
+    - {key: round.0.first.grapple.strength, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, attacks.0.damage: 0,
+        state.second.wounds: 3, state.second.grappled: True, state.first.grappling: True,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A 1 is strictly under 2: the S3 victim escapes at once and strikes back in the same phase.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: the-victim-escapes-on-a-roll-strictly-under-strength-minus-one
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      <<: *victim
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 4}
+    - {key: round.0.first.grapple.strength, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.second.grappled: False, state.first.grappling: False,
+        attacks.1.hit: False, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary moves with Strength: the same 2 that held an S3 victim frees an S4 one (strictly under 3).
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-stronger-victim-escapes-on-the-two-that-held-the-weaker-one
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 4}
+    - {key: round.0.first.grapple.strength, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.grappled: False, state.first.grappling: False, attacks.1.hit: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "May replace": declining keeps the ordinary attacks with the carried weapon.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-declined-grapple-keeps-the-ordinary-attacks
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      <<: *victim
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.grappled: False, state.first.grappling: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The grapple is one hit: a missed grapple hit holds nobody and the victim acts normally.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-missed-grapple-hit-holds-nobody
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      <<: *victim
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.grappled: False, state.first.grappling: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The escape test is repeated at the beginning of the next melee phase: a 1 frees the victim, who acts
+# while still engaged; the released holder is offered the grapple again (declined) and both strike.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: the-held-victim-escapes-at-the-start-of-the-next-phase-and-acts
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      <<: *victim
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+    - {key: round.1.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 4}
+    - {key: round.0.first.grapple.strength, value: 2}
+    - {key: round.1.second.grapple-escape, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.grappled: True, state.first.grappling: True}
+    1: {state.second.grappled: False, state.first.grappling: False, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# Failing the repeated test keeps the victim held and the holder can only hold: neither side is asked
+# for a decision or an attack in the second phase.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: the-victim-failing-the-repeated-test-stays-held-while-the-holder-only-holds
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      <<: *victim
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: true}
+  rolls:
+    - {key: round.0.first.grapple.hit, value: 4}
+    - {key: round.0.first.grapple.strength, value: 2}
+    - {key: round.1.second.grapple-escape, value: 2}
+  expect_rounds:
+    0: {state.second.grappled: True, state.first.grappling: True}
+    1: {state.second.grappled: True, state.first.grappling: True, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# Immunities: against an immune target the grapple is never offered (no decision is requested) and the
+# bearer fights with its ordinary attacks.  A Large target (the uniform condition.large-target binding).
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-large-target-is-immune-and-no-grapple-is-offered
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.large-target]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.grappled: False, state.first.grappling: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An Undead target.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: an-undead-target-is-immune-and-no-grapple-is-offered
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.grappled: False, state.first.grappling: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Daemon target.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-daemon-target-is-immune-and-no-grapple-is-offered
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.grappled: False, state.first.grappling: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A pain-immune target: the catalogue's pain-immunity carrier (Veskit's No Pain) supplies the fact.
+- audit_id: mechanic/mechanic.gaoler-grapple
+  id: a-pain-immune-target-is-immune-and-no-grapple-is-offered
+  fighters:
+    first:
+      <<: *grappler
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.veskit-no-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.grappled: False, state.first.grappling: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

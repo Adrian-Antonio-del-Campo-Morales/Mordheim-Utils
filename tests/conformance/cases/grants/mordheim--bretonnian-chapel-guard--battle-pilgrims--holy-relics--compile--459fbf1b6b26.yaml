@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/compiler.holy-relic-frenzy
+# authoring_status: AUTHORED
+# authoring_progress: the admitted holy-relic-frenzy clause carries 4 authored scenarios: a Battle
+#   Pilgrim that owns the Holy Relic enters the duel with its frenzy flag set and therefore strikes
+#   twice; the same bearer takes no ordinary Fear test for a charge it receives; and the printed
+#   reminder "when frenzied, he is immune to Hatred" as a pair - the relic-bearer carrying the supplied
+#   condition.hatred asks for no reroll of a missed first-turn blow, while the same Pilgrim without the
+#   relic does.  The co-printed henchman group split is a separate, excluded construction clause.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
+#   behavioral result is claimed.
+# Status corrected 2026-11-19: the earlier PARTIAL claimed the Frenzy-suppresses-Hatred face "needs a
+#   Hatred source the sources do not carry" and that the relic's equipment grant "is not yet
+#   connected".  Both were false: condition.hatred is a supplied condition
+#   (catalog/rules/conditions.yaml, binding skill.hatred) that any fighter can carry through
+#   condition_ids, and the relic-bearing Pilgrim compiles with Frenzy (the authored tapes below
+#   assert state.second.frenzy: true).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: holy-relic-frenzy (scope: YES)
+# AUTHORED[holy-relic-frenzy]: 4 scenario(s) cover the admitted relic-granted Frenzy, its Fear
+#   consequence, and the printed reminder that a frenzied bearer is immune to Hatred (a supplied
+#   condition.hatred requests no first-turn reroll on the relic-bearer, and its no-relic control does).
+# Superseded blocker (provenance, recorded before 2026-11-19): [CLOSING-REVIEW [C]] 2 scenario(s)
+#   cover the admitted relic-granted Frenzy and its Fear consequence.  Blocker: the unnamed Hatred
+#   source the printed suppression face would need, an identity the sources do not carry.  Held
+#   separately, as the implementation defect the authored tapes detect: the unrecorded equipment
+#   binding of the relic to trait.frenzy.
+#
+# Clause: holy-relic-group-split (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/compiler.holy-relic-frenzy
+  id: the-pilgrim-owning-the-holy-relic-strikes-twice
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, owned_item_ids: [holy_relic_pilgrim_only], main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/compiler.holy-relic-frenzy
+  id: the-pilgrim-owning-the-holy-relic-takes-no-fear-test-for-the-charge-it-receives
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, owned_item_ids: [holy_relic_pilgrim_only], main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed reminder "(Reminder: when frenzied, he is immune to Hatred.)": the relic-bearer also
+#   carries the supplied condition.hatred, whose printed first-turn reroll of missed attacks would
+#   otherwise apply.  Frenzied, he is immune to it, so both of his missed first-turn blows stand and
+#   the strict tape declares no reroll die; an engine that offered the Hatred reroll fails the case.
+#   The opponent carries no Fear so that no separate psychology test enters the tape.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/compiler.holy-relic-frenzy
+  id: the-frenzied-relic-bearer-is-immune-to-hatred-and-rerolls-no-missed-blow
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, owned_item_ids: [holy_relic_pilgrim_only], main_weapon_id: weapon.mace, condition_ids: [condition.hatred]}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control of the same reminder: the same Pilgrim with the same supplied Hatred but no relic is not
+#   frenzied, so the printed Hatred reroll of a missed first-turn attack applies and the tape declares
+#   that reroll die.  Together with the scenario above, the reroll's presence is decided by the relic.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/compiler.holy-relic-frenzy
+  id: without-the-relic-the-same-hated-pilgrim-rerolls-the-missed-blow
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, main_weapon_id: weapon.mace, condition_ids: [condition.hatred]}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit.reroll, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

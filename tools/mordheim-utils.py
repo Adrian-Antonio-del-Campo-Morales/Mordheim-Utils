@@ -5,7 +5,7 @@ Four task groups, each with commands and, where useful, named subsections::
 
     python tools/mordheim-utils.py app combat-lab
     python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
-    python tools/mordheim-utils.py performance benchmark --scenario basic
+    python tools/mordheim-utils.py performance benchmark --scenarios basic
     python tools/mordheim-utils.py check verify
 
 ``app`` launches an application, ``tests`` selects one maintained test area,
@@ -56,10 +56,11 @@ KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_we
 TYPESCRIPT_PACKAGE = REPO_ROOT / "packages" / "typescript"
 WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
 
-#: ``check report <kind>`` forwards to the matching Combat Lab report command.
+#: ``check report <kind>`` forwards to the matching report generator:
+#: ``rules`` runs the knowledge-base clause tool, ``tests`` a Combat Lab command.
 REPORT_KINDS = {
-    "rules": "audit",
-    "tests": "test-report",
+    "rules": ("tools.knowledge.clauses", "report"),
+    "tests": ("mordheim_combat_lab", "test-report"),
 }
 
 APP_COMMANDS = {
@@ -68,14 +69,15 @@ APP_COMMANDS = {
 }
 
 PERFORMANCE_COMMANDS = {
-    "benchmark": "measure engine execution for one scenario or pair set",
+    "benchmark": "measure engine speed on the selected scenarios",
     "calibrate": "measure and save this machine's engine optima",
 }
 
 CHECK_COMMANDS = {
     "verify": "knowledge-base structural verification (Combat Lab `verify`)",
     "report": "generate the rule inventory or the test reports",
-    "parity": "statistical parity campaign (Combat Lab `parity`)",
+    "parity": "compare the optimized engines with the modular oracle (Combat Lab `parity`)",
+    "samples": "sample engines into a store and compare stored samples later",
     "coverage": "code-coverage budget gate (Combat Lab `coverage-gate`)",
     "presentation": "web text, translation and presentation audits",
     "ci": "run the local CI validation gates",
@@ -156,19 +158,28 @@ TESTS_SECTIONS = {
         "requires_native": True,
     },
     "kb": {
-        "summary": "knowledge base; construction and E2E are separate selections",
-        "dirs": ("tests/knowledge", "tests/construction", "tests/integration/e2e"),
+        "summary": "knowledge base; construction is a separate selection",
+        "dirs": ("tests/knowledge", "tests/construction"),
         "subsections": {
             "construction": (("pytest", ("tests/construction",)),),
-            "e2e": (("pytest", ("tests/integration/e2e",)),),
         },
-        # Plain `tests kb` is the knowledge suite only: the construction and
-        # E2E batteries are large and must be selected deliberately. The E2E
-        # corpus keeps its example serial; CI runs it that way too.
+        # Plain `tests kb` is the knowledge suite only: the construction
+        # suite is large and must be selected deliberately.
         "runs": (("pytest", ("tests/knowledge",)),),
         "example_options": "-n 8 --dist=load -q",
-        "subsection_options": {"construction": "-n 8 --dist=load -q",
-                               "e2e": "-q"},
+        "subsection_options": {"construction": "-n 8 --dist=load -q"},
+    },
+    "conformance": {
+        "summary": "rules conformance: scripted scenarios through KB, compiler and modular engine",
+        "dirs": ("tests/conformance",),
+        "subsections": {
+            "scenarios": (("pytest", ("tests/conformance/execution",)),),
+            "integrity": (("pytest", ("tests/conformance/integrity",)),),
+        },
+        # The whole suite is large and must be selected deliberately; its
+        # example stays serial, and CI runs it that way too.
+        "runs": (("pytest", ("tests/conformance",)),),
+        "example_options": "-q",
     },
     "parity": {
         "summary": "statistical engine comparisons and their tooling",
@@ -360,7 +371,8 @@ def _tests_help(name: str | None = None) -> str:
             "", "Find the right command:",
             "  tests modular mechanics -h     rule checks and eight-worker examples",
             "  tests modular runtime -h       execution/state/parallelism checks",
-            "  tests kb -h                    knowledge; construction and E2E are separate",
+            "  tests kb -h                    knowledge; construction is separate",
+            "  tests conformance -h           rules-conformance scenarios versus corpus integrity",
             "  tests warband-manager -h        choose python or web explicitly",
             "  tests parity -h                statistical tests versus runner self-checks",
             "", "Discover versus execute:",
@@ -396,7 +408,10 @@ def _tests_help(name: str | None = None) -> str:
         "vectorized": "Existing NumPy mechanics/runtime checks; statistical engine equivalence is tested separately.",
         "native": "Test the compiled engine and its runtime. If the extension does not import, the launcher\n"
                   "fails before pytest runs (exit 1); remaining skips are listed with their reasons.",
-        "kb": "The bare section runs knowledge contracts only. construction and e2e are explicit alternatives.",
+        "kb": "The bare section runs knowledge contracts only. construction is an explicit alternative.",
+        "conformance": "Scripted scenarios proving the KB -> compiler -> modular engine path follows the printed\n"
+                       "rules, clause by clause. scenarios executes the corpus; integrity checks the corpus,\n"
+                       "its clause coverage, the accepted-coverage baseline and the runner. Bare runs both.",
         "parity": "statistical runs engine comparisons; tooling tests the comparator/runner. Bare selection runs both.",
         "shared": "Common engine contracts and frozen-corpus codec/catalogue integrity; no complete rule battery.",
         "tooling": "Check test/development tools. Python is the bare default; web selects architecture Vitest checks.",
@@ -861,7 +876,9 @@ Start here:
   python tools/mordheim-utils.py performance calibrate -h
 
 Measurements run real combats. Keep them isolated from other heavy workloads.
-Use --processes 8 for an explicit multicore benchmark; do not wrap it in xdist.
+Use --workers 8 for an explicit multicore benchmark; do not wrap it in xdist.
+--scenarios small|normal|big, realistic-50|realistic-100 (the realistic sets to
+measure performance on) or scenario names selects what runs in both commands.
 """
 
 
@@ -881,35 +898,42 @@ def performance_command(args: list[str]) -> int:
                 "python tools/mordheim-utils.py performance benchmark [options]",
                 "Measure engine speed. Select a workload, engine and sample size;\nresults describe performance, not rule correctness or engine equivalence.",
                 "python -m mordheim_combat_lab benchmark",
-                "--scenario ID...   scenarios to measure (default: all basic scenarios)\n"
-                "--backend ENGINE   modular, numpy or native; accepts several engines\n"
-                "--simulations N    duels per scenario (default 100: a smoke size)\n"
-                "--processes 8      multicore measurement\n"
-                "--warmups N        untimed warm-ups\n--repeats N        timed repetitions\n"
-                "--profile          cProfile the timed repeats; prints hotspots, saves .pstats\n"
-                "--deep            size/batch sweep\n--pair-set SET    mini, fast or full for deep/tts\n"
-                "--json            structured output\n--output PATH     save results\n"
-                "--help-full       all options, scenario names, defaults and units",
+                "--scenarios NAME...    what runs (default small); see the shared options\n"
+                "--backend ENGINE...    modular, numpy, native\n"
+                "--simulations N[,N]    duels per scenario; a list sweeps (default 100: smoke)\n"
+                "--batch-size N[,N]     NumPy/native batch; a list sweeps (default 100000)\n"
+                "--workers N            worker processes, one scenario per worker\n"
+                "--warmups N / --repeats N   untimed and timed runs (median reported)\n"
+                "--strategies LIST      compare sequential, processes=N, parallel=N[:C]\n"
+                "--profile              cProfile one configuration; prints hotspots, saves .pstats\n"
+                "--baseline PATH        compare with a saved report (--output .json)\n"
+                "--require-improvement [PCT]  fail unless something improves (default 10)\n"
+                "--max-regression PCT   largest regression the gate allows (default 5)\n"
+                "--output PATH          save .json, .csv or .md\n--json                 print JSON",
                 examples=(
-                    "performance benchmark --scenario basic --backend numpy --simulations 100k --processes 8 --repeats 3",
-                    "performance benchmark --backend modular --scenario basic stateful -n 2000 --profile",
-                    "performance benchmark --deep --pair-set mini --backend numpy --processes 8",
-                ), notes=("The default -n 100 is a smoke measurement; pass real sizes for stable numbers.",),
+                    "performance benchmark --scenarios big --backend numpy --simulations 100k --output outputs/benchmarks/before.json",
+                    "performance benchmark --scenarios big --backend numpy --simulations 100k --baseline outputs/benchmarks/before.json --require-improvement",
+                    "performance benchmark --scenarios basic --backend numpy --simulations 100k,1m --batch-size 25k,100k",
+                    "performance benchmark --scenarios small --backend numpy --simulations 400k --strategies sequential,processes=4,parallel=4",
+                    "performance benchmark --scenarios basic stateful --backend modular --simulations 2000 --profile",
+                ), notes=("The default --simulations 100 is a smoke measurement; pass real sizes for stable numbers.",
+                          "A gate needs the baseline's design: same --scenarios, sizes, seed, warmups, repeats, workers, backends.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py performance calibrate [options]",
             "Measure batch sizes and worker configurations for this machine.\nBy default the resulting calibration is installed for future application runs.",
             "python -m mordheim_combat_lab calibrate",
-            "--pairs SET        mini, fast or full (default: full)\n"
+            "--scenarios NAME... what runs (default big; NumPy sweeps narrow big to normal)\n"
+            "--simulations N    duels per scenario in the sequential sweep (worker sweep: 2x)\n"
             "--no-install       measure without installing settings\n"
             "--output PATH      save an additional result file\n--json             structured output\n"
             "--reset            remove installed calibration\n"
-            "--help-full        sample-size options and exact defaults",
-            examples=("performance calibrate --pairs mini --no-install",
-                      "performance calibrate --pairs full",
+            "--help-full        exact defaults",
+            examples=("performance calibrate --scenarios small --no-install",
+                      "performance calibrate --scenarios big",
                       "performance calibrate --reset"),
             notes=("Already surveys worker counts; there is no additional --workers flag.",
-                   "Even mini can take minutes; run separately from tests and benchmarks."),
+                   "Even small can take minutes; run separately from tests and benchmarks."),
         )
     return _run_module("mordheim_combat_lab", name, *forwarded)
 
@@ -926,21 +950,23 @@ Choose a concrete operation; these commands do not form a required sequence.
 
 Data:
   verify        validate KB documents/bindings and try compiling profiles
-  report rules  export the rule inventory; no combat correctness certification
+  report rules  export the rule inventory and clause coverage; no correctness certification
 
-Engine scenarios:
-  parity        execute catalogued scenarios on modular, or compare candidates
+Engine comparison:
+  parity        compare NumPy/native with the modular oracle (live run)
+  samples       sample one engine at a time into a store; compare stored samples
 
 Test quality and outputs:
   coverage      measure code coverage and compare it with the recorded budget
-  report tests  generate technical test reports, optionally statistical results
+  report tests  run the tests and write the technical test CSV
 
 Web and integration workflow:
   presentation  audit web text, translations and visible presentation
   ci            run the configured local checks, typechecks and builds
 
 Examples:
-  python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1
+  python tools/mordheim-utils.py check parity --scenarios small --workers 4
+  python tools/mordheim-utils.py check samples sample --backend numpy --scenarios big
   python tools/mordheim-utils.py check coverage --json
   python tools/mordheim-utils.py check report rules -h
 
@@ -958,33 +984,34 @@ def _check_command_help(name: str) -> int:
             "audit bindings/phases, and try default constructions for band profiles.\n"
             "This is not tests kb and does not execute combat-rule scenarios.",
             "python -m mordheim_combat_lab verify",
-            "--knowledge PATH   alternative knowledge root\n--json             structured error/count output\n"
-            "--inventory        print inventory instead of running the checks\n"
-            "--help-full        complete delegated options",
-            ("check verify --json", "check verify --inventory"),
-            ("Uses real compilation, not frozen fighters.",),
+            "--json             structured error/count output",
+            ("check verify", "check verify --json"),
+            ("Uses real compilation, not frozen fighters.",
+             "Set MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH to check another knowledge base.",
+             "The rule inventory itself is `check report rules`."),
         ),
         "parity": (
-            "Run scenarios from the chosen catalogue. Modular-only execution checks\n"
-            "executability; NumPy/native modes compare distributions with modular.",
+            "Compare the optimized engines with the modular oracle on the selected\n"
+            "scenarios (six-sigma gate). Without --scenarios only the exact\n"
+            "obligation checks run, which takes a second.",
             "python -m mordheim_combat_lab parity",
-            "--catalog NAME     precompiled, battery or all\n"
-            "--backend ENGINE   modular (no comparison), numpy, native or all candidates\n"
-            "--profile NAME     quick, complete or deep; filters battery only\n"
-            "--simulations N    samples per scenario; default: each case's own count\n"
-            "--workers 8        workers for modular samples (also accepts auto or 1)\n"
-            "--seed N           sample seed\n--require-complete fail if any selected case is blocked\n"
-            "--json             structured results\n--output PATH      save a JSON catalogue-run report\n"
-            "--help-full        complete options, including historical presets",
-            ("check parity --catalog precompiled --backend modular --workers 8 --simulations 1",
-             "check parity --catalog battery --backend modular --workers 8 --simulations 1",
-             "check parity --catalog all --backend modular --workers 8 --simulations 1",
-             "check parity --catalog battery --profile quick --backend numpy --workers 8 --require-complete"),
-            ("No profile means all cases of the selected catalogue(s).",
-             "Precompiled cases load frozen fighters; battery cases compile their builds.",
-             "COMPLETED means executable, not parity approved; blocked cases were not run.",
-             "One simulation checks one execution path; eight workers cannot split one duel.",
-             "Use --level small|normal|long with precompiled scenarios; historical --pair-set presets remain separate."),
+            "--scenarios NAME...  what runs; see the shared options (no default)\n"
+            "--backend ENGINE...  numpy, native or both; modular alone only executes it\n"
+            "--simulations N      duels per scenario (default 10000; under 7200 = UNDERPOWERED)\n"
+            "--rounds N[,N...]    round limit; a list compares every horizon\n"
+            "--seed N             random seed\n"
+            "--workers N|auto     worker processes for the modular oracle\n"
+            "--require-complete   fail unless every case passed\n"
+            "--output PATH        save .json or .md\n--json               print JSON",
+            ("check parity",
+             "check parity --scenarios small --workers 4",
+             "check parity --scenarios big --backend numpy native --simulations 100k --workers 4",
+             "check parity --scenarios basic heavy-grind --rounds 2,4,8,15",
+             "check parity --scenarios battery --simulations 7200 --require-complete",
+             "check parity --scenarios deliveries --backend modular --simulations 1"),
+            ("A case an engine cannot run is listed NOT_RUN or INCOMPATIBLE with its reason.",
+             "--backend modular alone checks executability: COMPLETED is not parity.",
+             "To reuse expensive oracle samples, use `check samples` instead."),
         ),
         "coverage": (
             "Run the configured Python suites under coverage measurement, then check\n"
@@ -1013,8 +1040,8 @@ def _check_command_help(name: str) -> int:
             "-h, --help  this guide; no other options",
             ("check ci",),
             ("May take substantial time and creates generated/build outputs.",
-             "Does not execute the E2E battery or a full engine-parity campaign.",
-             "Run those deliberately using tests kb e2e or check parity."),
+             "Does not execute the rules-conformance suite or a full engine-parity campaign.",
+             "Run those deliberately using tests conformance or check parity."),
         ),
     }
     detail, runs, options, examples, notes = guides[name]
@@ -1028,10 +1055,10 @@ def report_command(args: list[str]) -> int:
     if not args or args[0] in ("-h", "--help"):
         print("usage: python tools/mordheim-utils.py check report <rules|tests> [options]")
         print()
-        print("  rules   auditable per-rule inventory (CSV/JSON in outputs/audit/)")
-        print("  tests   human-readable parity and technical test CSVs")
+        print("  rules   rule inventory and clause coverage (CSV/JSON in outputs/audit/)")
+        print("  tests   run the tests and write the technical test CSV")
         print()
-        print("Runs: python -m mordheim_combat_lab audit (rules)")
+        print("Runs: python -m tools.knowledge.clauses report (rules)")
         print("      python -m mordheim_combat_lab test-report (tests)")
         print()
         print("Options after the kind are forwarded to the report command;")
@@ -1045,31 +1072,31 @@ def report_command(args: list[str]) -> int:
             file=sys.stderr,
         )
         return 2
+    module, command = REPORT_KINDS[kind]
     if "--help-full" in forwarded:
-        return _run_module("mordheim_combat_lab", REPORT_KINDS[kind], "--help")
+        return _run_module(module, command, "--help")
     if any(arg in ("-h", "--help") for arg in forwarded):
         if kind == "rules":
             return _delegated_help(
                 "python tools/mordheim-utils.py check report rules [options]",
-                "Export the maintained rule inventory with classifications and scope.\nThis is a data report, not evidence that game rules execute correctly.",
-                "python -m mordheim_combat_lab audit",
-                "--output PATH   destination directory\n--scope VALUE   YES, NO, LATER or UNCLASSIFIED\n"
-                "--family NAME   mechanism-family filter\n--help-full     all inventory filters",
+                "Export every classified rule, mechanic and item with its scope, binding and\n"
+                "clause coverage (declared conformance scenarios and `covers` markers).\n"
+                "This is a data report, not evidence that game rules execute correctly.",
+                "python -m tools.knowledge.clauses report",
+                "--output DIR    destination directory (default outputs/audit)",
                 examples=("check report rules --output outputs/audit",),
-                notes=("Writes report files; does not certify E2E or parity coverage.",),
+                notes=("Writes rules-inventory.csv, clause-coverage.csv and summary.json; "
+                       "it does not run or certify conformance or parity coverage.",),
             )
         return _delegated_help(
             "python tools/mordheim-utils.py check report tests [options]",
-            "Execute the technical test-report workflow and export its results.\nOptionally add statistical engine comparisons; this can be expensive.",
+            "Run the repository's tests and write an Excel-friendly technical CSV.\nEngine comparisons belong to `check parity` and `check samples`.",
             "python -m mordheim_combat_lab test-report",
-            "--output PATH              report directory\n--statistical              also run statistical comparisons\n"
-            "--statistical-simulations N samples per scenario\n--workers 8                modular workers for statistical samples only\n"
-            "--seed N                   statistical seed\n--help-full                complete options",
-            examples=("check report tests --output outputs/test-report",
-                      "check report tests --statistical --workers 8 --output outputs/test-report"),
+            "--output DIR    report directory (default: timestamped under outputs/)",
+            examples=("check report tests --output outputs/test-report",),
             notes=("Unlike report rules, this command executes checks, not just inventory export.",),
         )
-    return _run_module("mordheim_combat_lab", REPORT_KINDS[kind], *forwarded)
+    return _run_module(module, command, *forwarded)
 
 
 def check_command(args: list[str]) -> int:
@@ -1079,6 +1106,9 @@ def check_command(args: list[str]) -> int:
     name, forwarded = args[0], args[1:]
     if name == "report":
         return report_command(forwarded)
+    if name == "samples":
+        # The stored-sample tool owns its sub-commands and their help.
+        return _run_module("tools.verification.parity_samples", *(forwarded or ["--help"]))
     if name in ("verify", "parity", "coverage", "presentation", "ci"):
         if "--help-full" in forwarded and name in ("verify", "parity", "coverage"):
             lab_name = {"verify": "verify", "parity": "parity", "coverage": "coverage-gate"}[name]
@@ -1242,7 +1272,8 @@ Tests:
   tests modular               rule mechanics and reference-engine runtime
   tests vectorized            NumPy mechanics and runtime
   tests native                native-engine tests (extension required)
-  tests kb                    KB contracts; construction/E2E are subsections
+  tests kb                    KB contracts; construction is a subsection
+  tests conformance           rules-conformance scenarios and corpus integrity
   tests parity                statistical comparison tests and runner checks
   tests shared                common engine contracts and frozen inputs
   tests tooling               launcher, architecture, coverage and report tools
@@ -1252,7 +1283,8 @@ Performance:
   performance calibrate       measure and optionally save machine settings
 
 Checks and reports:
-  check parity                run catalogued scenarios or compare engine samples
+  check parity                compare NumPy/native with the modular oracle
+  check samples               sample engines into a store; compare stored samples
   check verify                validate KB structure/bindings and compile profiles
   check coverage              measure tests' code coverage against a budget
   check report rules          export the rule inventory
@@ -1260,12 +1292,30 @@ Checks and reports:
   check presentation          audit web text, translations and presentation
   check ci                    local regression checks, typechecks and web build
 
+Shared options (performance benchmark/calibrate, check parity/samples):
+  --scenarios NAME...   what runs, the same values everywhere:
+                          small (8) | normal (30) | big (all 43)  scenario levels
+                          deliveries            every parity delivery
+                          battery               every battery case
+                          basic, long, ...      one scenario; delivery/... or audit_id::id
+                                                one delivery; battery/<id> one case
+                        several values run their union; a case a tool cannot
+                        run is listed with the reason
+  --simulations N       duels per scenario (k/m suffixes: 100k, 1m)
+  --backend ENGINE...   modular, numpy, native
+  --workers N           worker processes
+  --batch-size N        duels per engine batch
+  --rounds N            round limit, replacing each scenario's own
+  --seed N              random seed
+  --output PATH         report file      --json   print the report as JSON
+  Under `tests`, -n is pytest's worker count: it belongs to pytest.
+
 Start here:
   python3 tools/setup_worktree.py   (once per checkout or worktree: its own .venv)
   python tools/mordheim-utils.py tests env
   python tools/mordheim-utils.py tests modular mechanics -h
   python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
-  python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1
+  python tools/mordheim-utils.py check parity --scenarios small --workers 4
 
 Help and discovery:
   <group> -h                  commands within a group

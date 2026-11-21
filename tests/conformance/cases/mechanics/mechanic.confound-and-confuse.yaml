@@ -1,0 +1,116 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.confound-and-confuse
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred-frenzy-and-charge-rages batch 2026-11-18): the
+#   per-turn chooser is offered to a hand-built bearer and the accepted Banter shifts both hit targets;
+#   the accepted Trip opens the trip offer after the hit and knocks the opponent down; only the first
+#   accepted slot lights (the dodge accepted, banter and trip are not offered and the targets stay
+#   ordinary); the same warrior without the mechanic is offered nothing.  The real Dark Jester carrier is
+#   evidenced in its grant files (catalog--dramatis-personae--...jester...--076672b30bb9 and
+#   ...--0df4aebbcb5a).  REVIEWED still requires manual semantic review.
+# AUTHORED: all applicable requirements carry a scenario; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the chooser lights one of three slots; the Banter and Trip
+#   consequences read the lit slot alone, so a bearer of this mechanic without the sibling Babbling Banter
+#   tag still gets the Banter modifiers when that slot is chosen (the Jester carries all three printed
+#   rules, so no printed profile reaches this gap).  The dodge slot's 4+ save is the Sidestepper's and is
+#   not rolled here (the opponent's blow misses).  The removal probe reports a skill_ids injection inert
+#   by design (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (The Dark Jester in Mordheim, Confound and Confuse): one combat trick is chosen each
+# combat turn among Sidestepper (dodge), Babbling Banter (+1 to hit for the Jester, -1 for his
+# opponent) and Trip (replace a wound roll by a 2+ trip).  The shared mechanic is injected through
+# skill_ids on a hand-built warrior (WS3 S3 T3 W2 I5 A1 Ld7, mace) against a hand-built opponent (WS3
+# S3 T3 W3 I2 A1 Ld7, mace, no armour).  Protocol (tests/construction/test_dark_jester_contracts.py):
+# round.<i>.<side>.jester-trick.{dodge,banter,trip}_trick_active offered in that order until one is
+# accepted; the trip offer round.<i>.<side>.attack.<n>.trip.hit follows a hit, its die is .trip-roll.
+# WS3 against WS3 hits on 4+ (3+ / 5+ under Banter); S3 wounds T3 on 4+; Initiative 5 strikes before 2.
+
+- audit_id: mechanic/mechanic.confound-and-confuse
+  id: the-chosen-banter-shifts-both-hit-targets
+  fighters:
+    first:
+      &confound-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.confound-and-confuse]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &confound-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: true}
+  expect_rounds:
+    0: {attacks.0.hit_target: 3, attacks.0.wounded: True, attacks.1.hit_target: 5, attacks.1.hit: False, state.second.wounds: 2, state.first.banter_trick_active: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/mechanic.confound-and-confuse
+  id: the-chosen-trip-replaces-the-wound-roll-after-the-hit
+  fighters:
+    first: *confound-bearer
+    second: *confound-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.trip-roll, value: 2}
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: false}
+    - {key: round.0.first.jester-trick.trip_trick_active, value: true}
+    - {key: round.0.first.attack.0.trip.hit, value: true}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.wounded: False, state.second.condition: KNOCKED_DOWN, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One trick per turn: the dodge is accepted first, so neither the banter nor the trip is offered; the
+# bearer's hit keeps the ordinary 4+ and goes to the wound die (1 fails), and no trip offer follows.
+- audit_id: mechanic/mechanic.confound-and-confuse
+  id: only-the-first-accepted-trick-lights-and-the-others-are-not-offered
+  fighters:
+    first: *confound-bearer
+    second: *confound-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: true}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.wounded: False, attacks.1.hit_target: 4, state.first.dodge_trick_active: True, state.first.banter_trick_active: False, state.first.trip_trick_active: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the mechanic no chooser is offered: the strict script holds no decision.
+- audit_id: mechanic/mechanic.confound-and-confuse
+  id: the-same-warrior-without-the-mechanic-is-offered-no-trick
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: *confound-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.wounded: False, attacks.1.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

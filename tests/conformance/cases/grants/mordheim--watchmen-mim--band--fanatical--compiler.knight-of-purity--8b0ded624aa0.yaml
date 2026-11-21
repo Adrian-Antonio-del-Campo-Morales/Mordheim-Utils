@@ -1,0 +1,153 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses of the band's Fanatical rule carry scenarios.  The record is
+#   bound (band--fanatical -> compiler.knight-of-purity), and the compiler contract is implemented in
+#   packages/python/roster-construction/mordheim_construction/compiler.py (the Fanatical branch of
+#   compile_fighter): a build carrying the rule and the supplied promotion fact trait `crusader_of_law`
+#   receives mechanic.automatic-leadership, and a non-Hero carrying that fact is refused.  The earlier
+#   notes that the record had "no binding" and that the advance clause had no recipient were stale.  The
+#   band-route scenarios below read the promoted Watch Captain against the same Captain unpromoted and an
+#   unpromotable henchman; the two older scenarios keep the canonical operator supplied directly.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: fanatical-advance--scope--automatic-leadership (scope: YES)
+# AUTHORED[fanatical-advance--scope--automatic-leadership]: printed "Any Hero of the Watch with 30
+#   experience points becomes a crusader of Law; Knights of Purity automatically pass all Leadership-based
+#   tests they are required to take."  The 30-experience trigger is the scope-NO campaign clause; what this
+#   clause admits is the promoted Hero's auto-pass, and the promotion is supplied as the contract's own trait
+#   `crusader_of_law` (contracts.py TRAIT_TYPES).  3 scenarios: the promoted printed Watch Captain, charged by
+#   a Fear-causer, takes no Fear test (no Leadership die declared); the same Captain without the promotion
+#   is tested (both dice declared); and the promotion supplied to the henchman Officers - not a Hero of the
+#   Watch - is refused with the compiler's own message "crusader_of_law requires a Hero of the Watch".
+#
+# Clause: fanatical-autopass--scope--automatic-leadership (scope: YES)
+# AUTHORED[fanatical-autopass--scope--automatic-leadership]: 2 scenarios take the printed auto-pass onto the
+#   Leadership tests a duel round forces on the bearer, in both directions: the charged Knight passes the
+#   Fear test with no Leadership die requested at all, and the charging Knight keeps the charge under the
+#   same dice.  The bearer is the hand-built fixture carrying the canonical operator directly, which is the
+#   device the accepted twins of this mechanic use (carnival-of-chaos nurglings/plague-bearers, black-orcs
+#   orc-nuttaz crazy, cult-of-the-possessed darksouls crazed).  The band's own grant is evidenced by the
+#   band-route scenarios at the end of this file (the promoted Watch Captain against the unpromoted one),
+#   which also cover this clause; the earlier note that the row carried no binding was stale - it binds
+#   compiler.knight-of-purity, which the compiler turns into mechanic.automatic-leadership.
+#
+# Clause: fanatical-advance--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: fanatical-autopass--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted twins of the same mechanic; no
+# engine output was consulted.  The Fear causer opposite the bearer is a hand-built fixture declaring the
+# printed trait, and every strike is declared as a natural 1, so a passing round reports nothing but the
+# absence of the Fear request.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-charged-knight-of-purity-passes-the-fear-test-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first.condition: STANDING, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-charging-knight-of-purity-keeps-its-charge-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first_charged: true, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Band route: the printed Watch Captain with the supplied promotion fact is the Knight of Purity the
+# printed rule names; the charger is a hand-built Fear-causer, so the Captain's only Leadership-based
+# test in this round is the charged warrior's Fear test.  Every strike is declared as a natural 1.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-promoted-watch-captain-takes-no-fear-test
+  covers: [fanatical-advance--scope--automatic-leadership, fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: watch-captain
+      trait_overrides: {crusader_of_law: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.condition: STANDING, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same Captain without the promotion is no Knight of Purity, so the same charge owes the
+# printed Fear test; both Leadership dice are declared and pass on 1+1 against the printed Ld 8.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: the-unpromoted-watch-captain-is-tested-for-fear
+  covers: [fanatical-advance--scope--automatic-leadership, fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: watchmen-mim, profile_id: watch-captain}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.condition: STANDING, state.second.wounds: 1, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Recipient: only a Hero of the Watch can become a crusader of Law, so the promotion supplied to the
+# henchman Officers is refused at construction.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/compiler.knight-of-purity
+  id: a-henchman-cannot-be-promoted-to-knight-of-purity
+  covers: [fanatical-advance--scope--automatic-leadership]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: officers
+      trait_overrides: {crusader_of_law: true}
+  expect_error: crusader_of_law requires a Hero of the Watch

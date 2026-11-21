@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-head
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a mace's Injury
+#   total of two leaves the band's Dwarf Knocked Down (the club/mace Concussion conversion to Stunned is
+#   suppressed), a genuine Stunned total of three still Stuns him, and the non-regression control shows the
+#   same mace still converts a two on an unmarked bearer.  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the boundary pair and the unmarked control are declared below; REVIEWED still requires manual
+#   semantic review.
+# Discrimination check (2026-11-18): the first triage batch recorded Discrimination notes where the KB
+#   encodes a Skaven rulebook-inheritance access twice (band record plus the profiles' own `special`
+#   access).  Hard Head was checked the same way for this band: no profile of dwarf-guildsmen-kaz carries a
+#   hard-head rule of its own and no other band record binds trait.concussion-immune (grep of the band's
+#   special-rules.yaml and profiles.yaml), so the inheritance record is the single source of the
+#   immunity and no Discrimination note is required.  The sibling hard-to-kill identity of the same
+#   record keeps its clause-based compile-level tapes; this undivided identity evidences the duel effect.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Family model (Hard Head / concussion immunity, band grant).  The record band--town-crier-6-inheritance
+# (Karak Azgal p.26: "All of the special rules ... from Town Crier 6 (or Best of Town Crier) apply apart from
+# Incomparable Miners") is a `grant: band` rule with `applies_to: {band: true}` (every profile of the band is a Dwarf); its hard-head effect binds
+# `trait.concussion-immune: true`, which the compiler projects as the `concussion_immune` tag the injury
+# operator reads (phases.injury_condition: `concussion and not concussion_immune and 2 <= total <= 4`
+# raises a club/mace total to Stunned).  The Town Crier 6 Dwarf rule reads "Dwarfs ignore the special
+# rules for maces, clubs etc. which can stun".  A band grant selects nothing, so there is no refusal to
+# evidence; the control is the hand-built unmarked bearer of the family model.
+# Fixture facts: the bearer is the band's printed Master Craftsman with the corpus characteristics (WS3 S3 T3
+# I2 A1, printed Ld9) and wounds: 1 so the first wound reaches the Injury roll; the mace is on the
+# band's own list; the bearer is silenced with attacks: 0.  The opponent is hand-built (WS3 S3 T3 W2 I5
+# A1, mace) and charges, declaring the hit (4), the wound (4, below the critical six) and the Injury die
+# under test.  A two is Knocked Down on the ordinary chart and on the inherited Hard to Kill chart alike
+# (1-2 Knocked Down), so the sibling hard-to-kill binding cannot decide these scenarios; a three is
+# Stunned on both charts.  Hatred (Orcs and Goblins) is the bearer's own re-roll and is silenced.
+
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-head
+  id: the-mace-no-longer-converts-a-two-into-a-stun-on-the-master-craftsman
+  fighters:
+    first: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &recipient
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 9}
+  initial_state: &bearer-silent {second: {attacks: 0}}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A genuine Stunned total still Stuns the bearer: the immunity suppresses the club/mace conversion only
+# and is not immunity to being Stunned.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-head
+  id: a-genuine-stunned-total-still-stuns-the-master-craftsman
+  fighters:
+    first: *opponent
+    second: *recipient
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The non-regression control: the same mace two on a hand-built unmarked bearer is Stunned.
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-head
+  id: the-same-mace-still-converts-a-two-on-an-unmarked-bearer
+  fighters:
+    first: *opponent
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -42,9 +42,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: animosity rules live in TC6/WD243 and operate on the turn structure outside
-        the duel resolution. Individual profiles reference this band rule.
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     Just like their more sophisticated (?) cousins, Savage Orcs suffer from animosity. See TC6 in
@@ -103,8 +101,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.gobbo-rout-counting
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: rout tests are a post-battle/campaign mechanic.
+      reason: out-of-scope.group
   name: Ain't Orcz (Rout Counting)
   effect: >-
     Orcs don't expect much from their lesser cousins and are not bothered if they break or get slain
@@ -162,8 +159,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.weirdo.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Waaagh! Magic, TC6/WD243).
+      reason: out-of-scope.magic
   name: Wizard
   effect: A Savage Orc Wierdo is a wizard and uses Waagh! Magic. See Waaagh magic in TC6 (WD243).
   source:
@@ -189,8 +185,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.spottaz.get-out-dere
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: deployment/infiltration rolls happen outside the duel resolution.
+      reason: out-of-scope.movement
   name: Get Out Dere!
   effect: >-
     The boss sometimes tells his Spottaz to scout out enemy positions. If the player wants his
@@ -233,10 +228,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.brutes.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: see band--animosity; turn-structure mechanic.
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Brutes are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -244,11 +237,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Brutos Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - brutes
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: nuttaz--animosity
   runtime:
     scope: 'NO'
@@ -258,10 +250,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.nuttaz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: see band--animosity; turn-structure mechanic.
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Nuttaz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -269,11 +259,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chalados Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - nuttaz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: nuttaz--frenzy
   runtime:
     scope: 'YES'
@@ -287,6 +276,11 @@ rules:
         id: trait.frenzy
         parameters:
           value: true
+      clauses:
+      - id: frenzy
+        scope: 'YES'
+      - id: frenzy-animosity-exemption
+        scope: 'NO'
   name: Frenzy
   effect: >-
     Savage Orc Nuttaz are subject to the rules for frenzy. Note, when frenzied, they ignore the
@@ -314,10 +308,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.boyz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: see band--animosity; turn-structure mechanic.
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Boyz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 58
@@ -325,11 +317,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chicos Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - boyz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: gobbo-boyz--animosity
   runtime:
     scope: 'NO'
@@ -339,10 +330,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.gobbo-boyz.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: see band--animosity; turn-structure mechanic.
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Savage Orc Gobbo Boyz are subject to the rules for animosity.
   source:
     manual: broheim.net
     printed_page: 59
@@ -350,11 +339,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Chicos Gobbo Orcos Salvajes están sujetos a las reglas de animosidad.
   applies_to:
     profile_ids:
     - gobbo-boyz
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: gobbo-boyz--aint-orcz
   runtime:
     scope: 'NO'
@@ -364,9 +352,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.gobbo-boyz.aint-orcz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: profile-level note of the band--gobbo-rout-counting rule; rout tests are a
-        campaign mechanic.
+      reason: out-of-scope.group
   name: Ain't Orcz
   effect: >-
     Each Gobbo boy taken out of action counts as half a model when testing to see if an Orc warband
@@ -394,10 +380,8 @@ rules:
     - id: unimplemented.savage-orcs-kaz.gobbo-boyz.useless-gitz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: experience progression is a campaign mechanic.
+      reason: out-of-scope.campaign
   name: Useless Gitz
-  effect: Goblins never gain experience.
   source:
     manual: broheim.net
     printed_page: 59
@@ -405,11 +389,10 @@ rules:
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
     es: Inútiles
-  effect_i18n:
-    es: Los Goblins nunca ganan experiencia.
   applies_to:
     profile_ids:
     - gobbo-boyz
+  rule_ref: shared-rule.never-gain-experience
 - id: band--hired-swords
   runtime:
     scope: 'NO'
@@ -419,9 +402,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     A Savage Orc warband may hire the following Hired Swords and Dramatis Personae: Black Orc
@@ -448,8 +429,7 @@ rules:
     - id: unimplemented.savage-orcs-kaz.band.pet
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: purchases and animals.
+      reason: out-of-scope.construction
   name: Pet
   effect: >-
     One Savage Orc hero may have a single pet. This can be a War Boar, Giant Wolf or Giant Spider.
@@ -493,7 +473,7 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids:
-          - bow
+          - item:bow
   name: Equipment Restrictions
   effect: >-
     Bow (not Gobbo Boyz): Savage Gobbos may not take the Bow.
@@ -506,7 +486,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      Arco (no para los Chicos Gobbo): los Gobbos Salvajes no pueden elegir el Arco.
   applies_to:
     profile_ids:
     - gobbo-boyz
@@ -557,7 +537,6 @@ rules:
           forbids:
           - armour
   name: Equipment Restrictions
-  effect: A Savage Orc Wierdo cannot wear armour.
   source:
     manual: broheim.net
     printed_page: 57
@@ -565,9 +544,7 @@ rules:
     section: 0-4 Wierdo
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Un Wierdo Orco Salvaje no puede llevar armadura.
   applies_to:
     profile_ids:
     - weirdo
+  rule_ref: shared-rule.no-armour

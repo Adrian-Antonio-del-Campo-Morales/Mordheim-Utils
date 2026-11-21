@@ -1,0 +1,141 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the charged opponent's failed
+#   and passed Fear tests against the Buccaneer with Eye Stalks, the halted charge of a failing
+#   charger, and the same Buccaneer without the mutation prompting no test, and the mutation is refused on a Henchman.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Eye Stalks): "Crab-like stalked eyes cause Fear (counts as
+# Hideous)."  The mutation's execution entry carries the tag mechanic.causes-fear, so the bearer is
+# a Fear-causer under the shared Fear operator (modular/psychology.py ~236: a charged opponent tests
+# round.0.<side>.fear.charged.{0,1} against its Leadership and hits only on sixes when it fails; a
+# charging opponent tests round.0.<side>.fear.charge.{0,1} and a failure cancels the charge).  The
+# mutation is selected through special_rule_ids on a Hero of the band (the Buccaneer, a printed
+# Hero at Ld8), following the sibling profile.characteristics model (...78405f6bb0e6); the band's
+# Aquatic Mutants rule admits a single mutation per Hero, satisfied here.  The Buccaneer carries a
+# club from the heroes' list and the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) so
+# the opponent's hit target is the ordinary four; the Buccaneer contributes no swing of its own.
+# The opponent is hand-built (mace, WS3 S3 T3 W3 I2 A1 Ld7); a 2D6 of 5+4 fails Ld7 and 3+3 passes.
+# The control is the same Buccaneer without the selection.
+# Semantic wrinkle (2026-11-18): "counts as Hideous" names the Possessed mutation whose printed
+#   effect is Fear; no further Hideous consequence (a campaign-side reaction) is admitted here.
+
+# The mutated Buccaneer charges; the charged opponent fails its Fear test (9 vs Ld7) and its four,
+# which would hit WS3 on 4+, now needs a six and misses.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+  id: an-opponent-charged-by-the-eye-stalked-hero-that-fails-its-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-eye-stalks]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 5}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 6 passes Ld7: the opponent keeps its ordinary 4+ (its natural one misses on its own).
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+  id: an-opponent-charged-by-the-eye-stalked-hero-that-passes-its-fear-test-fights-normally
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-eye-stalks]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Charging the Fear-causer also needs the test: a failed charge test cancels the charge.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+  id: an-opponent-charging-the-eye-stalked-hero-that-fails-its-fear-test-is-halted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-eye-stalks]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 5}
+    - {key: round.0.second.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The control: the same Buccaneer without the mutation charges and no Fear die is requested.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+  id: the-same-hero-without-the-mutation-prompts-no-fear-test
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, attacks.0.hit_target: 4, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are Heroes: a Wrecker (Henchman) selecting the mutation is refused.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-eye-stalks/mechanic.eye-stalks
+  id: the-mutation-is-refused-on-a-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-eye-stalks]
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers"

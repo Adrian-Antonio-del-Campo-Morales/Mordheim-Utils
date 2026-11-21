@@ -19,7 +19,7 @@ def test_automatic_profile_handlers_compile_trample_frantic_and_bear_hug():
     fanatic = compile_fighter(build("night-goblins-mic", "fanatics"))
     bear = compile_fighter(build("kislevites", "trained-bear"))
     assert any("rule.trample" in attack.tags for attack in centigor.extra_attacks)
-    assert fanatic.global_effects.priority == 10
+    assert "mechanic.frantic" in fanatic.global_effects.tags
     assert bear.global_effects.bear_hug
 
 
@@ -196,6 +196,7 @@ def test_aquatic_mutants_pool_is_closed_and_hero_only():
         ))
 
 
+@pytest.mark.covers("rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm")
 def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
     """Extra Arm: 'The mutant may use any single-handed weapon in the extra
     arm...  Alternatively, he may carry a shield or a buckler in the extra arm.
@@ -206,14 +207,17 @@ def test_extra_arm_and_great_claw_enforce_their_printed_arm_rules():
         "cult-of-the-possessed", "mutants", extra_hand_id="defence.shield",
         special_rule_ids=("band--mutations-extra-arm",),
     ))
-    possessed = compile_fighter(build(
-        "cult-of-the-possessed", "the-possessed", extra_hand_id="defence.shield",
-        special_rule_ids=("band--mutations-extra-arm",),
-    ))
-    # Both alternative loadouts of the extra arm pay the extra attack, and the
-    # Possessed keeps his own 'never use weapons' restriction.
-    for fighter in (shield_arm, possessed):
-        assert any("weapon.natural-attacks" in attack.tags for attack in fighter.extra_attacks)
+    # A shield replaces the Mutant's weapon attack; only the Possessed gains
+    # the extra natural attack while retaining his weapon prohibition.
+    assert not any("weapon.natural-attacks" in attack.tags for attack in shield_arm.extra_attacks)
+    # User ruling (2026-11-10): that Possessed attack is unconditional on
+    # carrying a shield/buckler, and must never be counted twice.
+    for extra_hand_id in (None, "defence.shield", "defence.buckler"):
+        possessed = compile_fighter(build(
+            "cult-of-the-possessed", "the-possessed", extra_hand_id=extra_hand_id,
+            special_rule_ids=("band--mutations-extra-arm",),
+        ))
+        assert sum("weapon.natural-attacks" in attack.tags for attack in possessed.extra_attacks) == 1
     with pytest.raises(ValueError, match="one-handed weapon"):
         compile_fighter(build(
             "cult-of-the-possessed", "mutants", extra_hand_id="weapon.halberd",

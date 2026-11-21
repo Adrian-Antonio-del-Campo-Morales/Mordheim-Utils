@@ -50,12 +50,19 @@ The equivalent command from `apps/warband-manager-web` is:
 npm run check:presentation
 ```
 
-The command runs detector regressions, the strict deep audit and the dynamic
-visible-completeness audit, in that order. It writes
-`outputs/web-presentation/gui-text-audit-deep.json` for machines and
-`outputs/web-presentation/gui-text-audit-deep.md` for human review, and the
-dynamic layer writes `outputs/web-presentation/gui-text-completeness.{json,md}`
-next to them (never mixed with the static findings).
+The command runs three phases, in order: the self-tests (the completeness
+detector's regressions and the static audit's own leak/control corpus,
+`tests/applications/warband_manager/presentation/completeness/presentation-audit-corpus.test.mjs`),
+the static GUI text audit, and the dynamic visible-completeness audit. The
+static audit has a single mode — every GUI source, resolved types and the full
+flow trace — and writes `outputs/web-presentation/gui-text-audit.json` for
+machines and `outputs/web-presentation/gui-text-audit.md` for human review;
+the dynamic layer writes `outputs/web-presentation/gui-text-completeness.{json,md}`
+next to them (never mixed with the static findings). Any static finding fails
+the gate: there is no baseline, no waiver file and no severity tier. When a
+new, legitimate code pattern produces a false positive, fix the detector and
+pin the pattern in the corpus (a CONTROL case next to a LEAK case for the same
+exemption); never silence the finding in product code.
 
 A finding does not always prove that the current UI is wrong. It proves that
 the detector cannot establish that the output is protected. That uncertainty
@@ -64,12 +71,12 @@ it with a cast or suppression.
 
 ## Presentation security versus visible completeness
 
-The static gate (steps 1–4) is about **security of presentation**: it proves,
+The static audit is about **security of presentation**: it proves,
 from the source, that every value that reaches a GUI sink travels through the
 resolvers and presentation types. Its findings mean "the detector cannot
 demonstrate protection", not confirmed leaks.
 
-The dynamic layer (step 5, `tools/web/presentation-completeness-audit.mjs` plus
+The dynamic layer (`tools/web/presentation-completeness-audit.mjs` plus
 `tests/applications/warband_manager/presentation/completeness/presentation-completeness-sweep.test.tsx`) is about
 **visible completeness**: it executes the real consumers (the `RulesCatalogue`,
 the rendered shell pages, loaded v5 campaigns, the PDF text model) against the

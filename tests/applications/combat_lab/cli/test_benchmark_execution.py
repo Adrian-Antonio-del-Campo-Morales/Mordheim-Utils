@@ -71,3 +71,46 @@ def test_scenario_catalogue_loads_without_the_checkout_root_on_sys_path(tmp_path
     assert completed.returncode == 0, completed.stderr
     count, key = completed.stdout.split()
     assert int(count) >= 43 and key == "scenario/basic"
+
+
+def test_scenarios_select_every_catalogue_with_the_same_values():
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
+    from mordheim_combat_lab.cli.scenarios import scenarios_for_level
+
+    for level in ("small", "normal", "big"):
+        cases, rejected = benchmark_cases([level])
+        assert [case.id for case in cases] == [item.id for item in scenarios_for_level(level)]
+        assert rejected == ()
+    # Without --scenarios: small.  ``long`` is a scenario name, not a level.
+    assert len(benchmark_cases(None)[0]) == 8
+    assert [case.id for case in benchmark_cases(["long"])[0]] == ["long"]
+    # Several values run their union; parity deliveries and battery cases run
+    # with their own duel context, keyed by their full name.
+    key = "delivery/core/combat-critical-hits/a-critical-table-modifier-shifts-the-applied-band"
+    cases, _ = benchmark_cases(["basic", key, "battery/q04-parry-attempt"])
+    assert [case.id for case in cases] == ["basic", key, "battery/q04-parry-attempt"]
+    assert cases[1].context is not None and cases[2].context is not None
+    # A case the production engines cannot express is reported, not run.
+    cases, rejected = benchmark_cases(["battery/q08-death-blow-optional"])
+    assert cases == () and "scripted decisions" in rejected[0][1]
+
+
+def test_unknown_values_and_options_are_errors(capsys):
+    import pytest
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
+    from mordheim_combat_lab.cli.commands import build_parser
+
+    with pytest.raises(ValueError, match="unknown scenario"):
+        benchmark_cases(["all"])
+    for argv in (["benchmark", "--pair-set", "small"], ["benchmark", "--deep"],
+                 ["parity", "--certificate", "deep"], ["calibrate", "--pool-simulations", "1"]):
+        with pytest.raises(SystemExit):
+            build_parser().parse_args(argv)
+        assert "unrecognized arguments" in capsys.readouterr().err
+
+
+def test_shared_option_levels_match_the_catalogue():
+    from mordheim_combat_lab.cli.options import LEVELS
+    from mordheim_combat_lab.cli.scenarios import LEVELS as catalogue_levels
+
+    assert LEVELS == catalogue_levels

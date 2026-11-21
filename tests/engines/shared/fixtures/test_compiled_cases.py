@@ -213,7 +213,7 @@ def test_codec_does_not_import_the_compiler_knowledge_or_engines():
         "mordheim_construction",
         "mordheim_knowledge",
         "mordheim_combat",
-        "mordheim_modular_e2e",
+        "mordheim_conformance",
         "mordheim_combat_lab",
     )
     offenders = [

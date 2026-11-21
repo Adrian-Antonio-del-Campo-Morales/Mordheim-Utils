@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/preparation.tears-of-shallaya
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 scenarios (the suppressed coating and the unprotected contrast); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show a coating's benefit being
+#   suppressed against the bearer and reaching the same wound without it.
+
+# --- Authored scenarios ---
+# mechanic/preparation.tears-of-shallaya - authored from the printed rule and the
+# admitted clauses, never from engine output.  The preparation is supplied
+# on `preparation_ids`.
+# The preparation grants immunity to all poisons for the battle, so a coated
+# attacker's poison terms are suppressed against the bearer: the same wound face
+# of 3 reaches Strength 3's target of 4 and misses, where a plain defender's
+# Strength 3 + 1 target of 3 would be wounded.
+- audit_id: mechanic/preparation.tears-of-shallaya
+  id: the-bearer-suppresses-an-attackers-poison
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+      characteristics: &tos-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.tears-of-shallaya]
+      characteristics: &tos-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &tos-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same coated attacker's 3 does wound an unprotected defender.
+- audit_id: mechanic/preparation.tears-of-shallaya
+  id: the-same-coating-wounds-an-unprotected-defender
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+      characteristics: *tos-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tos-defender
+  duel_context: *tos-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

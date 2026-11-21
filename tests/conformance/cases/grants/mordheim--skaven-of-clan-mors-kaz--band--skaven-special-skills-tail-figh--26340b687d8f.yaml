@@ -1,0 +1,97 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-mors-kaz/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction pair, B12 construction-skills batch 2026-11-18):
+#   the band's Hero selecting the printed Skaven special skill compiles with the tail hand the
+#   construction layer reserves for this rule (a tail dagger projected as one additional attack entry
+#   carrying the dagger's own identity), a henchman of the band is refused the selection, and the
+#   same Hero reaching for the tail hand without the rule is refused by the construction gate.  The
+#   duel contract of the tail (extra attack, tail-shield save step) is evidenced on the Clan Eshin
+#   origin of the same shared rule (skaven-clan-eshin/...tail-fighting) and is not duplicated here.
+# AUTHORED: the admission, the henchman refusal and the extra-hand-without-the-rule refusal are
+#   declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-mors-kaz/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Family model (Karak Azgal Skaven special skills, construction face).  The record is a `warband_skill`
+# with `grant: selectable`, `applies_to.profile_types: [hero]` and a compiler binding
+# `special-rule.band--skaven-special-skills-tail-fighting` whose contract carries no flat effect: the
+# compiled consequence is the extra hand the eligibility layer admits only for Tail Fighting, Extra
+# Arm or Prehensile Tail ("The Skaven may wield a shield, knife or sword with his tail. A weapon grants
+# one additional attack with that weapon").  Every Hero of the band prints the `special` skill access;
+# the henchmen (clanrats, skavenslaves, rat-ogre) print none and are not Heroes, so the recipients
+# gate refuses them with `special rule is not available to <band>/<profile>: <rule>`.
+# Fixture facts: the Hero's characteristics are supplied (WS 3, S 3, T 3, W 2, I 5, A 1); the opponent
+# is hand-built and contributes no attacks.  Both Hero blows are declared as natural ones so the tape
+# holds exactly the sword attack and the tail attack and no wound die.
+
+- audit_id: rule/mordheim/skaven-of-clan-mors-kaz/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: a-hero-selecting-tail-fighting-compiles-the-tail-dagger-as-an-additional-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-mors-kaz
+      profile_id: claw-leader
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      main_weapon_id: weapon.sword
+      extra_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  # The compiled Hero carries the tail weapon as its own attack entry with the dagger's identity and
+  # the dagger's printed +1 to the target's armour save; the same Hero without the selection carries
+  # no extra attack at all (and cannot even declare the tail hand, see the last scenario).
+  expect_fighters:
+    first.extra_attacks.0.tags: ['weapon.dagger']
+    first.extra_attacks.0.target_armour_bonus: 1
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are the band's Heroes: a henchman of the same band is refused the selection
+# by the recipients gate (the record applies to `profile_types: [hero]`).
+- audit_id: rule/mordheim/skaven-of-clan-mors-kaz/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-mors-kaz
+      profile_id: clanrats
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      main_weapon_id: weapon.sword
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to skaven-of-clan-mors-kaz/clanrats: band--skaven-special-skills-tail-fighting"
+
+# The construction consequence read the other way: the same Hero declaring the tail hand without the
+# rule is refused by the construction gate with its own verbatim diagnostic, so the tail hand exists
+# only through this selection (or the Extra Arm / Prehensile Tail mutations).
+- audit_id: rule/mordheim/skaven-of-clan-mors-kaz/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: the-same-hero-without-the-rule-is-refused-the-tail-hand
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-mors-kaz
+      profile_id: claw-leader
+      main_weapon_id: weapon.sword
+      extra_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: an extra hand requires Extra Arm, Tail Fighting, or Prehensile Tail

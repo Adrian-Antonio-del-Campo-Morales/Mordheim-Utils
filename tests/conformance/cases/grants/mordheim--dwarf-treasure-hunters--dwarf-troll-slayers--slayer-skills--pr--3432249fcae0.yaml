@@ -1,0 +1,74 @@
+# Runtime correction: choose the printed band Slayer skill through its selectable rule, not a generic skill purchase.
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Dwarf Troll
+#   Slayer that selects a printed Slayer skill is built and the duel runs, and a special skill
+#   outside its tables is refused with the shared access diagnostic.  The member used for the
+#   admission is Ferocious Charge, the Slayer special skill this band binds.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.  A third scenario
+#   (2026-11-16) refuses a catalogue special skill outside the printed tables (see Addition below).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the printed permission (Troll Slayers may choose a skill from
+#   the Troll Slayer Skill table instead of the normal Skill tables when they gain a new skill).  The
+#   admission scenario builds the recipient with skill.ferocious-charge, the Slayer skill this band
+#   binds, and records that the duel ran unrefused; the closure scenario shows a special skill
+#   outside the band's tables refused.  The binding publishes the table's members itself (skills:
+#   berserker, ferocious-charge, monster-slayer).  REVIEWED still requires manual semantic review.
+# Addition (2026-11-16): Hard to Kill is a Dwarf racial special rule, not a member of the printed Troll Slayer table (Berserker,
+#   Ferocious Charge, Monster Slayer) nor of the Slayer's combat/strength tables, so he may not choose it.  The refusal is the bound special list closing
+#   the profile's generic 'special' access; without this binding the profile's own skill_access 'special'
+#   (profiles.yaml) admits that catalogue special skill, so this scenario is the one that depends on the rule.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and this band's own Slayer Skills
+# binding; no engine output was consulted.  Both fighters are given zero attacks so the round
+# resolves without dice and the observation is about admission, not about the skill's mechanics.
+
+- audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-printed-slayer-skill-is-admitted-to-the-recipient
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-ferocious-charge]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-special-skill-outside-the-bands-tables-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      skill_ids: [skill.miniath]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-treasure-hunters/dwarf-troll-slayers: ['skill.miniath']"
+
+- audit_id: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-racial-special-rule-outside-the-slayer-table-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      skill_ids: [skill.hard-to-kill]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-treasure-hunters/dwarf-troll-slayers: ['skill.hard-to-kill']"

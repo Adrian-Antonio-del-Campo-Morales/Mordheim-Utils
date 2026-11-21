@@ -1,0 +1,195 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.broadsword-of-damnation
+# authoring_status: AUTHORED
+# authoring_progress: 6 scenarios and 1 refusal pin the sword on a hand-built bearer
+#   (equipment-items batch 2026-11-18): the +2 Strength at its wound boundary (a 2 wounds
+#   T3, the same 2 fails with a mace), the strike-last tier (the higher-Initiative bearer
+#   resolves after an uncharging mace), Strongman lifting it, the indestructible blade (a
+#   Sword Breaker's parry opens no Trap Blade die against it, where it does against the
+#   ordinary great weapon) and the two-handed occupancy refusal.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 6 scenarios and 1 refusal cover the +2 Strength boundary with its
+#   mace control, the strike-last tier and its Strongman exception, the
+#   indestructible face against the Sword Breaker with its control, and the
+#   two-handed occupancy; the real Belandysh is evidenced in his rule file.
+# Semantic wrinkle (2026-11-18, recorded): the Border Town Burning artefact's
+#   campaign faces (the bearer's damnation, mount consequences) are excluded; the
+#   duel reads the execution entry's great-weapon profile (tags
+#   weapon.double-handed-weapon + weapon.indestructible, strength_bonus 2,
+#   priority -1, two_handed) - "indestructible" is read only where a rule would
+#   break or disarm the attacking weapon (the Sword Breaker's Trap Blade, a whip
+#   disarm).
+
+# --- Authored scenarios ---
+# mechanic/weapon.broadsword-of-damnation - Belandysh's Broadsword of Damnation
+# (Border Town Burning, Spoils of War p.49): a double-handed blade (+2 Strength,
+# two-handed, strikes last) that cannot be destroyed.
+#
+# Expectations come from the printed profile, never from engine output.  S3 +2 =
+# S5 against T3 wounds on a 2+, so the wound die 2 is the boundary.  Because the
+# weapon strikes last, an uncharging mace defender resolves first and the
+# bearer's own attack is the second index of the round; Strongman restores the
+# ordinary order.  A Sword Breaker that blocks a hit rolls its Trap Blade (4+
+# breaks the attacking weapon) - never against an indestructible blade.
+
+# The printed +2 Strength at its boundary: the defender strikes first (strike-
+# last), then the wound die 2 reaches the S5 target against T3 and the injury 1
+# leaves the single-wound defender Knocked Down.
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: broadsword-of-damnation-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword-of-damnation
+      characteristics: &bd-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &bd-defender-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &bd-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 2
+    first.main_weapon.two_handed: true
+    first.main_weapon.priority: -1
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mace control: the identical wound die 2 is two faces below the unboosted S3
+# target, so the Strength is the sword's own (the mace also strikes in ordinary
+# order, so its attack is the first index).
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: the-same-wound-die-fails-without-the-broadsword
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *bd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *bd-defender-w1
+  duel_context: *bd-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Strike-last: neither fighter charges, so only the printed tier can send the
+# Initiative-2 mace before the Initiative-5 bearer.
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: the-broadsword-of-damnation-strikes-after-an-ordinary-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword-of-damnation
+      characteristics: *bd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &bd-defender-w2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: *bd-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# Strongman lifts the strike-last tier (as it does for every double-handed
+# weapon): the same dice resolve bearer-first - the order the real Belandysh,
+# who prints Strongman, fights in.
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: strongman-lifts-the-broadswords-strike-last-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword-of-damnation
+      skill_ids: [skill.strongman]
+      characteristics: *bd-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *bd-defender-w2
+  duel_context: *bd-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# Indestructible: a Sword Breaker that blocks the broadsword's hit (parry 5 over
+# a hit of 4) opens no Trap Blade die - the strict tape holds none.
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: a-sword-breakers-parry-cannot-trap-the-indestructible-blade
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword-of-damnation
+      characteristics: *bd-attacker
+    second:
+      main_weapon_id: weapon.sword-breaker
+      characteristics: *bd-defender-w2
+  duel_context: *bd-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the ordinary great weapon blocked by the same parry is subject to
+# the Trap Blade die (a 3 does not break it, so the block stays the only outcome).
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: the-same-parry-opens-a-trap-blade-die-against-an-ordinary-great-weapon
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: *bd-attacker
+    second:
+      main_weapon_id: weapon.sword-breaker
+      characteristics: *bd-defender-w2
+  duel_context: *bd-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.0.trap-blade, value: 3}
+  expect_rounds:
+    0: {attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed two-handed occupancy is declared as a refusal.
+- audit_id: mechanic/weapon.broadsword-of-damnation
+  id: the-broadsword-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword-of-damnation
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"

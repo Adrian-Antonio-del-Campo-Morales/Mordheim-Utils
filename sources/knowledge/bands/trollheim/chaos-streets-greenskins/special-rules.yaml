@@ -3,18 +3,12 @@ band_id: chaos-streets-greenskins
 rules:
 - id: orc-boss--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Orc Boss may use his Leadership when taking Leadership tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 132
     section: Heroes / 1 Orc Boss / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Jefe Orco puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - orc-boss
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: orc-shaman--wizard
   name: Wizard
   effect: >-
@@ -54,8 +49,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.orc-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
 - id: orc-boyz--animosity
   name: Animosity
   source:
@@ -68,15 +62,17 @@ rules:
     profile_ids:
     - orc-boyz
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.orc-boyz.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.non-duel
+      clauses:
+      - id: animosity
+        scope: 'NO'
   rule_ref: shared-rule.animosity
 - id: goblin-warriors--animosity
   name: Animosity
@@ -99,30 +95,25 @@ rules:
     profile_ids:
     - goblin-warriors
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.non-duel
+      clauses:
+      - id: animosity
+        scope: 'NO'
 - id: goblin-warriors--not-orcs
   name: Not Orcs
-  effect: >-
-    For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action
-    counts as half a model.
   source:
     manual: chaos-in-the-streets
     printed_page: 133
     section: Henchmen / Goblin Warriors / Not Orcs
   name_i18n:
     es: No Son Orcos
-  effect_i18n:
-    es: >-
-      Para el cálculo de bajas de los chequeos de huida, cada Guerrero Goblin o Squig de Cueva
-      puesto Fuera de combate cuenta como medio modelo.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -134,8 +125,8 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.not-orcs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.group
+  rule_ref: shared-rule.not-orcs
 - id: goblin-warriors--useless-runts
   name: Useless Runts
   effect: >-
@@ -162,8 +153,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.goblin-warriors.useless-runts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: goblin-warriors--fear-elves
   name: Fear Elves
   effect: Goblin Warriors are subject to Fear against Elves.
@@ -216,8 +206,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.squig-movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
 - id: cave-squigs--squig-keepers
   name: Keepers
   effect: >-
@@ -249,22 +238,15 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.squig-keepers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
 - id: cave-squigs--not-orcs
   name: Not Orcs
-  effect: >-
-    For Rout-test casualty calculations, each Cave Squig taken Out of Action counts as half a model.
   source:
     manual: chaos-in-the-streets
     printed_page: 134
     section: Henchmen / 0-5 Cave Squigs / Not Orcs
   name_i18n:
     es: No Son Orcos
-  effect_i18n:
-    es: >-
-      Para el cálculo de bajas de los chequeos de huida, cada Squig de Cueva puesto Fuera de combate
-      cuenta como medio modelo.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -276,19 +258,16 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.not-orcs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.group
+  rule_ref: shared-rule.not-orcs
 - id: cave-squigs--animal
   name: Animal
-  effect: Cave Squigs are animals and never gain Experience.
   source:
     manual: chaos-in-the-streets
     printed_page: 134
     section: Henchmen / 0-5 Cave Squigs / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Squigs de Cueva son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -300,8 +279,8 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.cave-squigs.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.animal
 - id: troll--fear
   name: Fear
   source:
@@ -345,7 +324,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   kind: profile_ability
   runtime:
@@ -358,6 +337,13 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
   name: Regeneration
   source:
     manual: chaos-in-the-streets
@@ -384,15 +370,17 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-greenskins.troll.stupid-monster
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: troll--always-hungry
   name: Always Hungry
   source:
@@ -412,9 +400,16 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.always-hungry
+      reason: out-of-scope.campaign
+  effect: >-
+    After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice
+    one Goblin Warrior or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided, the
+    Troll leaves the warband.
+  effect_i18n:
+    es: >-
+      Tras cada batalla, la banda debe pagar 15 coronas para mantener al Troll. En su lugar, el Jefe
+      Orco puede sacrificar un Guerrero Goblin o Squig de Cueva para alimentarlo. Si no se aporta ni la
+      manutención ni un sacrificio, el Troll abandona la banda.
 - id: troll--troll-vomit
   kind: profile_ability
   runtime:
@@ -456,16 +451,26 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.chaos-streets-greenskins.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.large-target
+      reason: out-of-scope.shooting
+  effect: >-
+    The Troll may be selected as a shooting target even if it is not the closest target, and missile
+    attacks against it gain +1 To Hit.
+  effect_i18n:
+    es: >-
+      El Troll puede ser seleccionado como objetivo de disparo incluso si no es el objetivo más cercano,
+      y los ataques de misil contra él obtienen +1 para impactar.
 - id: band--distasteful-company
   name: Distasteful Company
   effect: >-
@@ -491,9 +496,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.distasteful-company
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--animosity
   name: Animosity
   effect: >-
@@ -535,15 +538,17 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.chaos-streets-greenskins.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.non-duel
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--goblin-ratio
   name: Goblin Limit
   source:
@@ -562,8 +567,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.goblin-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
   rule_ref: shared-rule.goblin-limit
 - id: band--cave-squig-ratio
   name: Cave Squig Limit
@@ -590,8 +594,7 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.cave-squig-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--orc-special-skills-ard-ead
   kind: warband_skill
   name: '''Ard ''Ead'
@@ -605,6 +608,7 @@ rules:
   - orc-boss
   - orc-shaman
   - orc-big-uns
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -641,9 +645,14 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.waaagh
+      reason: out-of-scope.movement
+  effect: >-
+    The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the
+    source's +1D6+2 cm rule.
+  effect_i18n:
+    es: >-
+      El orco suma 1D6 × 0,4" + 1" a su movimiento de carga. Esta es la conversión directa en pulgadas
+      de la regla +1D6+2 cm de la fuente.
 - id: band--orc-special-skills-ere-we-go
   kind: warband_skill
   name: '''Ere We Go!'
@@ -657,6 +666,7 @@ rules:
   - orc-boss
   - orc-shaman
   - orc-big-uns
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -684,15 +694,17 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.chaos-streets-greenskins.band.orc-special-skills-da-cunnin-plan
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
   rule_ref: shared-rule.da-cunnin-plan
 - id: band--orc-special-skills-well-ard
   kind: warband_skill
@@ -721,6 +733,7 @@ rules:
   - orc-boss
   - orc-shaman
   - orc-big-uns
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 - id: band--orc-special-skills-eadbasher
@@ -746,23 +759,19 @@ rules:
   - orc-boss
   - orc-shaman
   - orc-big-uns
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 
   rule_ref: shared-rule.eadbasher
 - id: orc-shaman--no-armour
   name: No Armour
-  effect: >-
-    An Orc Shaman may never wear armour.
   source:
     manual: chaos-in-the-streets
     printed_page: 132
     section: Heroes / 0-1 Orc Shaman / Special Rules / No Armour
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Un Chamán Orco jamás puede llevar armadura.
   applies_to:
     profile_ids:
     - orc-shaman
@@ -777,7 +786,9 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
+  rule_ref: shared-rule.no-armour
 
 - id: cave-squigs--equipment-restrictions
   runtime:

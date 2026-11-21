@@ -449,8 +449,9 @@ def test_body_slam_canonical_binding_is_now_executable():
 def test_final_batch_profile_backed_rules_have_explicit_contracts():
     expected={
         ("khemri-necromancers","nehekharan-vultures--fragile"):{"trait.injury-profile"},
-        ("lustria-lizardmen","kroxigor--scaly-skin-4plus"):{
-            "trait.natural-armour-save","trait.natural-armour-stacks","trait.natural-armour-worst-save"},
+        # Stacking and the 6+ floor are the band Scaly Skin rule's printed
+        # mechanics (compiler.lizardmen-scaly-skin); the profile prints its value.
+        ("lustria-lizardmen","kroxigor--scaly-skin-4plus"):{"trait.natural-armour-save"},
         ("lustria-pygmies","silent-walker--ethereal"):{"trait.ward-save","trait.ward-save-mundane-only"},
         ("trollheim-skaven-clan-eshin","assassin-adept--consummate-fighter"):{"trait.perfect-killer"},
         ("trollheim-undead","dire-wolves--charge"):{"trait.charge-attack-bonus"},
@@ -463,6 +464,8 @@ def test_final_batch_profile_backed_rules_have_explicit_contracts():
         assert {binding["id"] for binding in runtime_bindings(rule)}==binding_ids
 
 
+@pytest.mark.covers("rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks")
+@pytest.mark.covers("rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks")
 def test_revision_specific_defences_and_regeneration_compile_with_their_conditions():
     ethereal=compile_fighter(FighterBuild(
         "mordheim",band_id="lustria-pygmies",profile_id="silent-walker",collection="trollheim"),ROOT)

@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-numbed
+# authoring_status: AUTHORED
+# Real-recipient note (2026-11-16): no build can exercise this KB grant. shaman--fungus-brew is
+# runtime.grant none; construction refuses it on the printed recipient ("special rule is not available
+# to night-goblins-web/night-goblin-warriors: shaman--fungus-brew") and on the Shaman ("special rule is
+# not selectable: shaman--fungus-brew"), so the result can only be supplied through condition_ids (the
+# catalog condition record), as the scenarios below do. The rule-removal probe stays inert.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/night-goblins-web/special-rules.yaml
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/night-
+#   goblins-web/shaman--fungus-brew/unimplemented.night-goblins-web.shaman.fungus-brew, whose KB effect
+#   is now unbound (a supplied-condition split: brewing stays unbound, each brew result is a bound
+#   condition); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations are
+#   unchanged by the move; each scenario's own comments carry its derivation and may still name the
+#   placeholder record they were authored against.  A supplied Numbed result gives the printed 6+ save
+#   against a Strength 6 blow; without it the same blow is not saved.  REVIEWED still requires manual
+#   semantic review.
+
+# --- Authored scenarios ---
+
+# "4 Numbed = +1 armour save, which may not be reduced below 6+".  The affected duelist wears no armour, so
+# the printed +1 is the only save it has; the attacker's Strength 6 would take that save past 6+, and the
+# printed limit is what keeps a six saving.  A consumer that granted the bonus without the floor asks for no
+# armour die at all and leaves the declared one unconsumed, which the strict tape fails; the printed bonus
+# and its printed limit are therefore both read in this one blow.
+- audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-numbed
+  id: the-supplied-numbed-result-gives-the-printed-six-plus-save-against-a-strength-six-blow
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-numbed]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.0.armour, value: 6}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical duelist with no brew result supplied takes the same Strength 6 blow with no
+# armour die at all - none is declared, and a consumer that asked for one would fail here.
+- audit_id: rule/mordheim/night-goblins-web/shaman--fungus-brew/condition.fungus-brew-numbed
+  id: without-the-supplied-result-the-same-strength-six-blow-is-not-saved
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

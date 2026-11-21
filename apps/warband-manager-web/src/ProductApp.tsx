@@ -112,6 +112,10 @@ export function ProductApp() {
 
   const loadKb = () => { setKbError(null); void loadKnowledge().then(setKnowledge).catch((e: Error) => setKbError(e.message)); };
   useEffect(loadKb, []);
+  // The document language and tab title follow the active locale: assistive
+  // technology picks pronunciation rules from <html lang>, and index.html can
+  // only declare the default locale before hydration.
+  useEffect(() => { document.documentElement.lang = locale; document.title = presentationOutput(translate({ key: "shell.document-title" }, locale)); }, [locale]);
   useEffect(() => { const subscriptions = sessions.map((s) => s.service.subscribe(() => setRevision((v) => v + 1))); return () => subscriptions.forEach((off) => off()); }, [sessions]);
   useEffect(() => { const dirty = sessions.some((s) => s.service.isDirty()); const guard=(event: BeforeUnloadEvent) => { if (dirty) event.preventDefault(); }; addEventListener("beforeunload", guard); return () => removeEventListener("beforeunload", guard); }, [sessions, revision]);
 

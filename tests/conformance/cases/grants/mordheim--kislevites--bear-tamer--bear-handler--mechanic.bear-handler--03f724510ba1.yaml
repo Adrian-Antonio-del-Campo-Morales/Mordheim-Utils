@@ -1,0 +1,169 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: handler-leadership--scope--stupidity-waiver (scope: YES)
+# AUTHORED[handler-leadership--scope--stupidity-waiver]: 2 scenarios read the printed waiver through the canonical handler-only Leadership source the record's own inherited contract assigns to mechanic.handler-leadership; the band binding is the pending connection the register names.  The bearer is the printed Trained Bear (Leadership 6) and the supplied handler value is the printed Bear Tamer's Leadership 7: a declared stupidity total of seven passes because the handler's value is the one tested, and the same seven fails against the bear's own 6 when no value is supplied, which cancels the charge.  The 2026-11-16 additions place the band's real Bear Tamer as a nearby participant, so the printed 6-inch range and the printed "even if the Tamer has been Knocked Down" parenthesis are now asserted (Stunned is not supplied).  REVIEWED still requires manual semantic review.
+#
+# Clause: handler-leadership--scope--roster-purchase (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# authoring_progress: the admitted stupidity-waiver clause carries 5 authored scenarios derived from
+#   the printed rule, the printed profiles of the Trained Bear and the Bear Tamer and the recorded
+#   handler-leadership contract: 2 read the waiver through the bear's supplied handler value, and 3
+#   (added 2026-11-16) read this record's own grant through the band's real Bear Tamer as a same-side
+#   nearby participant -- standing at 4" and Knocked Down at 4" the bear passes Stupidity without a
+#   die, and at 8" it tests its own Leadership and fails.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is the printed Trained Bear profile, the stupidity it is subject to is supplied as the
+# fixture condition the rule speaks about, and the handler is supplied as a value, never simulated.
+
+- audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+  id: the-supplied-bear-tamers-leadership-carries-the-bears-stupidity-test
+  covers: [handler-leadership--scope--stupidity-waiver]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      trait_overrides: {stupidity: true, stupidity_leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+    # The printed Fearsome bear makes the charged opponent take its own Fear test.
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without a supplied handler value the same total of seven is tested against the bear's own printed
+# Leadership 6 and fails, so the printed compulsory stupidity consequence cancels the charge.
+- audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+  id: without-the-supplied-value-the-bears-own-leadership-fails-the-test
+  covers: [handler-leadership--scope--stupidity-waiver]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Added 2026-11-16: the band's own Bear Tamer as the provider.  The two scenarios above read the
+# waiver through the bear's supplied value; these read the printed sentence "will automatically pass
+# its stupidity tests when within 6\" of the Bear Tamer (even if the Tamer has been Knocked Down or
+# Stunned)" through the real Bear Tamer profile, whose own Bear Handler rule is this identity's grant.
+# The bear is the printed Trained Bear (Stupidity from its own Trained rule); the Tamer is a same-side
+# nearby participant four inches away.  An automatic pass rolls no stupidity die, so the strict tape
+# declares none: a requested stupidity die fails the fixture.  The charged opponent still takes the
+# Fear test the printed Fearsome bear causes, and the charge resolves.
+- audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+  id: a-bear-tamer-within-six-inches-passes-the-bears-stupidity-without-a-roll
+  covers: [handler-leadership--scope--stupidity-waiver]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, bear-tamer, 4]],
+    nearby: [{participant_id: bear-tamer, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: bear-tamer}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed parenthesis: the waiver holds "even if the Tamer has been Knocked Down".  Same fixture
+# with the Tamer supplied knocked down; still no stupidity die is rolled.
+- audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+  id: a-knocked-down-bear-tamer-still-passes-the-bears-stupidity
+  covers: [handler-leadership--scope--stupidity-waiver]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, bear-tamer, 4]],
+    nearby: [{participant_id: bear-tamer, side_id: first, condition: knocked-down,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: bear-tamer}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Contrast: the same Tamer eight inches away is outside the printed 6"; the bear tests on its own
+# printed Leadership 6, a total of 7 fails, and the failed Stupidity cancels the charge.
+- audit_id: rule/mordheim/kislevites/bear-tamer--bear-handler/mechanic.bear-handler
+  id: a-bear-tamer-beyond-six-inches-gives-no-waiver
+  covers: [handler-leadership--scope--stupidity-waiver]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {first_id: first, second_id: second, charging: [first], active_participant: first,
+    distances: [[first, bear-tamer, 8]],
+    nearby: [{participant_id: bear-tamer, side_id: first, condition: standing,
+              fighter: {collection: mordheim, band_id: kislevites, profile_id: bear-tamer}}]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

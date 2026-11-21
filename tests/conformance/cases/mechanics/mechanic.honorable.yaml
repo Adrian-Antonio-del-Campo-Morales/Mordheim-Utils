@@ -1,0 +1,56 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.honorable
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed refusal against a Knocked Down
+#   opponent (no attack outcome and no die) and the ordinary attack against a standing
+#   opponent, which shows the denial is scoped to the opponent's condition.
+
+# --- Authored scenarios ---
+# The refused attack requests no die at all, and the downed opponent makes none.
+- audit_id: mechanic/mechanic.honorable
+  id: no-attack-is-made-against-a-knocked-down-opponent
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      skill_ids: [mechanic.honorable]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {condition: KNOCKED_DOWN}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_rounds:
+    0: {attacks: [], state.second.condition: KNOCKED_DOWN, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/mechanic.honorable
+  id: a-standing-opponent-is-attacked-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      skill_ids: [mechanic.honorable]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

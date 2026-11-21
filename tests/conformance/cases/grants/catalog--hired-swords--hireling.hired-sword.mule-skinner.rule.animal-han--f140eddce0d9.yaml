@@ -1,0 +1,94 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.animal-handler/compiler.animal-handler-skill-choice
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Mule Skinner with no Animal Handling skill is refused, with both published skills is refused, with
+#   exactly one (Falconer) constructs carrying the choice contract, and one of the Animal Handling skills
+#   is refused on a hireling outside the Mule Skinner.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): Animal Handler is a construction rule (a required single
+#   choice, no die), so the probe's construction-only verdict is the rule's own effect (README,
+#   Rule-removal probe).
+# Semantic wrinkle (2026-11-18): the two published members (Falconer, Horse Handling) are themselves
+#   outside the duel (LATER / NO), so the compiler records the selection and skips it (compiler.py: "the
+#   chosen member's own content is outside the duel, so the selection is recorded and skipped instead
+#   of executed"); the admission therefore has no duel face and is read on the compiled construction
+#   tags (the choice contract beside the catalogue-wide fixed-equipment clause).  The whip's Whip Master
+#   re-roll is a duel mechanic and is never reached in the construction-only shape.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Animal Handler): "a Mule Skinner starts with one Animal Handling skill
+# (the player chooses which animal)."  The binding is compiler.animal-handler-skill-choice with the two
+# published options as its parameter; the shared requiredInitial stage
+# (packages/typescript/domain/eligibility/index.ts) refuses when the count of selected options is not
+# one: "Animal Handler requires exactly one Animal Handling skill: <band>/<profile>".  The recipient is
+# the printed Mule Skinner compiled through the hireling route (hirelings.hired-sword.1b /
+# hireling.hired-sword.mule-skinner) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays);
+# the kit's whip (weapon.whip-tc14) is the default weapon.  The control for absence is the grade-1b
+# Bard, a hireling of the same package without the rule.
+
+# No Animal Handling skill chosen: the printed single choice is a floor.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.animal-handler/compiler.animal-handler-skill-choice
+  id: a-mule-skinner-without-an-animal-handling-skill-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.mule-skinner
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "Animal Handler requires exactly one Animal Handling skill: hirelings.hired-sword.1b/hireling.hired-sword.mule-skinner"
+
+# Both published skills chosen: the printed single choice is a ceiling too.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.animal-handler/compiler.animal-handler-skill-choice
+  id: a-mule-skinner-with-two-animal-handling-skills-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.mule-skinner
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids:
+        - hireling.hired-sword.mule-skinner.skill.animal-handling-falconer
+        - hireling.hired-sword.mule-skinner.skill.animal-handling-horse
+  expect_error: "Animal Handler requires exactly one Animal Handling skill: hirelings.hired-sword.1b/hireling.hired-sword.mule-skinner"
+
+# Exactly one (Falconer): the Mule Skinner constructs and carries the choice contract.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.animal-handler/compiler.animal-handler-skill-choice
+  id: a-mule-skinner-with-one-animal-handling-skill-constructs
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.mule-skinner
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.mule-skinner.skill.animal-handling-falconer]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.animal-handler-skill-choice, compiler.hireling-fixed-equipment]
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# The Animal Handling skills are printed for the Mule Skinner; one on the Bard is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.animal-handler/compiler.animal-handler-skill-choice
+  id: an-animal-handling-skill-is-refused-on-a-hireling-outside-the-mule-skinner
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.mule-skinner.skill.animal-handling-falconer]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

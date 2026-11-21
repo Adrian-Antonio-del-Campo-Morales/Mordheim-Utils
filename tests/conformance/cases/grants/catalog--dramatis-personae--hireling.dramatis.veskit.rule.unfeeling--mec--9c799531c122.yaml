@@ -1,0 +1,116 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.unfeeling/mechanic.psychology-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): the immune recipient is not
+#   tested for Fear when charged by a Fear-causer; a supplied frenzy flag is suppressed; the
+#   plain-hireling control is tested; the grant is refused outside its profile.  REVIEWED still
+#   requires manual semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed hireling profile, compiled
+# through the hireling route (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its
+# printed rule is granted by the profile itself, so the build selects nothing.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed,
+# while its printed Leadership stays in place; an omitted main weapon is the printed kit's own.
+# The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads
+# (causes_fear, or the hated kind).  The control is a plain hireling without any psychology rule - the
+# grade-1b Bard - compiled through the same route with the same fixture, so the request that the rule
+# removes (or the reroll it grants) is shown present without it.  The refusal selects the printed rule
+# on that control through special_rule_ids: a profile-granted rule is not available elsewhere.
+# Dice: every attack is declared as a natural 1 unless the strike is the observable, so no wound, save
+# or injury die is requested; a 2D6 Fear test of 5+4 fails Ld7 and 3+3 passes it.
+
+# The recipient is charged by a Fear-causer; the immune warrior's Fear test is not requested, so the tape
+# declares no Fear die.  The strict tape rejects an undeclared request: the absence is the assertion.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.unfeeling/mechanic.psychology-immunity
+  id: the-immune-veskit-is-not-tested-for-fear-when-charged
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.veskit
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Frenzy is Psychology: a supplied frenzy flag is suppressed on the immune warrior from initialisation.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.unfeeling/mechanic.psychology-immunity
+  id: the-immunity-suppresses-a-frenzy-flag-on-veskit
+  fighters:
+    first:
+      <<: *recipient
+      trait_overrides: {frenzy: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: False}
+  expect_rounds:
+    0: {state.first.frenzy: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, Ld7) is charged the same way: its two Leadership dice are requested and 9 fails.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.unfeeling/mechanic.psychology-immunity
+  id: a-hireling-without-the-immunity-is-tested-in-the-same-setup
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.unfeeling/mechanic.psychology-immunity
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.veskit.rule.unfeeling]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

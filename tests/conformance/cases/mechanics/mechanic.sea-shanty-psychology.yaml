@@ -1,0 +1,164 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.sea-shanty-psychology
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (sea-shanty family model, 2026-11-18): a chosen enemy
+#   that fails the Leadership test loses one attack for that turn; a passing enemy keeps both; a
+#   Psychology-immune enemy is unaffected (never tested); a Frenzied enemy is unaffected (Frenzy
+#   makes it immune to Psychology while it lasts); and a two-round tape showing this print acts at
+#   the start of each Combat phase, the enemy's player turn included - the face that separates it
+#   from the Mordheim sibling mechanic.sea-shanty.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the scenarios of the sea-shanty family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# The Lustria print (trollheim/lustria-pirates/special-rules.yaml,
+# band--pirate-special-skills-sea-shanty-singer): "At the start of the Combat phase, choose one
+# enemy model in base contact with the Hero.  That model must pass a Leadership test or lose 1
+# Attack for that turn.  Models immune to Psychology are unaffected."  TODO.md records that this
+# Trollheim copy matches its print; the authored Trollheim band file is the model.  The singer is
+# a hand-built fixture that injects the shared mechanic through skill_ids (legal: a hand-built
+# build passes no profile skill-list gate).  The offer is the decision
+# round.<i>.<singer>.sea-shanty, the chosen enemy's test is rolled under
+# round.<i>.<singer>.sea-shanty.leadership.0/.1, and the printed loss is read from the round
+# attack ledger.  The enemy's Leadership 7 and Attacks 2 are fixture facts; every declared attack
+# die is a natural 1, a miss, and the singer's Initiative 5 strikes before the enemy's 2.
+# Consumer: modular/rounds.py (the _SHANTY_TAGS block): for this mechanic the exemption reads the
+# enemy's Frenzy state or its Psychology immunity, and own_shanty_phase does not restrict it to
+# the singer's own player turn.
+
+# 5+5 = 10 fails the enemy's Leadership 7, so the enemy resolves only one of its two printed
+# attacks.
+- audit_id: mechanic/mechanic.sea-shanty-psychology
+  id: a-chosen-enemy-that-fails-the-test-loses-one-attack-for-that-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty-psychology]
+      characteristics: &shantyp-singer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &shantyp-enemy {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: &shantyp-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 3+4 = 7 passes the test exactly at Leadership 7, so the enemy keeps both printed attacks.
+- audit_id: mechanic/mechanic.sea-shanty-psychology
+  id: an-enemy-that-passes-the-test-keeps-both-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty-psychology]
+      characteristics: *shantyp-singer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *shantyp-enemy
+  duel_context: *shantyp-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 3}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: a model immune to Psychology is unaffected - no song is offered, no
+# Leadership die is declared and both of its attacks are resolved.
+- audit_id: mechanic/mechanic.sea-shanty-psychology
+  id: a-psychology-immune-enemy-is-not-tested-and-keeps-both-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty-psychology]
+      characteristics: *shantyp-singer
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: *shantyp-enemy
+  duel_context: *shantyp-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Frenzied warrior is immune to Psychology while its Frenzy lasts, so a Frenzied enemy is not
+# tested either; its single printed Attack doubled by Frenzy is resolved whole.
+- audit_id: mechanic/mechanic.sea-shanty-psychology
+  id: a-frenzied-enemy-is-not-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty-psychology]
+      characteristics: *shantyp-singer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {frenzy: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *shantyp-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "At the start of the Combat phase": unlike the Mordheim sibling, the song is offered in every
+# combat phase.  The declared choice declines it in the singer's own turn (round 0, the enemy
+# keeps both attacks) and sings in the enemy's turn (round 1, the failing enemy loses one attack
+# for that turn).
+- audit_id: mechanic/mechanic.sea-shanty-psychology
+  id: the-song-also-acts-in-the-enemys-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty-psychology]
+      characteristics: *shantyp-singer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *shantyp-enemy
+  duel_context: *shantyp-context
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.sea-shanty, value: false}
+    - {key: round.1.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.1.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.1.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+    1: {attacks.1.hit: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

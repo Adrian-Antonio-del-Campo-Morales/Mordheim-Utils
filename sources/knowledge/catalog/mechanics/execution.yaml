@@ -79,16 +79,6 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
-- id: weapon.cleaver
-  handler: effect-set
-  parameters:
-    armour_penetration: 1
-    tags:
-    - weapon.cleaver
-    - weapon.axe
-  trigger: attack
-  application: attack
-  stacking: stack
 - id: weapon.flail
   handler: effect-set
   parameters:
@@ -135,6 +125,33 @@ mechanics:
     priority: -1
     tags:
     - weapon.double-handed-weapon
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.horsemans-hammer
+  handler: effect-set
+  parameters:
+    # Printed Strength: as user +1 and Two-handed; the print carries no
+    # strike-last, so no priority penalty. The mounted Cavalry Charge +1 is
+    # outside the duel (deferred.mounts).
+    strength_bonus: 1
+    two_handed: true
+    tags:
+    - weapon.horsemans-hammer
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.rolling-pin
+  handler: effect-set
+  parameters:
+    # Printed: a cudgel (club) in close combat, plus +1 Strength for the
+    # reinforced iron center.
+    concussion: true
+    strength_bonus: 1
+    tags:
+    - weapon.rolling-pin
+    - weapon.club
+    - weapon.mace
   trigger: attack
   application: attack
   stacking: stack
@@ -760,7 +777,6 @@ mechanics:
     tags:
     - weapon.broadsword
     strength_bonus: 1
-    priority: -1
   trigger: attack
   application: attack
   stacking: stack
@@ -1709,6 +1725,22 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: stack
+- id: mechanic.blood-dragon-sword-master
+  handler: effect-set
+  parameters:
+    tags:
+    - rule.blood-dragon-sword-master
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.master-of-blades-axe-reroll
+  handler: effect-set
+  parameters:
+    tags:
+    - rule.dwarf-axe-parry-reroll
+  trigger: passive
+  application: fighter
+  stacking: once
 - id: skill.thick-skull
   handler: effect-set
   parameters:
@@ -2033,7 +2065,6 @@ mechanics:
     parry: true
     tags:
     - weapon.long-daggers
-    - weapon.dagger
   trigger: attack
   application: attack
   stacking: stack
@@ -3492,7 +3523,7 @@ mechanics:
   handler: effect-set
   parameters:
     tags:
-    - mechanic.ethereal-hit-save
+    - mechanic.ethereal-hit-save-improved
     ethereal_hit_save: 3
   trigger: passive
   application: fighter
@@ -3536,6 +3567,7 @@ mechanics:
 - id: weapon.main-gauche
   handler: effect-set
   parameters:
+    target_armour_bonus: 1
     tags:
     - weapon.main-gauche
     parry: true
@@ -3704,6 +3736,46 @@ mechanics:
   parameters:
     tags:
     - condition.danse-macabre-controlled
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.troll-brew-fear-immunity
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.troll-brew-fear-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.troll-brew-frenzy
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.troll-brew-frenzy
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.troll-brew-special-brew
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.troll-brew-special-brew
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.power-grab-majority
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.power-grab-majority
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.power-grab-minority
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.power-grab-minority
   trigger: passive
   application: fighter
   stacking: once
@@ -4276,6 +4348,42 @@ mechanics:
   parameters:
     tags: [defence.sabertooth-hide]
     armour_save_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.bio-armour
+  handler: effect-set
+  parameters:
+    tags: [defence.bio-armour]
+    # Printed 4+ armour save of the part-mechanical body.
+    armour_save_bonus: 3
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.plate-armour
+  handler: effect-set
+  parameters:
+    tags: [defence.plate-armour]
+    # Printed 4+ armour save; the -1 Movement is outside the duel.
+    armour_save_bonus: 3
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.spiral
+  handler: effect-set
+  parameters:
+    tags: [defence.spiral]
+    # Printed 5+ save that cannot be reduced by anything, carried as a ward.
+    ward_save: 5
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.triskele
+  handler: effect-set
+  parameters:
+    tags: [defence.triskele]
+    # Printed 4+ save that cannot be reduced by anything, carried as a ward.
+    ward_save: 4
   trigger: passive
   application: fighter
   stacking: once

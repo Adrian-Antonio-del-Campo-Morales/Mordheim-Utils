@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value
-    when taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero de la banda de la Cabalgata a 6" del Aristócrata puede usar su valor de
-      Liderazgo al realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - aristocrat
+  rule_ref: shared-rule.leader
 - id: aristocrat--expert-horseman
   runtime:
     scope: LATER
@@ -39,8 +33,10 @@ rules:
     - id: unimplemented.cursed-cavalcade.aristocrat.expert-horseman
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: mounts
+        scope: 'NO'
   name: Expert Horseman
   effect: the Aristocrat has the Ride (Nightmare) skill.
   source:
@@ -93,8 +89,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.magical-adept
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Magical Adept
   effect: >-
     When hiring a Twisted Scholar, you may pay 10 additional GC to upgrade it to a Wizard. If you do
@@ -123,8 +118,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.story-teller
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Story Teller
   effect: >-
     When hiring a Twisted Scholar, if you did not upgrade it to a Wizard, you may pay 10 additional
@@ -148,15 +142,24 @@ rules:
     - twisted-scholar
 - id: cursed-piper--danse-macabre
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.danse-macabre-controlled
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.danse-macabre-controlled
     - id: unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.shooting
+      clauses:
+      - id: control-enemy--scope--danse-state
+        scope: 'NO'
+      - id: control-enemy--scope--model-movement
+        scope: 'NO'
   name: Danse Macabre
   effect: >-
     The Piper plays the Danse Macabre in combat. During the shooting phase the Cursed Piper can
@@ -202,8 +205,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.captured-thrall.extra-servitors-worthless-but-still-precious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Extra Servitors, Worthless, but Still Precious
   effect: >-
     Captured Thralls do not count toward the maximum number of models allowed in your warband,
@@ -234,8 +236,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.captured-thrall.not-really-clever
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Not Really Clever
   effect: Captured Thralls cannot earn experience points, and therefore cannot gain any advancement.
   source:
@@ -281,17 +282,20 @@ rules:
     - great-bear
 - id: great-bear--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.cursed-cavalcade.great-bear.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
-  effect: Great Bears are Large Targets as defined in the shooting rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -299,11 +303,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los Osos Grandes son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - great-bear
+  rule_ref: shared-rule.large-target
 - id: great-bear--animal
   runtime:
     scope: 'NO'
@@ -313,10 +316,8 @@ rules:
     - id: unimplemented.cursed-cavalcade.great-bear.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
-  effect: Great Bears are animals and thus do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -324,11 +325,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Los Osos Grandes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - great-bear
+  rule_ref: shared-rule.animal
 - id: wild-beasts--charge
   runtime:
     scope: 'YES'
@@ -368,10 +368,8 @@ rules:
     - id: unimplemented.cursed-cavalcade.wild-beasts.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Animal
-  effect: Wild Beasts are animals and thus do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -379,11 +377,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: Las Bestias salvajes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - wild-beasts
+  rule_ref: shared-rule.animal
 - id: fighting-ape--cymbals
   runtime:
     scope: 'NO'
@@ -393,8 +390,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.cymbals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Cymbals
   effect: >-
     when hiring a Fighting Ape, you may give her a pair of cymbals at 15 gc, which it frenziedly
@@ -424,8 +420,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.agile
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Agile
   effect: >-
     The Fighting Apes are fantastically agile and nimble, putting even the greatest acrobat or
@@ -456,8 +451,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.fighting-ape.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.campaign
   name: Animal
   effect: >-
     Fighting Apes are animals and thus do not gain experience, but can still climb and enter
@@ -485,8 +479,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.foolish-nobleness
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Foolish Nobleness
   effect: >-
     The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to
@@ -515,9 +508,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.capture
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Capture!
   effect: >-
     If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has
@@ -551,8 +542,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.throne-of-worms
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: The Throne of Worms
   effect: >-
     For each enemy captured, instead of rolling normally on the Serious Injury Table after the
@@ -578,17 +568,14 @@ rules:
     band: true
 - id: band--cursed-cavalcade-special-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Cursed Cavalcade Special Skills
   effect: Cursed Cavalcade Heroes can use the list of skills below instead of the standard list.
   source:
@@ -690,9 +677,7 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-duelist
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.movement
   name: Duelist
   effect: >-
     The warrior is an expert in hand-to-hand combat method of the Imperial duelist, aristocrats
@@ -736,8 +721,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    A Fighting Ape never uses weapons or armour and does not need them to fight effectively.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -745,12 +728,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Un Simio Combatiente nunca usa armas ni armaduras y no las necesita para luchar con eficacia.
   applies_to:
     profile_ids:
     - fighting-ape
+  rule_ref: shared-rule.no-weapons-or-armour
 - id: cursed-piper--instrument-hand
   runtime:
     scope: 'YES'
@@ -789,7 +770,7 @@ rules:
     section: "0 \u2013 1 Cursed Piper"
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
-    es: Mano ocupada por el instrumento
+    es: Mano Ocupada por el Instrumento
   applies_to:
     profile_ids:
     - cursed-piper

@@ -1,0 +1,160 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.art-of-silent-death
+# authoring_status: AUTHORED
+# authoring_progress: the three admitted clauses carry authored scenarios derived from the printed rule and the recorded contract, each paired with the same configuration without the skill; the fighting-claws clause is evidenced by the pool size the paired profile adds on top of the skill's own attack. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: critical-5-6 (scope: YES)
+# AUTHORED[critical-5-6]: 2 scenarios cover a To Wound five scoring a critical with the skill (two points of damage) and the same five staying an ordinary wound without it.
+#
+# Clause: fighting-claws-second-attack (scope: YES)
+# AUTHORED[fighting-claws-second-attack]: 2 scenarios cover the paired Fighting Claws pool carrying three attacks with the skill and two with the same claws alone.
+#
+# Clause: unarmed-penalty-and-extra-attack (scope: YES)
+# AUTHORED[unarmed-penalty-and-extra-attack]: 2 scenarios cover a bare fist carrying two attacks with the skill and the single clamped attack the same fist carries without it.
+
+# --- Authored scenarios ---
+# The three admitted clauses are resolved one at a time, each with the same
+# configuration repeated without the skill as its control, because the printed
+# sentence claims an improvement over the ordinary rule and the improvement is
+# only observable against that ordinary rule.  The engine's contribution of the
+# skill in an attack pool is one further attack plus a lower critical threshold,
+# and the paired property of the Fighting Claws profile is what the second
+# clause adds on top of it; the counts below are derived from the printed
+# "+1 Attack"/"+2 Attacks instead of +1" and from the claw profile's printed
+# "gets an additional attack".
+#
+# Clause critical-5-6: with the skill a To Wound five is a critical wound.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-a-five-is-a-critical
+  covers: [critical-5-6]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same five against the same profile without the skill: the ordinary
+# threshold of six applies, so the wound is not a critical.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-a-five-without-the-skill
+  covers: [critical-5-6]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause unarmed-penalty-and-extra-attack: bare fists carry the extra attack.
+# Every attack is scripted as a miss so the pool size is the only difference;
+# the third and fourth outcomes belong to the defender's single attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-bare-fists-gain-an-attack
+  covers: [unarmed-penalty-and-extra-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same fist without the skill keeps one attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-bare-fists-without-the-skill
+  covers: [unarmed-penalty-and-extra-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause fighting-claws-second-attack: the paired claw profile supplies one
+# further attack, so with the skill the pool carries three and alone two.  The
+# extra outcome asserted here is the defender's own single attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-fighting-claws-gain-a-second-bonus-attack
+  covers: [fighting-claws-second-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, attacks.3.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-fighting-claws-without-the-skill
+  covers: [fighting-claws-second-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

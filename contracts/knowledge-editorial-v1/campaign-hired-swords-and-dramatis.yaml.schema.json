@@ -64,7 +64,7 @@
         },
         "band_id": { "$ref": "defs.schema.json#/$defs/id" },
         "exclude_traits": {
-          "description": "Hireling traits the band may not hire (catalog/hirelings/traits.yaml vocabulary).",
+          "description": "Hireling traits the band may not hire (the facts mordheim_knowledge.campaign.hireling_traits derives from each hireling profile).",
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "defs.schema.json#/$defs/id" }

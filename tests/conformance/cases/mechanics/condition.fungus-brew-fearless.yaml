@@ -1,0 +1,105 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.fungus-brew-fearless
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied Fearless
+#   brew skips the charged bearer's Fear test entirely (no die), the same bearer without it tests and
+#   fails, and the bearer charging a fear-causer owes no charge Fear test either.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.fungus-brew-fearless, "Fearless
+#   Fungus Brew": "Immune to Fear; All Alone is excluded.")
+# Band-rule note (2026-11-18, recorded, Discrimination-style): the band rule shaman--fungus-brew
+#   (bands/mordheim/night-goblins-web/special-rules.yaml) binds this condition with `grant: none` only to
+#   name the printed brew that produces it; it is never a compile route - construction refuses it on the
+#   printed recipients, so the band-level identity probes `inert` (TODO.md, "Conditions and bull-charge
+#   unreachable by scenarios").  The condition is reached through the supplied condition_ids entry these
+#   scenarios declare, which the rule-removal probe deletes from every id list, so the with/without pairs
+#   below discriminate for this mechanic identity.  No compiler gate exists for the brew results (the
+#   compiler only lists them among the drug ids that Drug Immunity strips, compiler.py:859-866), so the
+#   hand-built bearers below carry the condition directly.
+# AUTHORED: the 3 scenarios below cover the charged skip, the control and the charge skip; REVIEWED
+#   still requires manual semantic review.  Consumer: the execution entry compiles the condition to the
+#   shared Fear immunity tag (execution.yaml: tags [mechanic.fear-immunity]), read by
+#   modular/psychology.py (needs_test, the fear-immunity exclusion) and modular/leadership.py (the fear
+#   short-circuit), exactly as mechanics/mechanic.fear-immunity.yaml evidences it.
+# Semantic wrinkle (2026-11-18, recorded): the printed All Alone half is excluded by the row itself
+#   (a multiple-enemy count the one-against-one duel never supplies); only Fear is evidenced.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built bearer (WS3 S3 T3 W2 I5 A1 Ld7, mace) and a hand-built fear-causer (WS3 S3 T3 W3
+# I8 A1 Ld7, mace, `causes_fear`).  2d6 <= Leadership passes, so 4+4 = 8 fails Ld7; a standing failure
+# of the charged test leaves state.<side>.fear_hit_sixes true, a failed charge test cancels the charge.
+# Every declared attack die is a natural 1.
+
+# The skip: the charged bearer is immune, so the strict tape holds no fear die and its hits are not
+# clamped to sixes.
+- audit_id: mechanic/condition.fungus-brew-fearless
+  id: the-supplied-brew-skips-the-charged-fear-test-entirely
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: &fb-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-fearless]
+      characteristics: &fb-fearless-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the brew the charged test is rolled, 8 fails Ld7 and the hits are clamped.
+- audit_id: mechanic/condition.fungus-brew-fearless
+  id: without-the-brew-the-charged-fear-test-is-rolled-and-fails
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: *fb-fear-causer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-fearless-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The charge gate: the immune bearer charging the fear-causer owes no charge Fear test either, so the
+# charge stands with no die and the round resolves as close combat.
+- audit_id: mechanic/condition.fungus-brew-fearless
+  id: the-immune-bearer-charges-a-fear-causer-without-a-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-fearless]
+      characteristics: *fb-fearless-bearer
+    second:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

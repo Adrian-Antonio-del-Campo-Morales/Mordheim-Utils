@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.beastmen-vengeance/mechanic.hatred-beastmen
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, see below): the first-round re-roll against the
+#   hated kind (a Beastman); the same miss stands against a human; the control gets no re-roll; the refusal.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed hireling profile, compiled
+# through the hireling route (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its
+# printed rule is granted by the profile itself, so the build selects nothing.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed,
+# while its printed Leadership (7) stays in place; the omitted main weapon is the printed kit's first
+# close-combat weapon, an axe (-1 to the target's armour save), and the kit's light armour is owned, not
+# worn.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule
+# reads: the hated kind (trait_overrides species: beastman).  The control is a plain hireling without
+# any psychology rule - the grade-1b Bard - compiled through the same route with the same fixture, so the
+# re-roll the rule grants is shown absent without it.  The refusal selects the printed rule on that
+# control through special_rule_ids: a profile-granted rule is not available elsewhere.
+# The recipient's other printed rule adds its own request: Skull Rack ("causes fear in all Beastmen",
+# mechanic.fear-beastmen) makes the charged Beastman take a Fear test at round.0.second.fear.charged.{0,1};
+# 3+3 passes its Ld7 and is declared with that comment.  Predator is outside the duel.
+# Dice: a natural 2 misses WS3; the printed Hatred re-roll of the first round is requested, 4 hits and S3
+# wounds T3 on 4+; the unarmoured opponent has no save die.
+
+# The recipient charges a Beastman: the Beastman's Skull Rack Fear test passes, the first-round miss is
+# re-rolled, hits and wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.beastmen-vengeance/mechanic.hatred-beastmen
+  id: a-first-round-miss-by-the-beast-hunter-is-rerolled-against-a-beastman
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.beast-hunter
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &beastman
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: beastman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Skull Rack: the charged Beastman fears the Beast Hunter and passes its Fear test (3+3 against Ld7).
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human is outside the hated kind (and outside Skull Rack): the strict tape holds no Fear die and no
+# re-roll key, so the same miss stands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.beastmen-vengeance/mechanic.hatred-beastmen
+  id: the-same-miss-stands-against-a-human
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same Beastman: no Skull Rack, so no Fear die, and the miss is not
+# offered a re-roll.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.beastmen-vengeance/mechanic.hatred-beastmen
+  id: a-hireling-without-the-hatred-receives-no-reroll-against-the-same-beastman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *beastman
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.beast-hunter.rule.beastmen-vengeance/mechanic.hatred-beastmen
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.beast-hunter.rule.beastmen-vengeance]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

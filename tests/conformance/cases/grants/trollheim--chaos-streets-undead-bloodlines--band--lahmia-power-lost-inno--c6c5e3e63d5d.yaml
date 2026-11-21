@@ -1,0 +1,83 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/special-rule.band--lahmia-power-lost-innocence
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction pair, B12 construction-skills batch
+#   2026-11-18): the Lahmia Vampire selecting Lost Innocence compiles the power's own strike-first
+#   tier (priority 10, the contract that also carries `rule.strike-first-when-standing-up`), the same
+#   vampire without the selection compiles no priority, and a vampire of another bloodline is refused
+#   the power.  The duel contract (strike first over higher Initiative, when standing up and against a
+#   spear) is evidenced on the sibling identity `.../band--lahmia-power-lost-innocence/skill.always-
+#   strikes-first` and is not duplicated here.
+# AUTHORED: the admission, the unselected contrast and the other-bloodline refusal are declared
+#   below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Family model (bloodline vampiric powers, construction face).  The record is a `warband_skill` with
+# `grant: selectable`, `eligibility: [lahmia-vampire]` and two bindings: the shared mechanic
+# `skill.always-strikes-first` (priority 1) and the compiler binding
+# `special-rule.band--lahmia-power-lost-innocence`, whose contract is priority 10 plus the tag
+# `rule.strike-first-when-standing-up` (Chaos in the Streets p.183, "including when standing up";
+# design-rulings 2026-11-16, "The standing-up penalty also beats Always Strikes First").  Priority
+# merges to the higher explicit tier, so the compiled bearer carries 10; the unselected vampire's
+# printed rules carry no priority at all.  Recipient conventions follow the band's other authored
+# power files: the printed Lahmia Vampire with a mace, a vampire of another bloodline for the
+# refusal.  Neither side strikes.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/special-rule.band--lahmia-power-lost-innocence
+  id: the-lahmia-vampire-selecting-the-power-compiles-its-strike-first-tier
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      special_rule_ids: [band--lahmia-power-lost-innocence]
+      main_weapon_id: weapon.mace
+    second:
+      &lost-innocence-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.global_effects.priority: 10
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unselected contrast: the same vampire without the power compiles no strike-first tier.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/special-rule.band--lahmia-power-lost-innocence
+  id: the-same-vampire-without-the-power-compiles-no-strike-first-tier
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      main_weapon_id: weapon.mace
+    second: *lost-innocence-opponent
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.global_effects.priority: 0
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Lost Innocence is a Lahmia bloodline power: a vampire of another bloodline selecting the row is
+# refused by the recipients gate, which evidences the absent recipient.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/special-rule.band--lahmia-power-lost-innocence
+  id: another-bloodline-of-the-band-is-refused
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: von-carstein-vampire
+      special_rule_ids: [band--lahmia-power-lost-innocence]
+      main_weapon_id: weapon.dagger
+    second: *lost-innocence-opponent
+  expect_error: "special rule is not available to chaos-streets-undead-bloodlines/von-carstein-vampire"

@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+# authoring_status: AUTHORED
+# authoring_progress: the admitted wound-bonus clause carries two authored scenarios derived from the
+# printed line, the recorded contract and the shared operator origin of the same term (skill.monstrous),
+# whose pair differs only in the selected band row and in the starting wounds the state reports.  The
+# printed 2D6 roll of 2 and the 25 gc cost are acquisition data outside the duel and are not asserted.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--wound-bonus (scope: YES)
+# AUTHORED[whole--scope--wound-bonus]: 2 scenarios cover the printed +1 Wound: with the row selected
+# the bearer starts with one more Wound than its supplied fixture base, and the identical build without
+# the row keeps the printed base.  REVIEWED still requires manual semantic review.
+#
+# Clause: whole--scope--advancement-roll-and-cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed line, the recorded contract and the shared operator the audit id binds; no
+# engine output was consulted.  The bearer is the Abomination profile with the row selected and three
+# Wounds as its fixture base, so the printed bonus alone is what raises the starting Wounds the duel
+# state reports, exactly as the shared operator's own case reads it.  Both attack dice are declared
+# misses so the tape is the same in both scenarios.
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+  id: the-selected-modification-adds-one-wound
+  covers: [whole--scope--wound-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-ogre-flesh]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.wounds: 4}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+  id: without-the-selected-modification-the-printed-wounds-stand
+  covers: [whole--scope--wound-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.wounds: 3}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,72 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/wasteland-privateers-sar/swabbies--rabble/compiler.swabbie-rabble-loadout
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction set, 2026-11-18) from this origin's own published
+#   lists, mirroring the authored Lustria model
+#   (trollheim--lustria-pirates--swabbies--rabble--compiler.swabbie-rabble-lo--14db1ad2c193.yaml): a
+#   Pirate Equipment List row refused for the Swabbies by the shared equipment-list gate, and the row only the
+#   Swabbie Equipment List offers admitted with the compiled construction tag observed.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): compiler.swabbie-rabble-loadout is a construction contract with
+#   no duel consumer; the admission's construction_tags assertion fails when the binding is removed (the
+#   Lustria de-duplication note of 2026-11-16 records the same), so the identity discriminates through
+#   the compiled tag, while the refusal is the shared list gate's own sentence and survives removal.
+# Semantic wrinkle (2026-11-18): the only engine reading of the contract id itself is the skills gate
+#   ("magic is forbidden for Swabbies"), the scope-NO casting bar; the printed equipment bound is
+#   enforced by the profile's single declared list (profiles.yaml: equipment_lists
+#   [swabbie-equipment-list]) through the shared stage, exactly as the Lustria model records.  The band-wide
+#   compiler.pirate-human-mercenary-equipment-access widens only the picker's offer (buildAccess); the
+#   validated equipment_access projection does not include it, so the refusal below holds.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/wasteland-privateers-sar/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Source: Human Pirates (broheim.net), p.5, Henchmen / 0-5 Swabbies / Special Rules.  The Rabble rule binds the Swabbies to the Swabbie Equipment List and nothing
+# else; the KB declares it on the profile (profiles.yaml, id swabbies: equipment_lists
+# [swabbie-equipment-list]) and publishes both lists' rows in equipment-access.yaml.  INPUT: the fixture's
+# carried-item channel (owned_item_ids), the channel the Lustria model and the hireling kit refusals use.
+# REFUSAL: a Swabbie carrying crossbow - a row the band's Pirate Equipment List offers and its
+# Swabbie Equipment List does not - is refused at construction with the shared stage's per-item offered-set
+# sentence.  ADMISSION: the same profile carrying bow, a row only the Swabbie Equipment List offers,
+# compiles with the band's compiler contracts visible as construction_tags (the sorted list of every
+# compiler binding the profile receives: the band-wide General Pirate Rules access and the Rabble contract).  The admission uses the corpus's construction-only
+# shape (no charge, the bearer out of action before the first phase, so the duel requests no die) with
+# the README's hand-built opponent.  No engine output was consulted.
+
+- audit_id: rule/mordheim/wasteland-privateers-sar/swabbies--rabble/compiler.swabbie-rabble-loadout
+  id: a-pirate-list-row-is-refused-for-a-swabbie
+  # crossbow sits on this band's Pirate Equipment List and is absent from the Swabbie Equipment List, the recipient's
+  # only list.  The declared fragment is the stage's own per-item access sentence.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: wasteland-privateers-sar
+      profile_id: swabbies
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is not on any equipment list of wasteland-privateers-sar/swabbies.'
+
+- audit_id: rule/mordheim/wasteland-privateers-sar/swabbies--rabble/compiler.swabbie-rabble-loadout
+  id: the-swabbie-list-row-is-admitted-at-construction
+  # bow is the row only the Swabbie Equipment List offers, so carrying it is what the printed sentence
+  # permits; the profile compiles and the Rabble contract is visible on the compiled build.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: wasteland-privateers-sar
+      profile_id: swabbies
+      owned_item_ids: [bow]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.pirate-human-mercenary-equipment-access, compiler.swabbie-rabble-loadout]

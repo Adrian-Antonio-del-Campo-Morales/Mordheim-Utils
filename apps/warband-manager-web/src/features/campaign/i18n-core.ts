@@ -22,6 +22,7 @@ const messages = {
   // The equipment catalogue and the campaign sections travel in a
   // deferred fragment; a flow that needs them reports the wait in the locale.
   "shell.loading-catalogue": { es: "Cargando el catálogo de campaña…", en: "Loading the campaign catalogue…" },
+  "shell.document-title": { es: "Gestor de campañas de Mordheim", en: "Mordheim Campaign Manager" },
   "shell.ok": { es: "Aceptar", en: "OK" },
   "exploration.match-2": { es: "Doble", en: "Double" },
   "exploration.match-3": { es: "Triple", en: "Triple" },

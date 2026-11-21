@@ -1,0 +1,101 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--great-thirster/mechanic.great-thirster
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule, the recorded contract and the printed profile; the bearer is the printed Strigoi
+# Vampire profile that prints the rule.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover both printed directions and their contrast: taking the
+# opponent out of action sets the bearer's Frenzy flag, a reply that leaves the bearer Knocked Down
+# clears it again (the printed "remains until he is Knocked Down, Stunned, or taken Out of Action"),
+# and the same out-of-action result on a bearer that does not print the rule grants nothing.  The
+# bearer is the printed Strigoi Vampire profile of this band; the opposing fixture's Weapon Skill,
+# Strength, Toughness and Initiative are hand-built facts, not profile values, and the bearer's own
+# attacks are fixed at one so the tape holds exactly the dice the printed exchange needs.  The
+# printed Stunned and Out-of-Action expiry faces are the same general injury transition as the
+# Knocked Down one asserted here, so they are named and not repeated.  REVIEWED still requires
+# manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The attacker's declared fours hit and wound an equal-Weapon-Skill, equal-Strength
+# opponent, and the injury face of five is the Out-of-Action band.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--great-thirster/mechanic.great-thirster
+  id: taking-the-opponent-out-of-action-grants-frenzy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+      special_rule_ids: [strigoi-vampire--great-thirster]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT, state.first.frenzy: true}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed expiry: the bearer starts the round Frenzied and the reply leaves him Knocked Down,
+# so the flag is clear again.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--great-thirster/mechanic.great-thirster
+  id: a-knocked-down-bearer-loses-the-frenzy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: survivors-of-strigos-sylv
+      profile_id: strigoi-vampire
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 2, initiative: 10, attacks: 1, leadership: 7}
+  initial_state: {first: {wounds: 1, frenzy: true}}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+  expect_initial: {first.frenzy: true}
+  expect_rounds:
+    0: {state.first.condition: KNOCKED_DOWN, state.first.frenzy: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the clause: the same out-of-action result against a bearer that does not print the
+# rule grants no Frenzy at all.
+- audit_id: rule/mordheim/survivors-of-strigos-sylv/strigoi-vampire--great-thirster/mechanic.great-thirster
+  id: without-the-rule-an-out-of-action-result-grants-no-frenzy
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT, state.first.frenzy: false}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

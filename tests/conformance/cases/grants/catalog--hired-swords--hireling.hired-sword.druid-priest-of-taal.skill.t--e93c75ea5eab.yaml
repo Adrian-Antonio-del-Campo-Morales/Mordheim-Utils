@@ -1,0 +1,143 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   with the selected mark an ordinary animal never attacks the real Druid-Priest; a handled animal
+#   attacks only on its handler's passed Leadership test; the handled animal's failed test blocks its
+#   attack without failing its charge; the same profile without the selection is attacked by the
+#   ordinary animal; the mark is refused outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Druid-Priest of Taal / Tranquil Fauna): "Animals never attack the
+# Priest.  Animals controlled by a warrior with Animal Handler or large predatory beasts must pass a
+# Leadership test using the handler's Leadership to attack him; failure does not result in a failed
+# charge."  The grant is selectable (special_skill_rule_ids); the execution entry carries the tag
+# mechanic.taal-tranquil-fauna, read by packages/python/combat-engine/mordheim_combat/modular/rounds.py
+# (~949-975): a species.animal opponent of the tagged, standing Priest has its attacks blocked
+# (charm_attack_blocked) - outright for fauna-animal.ordinary, or after a failed Leadership test on
+# the supplied animal_handler_leadership (round.<i>.<side>.tranquil-fauna) for fauna-animal.handled /
+# large-predator; the charge and the contact are never touched.  The animal facts are supplied with
+# trait_overrides fauna_animal_kind and animal_handler_leadership (compiler.py ~1093-1101).  The
+# model is the authored mechanics file cases/mechanics/mechanic.taal-tranquil-fauna.yaml, which also
+# hosts the executor's two refusals for unqualified animals (not repeated here).
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Druid-Priest compiled through
+# the hireling route (hirelings.hired-sword.2b / hireling.hired-sword.druid-priest-of-taal) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays); his omitted main weapon is the kit's
+# ceremonial dagger, and his own blows below are natural 1s so its 6+ save for the target never comes
+# up.  His Strictures forbid heavy armour and blackpowder (nothing here); Prayers are outside the duel.
+# The animal opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld3, mace) and declares its kind; the handled
+# animal's handler Leadership is supplied as 8, so a total of exactly eight passes and 5+5 fails (the
+# animal's own Ld3 would fail both, which pins the test to the handler's value).  The mark is
+# selected with special_rule_ids; the unselected control is the same profile without it; the refusal
+# selects the mark on the grade-1b Bard.
+
+# An ordinary animal never attacks the Priest: the strict tape holds no animal attack die at all and no
+# Leadership test is requested for it.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+  id: an-ordinary-animal-never-attacks-the-druid-priest
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.druid-priest-of-taal
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna]
+    second:
+      &ordinary-animal
+      main_weapon_id: weapon.mace
+      trait_overrides: {fauna_animal_kind: ordinary}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 3}
+  duel_context: &priest-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: True, attacks.0.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A handled animal attacks only on its handler's passed test: 4+4 is exactly the supplied Ld8, so the
+# animal is free to strike (and misses on its own die).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+  id: a-handled-animal-attacks-only-on-its-handler-s-passed-test
+  fighters:
+    first: *recipient
+    second:
+      &handled-animal
+      main_weapon_id: weapon.mace
+      trait_overrides: {fauna_animal_kind: handled, animal_handler_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 3}
+  duel_context: *priest-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.tranquil-fauna.0, value: 4}
+    - {key: round.0.second.tranquil-fauna.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: False, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The handled animal charging the Priest fails its handler's test on 5+5: it cannot attack, yet the
+# printed clause keeps the charge from failing - contact stands and no failed charge is recorded.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+  id: a-handled-animal-that-fails-its-handler-s-test-cannot-attack-but-its-charge-stands
+  fighters:
+    first: *recipient
+    second: *handled-animal
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.tranquil-fauna.0, value: 5}
+    - {key: round.0.second.tranquil-fauna.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: True, state.engaged: True, state.failed_charges: [],
+        state.second_charged: True, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Druid-Priest without the selected mark: the ordinary animal attacks him normally.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+  id: the-same-priest-without-the-mark-is-attacked-by-the-animal
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.druid-priest-of-taal
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *ordinary-animal
+  duel_context: *priest-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: False, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mark is printed for the Druid-Priest of Taal; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna/mechanic.taal-tranquil-fauna
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna]
+    second: *ordinary-animal
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

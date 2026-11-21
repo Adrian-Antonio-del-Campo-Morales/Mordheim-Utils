@@ -13,8 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Boss may use their Leadership value when taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -22,31 +20,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Jefe puede usar su valor de Liderazgo cuando realice chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - boss
+  rule_ref: shared-rule.leader
 - id: boss--da-biggest-boss
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: strength
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: campaign.leader-inheritance
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: leader succession after death.
+      reason: out-of-scope.campaign
   name: Da Biggest Boss
   effect: >-
     The Boss is so big, compared to other Night Goblins that is, that they may choose Strength
@@ -98,15 +89,17 @@ rules:
     - squig-herder
 - id: squig-herder--master-herder
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.night-goblins-web.squig-herder.master-herder
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.group
+      clauses:
+      - id: master-herder
+        scope: 'NO'
   name: Master Herder
   effect: >-
     During the recovery phase, any out of control Cave Squigs or Great Squigs in the herder's
@@ -136,9 +129,7 @@ rules:
     - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-gassy-squigs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
   name: Gassy Squigs
   effect: >-
     When an untrained Cave Squig goes Out of Action, roll immediately instead of making its normal
@@ -168,8 +159,7 @@ rules:
     - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-threaten
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Threaten
   effect: >-
     During the Movement phase, all Cave Squigs and Great Squigs within 6" of the Squig Herder (12"
@@ -197,8 +187,7 @@ rules:
     - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-trainin
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: injuries.
+      reason: out-of-scope.campaign
   name: Trainin'
   effect: >-
     The next Cave Squig bought may become the warband's single Trained Squig. It gains Experience
@@ -237,8 +226,7 @@ rules:
     - id: unimplemented.night-goblins-web.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Shaman is a Wizard and begins with one randomly chosen Goblin Magic spell.
   source:
@@ -255,15 +243,61 @@ rules:
     - shaman
 - id: shaman--fungus-brew
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
     effects:
+    - id: condition.fungus-brew-rowdy
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-rowdy
+    - id: condition.fungus-brew-dizzy
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-dizzy
+    - id: condition.fungus-brew-fearless
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-fearless
+    - id: condition.fungus-brew-numbed
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-numbed
+    - id: condition.fungus-brew-belligerent
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-belligerent
+    - id: condition.fungus-brew-loony
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.fungus-brew-loony
     - id: unimplemented.night-goblins-web.shaman.fungus-brew
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: fungus-brew-production
+        scope: 'NO'
+      - id: fungus-rowdy
+        scope: 'NO'
+      - id: fungus-dizzy
+        scope: 'NO'
+      - id: fungus-fearless-fear
+        scope: 'NO'
+      - id: fungus-fearless-all-alone
+        scope: 'NO'
+      - id: fungus-numbed
+        scope: 'NO'
+      - id: fungus-belligerent
+        scope: 'NO'
+      - id: fungus-loony
+        scope: 'NO'
   name: Fungus Brew
   effect: >-
     Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew
@@ -302,11 +336,8 @@ rules:
     - id: unimplemented.night-goblins-web.night-goblin-warriors.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.non-duel
   name: Animosity
-  effect: Night Goblins are subject to the rules for Animosity.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -314,11 +345,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
     es: Rencor
-  effect_i18n:
-    es: Los Goblins Nocturnos están sujetos a las reglas de Rencor.
   applies_to:
     profile_ids:
     - night-goblin-warriors
+  rule_ref: shared-rule.animosity-forest-goblins
 - id: night-goblin-fanatics--addict
   runtime:
     scope: 'NO'
@@ -328,8 +358,7 @@ rules:
     - id: unimplemented.night-goblins-web.night-goblin-fanatics.addict
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Addict
   effect: >-
     Fanatics are dependent on a regular supply of Mad Cap Mushrooms which must be bought each game.
@@ -353,15 +382,19 @@ rules:
     - night-goblin-fanatics
 - id: night-goblin-fanatics--loony
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.night-goblins-web.night-goblin-fanatics.loony
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: frenzy
+        scope: 'NO'
+      - id: animosity-exemption
+        scope: 'NO'
   name: Loony
   effect: >-
     Fanatics are so far gone from reality that they are not subject to the rules for Animosity.
@@ -389,8 +422,7 @@ rules:
     - id: unimplemented.night-goblins-web.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Movement
   source:
     manual: mordheimer.net
@@ -412,8 +444,7 @@ rules:
     - id: unimplemented.night-goblins-web.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Minderz
   source:
     manual: mordheimer.net
@@ -428,15 +459,17 @@ rules:
   rule_ref: shared-rule.minderz
 - id: cave-squigs--just-squigs
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.night-goblins-web.cave-squigs.just-squigs
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Just Squigs
   effect: >-
     Night Goblins don't care much whether Squigs die because there will always be more mysteriously
@@ -466,8 +499,7 @@ rules:
     - id: unimplemented.night-goblins-web.cave-squigs.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.campaign
   name: Animals
   source:
     manual: mordheimer.net
@@ -479,7 +511,15 @@ rules:
   applies_to:
     profile_ids:
     - cave-squigs
-  rule_ref: shared-rule.animal
+  effect: >-
+    Cave Squigs are animals of a sort and so do not gain experience, or climb ladders. They can move to
+    higher levels or over obstacles using the normal climb rules, just imagine it as a particularly high
+    bounce.
+  effect_i18n:
+    es: >-
+      Los Squigs de Cueva son, en cierto modo, animales y por tanto no ganan experiencia, ni trepan por
+      escaleras. Pueden subir a niveles superiores o superar obstáculos usando las reglas normales de
+      trepar; imagínatelo como un bote especialmente alto.
 - id: snotlings--mob
   runtime:
     scope: 'NO'
@@ -489,8 +529,7 @@ rules:
     - id: unimplemented.night-goblins-web.snotlings.mob
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Mob
   effect: All Snotlings in a warband count as one model for warband size.
   source:
@@ -543,11 +582,17 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--melee-hit-penalty
+        scope: 'YES'
+      - id: whole--scope--shooting-hit-penalty
+        scope: 'NO'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: shooting.incoming-hit-modifier
       scope: 'NO'
       binding: null
-      reason: >-
-        Shooting is outside the duel runtime.
+      reason: out-of-scope.shooting
   name: Dodgy
   effect: >-
     The little creatures are constantly ducking and diving in the most infuriating way. All hits
@@ -568,15 +613,17 @@ rules:
     - snotlings
 - id: snotlings--insignificant
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.night-goblins-web.snotlings.insignificant
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.group
+      clauses:
+      - id: insignificant
+        scope: 'NO'
   name: Insignificant
   effect: >-
     Nobody cares about the Snotlings. All Snotlings in the warband count as 1 model for rout tests
@@ -611,8 +658,7 @@ rules:
     - id: unimplemented.night-goblins-web.great-squig.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Movement
   effect: A Great Squig will move just like Cave Squigs, except it rolls 3D6 for the distance.
   source:
@@ -636,8 +682,7 @@ rules:
     - id: unimplemented.night-goblins-web.great-squig.wild
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Wild
   effect: >-
     A Great Squig will need a Goblin to keep it in line, just like a Cave Squig. In addition, due to
@@ -690,17 +735,20 @@ rules:
     - great-squig
 - id: great-squig--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.night-goblins-web.great-squig.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
-  effect: Great Squigs are large targets as defined in the shooting rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -708,11 +756,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
     es: Objetivo Grande
-  effect_i18n:
-    es: Los Grandes Squigs son objetivos grandes tal como se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - great-squig
+  rule_ref: shared-rule.large-target
 - id: great-squig--animal
   runtime:
     scope: 'NO'
@@ -722,8 +769,7 @@ rules:
     - id: unimplemented.night-goblins-web.great-squig.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Animal
   effect: >-
     Great Squigs are animals of a sort and so do not gain experience, or climb ladders. They can
@@ -781,8 +827,7 @@ rules:
     - id: unimplemented.night-goblins-web.troll.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -794,7 +839,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity-2
+  rule_ref: shared-rule.troll-stupidity
 - id: troll--regeneration
   runtime:
     scope: 'YES'
@@ -806,11 +851,17 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
+      clauses:
+      - id: regenerate-wound
+        scope: 'YES'
+      - id: fire-exception
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
     - id: campaign.post-battle-injury
       scope: 'NO'
       binding: null
-      reason: >-
-        Post-battle injury is a campaign state.
+      reason: out-of-scope.campaign
   name: Regeneration
   source:
     manual: mordheimer.net
@@ -832,8 +883,7 @@ rules:
     - id: unimplemented.night-goblins-web.troll.dumb-monster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: psychology.
+      reason: out-of-scope.campaign
   name: Dumb Monster
   source:
     manual: mordheimer.net
@@ -855,8 +905,7 @@ rules:
     - id: unimplemented.night-goblins-web.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Always Hungry
   source:
     manual: mordheimer.net
@@ -868,7 +917,7 @@ rules:
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.always-hungry
+  rule_ref: shared-rule.always-hungry-15gc
 - id: troll--vomit-attack
   kind: profile_ability
   runtime:
@@ -895,15 +944,19 @@ rules:
   rule_ref: shared-rule.vomit-attack
 - id: troll--large-target
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.night-goblins-web.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Large Target
   source:
     manual: mordheimer.net
@@ -925,9 +978,7 @@ rules:
     - id: unimplemented.night-goblins-web.band.animosity
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee: this source tests only models not engaged, then moves or
-        attacks other models. Already-engaged duelists never test.
+      reason: out-of-scope.non-duel
   name: Animosity
   effect: >-
     At the start of the Night Goblin player's turn, roll a D6 for each Night Goblin Warrior Henchman
@@ -1054,9 +1105,7 @@ rules:
     - id: unimplemented.night-goblins-web.band.distasteful-company
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--mad-cap-masters
   name: Mad Cap Masters
   effect: >-
@@ -1078,15 +1127,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.night-goblins-web.band.mad-cap-masters
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: covered.elsewhere
 - id: band--great-squig-or-troll
   name: Great Squig or Troll
   effect: >-
@@ -1111,8 +1159,7 @@ rules:
     - id: unimplemented.night-goblins-web.band.great-squig-or-troll
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--night-goblin-maximum-characteristics
   name: Night Goblin Maximum Characteristics
   effect: >-
@@ -1139,9 +1186,7 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--promoted-henchmen-no-strength
   name: Promoted Henchmen Cannot Choose Strength
   effect: >-
@@ -1207,15 +1252,10 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-fungus-farmer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: band--night-goblin-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
-  effect: >-
-    The sneaky Goblin has become an expert at concealing themselves from enemies (and potential
-    victims!). An enemy warrior attempting to detect this warrior when it is Hidden must halve their
-    Initiative (round up) before measuring the distance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1223,12 +1263,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
     es: Ocultarse en las Sombras
-  effect_i18n:
-    es: >-
-      El goblin furtivo se ha convertido en un experto ocultándose de los enemigos (¡y de las
-      potenciales víctimas!). Un guerrero enemigo que intente detectar a este guerrero cuando esté
-      Oculto debe dividir a la mitad su Iniciativa (redondeando hacia arriba) antes de medir la
-      distancia.
   applies_to:
     band: true
   runtime:
@@ -1239,16 +1273,11 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-hide-in-shadows
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.hide-in-shadows
 - id: band--night-goblin-special-skills-infiltrate
   kind: warband_skill
   name: Infiltrate
-  effect: >-
-    A Night Goblin with this skill is always placed on the battlefield after the opposing warband
-    and can be placed anywhere on the table as long as it is out of sight of the opposing warband,
-    and more than 12" away from any enemy model. If both players have models which infiltrate, roll
-    a D6 for each, and the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1256,13 +1285,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
     es: Infiltración
-  effect_i18n:
-    es: >-
-      Un Goblin Nocturno con esta habilidad siempre se sitúa en el campo de batalla después de la
-      banda rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
-      visión de la banda rival y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
-      modelos que se infiltran, tira 1D6 por cada uno, y el que obtenga la tirada más baja se
-      despliega primero.
   applies_to:
     band: true
   runtime:
@@ -1273,8 +1295,8 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-infiltrate
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.infiltration
 - id: band--night-goblin-special-skills-netter
   kind: warband_skill
   name: Netter
@@ -1310,8 +1332,7 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-netter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
 - id: band--night-goblin-special-skills-ride-squig
   kind: warband_skill
   name: Ride Squig
@@ -1367,8 +1388,10 @@ rules:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-ride-squig
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: riding-a-squig
+        scope: 'NO'
 - id: band--night-goblin-special-skills-sneaky-git
   kind: warband_skill
   name: Sneaky Git
@@ -1398,13 +1421,11 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-sneaky-git
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: pending-implementation

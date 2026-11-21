@@ -1,0 +1,86 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-great-claw/special-rule.band--mutations-great-claw
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction pair plus the printed arm restriction, B12
+#   construction-skills batch 2026-11-18): a Hero of the band taking the Great Claw from the Aquatic
+#   Mutants pool compiles the claw as its own additional attack entry at Strength +1, a henchman of the
+#   band is refused the mutation, and the printed "may carry no weapons in this arm" is evidenced as
+#   the construction refusal of a second carried weapon.  The claw's duel resolution (the extra attack
+#   die) is evidenced on the Cult of the Possessed origin of the same shared mutation and is not
+#   duplicated here.
+# AUTHORED: the admission, the henchman refusal and the claw-arm refusal are declared below; REVIEWED
+#   still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Family model (Aquatic Mutants, construction face; the Suckers file of this band is the model).  The
+# record is a `mutation` with `grant: selectable`, `applies_to.profile_types: [hero]` ("Any Hero may
+# start the campaign with a single mutation from the following ... great claw ...") and the compiler
+# binding `special-rule.band--mutations-great-claw`; the compiler projects the selection as one
+# additional attack entry tagged `rule.great-claw` with Strength +1 and enforces the shared print "He
+# may carry no weapons in this arm" (one weapon arm remains).  A henchman is refused by the recipients
+# gate.  Recipient: the printed Buccaneer (WS 4, S 4, T 4, W 1, I 4, A 1) with a club from its own
+# list; the opponent is hand-built and contributes no attacks; both Hero blows are natural ones so no
+# wound die is on the tape.
+
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-great-claw/special-rule.band--mutations-great-claw
+  id: a-hero-taking-the-great-claw-compiles-it-as-an-additional-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.club
+    second:
+      &great-claw-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: ['rule.great-claw']
+    first.extra_attacks.0.strength_bonus: 1
+    first.characteristics.attacks: 1
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-great-claw/special-rule.band--mutations-great-claw
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.mace
+    second: *great-claw-opponent
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-great-claw"
+
+# The printed arm restriction: the claw occupies one of the mutant's two arms, so a second carried
+# weapon has no arm left and the build is refused.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-great-claw/special-rule.band--mutations-great-claw
+  id: the-claw-arm-may-carry-no-second-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.club
+      off_hand_id: weapon.dagger
+    second: *great-claw-opponent
+  expect_error: the Great Claw arm may carry no weapon

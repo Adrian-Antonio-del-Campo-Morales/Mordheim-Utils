@@ -1,0 +1,152 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.fears-fire
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   bearer charged by a torch-bearing enemy fails his Fear test and hits only on sixes, charged by
+#   a fire-weapon enemy he passes and fights normally, charging a torch-bearer he fails the charge
+#   test and is halted, an enemy without flame prompts no test, and the same torch prompts no test
+#   when the bearer lacks the mechanic.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# Clause: fears-fire (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: the identity's admitted effect is the bearer's individual Fear of a fire-armed enemy
+#   (Fen Guard, Fear of Fire: "Active fires, torch wielding enemies or any flame on the battlefield
+#   cause fear in Fen Guard"); the excluded `fears-fire` clause is the battlefield-terrain face
+#   (fires and flames on the table) and owes no scenario here.  Consumer: modular/psychology.py
+#   fears_opponent_fire() (mechanic.fears-fire on the bearer against condition.open-flame or an
+#   attack.fire tag on the enemy's effects or wielded weapons), read by causes_fear() and
+#   needs_test()/test_fear().  Semantic wrinkle (2026-11-18): the engine resolves this Fear as a
+#   plain Leadership test outside ordinary Psychology (needs_test returns before the immunity
+#   branch; test_fear passes psychology=False), so a psychology-immune bearer would still test;
+#   the printed text is band-wide over a band that is largely immune to Psychology, which is
+#   consistent with that reading, but no immune bearer is asserted here.  REVIEWED still requires
+#   manual semantic review.
+
+# --- Authored scenarios ---
+# Hand-built fixtures: the bearer injects the shared mechanic through skill_ids (WS3 S3 T3 W2 I5
+# A1 Ld7); the enemy is the hand-built fixture (WS3 S3 T3 W3 I2 A1 Ld7) carrying the one fact the
+# rule reads: a lit item (trait_overrides lit_item, the compiler's condition.open-flame - the
+# "torch wielding enemy") or a fire weapon (weapon.brazier-iron carries attack.fire).  A 2D6 Fear
+# test of 5+4 fails Ld7 and 3+3 passes; the failed charged test raises the bearer's hit target to
+# 6, so his declared 4 misses where it hit before.  The enemy is silenced (attacks 0) where the
+# bearer's hit target is the observable, so no ignition die is ever reached.  A failed charge test
+# cancels the charge and the duel ends disengaged.
+
+# A torch-bearing enemy charges the bearer; his 9 fails Ld7 and his 4 now needs a 6.
+- audit_id: mechanic/mechanic.fears-fire
+  id: the-bearer-charged-by-a-torch-bearer-that-fails-his-fear-test-hits-only-on-sixes
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A fire weapon counts as flame: the brazier-iron charger forces the test, 6 passes and the 4 hits.
+- audit_id: mechanic/mechanic.fears-fire
+  id: the-bearer-charged-by-a-fire-weapon-that-passes-his-fear-test-fights-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bearer charging a torch-bearer must pass first: 9 fails, the charge is cancelled and no blow
+# is struck.
+- audit_id: mechanic/mechanic.fears-fire
+  id: the-bearer-charging-a-torch-bearer-that-fails-his-fear-test-is-halted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# No flame, no Fear: the plain mace charger prompts no Fear die and the bearer's 4 hits.
+- audit_id: mechanic/mechanic.fears-fire
+  id: an-enemy-without-flame-does-not-frighten-the-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same torch-bearer charging a warrior without the mechanic prompts no Fear die.
+- audit_id: mechanic/mechanic.fears-fire
+  id: without-the-rule-a-torch-bearer-prompts-no-fear-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {lit_item: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

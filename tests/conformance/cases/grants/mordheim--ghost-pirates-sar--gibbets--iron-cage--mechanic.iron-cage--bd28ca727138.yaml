@@ -1,0 +1,85 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ghost-pirates-sar/gibbets--iron-cage/mechanic.iron-cage
+# authoring_status: AUTHORED
+# authoring_progress: the admitted five-plus-armour-save clause carries two authored scenarios derived
+#   from the printed rule and the printed profile: the cage's 5+ save holds at its threshold face and
+#   fails one face below it, both read in the armour stage against an unmodified Strength-3 wound.  The
+#   bearer is the printed Gibbets profile of the band and the rule is supplied through its printed rule
+#   key, both read from the band source, not from the engine.  The co-printed equipment-lifecycle
+#   sentence is the scope-NO sibling recorded below and is not asserted here.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: five-plus-armour-save (scope: YES)
+# AUTHORED[five-plus-armour-save]: 2 scenario(s) evidence the printed 5+ armour save of the gibbet
+#   cage in the armour stage: a five saves the incoming wound and a four does not, so the save is
+#   fixed at its printed threshold.
+#
+# Clause: not-lost-stolen-or-given (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Family model (iron cage): the bearer is the printed Gibbets profile of this band, which prints the
+# rule, and the rule is supplied through its printed rule key.  The fixture attacker is hand-built with
+# the printed mace and fixed facts (Weapon Skill 10, Strength 3, Initiative 10), so its
+# Strength leaves the printed save unmodified and, with no charge declared, its higher Initiative gives
+# it the opening attack; the bearer declares no attack pool, so the tape holds only the attacker's
+# dice.  The wound face is four, below a natural six, so no critical die is requested, and the bearer
+# is held at two wounds so neither result forces an injury roll.  Every expectation is read from the
+# printed rule and the recorded contract, never from engine output.
+
+# The printed 5+ armour save holds on its threshold face.
+- audit_id: rule/mordheim/ghost-pirates-sar/gibbets--iron-cage/mechanic.iron-cage
+  id: the-cage-save-holds-on-the-five
+  covers: [five-plus-armour-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: ghost-pirates-sar
+      profile_id: gibbets
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed threshold: the save fails and the wound lands.
+- audit_id: rule/mordheim/ghost-pirates-sar/gibbets--iron-cage/mechanic.iron-cage
+  id: the-cage-save-fails-on-the-four
+  covers: [five-plus-armour-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: ghost-pirates-sar
+      profile_id: gibbets
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

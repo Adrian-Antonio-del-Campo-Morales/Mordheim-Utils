@@ -1,0 +1,48 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.haunted-mien
+# authoring_status: AUTHORED
+# authoring_progress: 1 authored scenario (Suckers precedent, first-batch ruling 2026-11-17): the
+#   mechanic on a hand-built fighter is a legal build whose round resolves exactly as without it
+#   (no duel effect is printed).
+# AUTHORED: the scenario is declared below; REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the mechanic.haunted-mien execution entry carries nothing but
+#   its own tag and no combat operator reads it; the printed Haunted Mien effect (lifting the
+#   Priest of Morr's strictures and opening the Combat and Strength lists) is construction-only and
+#   every consumer keys on the RULE id
+#   hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien
+#   (packages/typescript/domain/eligibility/index.ts, isBlackGuardsman), not on this tag.  The
+#   admitted carrier effect exists so the selected Mark stays a legal build (the construction layer
+#   refuses a selected rule with no admitted effect).  Removing or neutralising the tag cannot
+#   change a duel observable, so the probe's non-discriminating/inert verdict for this identity is
+#   expected by design; the construction evidence lives with the rule identity's own file under
+#   cases/grants/.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+
+# --- Authored scenarios ---
+# A hand-built fighter carrying the bare Haunted Mien tag fights an ordinary round: both blows are
+# natural 1s and the round ends at the horizon, as it would without the tag.
+- audit_id: mechanic/mechanic.haunted-mien
+  id: the-mechanic-compiles-and-the-round-resolves-unchanged
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.haunted-mien]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

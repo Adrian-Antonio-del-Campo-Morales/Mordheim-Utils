@@ -1,0 +1,85 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.automatic-leadership
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the Fear test passed without
+#   a die, the same warrior failing it without the rule, and Stupidity passed the
+#   same way.
+
+# --- Authored scenarios ---
+# A Leadership 4 warrior would fail the charged-side Fear test on most dice, yet the
+# rule passes the test before any die: the tape opens with the attack and his own To
+# Hit target stays the ordinary four.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: a-fear-test-passes-without-a-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.hit_target: 4, state.second.fear_hit_sixes: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without the mechanism the same Leadership 4 is tested and fails, which isolates the
+# automatic pass to the printed rule.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: the-same-warrior-fails-without-the-mechanic
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 6, state.second.fear_hit_sixes: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The clause names Stupidity as well: the start-of-turn test is passed without dice,
+# so the round keeps its attacks.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: stupidity-also-passes-without-a-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity, mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.stupidity_failed: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,93 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.pistol
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the fixed Strength 4, the denied worn save and the first-round-only attack. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the fixed Strength 4, the suit-denying shot and the first-round-only attack. The printed -2 save modifier and the declared single penetration point agree on the observable: a worn 5+ suit attempts no save either way.
+
+# --- Authored scenarios ---
+# mechanic/weapon.pistol - close-combat use only: one Strength 4 shot in the
+# first round with a steep armour-save penalty.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The header prints an additional -2 save modifier while the
+# contract declares one penetration point; both readings leave a worn 5+ suit
+# with no save at all, so that observation is authored without taking a side.
+# A Strength 1 bearer would need a 6+ to wound Toughness 3, so the 3 that wounds proves the printed fixed Strength 4 shot.
+
+- audit_id: mechanic/weapon.pistol
+  id: pistol-shot-wounds-at-strength-four
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      characteristics: &a-ws3-s1-t3-w2-i5 {weapon_skill: 3, strength: 1, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# No armour die is requested at all: the printed pistol penalty is steeper than any worn suit can absorb, and the strict tape proves the absence.
+
+- audit_id: mechanic/weapon.pistol
+  id: pistol-leaves-a-worn-suit-no-save
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &d-ws3-s3-t3-w2-i2-heavy {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The first round carries one pistol shot; in the second round the bearer has no attack at all, which the ordered tape shows by carrying only the defender's die.
+
+- audit_id: mechanic/weapon.pistol
+  id: pistol-fires-in-the-first-round-only
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+    1: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.1.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
+

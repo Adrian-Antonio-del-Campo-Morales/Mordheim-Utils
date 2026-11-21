@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.herb-lore
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the unrestricted
+#   heal on a hand-built bearer missing one Wound in an engaged duel - the request is offered at the start
+#   of its own turn and a four restores the Wound, a three restores nothing, a declined request rolls no
+#   die and nothing is offered on the opponent's turn, and a full-health bearer is never asked.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed carrier: Shallows Beasts, Swampers, Herb Lore (bands/mordheim/shallows-beasts-mim/
+# special-rules.yaml swampers--herb-lore, grant profile): in the Recovery phase the Swamper may use his
+# herb lore on himself (or an ally - the band row's scope-NO clause); on a roll of 4+ the model has one
+# Wound restored.  Consumer: modular/rounds.py ~430-438: at the start of the active bearer's own turn,
+# while it is active, not grappled or netted and below its maximum Wounds, the decision
+# round.<i>.<side>.herb-lore is offered and the die round.<i>.<side>.herb-lore heals one Wound on 4+.
+# Unlike its Kislev Ranger sibling (mechanic.herb-lore-outside-combat, offered only while not engaged),
+# the plain operator is offered while engaged - the Kislev file (...d9a60aefbf2b) already used this
+# operator as the control that did get the request in an engaged phase.  Model: that control and the
+# AUTHORED Swampers grant file (...1bc9a467835a); here the operator is injected through skill_ids on the
+# hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7, mace) starting at one of its two Wounds (initial_state).
+# The opponent is the mace fixture (WS3 S3 T3 W3 I2 A1 Ld7); neither charges, so the duel is engaged
+# and every swing is a declared 1.
+
+# The engaged bearer missing a Wound is offered the heal at the start of its own turn; a four restores
+# the Wound.
+- audit_id: mechanic/mechanic.herb-lore
+  id: a-four-restores-the-lost-wound-while-engaged
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.herb-lore]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.first.herb-lore, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.engaged: true, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed threshold from below: a three restores nothing.
+- audit_id: mechanic/mechanic.herb-lore
+  id: a-three-restores-nothing
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.herb-lore, value: true}
+  rolls:
+    - {key: round.0.first.herb-lore, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "May use": declining the request rolls no die, and round 1 - the opponent's turn - offers the bearer
+# nothing (the heal belongs to its own Recovery phase), so the Wound stays lost.
+- audit_id: mechanic/mechanic.herb-lore
+  id: a-declined-heal-rolls-no-die-and-the-opponents-turn-offers-none
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  initial_state: {first: {wounds: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.herb-lore, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1}
+    1: {state.first.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# At full health no Wound is missing, so no heal request exists in the tape.
+- audit_id: mechanic/mechanic.herb-lore
+  id: the-full-health-bearer-is-never-asked
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/compiler.rat-ogre-single-mutation-at-recruitment
+# authoring_status: AUTHORED
+# authoring_progress: the admitted starting-mutation clause carries 3 authored scenarios (refusal of a Rat
+#   Ogre with no mutation, refusal of one with two, and the accepted control with exactly one).  The
+#   excluded mutation-payment clause is retained for context.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: starting-mutation (scope: YES)
+# AUTHORED[starting-mutation]: 3 scenarios.  Printed text: "When hired each Rat Ogre must purchase a single
+#   Mutation from the list in the Mordheim Rulebook".  The earlier blocker in this note (no accepted
+#   contract, no guard sentence) is FALSE and is corrected: the row is runtime scope YES / implemented YES
+#   and binds compiler.rat-ogre-single-mutation-at-recruitment, which is a registered contract
+#   (packages/python/roster-construction/mordheim_construction/contracts.py), and the shared requiredInitial
+#   stage of packages/python/roster-construction/mordheim_construction/_eligibility.js returns
+#   "exactly one mutation is required for <band>/<profile>" when the count of declared band--mutations-*
+#   ids is not one; the same file imports the Cult of the Possessed mutation rows for a profile carrying
+#   that contract.  The scenarios bracket the count: zero and two are refused, one constructs.
+#
+# Clause: mutation-payment (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# A Rat Ogre hired without its required Mutation is refused.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/compiler.rat-ogre-single-mutation-at-recruitment
+  id: a-rat-ogre-without-a-mutation-is-refused
+  covers: [starting-mutation]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: rat-ogres
+  expect_error: exactly one mutation is required for skaven-of-clan-moulder-web/rat-ogres
+# A Rat Ogre hired with two Mutations is refused: the rule requires a single one.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/compiler.rat-ogre-single-mutation-at-recruitment
+  id: a-rat-ogre-with-two-mutations-is-refused
+  covers: [starting-mutation]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm, band--mutations-hideous]
+  expect_error: exactly one mutation is required for skaven-of-clan-moulder-web/rat-ogres
+# Control: the same Rat Ogre with a single Mutation constructs.  It is put out of action before the
+# first phase, so no die is needed.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/compiler.rat-ogre-single-mutation-at-recruitment
+  id: a-rat-ogre-with-a-single-mutation-constructs
+  covers: [starting-mutation]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: rat-ogres
+      special_rule_ids: [band--mutations-extra-arm]
+    second: {main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

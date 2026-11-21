@@ -1,0 +1,243 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.disability-hero-nearby
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios (supplied-condition batch, 2026-11-18): the supplied
+#   nearby-Hero fact waives the Head Injury Stupidity test (alone, and with a friendly standing Hero
+#   provider at the inclusive six inches); explicit provider records that contradict the fact restore
+#   the test (the Hero at seven inches, an enemy-side Hero, a friendly Hero out of action); the
+#   provider records alone waive it without the supplied id; and the fact is refused without Head
+#   Injury result 6.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-hero-nearby):
+#   "Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure."
+#   Source: Chaos in the Streets p149, result 6 ("subject to Stupidity unless within 6" of a Hero").
+# AUTHORED: the ruling of 2026-10-15 reads "A supplied qualified proximity condition is a current
+#   local fact, not a permanent cure; explicit supplied provider records resolve side, activity and the
+#   inclusive six-inch boundary."  Consumer: modular/psychology.py (resolve_stupidity) - for a bearer
+#   whose resources carry `disability.6`, the nearby records tagged fighter-kind.hero are collected;
+#   with records the exemption is their verdict (same side, condition not "out", distance <= 6); with
+#   no Hero record at all the supplied tag alone waives the test.  The compiler gate (roster-
+#   construction compiler.py) refuses the fact without result 6: "Nearby Hero exemption requires Head
+#   Injury result 6".  The provider is a printed Hero of the same band (the Orphans, type hero, no
+#   rules of their own), declared through the Rememberer file's provider grammar (nearby + distances).
+#   Semantic wrinkle, recorded: explicit Hero records decide by themselves, so a friendly standing Hero
+#   within six inches waives the test even without the supplied id (scenario 6); that scenario names
+#   the identity's concept but not its id, so the rule-removal probe reports it as surviving by design.
+
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile with the corpus fixture characteristics (Leadership 7), armed
+# with the outcasts list's club, charging on its own turn; the opponent is the hand-built mace fixture.
+# A test owed and failed uses 4+4 = 8 against Ld 7 and cancels the declared charge.
+
+# The supplied fact alone: no Hero record is declared, so the current nearby-Hero fact waives the
+# Stupidity test - no stupidity die is requested and the charge fights.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: the-supplied-nearby-hero-fact-waives-the-head-injury-stupidity-test
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The qualified fact with its provider: a friendly, standing Hero of the band at exactly six inches
+# (the inclusive boundary) confirms the exemption.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: a-friendly-standing-hero-at-six-inches-confirms-the-exemption
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: hero
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: orphans}
+    distances:
+      - [first, hero, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary: the same Hero at seven inches is outside the printed six, so the provider record
+# contradicts the supplied fact and the ordinary test is owed - failed here, cancelling the charge.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: a-hero-at-seven-inches-restores-the-stupidity-test
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: hero
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: orphans}
+    distances:
+      - [first, hero, 7]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false, attacks: []}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Side: an enemy Hero within six inches is not "a Hero" of the printed clause (the Cripple's own
+# warband's), so the test is owed.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: an-enemy-hero-at-six-inches-does-not-exempt
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: hero
+        side_id: second
+        condition: standing
+        fighter: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: orphans}
+    distances:
+      - [first, hero, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# Activity: a friendly Hero taken out of action within six inches is not an active Hero, so the
+# test is owed.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: a-friendly-hero-out-of-action-does-not-exempt
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: hero
+        side_id: first
+        condition: out
+        fighter: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: orphans}
+    distances:
+      - [first, hero, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The provider records are themselves the qualified fact: a friendly standing Hero at six inches
+# waives the test even without the supplied id (the ruling's "explicit supplied provider records
+# resolve side, activity and the inclusive six-inch boundary").  Recorded as surviving the removal
+# probe by design - this scenario does not carry the identity's id.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: provider-records-alone-waive-the-test-without-the-supplied-id
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: hero
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: orphans}
+    distances:
+      - [first, hero, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The fact qualifies Head Injury only: supplied beside another result it is refused by the
+# compiler's own sentence.
+- audit_id: mechanic/condition.disability-hero-nearby
+  id: the-nearby-hero-fact-is-refused-without-head-injury-result-six
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4, condition.disability-hero-nearby]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "Nearby Hero exemption requires Head Injury result 6"

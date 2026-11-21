@@ -1,0 +1,137 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.ethereal-hit-save-improved
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the Mourngul's improved 3+
+#   Ethereal save discards a hit on three, fails on two, is bypassed by a magical attack, and the
+#   same three does not save the band's canonical 4+ bearer.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (call-of-the-night-haint-mim/special-rules.yaml, Mourngul / Haunter of the Dark):
+# "The Mourngul's Ethereal save is increased to 3+".  The mechanic's execution entry carries
+# ethereal_hit_save 3 (and its own tag); the only KB binding is the Mourngul's Haunter of the Dark
+# profile grant (rule mourngul--haunter-of-the-dark), whose own identity is authored at
+# ...310cbd159609.  The consumer is the shared Ethereal interception (modular/attacks.py ~343-348
+# and pools.py ~177-183): after the To Hit roll a mundane attack asks the defender for the die
+# round.<i>.<attacker>.attack.<n>.ethereal and discards the hit when it meets
+# global_effects.ethereal_hit_save (4 by default, 3 here); an attack tagged attack.magical is never
+# offered it.  The bearer is the band's Mourngul profile (both the band Ethereal rule and the
+# improvement are profile grants, so nothing is selected) with hand-built fixture facts (WS3 S3 T3
+# W2 I2 A1) and no swing of its own; the attacker is the hand-built fixture (mace, WS3 S3 T3 W2 I5
+# A1 Ld7), which tests Fear when charging the Mourngul (1+1 passes Ld7).  The variant boundary is
+# the band's Cairn Wraith, whose Ethereal save is the canonical 4+, so the same faces let the wound
+# through there.  Wound dice are fours.
+
+# The printed 3+ discards the hit on a declared three, so no wound die follows.
+- audit_id: mechanic/mechanic.ethereal-hit-save-improved
+  id: the-improved-ethereal-save-discards-a-hit-on-three
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: mourngul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 3+ does not discard the hit, so the wound resolves.
+- audit_id: mechanic/mechanic.ethereal-hit-save-improved
+  id: one-face-below-the-improved-save-lets-the-wound-through
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: mourngul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exception is unchanged by the improvement: a magical attack is offered no ethereal die.
+- audit_id: mechanic/mechanic.ethereal-hit-save-improved
+  id: a-magical-attack-bypasses-the-improved-ethereal-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: mourngul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The increase belongs to its bearer: the same three on the band's Cairn Wraith (canonical 4+)
+# does not discard the hit and the wound lands.
+- audit_id: mechanic/mechanic.ethereal-hit-save-improved
+  id: the-same-face-does-not-save-the-canonical-ethereal-bearer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

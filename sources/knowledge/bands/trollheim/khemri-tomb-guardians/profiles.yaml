@@ -38,8 +38,6 @@ profiles:
   - tomb-lord--undead
   - tomb-lord--flammable
   combat_traits:
-    starting_skills:
-    - skill.ignore-pain
     creature_kind: undead
 - id: mortuary-priest
   name: Mortuary Priest
@@ -76,8 +74,6 @@ profiles:
   - mortuary-priest--undead
   - mortuary-priest--no-armour
   combat_traits:
-    starting_skills:
-    - skill.ignore-pain
     creature_kind: undead
 - id: necrotect
   name: Necrotect
@@ -116,9 +112,6 @@ profiles:
   - necrotect--hatred
   - necrotect--stone-forger
   combat_traits:
-    starting_skills:
-    - skill.hatred
-    - skill.ignore-pain
     creature_kind: undead
 - id: mortuary-acolytes
   name: Mortuary Acolytes
@@ -155,8 +148,6 @@ profiles:
   rule_ids:
   - mortuary-acolytes--undead
   combat_traits:
-    starting_skills:
-    - skill.ignore-pain
     creature_kind: undead
   equipment_restrictions_i18n:
     es: No puede llevar armadura; la Lista de equipo del Sacerdote Mortuario no contiene opciones de armadura.
@@ -192,8 +183,6 @@ profiles:
   rule_ids:
   - skeleton-warriors--undead
   combat_traits:
-    starting_skills:
-    - skill.ignore-pain
     creature_kind: undead
 - id: tomb-guardians
   name: Tomb Guardians
@@ -227,8 +216,6 @@ profiles:
   rule_ids:
   - tomb-guardians--undead
   combat_traits:
-    starting_skills:
-    - skill.ignore-pain
     creature_kind: undead
 - id: tomb-scorpions
   name: Tomb Scorpions
@@ -306,7 +293,5 @@ profiles:
   - stone-golem--large-target
   - stone-golem--no-water
   - stone-golem--animated
-  combat_traits:
-    natural_armour_save: 4
   equipment_restrictions_i18n:
     es: Los Golems de Piedra nunca usan armas ni armaduras y no sufren penalización por luchar sin armas.

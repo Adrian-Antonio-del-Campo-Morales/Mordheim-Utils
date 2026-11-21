@@ -39,11 +39,13 @@ python tools/mordheim-utils.py app warband-manager --port 5199 --strictPort
 python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 python tools/mordheim-utils.py tests kb -n 8 --dist=load -q
-python tools/mordheim-utils.py performance benchmark --scenario basic --simulations 1000 --repeats 3
-python tools/mordheim-utils.py performance calibrate --pairs mini --no-install
+python tools/mordheim-utils.py performance benchmark --scenarios basic --simulations 1000 --repeats 3
+python tools/mordheim-utils.py performance benchmark --scenarios realistic-50 --simulations 300k --backend numpy
+python tools/mordheim-utils.py performance calibrate --scenarios small --no-install
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
-python tools/mordheim-utils.py check parity --profile quick --rows 7200 --require-complete
+python tools/mordheim-utils.py check parity --scenarios small --workers 4
+python tools/mordheim-utils.py check samples status --scenarios big
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
@@ -52,6 +54,52 @@ python tools/mordheim-utils.py check ci
 Use `<group> <command> --help` for what a command executes and which parser owns
 its options. Measurement, audit and report commands may run tests, simulations
 or write outputs; displaying help executes none of them.
+
+## Shared options
+
+Every engine tool — `performance benchmark`, `performance calibrate`,
+`check parity` and `check samples` — spells one concept one way, with one
+meaning. A tool that does not need an option does not offer it, and an option
+a tool does not know is an error (`unrecognized arguments`).
+
+| Option | Meaning |
+|---|---|
+| `--scenarios NAME...` | What runs; the same values in every tool (below). |
+| `--simulations N` | Duels per scenario. Accepts `k`/`m` suffixes (`100k`, `1m`). |
+| `--backend ENGINE...` | Engine(s): `modular`, `numpy`, `native`. |
+| `--workers N` | Worker processes. |
+| `--batch-size N` | Duels per engine batch. The batch selects the random streams, so a re-run must repeat it. |
+| `--rounds N` | Round limit, replacing each scenario's own. |
+| `--seed N` | Random seed. |
+| `--output PATH` | Where the report is written. |
+| `--json` | Print the report as JSON. |
+
+`--scenarios` values (several values run their union, in the order given):
+
+| Value | Selects |
+|---|---|
+| `small`, `normal`, `big` | The cumulative levels of the 43 precompiled scenarios: 8, 30 and all 43. |
+| `basic`, `long`, … or `scenario/<name>` | One precompiled scenario. `long` is the 75-round stalemate scenario, never a level. |
+| `realistic-50`, `realistic-100` | The cumulative curated sets of realistic duels; `realistic-50` is contained in `realistic-100`. Use them to measure performance. |
+| `realistic/<nnn>` | One curated realistic duel (`realistic/000` … `realistic/099`). |
+| `deliveries` | Every parity delivery (frozen configuration of a conformance scenario). |
+| `delivery/<audit_id>/<id>` or `<audit_id>::<id>` | One parity delivery. |
+| `battery` | Every case of the statistical battery. |
+| `battery/<id>` | One battery case. |
+
+Nothing narrows anything else: `--scenarios small heavy-grind` runs nine
+scenarios. Precompiled scenarios and realistic duels load frozen fighters (no compilation), parity
+deliveries pass their admission rules and run to 50 rounds, and battery cases
+are compiled from the knowledge base. A selected case a tool cannot run is
+listed with its reason, never dropped silently: a blocked or not-applicable
+delivery, inputs no runner can express (initial-state overrides, auxiliary
+participants, scripted dice) and — everywhere except `check parity`, whose
+per-duel comparison passes them on — battery cases with scripted decisions.
+An unknown token is reported as unknown immediately: only `deliveries`,
+`delivery/...` keys and `<audit_id>::<id>` ids consult the delivery catalogue.
+
+Under `tests`, `-n` is pytest-xdist's worker count: that option belongs to
+pytest, not to these tools.
 
 ## App launchers
 
@@ -106,7 +154,7 @@ The testing strategy has three complementary layers:
 - **Modular mechanics:** check game rules directly in the reference engine,
   where failures are easiest to isolate and debug.
 - **Source-backed integration:** knowledge contracts, construction tests and
-  E2E scenarios check the KB -> compiler -> modular combat path.
+  the rules-conformance suite check the KB -> compiler -> modular combat path.
 - **Statistical parity:** compare NumPy/native result distributions with the
   modular reference. The deterministic cross-engine replay suite was removed.
 
@@ -121,7 +169,7 @@ layer does not order or imply the others.
 
 The hierarchy mirrors the launcher: **app launchers** (`combat-lab`,
 `warband-manager`), **tests** (`env`, `combat-lab`, `warband-manager`,
-`modular`, `vectorized`, `native`, `kb`) and **performance** (`benchmark`,
+`modular`, `vectorized`, `native`, `kb`, `conformance`) and **performance** (`benchmark`,
 `calibrate`). Three cross-cutting test selections keep the integrity suites
 reachable without forcing them into those categories: `parity` (statistical
 comparisons and their tooling), `shared` (common engine contracts and frozen
@@ -145,7 +193,9 @@ for its files, its subsections and copyable examples, or
 | `native` | `runtime` | `pytest tests/engines/native/runtime` (the bare selection also runs `tests/engines/native/test_native_engine.py`). |
 | `kb` | none | `pytest tests/knowledge`. |
 | `kb` | `construction` | `pytest tests/construction`. |
-| `kb` | `e2e` | `pytest tests/integration/e2e`. |
+| `conformance` | none | `pytest tests/conformance` (the rules-conformance suite). |
+| `conformance` | `scenarios` | `pytest tests/conformance/execution`. |
+| `conformance` | `integrity` | `pytest tests/conformance/integrity`. |
 | `parity` | `statistical` | `pytest tests/engines/parity/statistical`. |
 | `parity` | `tooling` | `pytest tests/tooling/parity`. |
 | `shared` | none | `pytest tests/engines/shared`. |
@@ -170,8 +220,9 @@ Selection rules:
   and paths; without it the launcher exits 1 instead of reporting a run in
   which every test was skipped.
 - `tests kb` runs the **knowledge** suite only; there is no `knowledge`
-  subsection alias. Construction and E2E are large batteries and stay separate
-  selections instead of being bundled silently.
+  subsection alias. Construction is a large selection and stays a separate
+  subsection instead of being bundled silently; the rules-conformance suite is
+  its own `conformance` selection.
 - `tests warband-manager` has no shared default: pytest and Vitest do not accept
   the same options, so choose `python` or `web`.
 - Several subsections can be named together: `tests modular mechanics runtime`.
@@ -187,9 +238,9 @@ Selection rules:
 python tools/mordheim-utils.py tests --help
 python tools/mordheim-utils.py tests modular --help
 python tools/mordheim-utils.py tests modular mechanics --help
-python tools/mordheim-utils.py tests kb e2e --help
+python tools/mordheim-utils.py tests conformance --help
 python tools/mordheim-utils.py tests kb --list
-python tools/mordheim-utils.py tests kb e2e -q
+python tools/mordheim-utils.py tests conformance -q
 python tools/mordheim-utils.py tests modular mechanics -n 8 --dist=load -q
 python tools/mordheim-utils.py tests modular runtime -q
 ```
@@ -268,8 +319,8 @@ runner self-checks do not certify rule behavior or statistical equivalence.
 | `tests` / direct pytest | `-n 8 --dist=load` for independent tests |
 | Vitest via npm | `--maxWorkers=8`; file parallelism is already built in |
 | `check parity` | `--workers 8` for modular-reference sampling; `--workers auto` uses the runner's automatic policy |
-| `check report tests --statistical` | `--workers 8` for its statistical reference samples |
-| `performance benchmark` | `--processes 8` for explicit multicore measurements |
+| `check samples sample` | `--workers 8` chunks in parallel, for any engine |
+| `performance benchmark` | `--workers 8` for explicit multicore measurements |
 | `performance calibrate` | Already measures worker configurations; no extra worker option |
 | `tests env`, `check verify`, `check report rules`, `check coverage`, `check presentation`, `check ci`, `app` | No worker-count option exposed by these entries; do not append unsupported flags |
 
@@ -277,12 +328,12 @@ runner self-checks do not certify rule behavior or statistical equivalence.
 checks use sequential inner execution; tests specifically verifying concurrent
 queues or process scheduling retain pools capped at two workers.
 
-For time-to-solution measurements, the benchmark command compares execution
-strategies per engine, modular oracle included:
+For time-to-solution measurements, `--strategies` makes the benchmark compare
+execution strategies per engine, modular oracle included:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set mini --backend numpy --strategies "sequential,processes=8,parallel=8"
-python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
+python tools/mordheim-utils.py performance benchmark --scenarios small --backend numpy --strategies "sequential,processes=8,parallel=8"
+python tools/mordheim-utils.py performance benchmark --scenarios big --backend modular --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48"
 ```
 
 `sequential` and `processes=N` (one scenario per worker) apply to every
@@ -304,18 +355,60 @@ Collection and typechecks are not accelerated by xdist.
 Engine tests load checked-in `compiled-cases.json` and `compiled-builds.json`
 under `tests/engines/fixtures/`. Their loaders and conftest fixtures are required;
 ordinary execution does not regenerate inputs or fall back to compilation when
-a frozen input is missing. Knowledge, construction and E2E tests retain their
+a frozen input is missing. Knowledge and construction tests and the rules-conformance suite retain their
 source-backed preparation.
 
 - `precompiled_catalog.py` defines 43 unified scenarios with stable
-  `scenario/<name>` keys. The cumulative levels `small`, `normal` and `long`
-  select the same inputs for parity, benchmarks and calibration; `long` includes
-  all 43. Seeds, sample widths and batch sizes are execution settings.
-- `battery_catalogue.py` and `battery_keys.py` describe build-based battery
-  cases, variants and intended clause coverage. Their preparation still requires
-  compilation; these are not additional precompiled inputs.
-- `run_parity` is the unified statistical runner; round horizons, sample budgets
-  and escalation are configuration, not separate execution systems.
+  `scenario/<name>` keys. The cumulative levels `small`, `normal` and `big`
+  select the same inputs for parity, benchmarks and calibration; `big` includes
+  all 43. Its `select_scenarios` resolves every tool's `--scenarios` values.
+  Seeds, sample widths and batch sizes are execution settings.
+- `realistic_sets.py` lists the curated realistic duels by their stable
+  `realistic/<nnn>` keys in `compiled-cases.json`: `realistic-50` and
+  `realistic-100` (cumulative). See [Realistic performance sets](#realistic-performance-sets).
+- `mordheim_combat_lab/verification/parity/_battery_cases.py` declares the
+  122 battery cases (`--scenarios battery`): short duels built from the
+  knowledge base, so they are compiled rather than frozen.
+- `run_parity` is the one statistical runner: every selection, every engine
+  and every round limit goes through it.
+
+### Realistic performance sets
+
+The 43 precompiled scenarios were chosen to cover rules: they over-represent
+rare fighters and edge cases, so a speedup measured on them need not transfer
+to the duels the application actually runs. Measure performance on
+`realistic-50` (day-to-day) or `realistic-100` (confirmation); keep the 43
+scenarios for correctness and parity.
+
+No usage data exists yet, so the sets come from a synthetic population that
+`tools/verification/realistic_population.py` draws from the rosters, the
+equipment lists and a game expert's answers (all warbands, Mordheim and
+Trollheim, equally likely; members weighted by how many a warband can field;
+campaigns of 4-8 games with heroes averaging under three advances and
+henchmen half as many; the expert's frequent skills; two weapons and the
+dagger dominant, armour uncommon; every duel opens with a charge; no Hired
+Swords). The curator then selects the duels whose feature shares (heroes,
+wounds, attacks, loadout, armour, skills, advances, parry, saves, large
+creatures, Trollheim …) track that population within about 1.5 points, so a
+plain mean over a set is representative without weights. 300,000 simulations
+per duel is the expected application width; on the NumPy engine
+`realistic-50` takes about five minutes and `realistic-100` about ten.
+
+The sets are frozen: the duels are ordinary cases in `compiled-cases.json`
+(campaign advances are applied to the compiled characteristics, bounded by the
+racial maximum, because the compiler has no advance input), and
+`benchmarks/reference/realistic-population.json` keeps the whole population,
+each duel's build, features and set membership for review. Regenerate only to
+change the population model; the same seed reproduces the same sets:
+
+```powershell
+python -m tools.verification.realistic_population --draws 1200 --seed 1          # fidelity table only
+python -m tools.verification.realistic_population --draws 1200 --seed 1 --write  # rewrite corpus, registry, reference
+```
+
+`--write` re-exports every existing case through the corpus exporter, so their
+fingerprints are reproduced, and replaces only the `realistic/*` cases.
+Benchmark baselines measured on the earlier sets are not comparable afterwards.
 
 Do not regenerate frozen inputs merely to move tests or change imports. To
 maintain build snapshots explicitly, use the existing capture/publish workflow:
@@ -352,33 +445,53 @@ select a CLI backend.
 `performance benchmark` runs `python -m mordheim_combat_lab benchmark` and
 `performance calibrate` runs `python -m mordheim_combat_lab calibrate`; their
 arguments belong to those commands. A small sample illustrates the command, not
-performance certification. Calibration can still be costly with the `mini` pair
-selection, and the saved profile changes later measurements on this machine.
+performance certification. Calibration can still be costly with
+`--scenarios small`, and the saved profile changes later measurements on this machine.
 Its batch sizes also change the NumPy and native sampled results for a given
 seed, because each batch draws its own random stream. The profile records the
 machine, engine digests, native build and source revision; one applied on
 another machine or engine prints a provenance warning and is still used.
 
-The benchmark's default `-n 100` is a smoke size: pass real simulation counts
-(and several `--scenario` ids when useful) for measurements. The sequential
-wall-time summary separates timed engine samples, warm-up executions and
-genuine setup overhead (interpreter start and catalogue load).
+`performance benchmark` options:
 
-A benchmark baseline gate compares only like measurements: simulations, batch
-size, seed, warmups, repeats, `--processes` and the backend list must match,
-or the gate exits 2. All three engines participate — a modular baseline gates
+| Option | Meaning |
+|---|---|
+| `--scenarios`, `--backend`, `--seed` | Shared options; without `--scenarios` a run measures `small`. |
+| `--simulations N[,N...]` | Duels per scenario (default 100: a smoke size). |
+| `--batch-size N[,N...]` | NumPy/native batch (default 100,000). A list in either option sweeps every combination. |
+| `--warmups N`, `--repeats N` | Untimed and timed runs; the median is reported. |
+| `--workers N` | One scenario per worker; reports the pool's wall time and concurrency. |
+| `--strategies LIST` | Time-to-solution study (below). |
+| `--profile` | cProfile one sequential configuration; saves `.pstats` beside `--output`. |
+| `--baseline PATH` | Compare with a saved single-configuration report. |
+| `--require-improvement [PCT]` | Fail unless some scenario improves by PCT % (default 10) and none regresses past `--max-regression` (default 5). |
+| `--output PATH`, `--json` | `.json` (also the baseline file), `.csv` or `.md`; print JSON. |
+
+The default `--simulations 100` is a smoke size: pass real simulation counts
+for measurements. The sequential wall-time summary separates timed engine
+samples, warm-up executions and genuine setup overhead (interpreter start and
+catalogue load).
+
+A baseline is just a saved `--output <file>.json`. The gate compares only like
+measurements: simulations, batch size, seed, warmups, repeats, `--workers` and
+the backend list must match, or the gate exits 2. All three engines participate — a modular baseline gates
 modular optimization work the same way as the optimized backends. A
 (scenario, backend) pair the baseline measured but the current run did not,
 such as a native unit that failed, fails the gate. Differences in machine,
 engine digests, build or revision are reported as provenance warnings and
-never fail it. With `--processes N` the report gives the pool's wall time and
+never fail it. With `--workers N` the report gives the pool's wall time and
 sample concurrency, which is not a speedup over a sequential run.
 
-`benchmark --profile` runs the timed repeats under cProfile on
-single-configuration sequential runs, prints each backend's top functions and
-writes per-backend `.pstats` files (default `outputs/benchmarks/`,
-`--profile-output` to change). Profiled timings include instrumentation
-overhead, so they locate hotspots and are rejected by the baseline options.
+`benchmark --profile` runs the timed repeats under cProfile on a
+single-configuration sequential run, prints each backend's top functions and
+writes per-backend `.pstats` files beside `--output` (default
+`outputs/benchmarks/`). Profiled timings include instrumentation overhead, so
+they locate hotspots and cannot feed a gate.
+
+`performance calibrate` takes `--scenarios` (default `big`; the NumPy sweeps
+narrow `big` to `normal`, because a NumPy duel costs 3-5x a native one),
+`--simulations` (the sequential sweep; the worker sweep runs twice as many),
+`--seed`, `--output`, `--json`, `--no-install` and `--reset`.
 
 ## Checks and reports
 
@@ -386,117 +499,148 @@ Each entry explains what it executes in `<entry> --help`.
 
 | Entry | Executes |
 |---|---|
-| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge or E2E test suites (see [Verification](verification.md#deterministic-modular-evidence)). |
-| `check report rules` | `python -m mordheim_combat_lab audit`: separate combat-mechanic and editorial-rule CSVs in `outputs/audit/`. |
-| `check report tests` | `python -m mordheim_combat_lab test-report`: parity and technical test reports. |
-| `check parity` | `python -m mordheim_combat_lab parity`: the statistical parity campaign against the modular reference. Its pytest checks are `tests parity statistical`. |
+| `check verify` | `python -m mordheim_combat_lab verify`: KB structure, editorial schemas, execution contract, binding contracts and default profile compilation. It is a structural gate, not the knowledge suite or the rules-conformance suite (see [Verification](verification.md#deterministic-modular-evidence)). |
+| `check report rules` | `python -m tools.knowledge.clauses report`: every classified rule effect, mechanic and item with its scope, binding and declared clause coverage (`rules-inventory.csv`, `clause-coverage.csv`, `summary.json` in `outputs/audit/`). |
+| `check report tests` | `python -m mordheim_combat_lab test-report`: runs the test suite and writes an Excel-friendly technical CSV (`--output DIR`). |
+| `check parity` | `python -m mordheim_combat_lab parity`: compare the optimized engines with the modular oracle now (or, without `--scenarios`, the exact obligation checks). Its pytest checks are `tests parity statistical`. |
+| `check samples` | `python -m tools.verification.parity_samples`: sample one engine into a store; compare stored samples later. |
 | `check coverage` | `python -m mordheim_combat_lab coverage-gate`: measure deterministic engine coverage and check the recorded budget; `--update-budget` replaces it deliberately after review. |
 | `check presentation` | `npm run check:presentation` in `apps/warband-manager-web`: detector tests, strict deep text audit and dynamic visible-completeness audit. |
-| `check ci` | Local integration gate, in order: KB generation and freshness, the Python net (campaign-file, architecture and `tests/knowledge`, including its `web/` audits), shared-eligibility transport, the eligibility bundle, TypeScript typecheck/tests, and web typecheck/lint/tests/build plus bundle guards. It does not run the modular E2E battery or its non-regression control, which CI runs as separate steps; add `tests kb e2e` for integration changes. |
+| `check ci` | Local integration gate, in order: KB generation and freshness, the Python net (campaign-file, architecture and `tests/knowledge`, including its `web/` audits), shared-eligibility transport, the eligibility bundle, TypeScript typecheck/tests, and web typecheck/lint/tests/build plus bundle guards. It does not run the rules-conformance suite or its coverage non-regression control, which CI runs as separate steps; add `tests conformance` for integration changes. |
 
 ```powershell
 python tools/mordheim-utils.py check verify --json
 python tools/mordheim-utils.py check report rules --output outputs/audit
-python tools/mordheim-utils.py check report tests --statistical --workers 8 --output outputs/test-report
-python tools/mordheim-utils.py check parity --profile quick --backend numpy --rows 7200 --workers 8 --require-complete
+python tools/mordheim-utils.py check report tests --output outputs/test-report
+python tools/mordheim-utils.py check parity --scenarios battery --simulations 7200 --workers 4 --require-complete
 python tools/mordheim-utils.py check coverage --json
 python tools/mordheim-utils.py check presentation
 python tools/mordheim-utils.py check ci
 ```
 
-Battery profiles run each case at its declared width (64 rows) unless `--rows`
-replaces it. The declared width only smoke-checks a profile: its cases are
-reported `UNDERPOWERED`, so a strict `--require-complete` gate needs
-`--rows 7200` or more; see the [verification reference](verification.md) for
-the power rule.
+A strict `--require-complete` parity gate needs `--simulations 7200` or more:
+below that a passing case is `UNDERPOWERED`; see the
+[verification reference](verification.md) for the power rule.
 
 `check ci` runs its configured checks and builds; it is not a complete
 engine-certification campaign. Use `tests` for suites and `check parity` for the
-comparison campaign; neither substitutes for the other.
+comparison; neither substitutes for the other.
 
-## Selecting parity catalogues and modular-only execution
+## Comparing engines: `check parity`
 
-The catalogue interface selects data independently of the engine:
+`check parity` runs the modular oracle and the selected candidates now and
+compares their outcome distributions with the six-sigma gate. Without
+`--scenarios` only the exact obligation checks of the vectorized engine run
+(no sampling, about a second); `--require-complete` then fails unless every
+obligation is verified.
 
-- `--catalog precompiled`: unified frozen scenarios loaded from
-  `compiled-cases.json` with no compilation fallback. `--level small` is the
-  default; `--level normal` expands the selection and `--level long` selects
-  all 43 scenarios.
-- `--catalog battery`: all build-based battery cases. `--profile quick`,
-  `complete` or `deep` filters this catalogue; no profile selects the full deep set.
-- `--catalog all`: both catalogues. A profile filters only the battery portion.
-- `--catalog e2e` or `--level e2e`: frozen E2E statistical deliveries.
-  With no identifiers, selects every delivery, including blocked and
-  non-applicable entries; their reasons remain visible without running them.
-  See [E2E campaigns](#e2e-statistical-campaigns) below.
-- `--backend modular`: execute the reference only. Rows report `COMPLETED`,
-  errors or input limits, with no comparison or parity approval.
-- `--backend numpy`, `native` or `all`: compare those candidates against the
-  modular reference using the same runner. Here `all` names both candidates.
+| Option | Meaning |
+|---|---|
+| `--scenarios` | What runs (shared values); scenarios, parity deliveries and battery cases can be mixed. |
+| `--backend` | `numpy` (default), `native` or both. `modular` alone only executes the oracle: rows report `COMPLETED` or the error, with no comparison and no approval. |
+| `--simulations` | Duels per scenario and engine (default 10,000). Below 7,200 a passing case is `UNDERPOWERED`: compared, never approved. |
+| `--rounds N[,N...]` | Each value replaces every case's round limit; a list runs each case once per value, which shows defects that only shift *when* duels resolve. |
+| `--seed`, `--workers N\|auto` | Sample seed; worker processes for the oracle (`auto` pools only samples estimated over ~20 s). |
+| `--require-complete` | Fail unless every selected case passed. |
+| `--output`, `--json` | Report as `.json` or `.md`; print JSON. |
+
+A case that cannot run is `INCOMPATIBLE` (a declared limitation: listed, not a
+failure, but the run is not complete) or `NOT_RUN` (a missing frozen case or a
+preparation crash: a failure). The report records the provenance of the run:
+engine digests, native build, commit and dirty state.
 
 ```powershell
-python tools/mordheim-utils.py check parity --catalog precompiled --level long --backend modular --workers 8
-python tools/mordheim-utils.py check parity --catalog battery --backend modular --workers 8
-python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8
+python tools/mordheim-utils.py check parity
+python tools/mordheim-utils.py check parity --scenarios small --workers 4
+python tools/mordheim-utils.py check parity --scenarios big --backend numpy native --simulations 100k --workers 4 --output outputs/parity/big.md
 
-# One duel per scenario: checks executability, not statistical equivalence
-python tools/mordheim-utils.py check parity --catalog all --backend modular --workers 8 --simulations 1
+# Executability only: one duel per scenario on the oracle
+python tools/mordheim-utils.py check parity --scenarios big deliveries battery --backend modular --simulations 1 --workers 4
 
-# Compare a selected battery profile against NumPy
-python tools/mordheim-utils.py check parity --catalog battery --profile quick --backend numpy --workers 8
+# Round horizons, and the battery at an acceptance width
+python tools/mordheim-utils.py check parity --scenarios basic heavy-grind --rounds 2,4,8,15
+python tools/mordheim-utils.py check parity --scenarios battery --simulations 7200 --require-complete
 ```
 
-To reuse saved modular counts, sample only the candidate with
-`tools.verification.parity_samples`, then compare the stores. For the 43
-stored reference scenarios at 100,000 duels each:
+`--workers 8` cannot split a single duel across workers. Engine samples are
+seeded per case, so the totals do not depend on the worker count.
+
+## Stored samples: `check samples`
+
+`check samples` (`python -m tools.verification.parity_samples`) samples one
+engine at a time into a store, chunk by chunk, and compares stored samples
+later without running either engine again — so the expensive oracle sample is
+taken once and reused. Its sub-commands:
+
+| Command | Options |
+|---|---|
+| `sample` | `--backend` (required), `--scenarios`, `--simulations` (default 10,000), `--batch-size`, `--rounds`, `--seed`, `--workers`, `--replace`, `--store` |
+| `compare` | `--backend` candidate (default `numpy`), `--reference` engine (default `modular`), `--reference-store`, `--scenarios`, `--simulations` (compared width; default the widest common coverage), `--output` (report directory), `--store` |
+| `status` | `--scenarios`, `--store` |
+
+The store defaults to `outputs/parity-store`. Records are written as lossless
+`.json.gz`; readers accept `.json` and `.json.gz` (plain JSON wins when both
+exist), and a resumed record keeps its format.
 
 ```bash
-python -m tools.verification.parity_samples sample --engine numpy --level long --simulations 100000 --seed 2026 --chunk 2500 --workers 2 --store outputs/parity-numpy
-python -m tools.verification.parity_samples compare --backend numpy --level long --simulations 100000 --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
+python tools/mordheim-utils.py check samples sample --backend numpy --scenarios big --simulations 100k --batch-size 2500 --workers 2 --store outputs/parity-numpy
+python tools/mordheim-utils.py check samples compare --backend numpy --scenarios big --simulations 100k --store outputs/parity-numpy --reference-store tests/engines/parity/reference_samples/modular-100k
+python tools/mordheim-utils.py check samples status --scenarios big --store outputs/parity-numpy
 ```
 
-The stored E2E campaigns at 100,000 duels per delivery are also versioned:
-`tests/engines/parity/reference_samples/modular-e2e-100k` (oracle) and
-`tests/engines/parity/reference_samples/numpy-e2e-100k` (candidate). Each store
+`--reference` chooses what the candidate is judged against. `modular` is the
+oracle. `numpy` with `--backend numpy` compares the engine with its own earlier
+sample in `--reference-store`: the same seed and batch draw the same duels, so a
+change meant to preserve results must leave every stored chunk count equal.
+The six-sigma gate only approves; compare the records' chunk counts for equality.
+`--backend native --reference numpy` cross-checks the native port; native was
+ported from NumPy, so their agreement never exonerates a shared deviation —
+only the oracle does.
+
+`tests/engines/parity/reference_samples/numpy-big-200k` stores the NumPy
+engine's own outcomes over the 43 scenarios at 200,000 duels each (batch
+100,000, seed 2026), recorded before the rule-algorithm optimization work. It
+carries no oracle, so it detects whether a later revision moved the engine's
+results; it never establishes that those results are correct. Its own README
+gives the self-check command.
+
+The stored delivery parity campaigns at 100,000 duels per delivery are also versioned:
+`tests/engines/parity/reference_samples/modular-deliveries-100k` (oracle) and
+`tests/engines/parity/reference_samples/numpy-deliveries-100k` (candidate). Each store
 contains 2,678 records with seed 2026 and a 50-round limit. Modular retains its
 original oracle samples. The NumPy and Native candidate stores were refreshed
-on 2026-11-04 from the E2E stores under
+on 2026-11-04 from the stores under
 `D:/DEVEL/CC CLI/outputs BCKPU/parity-refresh-20261104-c10000/e2e/`,
 preserving the original compressed files byte for byte, including counts,
 chunks, timestamps, environment and engine digests. Each candidate record has
 100,000 duels in ten 10,000-duel chunks, produced from clean commit `38f4c12f`.
-Versioned reference samples use lossless `.json.gz` compression. Readers accept
-both `.json` and `.json.gz`; when both exist, plain JSON takes precedence.
-Use `sample --compress` to write new samples directly as `.json.gz`. Without
-the flag, new samples use JSON. Existing samples keep their format when resumed,
-with or without the flag. Gzip retains every original byte, including
-metadata and chunk details; it does not aggregate or discard observations.
 
-`tests/engines/parity/reference_samples/native-e2e-100k` holds the corresponding
+`tests/engines/parity/reference_samples/native-deliveries-100k` holds the corresponding
 Native candidate store. Both candidate scenario sets match the 2,678-record
 Modular oracle. The refreshed comparisons report 2,677 approved and 1 divergent
-for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,485 E2E
-deliveries are rejected before sampling and remain explicit in the reports.
+for NumPy, and 2,567 approved and 111 divergent for Native. Another 2,488 parity
+deliveries are currently rejected before sampling and remain explicit in the reports.
 These are stored candidate results, not parity acceptance.
 The import was verified with the sample-store reader for all 5,356 candidate
 records, checking byte-for-byte copies, input fingerprints, seed, round limits,
 contiguous chunks, outcome totals and current engine digests. All stored
 Modular references remained byte-identical; no simulations were rerun.
+On 2026-11-12 the "E2E" rename rewrote every delivery record in the three
+delivery sample stores: files were renamed from `e2e__<sha>` to
+`delivery__<sha>` and `corpus_key` changed from `e2e/...` to `delivery/...`.
+Every other field (counts, chunks, timestamps, environment, input and engine
+digests) is unchanged, so the records are no longer byte copies of the import.
 
 ```bash
-python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store tests/engines/parity/reference_samples/numpy-e2e-100k --reference-store tests/engines/parity/reference_samples/modular-e2e-100k --output outputs/parity-e2e-stored/compare
-```
-
-For example, generate a compressed E2E oracle store:
-
-```bash
-python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 500 --workers 2 --compress --store outputs/parity-modular-e2e
+python tools/mordheim-utils.py check samples compare --backend numpy --scenarios deliveries --simulations 100k --store tests/engines/parity/reference_samples/numpy-deliveries-100k --reference-store tests/engines/parity/reference_samples/modular-deliveries-100k --output outputs/parity-deliveries-stored/compare
+python tools/mordheim-utils.py check samples sample --backend modular --scenarios deliveries --simulations 100k --batch-size 500 --workers 2 --store outputs/parity-modular-deliveries
 ```
 
 Sampling resumes finished chunks. Comparison executes neither engine. It
 checks fighter fingerprints, seeds, round limits and sample coverage, and
-decides every pair with the existing six-sigma gate over first wins, second
-wins and unresolved duels.
+decides every pair with the six-sigma gate over first wins, second wins and
+unresolved duels. A row whose sample cannot detect a 5-point shift (fewer than
+7,200 duels) is `underpowered`, compared but never approved.
 
 Stored samples are meant to outlive engine changes, so provenance never blocks.
 Each record keeps the source digest of everything its engine executes (a
@@ -511,71 +655,24 @@ A comparison against a historical reference does not certify the current
 engine. `sample` extends a record from another engine version with a warning,
 and each new chunk then records its own provenance; `--replace` discards such
 a record instead. Only a different experiment identity (fighters, seed, round
-limit or chunk size) is refused. A row whose sample cannot detect a 5-point
-shift (fewer than 7,200 duels) is `underpowered`, compared but never approved.
+limit or batch size) is refused, so a new `--rounds` value needs another store
+or `--replace`.
 
 The sampled engine is digested where it was imported from, with a warning when
 that is not this checkout. Pool workers must import exactly the parent's engine
 files; otherwise the run stops with exit code 2, because a single sample would
-mix engines. Native sampling and comparison remain available;
-`compare` defaults to `--backend native`.
+mix engines.
 
 `sample --workers N` runs up to N chunks in separate processes for all three
-engines (`modular`, `numpy`, `native`); the default is 1, in-process. The parent
-process saves completed chunks, so seeds and counts match sequential sampling
-with the same chunk size, and interrupted runs can resume. A first Ctrl+C stops
-new submissions and saves in-flight chunks; a second aborts immediately.
-`compare` and `status` read saved counts and do not use workers. Check coverage
-with `python -m tools.verification.parity_samples status --level long --store outputs/parity-numpy`;
-use `--id scenario/basic` to restrict any subcommand to one scenario.
-
-Without `--simulations`, precompiled scenarios use the command sample default;
-battery cases keep their declared row count. `--workers 8` cannot split a single duel across workers.
-Round limits and contexts remain those of each case, except E2E campaigns,
-which use a maximum of 50 rounds independently of the original test horizon;
-`--seed` sets the sample seed. Known unsupported inputs are reported as blocked,
-not silently discarded. Missing frozen entries and compilation/execution errors
-are failures. Use `--require-complete` to also return failure when any selected
-case is blocked. `--json` and `--output outputs/modular-scenarios.json` record
-the results.
-
-### E2E statistical campaigns
-
-E2E campaigns reuse frozen combat configurations with random dice, rather than
-replaying the original test's scripted dice and exact assertions. Combats run
-until termination or 50 rounds. Preparing a delivery does not establish engine
-compatibility or statistical parity. The [delivery format and admission rules](verification.md#e2e-statistical-deliveries)
-define which inputs can execute.
-
-To persist one engine's W/L/U counts for later comparison:
-
-```powershell
-python -m tools.verification.parity_samples sample --engine modular --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-modular-e2e
-python -m tools.verification.parity_samples status --level e2e --store outputs/parity-modular-e2e
-python -m tools.verification.parity_samples sample --engine numpy --level e2e --simulations 100000 --seed 2026 --chunk 250 --workers 14 --store outputs/parity-numpy-e2e
-python -m tools.verification.parity_samples compare --backend numpy --level e2e --simulations 100000 --store outputs/parity-numpy-e2e --reference-store outputs/parity-modular-e2e
-```
-
-`sample`, `status` and `compare` accept repeatable `--id` values containing an
-E2E key or `audit_id::id`. `sample --rounds N` explicitly overrides the campaign
-horizon. Existing records with different horizons or chunk sizes cannot be
-extended into the same experiment; use another store or explicitly replace them.
-Sample files use `e2e__<sha256(case_key UTF-8)>.json` names to avoid long Windows
-paths. This store retains winner counts only, not wounds or condition distributions.
-Sampling returns 1 if any selected cases remain unexecuted, while preserving
-completed samples for resumption.
-
-Workers share a bounded queue across scenarios, so an available worker can
-start the next case before the previous case's last chunk finishes. The parent
-alone writes records. Graceful interruption stops submissions and saves in-flight
-chunks; completed samples remain reusable.
-
-By default, sampling prints one start line and one completion line per case;
-completion includes elapsed wall time for that case in the current invocation,
-including worker scheduling and saving. Concurrent cases can overlap, so these
-times should not be summed as campaign duration. Already-complete cases report
-that nothing needs running. `sample --verbose` additionally prints each saved
-chunk. Errors, unexecuted-case reasons and the campaign summary remain visible.
+engines; the default is 1, in-process. Workers share a bounded queue across
+scenarios and the parent alone writes records, so seeds and counts match
+sequential sampling with the same `--batch-size`. A first Ctrl+C stops new
+submissions and saves in-flight chunks; a second aborts immediately; rerun the
+same command to resume. Sampling prints one start and one completion line per
+case (the completion line carries that case's elapsed wall time; concurrent
+cases overlap, so do not sum them) and returns 1 while any selected case is
+unfinished. Delivery sample files use `delivery__<sha256(case_key)>.json.gz` names to
+avoid long Windows paths; stores keep winner counts only.
 
 On Windows, access/sharing locks during the atomic sample-file replacement
 trigger up to six retries with increasing waits (2.55 seconds total). A persistent
@@ -583,37 +680,21 @@ lock still fails, leaving the previous sample intact and the new temporary file
 available; unrelated I/O errors fail immediately. Retrying the replacement does
 not rerun duels or change the sample counts.
 
-To execute both engines and compare distributions directly:
+### Delivery parity campaigns
 
-```powershell
-python tools/mordheim-utils.py check parity --level e2e --simulations 1000 --workers 2 --backend numpy --output outputs/e2e-parity/all.json --output-md outputs/e2e-parity/all.md
-```
+Delivery parity campaigns reuse frozen combat configurations with random dice, rather than
+replaying the original conformance scenario's scripted dice and exact assertions. Combats run
+until termination or 50 rounds. Preparing a delivery does not establish engine
+compatibility or statistical parity. The [delivery format and admission rules](verification.md#parity-deliveries)
+define which inputs can execute; blocked, not-applicable, stale, invalid and
+incompatible deliveries keep their reasons in every report. A failed or
+disagreeing decision-policy probe or a corrupt delivery catalogue stops the run
+(exit 2) before anything is sampled. A small successful sample does not certify
+full engine parity. The [parity charter](../../tests/engines/parity/README.md)
+explains deliveries, stored samples and reference stores in one place.
 
-Use repeatable `--e2e <case_key|audit_id::id>` or `--e2e-selection-file FILE` to
-narrow that selection; the file accepts one identifier per line and `#` comments.
-E2E direct comparisons accept candidate backends `numpy`, `native` or `all`;
-`modular` alone is not accepted on this path. `winner` is mandatory;
-`--magnitudes` can additionally select `rounds` without
-changing the frozen deliveries. `--output` writes JSON only and `--output-md`
-writes Markdown only; both can be requested with different paths from one run.
-
-Reports distinguish approval, measured divergence, reference/candidate execution
-failures and unexecuted deliveries. Blocked, not-applicable, stale, invalid and
-incompatible cases retain their reasons. Candidate exceptions are execution
-failures, not measured divergences. A requested native backend that is missing
-or stale is `backend-unavailable` and fails the run, while a native plan that
-cannot express a case stays `incompatible`. Delivery discovery defects, a failed
-or disagreeing decision-policy probe and a run that compared no case (unless
-every selected case is blocked or not-applicable) also fail it. The payload
-records the source revision, dirty state, engine digests and native build;
-provenance differences only warn. A small successful sample does not certify
-full engine parity.
-
-These catalogues require a source checkout with `tests/engines/fixtures` and
-its frozen JSON files. The battery also requires the KB/compiler. Catalogue
-selection accepts `--level small|normal|long` for precompiled scenarios.
-Historical parity levels and `--pair-set` remain available outside catalogue
-selection; historical pair-set names map to the shared cumulative levels.
+These catalogues require a source checkout with `tests/engines/fixtures`,
+`tests/engines/parity/deliveries` and their frozen JSON files; the battery also requires the KB/compiler.
 
 ## Knowledge base
 
@@ -624,8 +705,8 @@ Permanent validation and generation:
 | `tools/knowledge/export_compiled_cases.py` | Python export API for explicit compiled case plans; reads the KB during fixture generation. |
 | `tools/knowledge/audit_kb_conformance.py` | Check canonical knowledge against the expected model. |
 | `tools/knowledge/audit_schema_strictness.py` | Detect gaps and unintended permissiveness in editorial schemas. |
-| `tools/knowledge/clause_registry.py` | Query, prepare and guarded-apply edits to the maintained clause register; previews by default and preserves the CSV when conservation checks fail. |
-| `tools/knowledge/clause_registry_validation.py` | Structural checks for the clause register's fields, vocabularies, references and row conservation; imported by `clause_registry.py`. |
+| `tools/conformance/backlog_batches.py` | Divide the rules-conformance authoring backlog (admitted identities without scenarios) into batches by printed-rule group, route and effort: `--table` (see *New authoring backlog* in `tests/conformance/README.md`), `--batch <id>`, `--out <work-dir>` (id lists for the removal probe). Reads the KB and the corpus, writes neither. Engine-free. |
+| `tools/knowledge/clauses.py` | Clause inventory of the knowledge base and its declared test coverage: `inventory`, `coverage [--pending]`, `check` (unknown references, inconsistencies) and `report` (the CSVs behind `check report rules`). Engine-free. |
 | `tools/knowledge/generate_knowledge_web.py` | Generate deterministic JSON consumed by the web application. |
 | `tools/knowledge/artefact_document.py` | Load the complete generated web KB artefact (initial document plus prose, display-text and catalogue fragments) for tools and tests. |
 | `tools/knowledge/normalize_open_fields.py` | Normalize controlled vocabulary in open editorial fields. |
@@ -660,10 +741,10 @@ Reproducible editorial maintenance:
 | Tool | Purpose |
 |---|---|
 | `tools/web/build-eligibility.mjs` | Generate the versioned Python bundle from the shared TypeScript eligibility module; `--check` rejects stale output. Exposed as `npm run build:eligibility` / `npm run check:eligibility`. |
-| `tools/web/presentation-audit.mjs` | Detect visible text without validated resolution or provenance. |
+| `tools/web/presentation-audit.mjs` | Static GUI text audit (single mode: all GUI sources, resolved types, full flow trace); `--check` exits 1 on any finding. Exposed as `npm run audit:gui`; its leak/control corpus is `presentation-audit-corpus.test.mjs`. |
 | `tools/web/presentation-flow-audit.mjs` | Trace raw text to presentation sinks. |
 | `tools/web/presentation-type-audit.mjs` | Detect forged resolved-text types. |
-| `tools/web/presentation-completeness-audit.mjs` | Dynamic visible-completeness audit: execute the real consumers against the generated artefacts and classify every visible value (step 5 of `check presentation`). |
+| `tools/web/presentation-completeness-audit.mjs` | Dynamic visible-completeness audit: execute the real consumers against the generated artefacts and classify every visible value (phase 3 of `check presentation`). |
 | `tools/web/presentation-completeness-detector.mjs` | Shared pure classifier for visible completeness, used by the dynamic audit and its self-tests. |
 | `tools/web/presentation-gate.mjs` | Single entry point of `npm run check:presentation`; runs every phase unconditionally and preserves each phase's output and exit status. |
 | `tools/web/load-kb-artefact.mjs` | Load generated KB artefacts for the completeness tools through the same TypeScript helper the test suites use. |

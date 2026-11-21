@@ -8,13 +8,14 @@
 import { describe, expect, it } from "vitest";
 
 import type { CampaignDocument, OpenPayload } from "@domain/campaign/index";
+import type { KnowledgeReader } from "@domain/campaign/kernel/ports";
 
 import { continueExploration } from "@app/campaign/features/exploration/exploration-workflow";
 
 const PROFILE = "hireling.hired-sword.undead-hunter";
 
 /** Reader fake: one eligible hired sword, its profile, and its upkeep. */
-const reader: any = {
+const reader = {
   campaignRows(section: string) {
     if (section === "hired-swords-and-dramatis:hired_swords") {
       return [
@@ -48,7 +49,7 @@ const reader: any = {
     }
     return { ok: false, reason: "not_found" };
   },
-};
+} as unknown as KnowledgeReader;
 
 /** A pending post-battle with a Returning-a-Favour follow-up parked. */
 function makeDoc(): CampaignDocument {

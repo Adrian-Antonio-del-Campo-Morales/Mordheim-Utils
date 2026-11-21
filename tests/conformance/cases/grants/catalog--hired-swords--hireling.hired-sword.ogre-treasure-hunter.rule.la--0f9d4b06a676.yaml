@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-treasure-hunter.rule.large-target/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, Large variant mirrored from
+#   catalog--hired-swords--hireling.hired-sword.ogre-slave-master.rule.large): the printed Large
+#   Target grant exposes size.large to a charging Slay Large Creature bearer, the hand-built
+#   control is not wounded by the same roll, and the refusal outside the profile.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), Large variant.  The recipient is the printed Ogre
+# Treasure-Hunter (band_id hirelings.hired-sword.2b), fixture characteristics WS3 S3 T3 W2 I5 A1
+# with the printed Ld7; the kit lists the brace of pistols first, so the kit's axe is named as the
+# main weapon exactly as in his authored fear sibling, and the kit holds no armour, so being
+# wounded requests no armour die.  The printed grant ("Ogres are Large Targets as defined in the
+# shooting rules.") binds condition.large-target, whose execution entry tags the bearer
+# [size.large] (uniform Large Target binding, design ruling 2026-11-18); the printed shooting
+# consequences stay excluded as out-of-scope.shooting and are not asserted here.  The observer is
+# a hand-built charger carrying the printed Slay Large Creature bonus through skill_ids ("+1S
+# when charging a Large sized creature").  Arithmetic: S3 wounds T3 on 4+, the +1S of the charge
+# against a Large target (S4 vs T3) on 3+, so the declared wound roll of 3 separates recipient
+# and control.  Profile-specific dice (per his rule.fear sibling): the Ogre causes fear, so the
+# charger (Ld7) declares the 2D6 charge test and 3+3 passes.  The recipient's own blows are
+# silenced (attacks: 0).  The refusal picks the plain grade-2b Fire-Eater (his printed kit holds
+# no close-combat weapon, so he fights unarmed per the 2026-11-18 kit ruling and no main weapon is
+# declared; all his own rules are scope-NO shooting rows): a profile-granted rule is not
+# available elsewhere.
+
+# The Slay Large Creature charger wounds the Large Ogre Treasure-Hunter on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-treasure-hunter.rule.large-target/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-ogre-treasure-hunter-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.ogre-treasure-hunter
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The Ogre Treasure-Hunter causes fear: the charger's 2D6 charge test of 3+3 passes Ld7.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built opponent without the Large rule, so the same charge carries no bonus
+# and the same 3 does not wound (S3 vs T3 needs 4+).  It causes no fear and wears no armour, so
+# no other die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-treasure-hunter.rule.large-target/condition.large-target
+  id: without-the-large-rule-the-same-three-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling of the
+# same grade-2b package (the Fire-Eater, unarmed kit) is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.ogre-treasure-hunter.rule.large-target/condition.large-target
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.fire-eater
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.ogre-treasure-hunter.rule.large-target]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.2b"

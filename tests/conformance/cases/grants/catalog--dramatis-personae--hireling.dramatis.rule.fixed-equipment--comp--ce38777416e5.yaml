@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (construction set, 2026-11-18) on William Schakestange, Master
+#   Bard: the printed personal kit compiled with omitted and with explicitly supplied ownership (the
+#   contract visible as his only construction tag, the printed light armour's save observed), and the
+#   refusals of a bought extra item, a kit piece transferred away and an active weapon outside the kit.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): this is the catalogue-wide construction clause whose consumer
+#   is the hireling kit matcher itself (compiler.py: a hireling compiled without the contract is refused
+#   "hireling profile is missing its fixed-equipment rule"), so removing the binding turns the admissions
+#   into refusals: the construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (rules.yaml, Personal Equipment): "A special character's equipment is personal, cannot be
+# transferred to other warriors, and extra equipment cannot be bought for the character."  The KB binds
+# it to compiler.hireling-fixed-equipment and the package builder attaches the rule to every Dramatis
+# Persona (combat_packages.py), so its consumer is the hireling kit matcher (`resolveHirelingKit`):
+# supplied ownership must equal the complete printed kit - neither more (nothing bought) nor less
+# (nothing transferred away) - and every active position must be a copy of that kit.  The recipient is
+# William Schakestange (hirelings.dramatis-personae.2a / hireling.dramatis.william-schakestange-master-bard;
+# printed kit rapier, dagger, light armour and the Lucky Rabbit's Foot, the trading-post Rabbit's Foot
+# by the 2026-11-18 triage equivalence), the Dramatis Persona whose rules bind no other compiler
+# contract (Songster is a mechanic; the horse and the Pages are scope NO), compiled with the fixture
+# facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and the dagger in hand as his authored Songster
+# scenarios declare.  Admissions use the corpus's construction-only shape (no charge, the bearer out of
+# action before the first phase, so the duel requests no die; his Lightning Reflexes never strikes) and
+# observe the compiled build alone: construction_tags is the sorted list of every compiler contract the
+# profile receives, and the printed light armour's basic save is 6.  Refusals use the kit-resolver
+# fragment already asserted in cases/mechanics/defence.wolf-pelt-cloak.yaml; supplied ownership travels
+# through owned_item_ids and names the unique piece by its KB id.
+
+# The printed personal kit with ownership omitted: the dagger in hand and the light armour worn
+# compile, the contract is William's only construction tag and the armour's 6+ is the compiled save.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: the-printed-personal-kit-compiles-with-the-contract-as-the-only-tag
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.william-schakestange-master-bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment]
+    first.armour_save: 6
+
+# The same kit with ownership supplied explicitly as the complete printed kit is admitted too.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: supplied-ownership-equal-to-the-printed-kit-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.william-schakestange-master-bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+      owned_item_ids: [rapier, dagger, light_armour, hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot]
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment]
+    first.armour_save: 6
+
+# "extra equipment cannot be bought for the character": ownership listing a sword beside the printed
+# kit is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: a-bought-extra-item-in-the-supplied-ownership-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.william-schakestange-master-bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+      owned_item_ids: [rapier, dagger, light_armour, hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot, sword]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "cannot be transferred to other warriors": ownership missing the printed light armour is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: a-kit-piece-transferred-away-from-the-supplied-ownership-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.william-schakestange-master-bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [rapier, dagger, hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# An active weapon outside the printed kit with ownership omitted is refused as well.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: an-active-weapon-outside-the-printed-kit-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.william-schakestange-master-bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

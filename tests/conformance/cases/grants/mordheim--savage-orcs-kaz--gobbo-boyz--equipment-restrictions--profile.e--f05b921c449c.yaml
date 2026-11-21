@@ -1,0 +1,78 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenario(s) for the admitted whole clause: the Bow-carrying Gobbo Boy is
+#   refused, the same recipient without it is accepted, and (2026-11-16) a Gobbo Boy carrying the Short Bow,
+#   a separate unrestricted row of the same printed list, is admitted.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios.  The printed list row is "Bow (not Gobbo Boyz)"; the separate "Short Bow" row
+#   (5 gc) carries no restriction (sources/knowledge/bands/mordheim/savage-orcs-kaz/equipment-access.yaml:
+#   short_bow has no applies_to; bow has applies_to.profile_ids [boss, weirdo, spottaz, brutes, nuttaz, boyz]).
+#   The Bow refusal below is decided by that gated list row (`"bow" is not on any equipment list of ...`),
+#   not by this binding's token.
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: the Bow refusal is REDUNDANT with the gated `bow` row of sources/knowledge/bands/mordheim/savage-orcs-kaz/equipment-access.yaml (applies_to.profile_ids excludes gobbo-boyz).  No on-list item is forbidden by the printed r...
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: a-bow-carrying-gobbo-boy-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+      owned_item_ids: [bow]
+  expect_error: '"item:bow" is forbidden for savage-orcs-kaz/gobbo-boyz.'
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: the-same-recipient-without-a-bow-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+    second:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# The printed prohibition names the Bow row only.  The Short Bow is its own unrestricted row of the same
+# list, so a Gobbo Boy carrying it is admitted; the build is put out of action at the outset so no die is
+# requested.
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: the-short-bow-is-not-the-forbidden-bow
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+      owned_item_ids: [short_bow]
+    second:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

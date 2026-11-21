@@ -1,0 +1,84 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ghost-pirates-sar/gibbets--undead/trait.poison-immune
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios for this identity (the Nightshade rider suppressed on the
+#   printed gibbets profile, and its ordinary-neighbour control).  On 2026-11-16 the hand-built
+#   psychology fixture this file used to host moved to its own identity's file (rule/mordheim/ghost-
+#   pirates-sar/gibbets--undead/mechanic.psychology-immunity), with the note that described it.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the printed poison immunity against the one duel-time
+# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
+# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
+# bearer's recorded initiative_penalty stays 0.  The bearer is the ghost-pirates-sar/gibbets profile
+# that prints the rule, which declares no armour, ward or regeneration save and no
+# Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
+# The bearer keeps its printed one wound and declares no attack, so the unsaved wound takes it to its declared injury roll; the clause is single-faceted,
+# so the second scenario is the ordinary-neighbour control, which shows that the same poisoned wound really does lower a non-immune target's Initiative by one.
+# The printed profile lists this rule without the compiled poison_immune trait, which
+# is an implementation observation recorded for execution, not a clause decision.
+# REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+
+# --- Authored scenarios ---
+
+# Runtime review: use the printed W1 maximum and resolve intrinsic ward saves
+# before injury. Initiative is stored as base plus initiative_penalty; the
+# penalty of one expresses effective I4 without overwriting the base I5.
+# Derived from the printed rule for this bearer and the admitted clause; no engine
+# output was consulted.  Nightshade is the one admitted poison whose consequence is a
+# state change on the warrior it wounds, so it is the rider the immunity must suppress:
+# the coated mace wounds the bearer as any mace would, and the poisoned-wound
+# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
+# Initiative 10 are hand-built fixture facts, not profile values, and its higher
+# Initiative with no charge declared lets it strike first, so the bearer declares no
+# attack of its own and the tape holds only the attacker's hit and wound dice.
+- audit_id: rule/mordheim/ghost-pirates-sar/gibbets--undead/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: ghost-pirates-sar, profile_id: gibbets}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control uses the same attacker and the same declared dice against an ordinary hand-built neighbour
+# instead of the Gibbet, so the immunity is the only difference between the two scenarios: the poisoned
+# wound lands as before and this time the printed Nightshade penalty does take effect - one unsaved wound
+# lowers the target's Initiative by one, from 5 to 4 (cases/mechanics/poison.nightshade.yaml).
+- audit_id: rule/mordheim/ghost-pirates-sar/gibbets--undead/trait.poison-immune
+  id: the-same-poisoned-wound-lowers-an-ordinary-targets-initiative
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

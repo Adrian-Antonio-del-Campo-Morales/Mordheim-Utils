@@ -31,6 +31,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+      clauses:
+      - id: leader-six
+        scope: 'YES'
+      - id: leader-replacement
+        scope: 'NO'
 - id: skink-priest--spellcaster
   name: Spellcaster
   effect: >-
@@ -57,19 +62,15 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: skink-priest--scaly-skin-6plus
   name: Scaly Skin 6+
-  effect: The Skink Priest has a natural 6+ Scaly Skin save.
   source:
     manual: lustria
     printed_page: 54
     section: Heroes / 1 Skink Priest / Scaly Skin
   name_i18n:
     es: Piel Escamosa 6+
-  effect_i18n:
-    es: El Sacerdote skink tiene una salvación de Piel escamosa natural de 6+.
   applies_to:
     profile_ids:
     - skink-priest
@@ -86,34 +87,22 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
+  rule_ref: shared-rule.scaly-skin-6
 - id: skink-priest--amphibious
   name: Amphibious
-  effect: >-
-    The Skink Priest moves through aquatic terrain without movement penalties and counts as being in
-    cover while in water.
   source:
     manual: lustria
     printed_page: 54
     section: Heroes / 1 Skink Priest / Amphibious
   name_i18n:
     es: Anfibio
-  effect_i18n:
-    es: >-
-      El Sacerdote skink se mueve por terreno acuático sin penalizaciones de movimiento y cuenta
-      como estando en cobertura mientras esté en el agua.
   applies_to:
     profile_ids:
     - skink-priest
@@ -125,19 +114,16 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.amphibious
 - id: skink-priest--jungle-native
   name: Jungle Native
-  effect: The Skink Priest moves through jungle terrain without movement penalties.
   source:
     manual: lustria
     printed_page: 54
     section: Heroes / 1 Skink Priest / Jungle Native
   name_i18n:
     es: Nativos de la Selva
-  effect_i18n:
-    es: El Sacerdote skink se mueve por terreno de selva sin penalizaciones de movimiento.
   applies_to:
     profile_ids:
     - skink-priest
@@ -149,8 +135,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-priest.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.jungle-native
 - id: saurus-totem-warrior--scaly-skin-5plus
   name: Scaly Skin 5+
   effect: The Saurus Totem Warrior has a natural 5+ Scaly Skin save.
@@ -178,19 +164,13 @@ rules:
         parameters:
           value: 5
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: saurus-totem-warrior--bite-attack
   runtime:
     scope: 'YES'
@@ -203,36 +183,24 @@ rules:
         kind: compiler
         id: compiler.bite-attack
   name: Bite Attack
-  effect: >-
-    The Saurus Totem Warrior makes one additional bite attack using its own Strength to wound and
-    suffers no penalty for fighting unarmed. The bite always strikes last, regardless of who charged
-    or which weapons are used, and is resolved after attacks made with Great Weapons.
   source:
     manual: lustria
     printed_page: 54
     section: Heroes / 0-1 Saurus Totem Warrior / Bite Attack
   name_i18n:
     es: Ataque de Mordisco
-  effect_i18n:
-    es: >-
-      El Guerrero tótem saurus realiza un ataque de mordisco adicional usando su propia Fuerza para
-      herir y no sufre penalización por combatir desarmado. El mordisco siempre golpea en último
-      lugar, sin importar quién cargó ni qué armas se usen, y se resuelve tras los ataques
-      realizados con Armas a dos manos.
   applies_to:
     profile_ids:
     - saurus-totem-warrior
+  rule_ref: shared-rule.saurus-bite-attack
 - id: skink-great-crests--scaly-skin-6plus
   name: Scaly Skin 6+
-  effect: A Great Crested Skink has a natural 6+ Scaly Skin save.
   source:
     manual: lustria
     printed_page: 55
     section: Heroes / 0-2 Great Crested Skinks / Scaly Skin
   name_i18n:
     es: Piel Escamosa 6+
-  effect_i18n:
-    es: Un Skink de gran cresta tiene una salvación de Piel escamosa natural de 6+.
   applies_to:
     profile_ids:
     - skink-great-crests
@@ -249,34 +217,22 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
+  rule_ref: shared-rule.scaly-skin-6
 - id: skink-great-crests--amphibious
   name: Amphibious
-  effect: >-
-    Great Crested Skinks move through aquatic terrain without movement penalties and count as being
-    in cover while in water.
   source:
     manual: lustria
     printed_page: 55
     section: Heroes / 0-2 Great Crested Skinks / Amphibious
   name_i18n:
     es: Anfibio
-  effect_i18n:
-    es: >-
-      Los Skinks de gran cresta se mueven por terreno acuático sin penalizaciones de movimiento y
-      cuentan como estando en cobertura mientras estén en el agua.
   applies_to:
     profile_ids:
     - skink-great-crests
@@ -288,19 +244,16 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-great-crests.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.amphibious
 - id: skink-great-crests--jungle-native
   name: Jungle Native
-  effect: Great Crested Skinks move through jungle terrain without movement penalties.
   source:
     manual: lustria
     printed_page: 55
     section: Heroes / 0-2 Great Crested Skinks / Jungle Native
   name_i18n:
     es: Nativos de la Selva
-  effect_i18n:
-    es: Los Skinks de gran cresta se mueven por terreno de selva sin penalizaciones de movimiento.
   applies_to:
     profile_ids:
     - skink-great-crests
@@ -312,8 +265,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-great-crests.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.jungle-native
 - id: skink-braves--scaly-skin-6plus
   name: Scaly Skin 6+
   effect: Skink Braves have a natural 6+ Scaly Skin save.
@@ -341,34 +294,21 @@ rules:
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: skink-braves--amphibious
   name: Amphibious
-  effect: >-
-    Skink Braves move through aquatic terrain without movement penalties and count as being in cover
-    while in water.
   source:
     manual: lustria
     printed_page: 55
     section: Henchmen / Skink Braves / Amphibious
   name_i18n:
     es: Anfibio
-  effect_i18n:
-    es: >-
-      Los Skinks valientes se mueven por terreno acuático sin penalizaciones de movimiento y cuentan
-      como estando en cobertura mientras estén en el agua.
   applies_to:
     profile_ids:
     - skink-braves
@@ -380,19 +320,16 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-braves.amphibious
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.amphibious
 - id: skink-braves--jungle-native
   name: Jungle Native
-  effect: Skink Braves move through jungle terrain without movement penalties.
   source:
     manual: lustria
     printed_page: 55
     section: Henchmen / Skink Braves / Jungle Native
   name_i18n:
     es: Nativos de la Selva
-  effect_i18n:
-    es: Los Skinks valientes se mueven por terreno de selva sin penalizaciones de movimiento.
   applies_to:
     profile_ids:
     - skink-braves
@@ -404,8 +341,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.skink-braves.jungle-native
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.jungle-native
 - id: saurus-braves--scaly-skin-5plus
   name: Scaly Skin 5+
   effect: Saurus Braves have a natural 5+ Scaly Skin save.
@@ -433,19 +370,13 @@ rules:
         parameters:
           value: 5
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
 - id: saurus-braves--bite-attack
   runtime:
     scope: 'YES'
@@ -458,25 +389,16 @@ rules:
         kind: compiler
         id: compiler.bite-attack
   name: Bite Attack
-  effect: >-
-    A Saurus Brave makes one additional bite attack using its own Strength to wound and suffers no
-    penalty for fighting unarmed. The bite always strikes last, regardless of who charged or which
-    weapons are used, and is resolved after attacks made with Great Weapons.
   source:
     manual: lustria
     printed_page: 56
     section: Henchmen / 0-4 Saurus Braves / Bite Attack
   name_i18n:
     es: Ataque de Mordisco
-  effect_i18n:
-    es: >-
-      Un Saurus valiente realiza un ataque de mordisco adicional usando su propia Fuerza para herir
-      y no sufre penalización por combatir desarmado. El mordisco siempre golpea en último lugar,
-      sin importar quién cargó ni qué armas se usen, y se resuelve tras los ataques realizados con
-      Armas a dos manos.
   applies_to:
     profile_ids:
     - saurus-braves
+  rule_ref: shared-rule.saurus-bite-attack
 - id: kroxigor--scaly-skin-4plus
   name: Scaly Skin 4+
   effect: The Kroxigor has a natural 4+ Scaly Skin save.
@@ -503,35 +425,43 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 4
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'YES'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'YES'
+      - id: strength-cannot-go-beyond-six
+        scope: 'YES'
     - id: trait.natural-armour-stacks
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-stacks
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'NO'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'NO'
+      - id: strength-cannot-go-beyond-six
+        scope: 'NO'
     - id: trait.natural-armour-worst-save
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.natural-armour-worst-save
-        parameters:
-          value: 6
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
+      clauses:
+      - id: four-plus-scaly-skin
+        scope: 'NO'
+      - id: stacks-with-armour-but-not-hardened-leather
+        scope: 'NO'
+      - id: strength-cannot-go-beyond-six
+        scope: 'NO'
 - id: kroxigor--aquatic
   name: Aquatic
-  effect: >-
-    The Kroxigor moves through water without movement penalties and counts as being in cover while
-    in water.
   source:
     manual: lustria
     printed_page: 56
     section: Henchmen / 0-1 Kroxigor / Aquatic
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      El Kroxigor se mueve por el agua sin penalizaciones de movimiento y cuenta como estando en
-      cobertura mientras esté en el agua.
   applies_to:
     profile_ids:
     - kroxigor
@@ -543,8 +473,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.kroxigor.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.aquatic
 - id: kroxigor--fear
   name: Fear
   effect: The Kroxigor causes Fear.
@@ -588,26 +518,27 @@ rules:
     profile_ids:
     - kroxigor
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
     - id: unimplemented.lustria-lizardmen.kroxigor.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.shooting
 - id: kroxigor--animal
   name: Animal
-  effect: The Kroxigor never gains Experience.
   source:
     manual: lustria
     printed_page: 56
     section: Henchmen / 0-1 Kroxigor / Animal
   name_i18n:
     es: Animal
-  effect_i18n:
-    es: El Kroxigor nunca gana Experiencia.
   applies_to:
     profile_ids:
     - kroxigor
@@ -619,8 +550,8 @@ rules:
     - id: unimplemented.lustria-lizardmen.kroxigor.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.never-gain-experience
 - id: band--scaly-skin
   runtime:
     scope: 'YES'
@@ -681,6 +612,13 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.cold-blooded-psychology
+      clauses:
+      - id: cold-blooded--scope--psychology-test
+        scope: 'YES'
+      - id: cold-blooded--scope--rout-test
+        scope: 'NO'
+      - id: cold-blooded-rout
+        scope: 'NO'
 - id: band--saurus-rarity
   name: Saurus Rarity
   effect: >-
@@ -705,8 +643,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.saurus-rarity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--lizardmen-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
@@ -736,8 +673,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
 - id: band--lizardmen-special-skills-great-hunter
   kind: warband_skill
   name: Great Hunter
@@ -767,8 +703,7 @@ rules:
     - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-great-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--lizardmen-special-skills-battle-roar
   kind: warband_skill
   runtime:
@@ -797,6 +732,8 @@ rules:
       Golpear durante la primera ronda de combate cuerpo a cuerpo.
   eligibility:
   - saurus-totem-warrior
+  # "Saurus only" names a warrior type: a promoted Saurus Brave qualifies (user ruling 2026-11-19).
+  eligibility_promoted_ids: [saurus-braves]
   applies_to:
     band: true
 - id: band--lizardmen-special-skills-hardened-skin
@@ -826,6 +763,8 @@ rules:
       6 o más.
   eligibility:
   - saurus-totem-warrior
+  # "Saurus only" names a warrior type: a promoted Saurus Brave qualifies (user ruling 2026-11-19).
+  eligibility_promoted_ids: [saurus-braves]
   applies_to:
     band: true
 - id: band--sacred-marks
@@ -862,9 +801,7 @@ rules:
     - id: campaign.sacred-mark-acquisition-history
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: proving that a mark was bought only at recruitment and never later requires
-        campaign history.
+      reason: out-of-scope.campaign
 - id: band--sacred-mark-huge-jaws
   kind: mark
   name: Huge Jaws
@@ -896,6 +833,13 @@ rules:
         id: trait.huge-jaws
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--recipients
+        scope: 'YES'
+      - id: whole--scope--bite-strength
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
 - id: band--sacred-mark-venom-glands
   kind: mark
   runtime:
@@ -966,17 +910,12 @@ rules:
         id: mechanic.mark-of-the-old-ones
 - id: saurus-totem-warrior--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Saurus Totem Warriors may never use missile weapons.
   source:
     manual: lustria
     printed_page: 54
     section: Heroes / 0-1 Saurus Totem Warrior / No Missile Weapons
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Guerreros Tótem Saurus jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - saurus-totem-warrior
@@ -990,19 +929,15 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons
 - id: saurus-braves--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Saurus may never use missile weapons.
   source:
     manual: lustria
     printed_page: 56
     section: Henchmen / 0-4 Saurus Braves / No Missile Weapons
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Saurus jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - saurus-braves
@@ -1016,6 +951,7 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons
 - id: saurus-totem-warrior--no-academic-skills
   name: No Academic Skills
   effect: >-
@@ -1103,7 +1039,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      No puede elegir un Yelmo; esa entrada es solo para el Sacerdote Skink.
   applies_to:
     profile_ids:
     - skink-great-crests

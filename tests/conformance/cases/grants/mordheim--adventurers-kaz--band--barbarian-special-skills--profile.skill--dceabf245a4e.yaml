@@ -1,0 +1,54 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Barbarian
+#   Hero that selects the declared table member is built and the duel runs, and a special skill
+#   outside the printed table is refused with the shared access diagnostic.  The member list is the
+#   one the band binding itself declares, not an interpretation.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed permission (Barbarian Heroes may use the
+#   Barbarian table instead of the standard skill lists).  The admission scenario builds the
+#   recipient with the binding's own member skill.hard-to-kill and records that the duel ran
+#   unrefused; the closure scenario shows a special skill outside the printed table refused by the
+#   shared access route.  The member's own duel consequences belong to its own mechanic identity
+#   and are not re-asserted here.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the band binding's own member
+# list; no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about admission, not about the member's mechanics.
+
+- audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+  id: the-declared-table-member-is-admitted-to-the-recipient
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: barbarian
+      skill_ids: [skill.hard-to-kill]
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: barbarian
+      skill_ids: [skill.monster-slayer]
+  expect_error: "skills are not available to adventurers-kaz/barbarian: ['skill.monster-slayer']"

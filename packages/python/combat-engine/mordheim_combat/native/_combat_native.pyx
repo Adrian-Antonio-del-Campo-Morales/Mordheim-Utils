@@ -4698,8 +4698,6 @@ cdef int attack_count_c(TablesC* t, int side, StateC* s, const int8_t* charging,
             result += 1
         if f.art_bonus:
             result += 1
-        if f.inspiring and player_turn[i]:
-            result += 1
         if first_round:
             result += f.first_round_attacks_bonus
         # Doubling is gated on the per-row frenzy state only (a knockdown
@@ -7015,18 +7013,21 @@ cdef int phase_own_turn_recovery_c(BatchC* b, object decisions, object first_py,
                     if rng_draw_safe(&b.rng, 1, 6) >= 4:
                         s.wounds[row] = <int16_t>(s.wounds[row] + 1)
         # The Rousing Sermon belongs to the preacher's own combat phase and
-        # is preached once per battle; it grants that phase one Attack.
-        if f.rousing_sermon:
+        # grants that phase one Attack.  The Mordheim copy (mechanic.rousing-
+        # sermon) is preached once per battle; the Chaos in the Streets copy
+        # (skill.inspiring-sermon, p.153 "may declare") on every own turn.
+        if f.rousing_sermon or f.inspiring:
             if decide_cached_c(decisions, cache, key + ".rousing-sermon", subject):
                 for i in range(b.n_active):
                     row = b.active_rows[i]
-                    if (turn[row] and not s.rousing_sermon_used[row]
+                    if (turn[row] and not (f.rousing_sermon and s.rousing_sermon_used[row])
                             and not s.massively_built_lost_turn[row]
                             and not s.grappled[row] and not s.grappling[row]
                             and not s.netted[row]
                             and (s.condition[row] == STANDING
                                  or s.condition[row] == KNOCKED_DOWN)):
-                        s.rousing_sermon_used[row] = 1
+                        if f.rousing_sermon:
+                            s.rousing_sermon_used[row] = 1
                         s.attacks_bonus_row[row] = <int8_t>(s.attacks_bonus_row[row] + 1)
             # The compelled Impetuous charge may be thrown off at round zero.
         if b.first_round and f.impetuous_charge:

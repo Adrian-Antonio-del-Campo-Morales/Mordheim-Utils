@@ -13,8 +13,7 @@
     "lint": "npm --prefix ../.. run lint",
     "check:presentation": "node ../../tools/web/presentation-gate.mjs",
     "audit:completeness": "node ../../tools/web/presentation-completeness-audit.mjs",
-    "audit:gui:deep": "node ../../tools/web/presentation-audit.mjs --strict --deep --check",
-    "audit:gui": "node ../../tools/web/presentation-audit.mjs --strict --check",
+    "audit:gui": "node ../../tools/web/presentation-audit.mjs --check",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

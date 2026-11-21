@@ -1,0 +1,120 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-crude-belch/mechanic.crude-belch-ogre
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the earlier note was wrong that no admitted term carries the printed
+#   "-1 'to hit' modifier for the turn" - modular/rounds.py:830-841 applies it, and the ruling "Crude
+#   Belch's 'for the turn' is the duel round" fixes its expiry and reuse. Two scenarios now evidence the
+#   Ogre stanza on its own binding (real Ogre Hunter build); the pair that ran the Halfling operator moved
+#   to mechanic/skill.crude-belch-halfling. "On all enemies engaged" has no duel observable (one
+#   opponent; group engagement is out of scope). The two Monster Slayer refusals below evidence the band's
+#   skill-table boundary and stay with this member, as recorded.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# AUTHORED: 2 scenarios evidence the Ogre stanza on the real build; the former note follows as provenance: [C] the accepted parameterised reading of the printed stanza is asserted (equivalence to
+#   skill.crude-belch-halfling: first round, Leadership-gated, the failing enemy loses its first attack) with
+#   its own control, supplied through the fighter's grant list.  NOT ASSERTED: the printed '-1 to hit for the
+#   turn', which no admitted term carries, and the Ogre/Gnoblar face of the rule (all engaged enemies, reuse
+#   only against a new enemy), which has no operator of its own.  The two closure refusals below (a special
+#   skill outside the printed table, for the Ogre Hero and for a Gnoblar henchman) evidence the table
+#   boundary this member belongs to.  Authored under the table identity and moved here unchanged (see the
+#   provenance line).  REVIEWED still requires manual semantic review.
+# Provenance (2026-11-16): 4 scenario(s) moved here from rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/profile.skill-access, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
+
+# --- Authored scenarios ---
+
+# The printed Ogre stanza on the real build: "Those that do not pass a Ld test suffer a -1 'to hit'
+# modifier for the turn". 6+6 fails the enemy's Leadership 7, so its 4+ becomes 5+ and the declared 4 misses.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-crude-belch/mechanic.crude-belch-ogre
+  id: the-ogre-hunters-belch-gives-a-failing-enemy-minus-one-to-hit
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: ogre-hunter
+      special_rule_ids: [band--ogre-hunting-skills-crude-belch]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    # The printed Ogre causes Fear: the charged enemy passes its test (1+1 against Ld 7).
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control on the same build: 1+1 passes Leadership 7, so the enemy keeps its 4+ and its 4 hits (the
+# wound roll of 1 then fails).
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-crude-belch/mechanic.crude-belch-ogre
+  id: the-ogre-hunters-belch-leaves-a-passing-enemy-to-hit-alone
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: ogre-hunter
+      special_rule_ids: [band--ogre-hunting-skills-crude-belch]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch-ogre, value: true}
+  rolls:
+    # The printed Ogre causes Fear: the charged enemy passes its test (1+1 against Ld 7).
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.crude-belch-ogre.leadership.0, value: 1}
+    - {key: round.0.first.crude-belch-ogre.leadership.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, attacks.1.hit: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed access closure for the five named skills.  The named members keep their own origins and no
+# catalogue identity exists for them at this band (see the clause note), so what is authored is the gate
+# around the list: a special skill the printed list does not name is refused for the printed recipient and for
+# a band henchman.  Both tapes use a neutral weapon so the skills decision is the one the fragment names.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-crude-belch/mechanic.crude-belch-ogre
+  id: a-special-skill-outside-the-printed-list-is-refused-for-the-ogre-hero
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: ogre-hunter
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.natural-attacks
+  expect_error: "skills are not available to ogre-hunting-party-web/ogre-hunter: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills-crude-belch/mechanic.crude-belch-ogre
+  id: the-same-skill-is-refused-for-a-band-henchman
+  # The printed list is access for these heroes; this band's henchmen print no skill access at all
+  # (profiles.yaml, gnoblar-fighters), so the same special skill is refused for them too.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: gnoblar-fighters
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.natural-attacks
+  expect_error: "skills are not available to ogre-hunting-party-web/gnoblar-fighters: ['skill.monster-slayer']"

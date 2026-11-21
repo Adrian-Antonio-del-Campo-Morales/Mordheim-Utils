@@ -1,0 +1,124 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.fear-immunity-undead-chargers
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the hand-built
+#   bearer charged by an Undead fear-causer is asked no Fear die, a living fear-causer's charge still
+#   forces the test, the bearer charging an Undead fear-causer still takes his own charge test, and the
+#   same Undead charge is tested on a fighter without the mechanic.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the consumer's "merely adjacent Undead" face cannot be reached in a
+#   duel without a charge, because no Fear test is requested when nobody charges; the direction face
+#   (the bearer charging) is what evidences that the exemption reads the charger, not the opponent's
+#   identity alone.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grave-robbers-sylv special-rules.yaml, Instinctual Violence, the KB's one binder of
+# this mechanic): "Having experienced countless encounters with the Undead, this warrior is hardened to
+# terror.  When charged by any Undead models, he does not have to take a Fear test."  Consumer:
+# modular/leadership.py resolve_local_leadership (~145-147): a Fear test is passed without dice when
+# the tested fighter carries mechanic.fear-immunity-undead-chargers and _charged_by_undead_opponent
+# (~105-117) finds that the opponent charged this round and carries nature.undead; the compiler
+# materialises that tag from trait_overrides creature_kind: undead and Fear from causes_fear: true.
+# Fixture: the bearer is hand-built (WS3 S3 T3 W2 I5 A1 Ld7, mace, skill_ids
+# [mechanic.fear-immunity-undead-chargers]); the opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace)
+# with the one fact the rule reads.  Every attack die is a natural 1 so the Fear dice are the whole
+# evidence; a 2D6 of 4+4 fails Ld7 and the failure's consequence is state.<side>.fear_hit_sixes.
+
+# An Undead fear-causer charges the bearer: no Fear die is asked (the strict tape declares none).
+- audit_id: mechanic/mechanic.fear-immunity-undead-chargers
+  id: no-fear-test-when-charged-by-an-undead-fear-causer
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true, creature_kind: undead}
+      characteristics: &fiu-charger {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: &fiu-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-immunity-undead-chargers]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Scoped to the Undead: a living fear-causer's charge still forces the test, 4+4 fails Ld7.
+- audit_id: mechanic/mechanic.fear-immunity-undead-chargers
+  id: a-living-fear-causers-charge-is-still-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *fiu-charger
+    second: *fiu-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Scoped to being charged: the bearer charging an Undead fear-causer takes his own charge test (3+3
+# passes Ld7 and the charge lands).
+- audit_id: mechanic/mechanic.fear-immunity-undead-chargers
+  id: the-bearer-charging-an-undead-fear-causer-is-still-tested
+  fighters:
+    first: *fiu-bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true, creature_kind: undead}
+      characteristics: *fiu-charger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.fear.charge.0, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.fear.charge.1, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The non-bearer control: the same Undead charge is tested on a fighter without the mechanic.
+- audit_id: mechanic/mechanic.fear-immunity-undead-chargers
+  id: without-the-mechanic-the-undead-charge-is-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true, creature_kind: undead}
+      characteristics: *fiu-charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

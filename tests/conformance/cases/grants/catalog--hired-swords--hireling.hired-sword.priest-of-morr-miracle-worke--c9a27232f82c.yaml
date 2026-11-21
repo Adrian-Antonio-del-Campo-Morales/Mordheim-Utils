@@ -1,0 +1,68 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/profile.characteristics
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Priest selecting Augur compiles at Strength 2 (fixture S3 with the Mark's permanent -1), and the
+#   same Priest without the Mark keeps Strength 3.  The off-package refusal of skill.augur is already
+#   evidenced in the sibling mechanic.psychology-immunity file (...cf5e6ae1ffca) and the Augur/Haunted
+#   Mien exclusion in the sibling mechanic.haunted-mien file (...45c97d805c6e); neither is duplicated.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Augur): the Priest "suffers -1 Strength permanently"; the Haunted Mien
+# ruling (design-rulings.md, 2026-10-15) keeps "Augur alone retains the permanent -1 S".  The binding is
+# the Mark's profile.characteristics row (bonuses strength -1, no profile_ids), applied by the selected
+# branch of packages/python/roster-construction/mordheim_construction/compiler.py.  The recipient is the
+# printed Priest of Morr compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.priest-of-morr-miracle-workers) with the fixture facts (WS3 S3 T3 W2 I5 A1; the
+# printed Ld8 stays), selecting the Mark through special_rule_ids as the sibling files do; the kit
+# dagger is the default weapon.  The shape is construction-only (no charge, the bearer out of action
+# before the first phase, so the Mark's re-roll offer, its psychology immunity and Morr's Servant are
+# never reached) and the compiled Strength is the observation.  The sibling
+# mechanic.augur-one-roll-reroll file already shows the reduced Strength at the wound die (S2 wounds T3
+# on 5+); here the projection is read directly.
+
+# Augur selected: the fixture's S3 compiles to S2.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/profile.characteristics
+  id: the-priest-with-augur-compiles-at-strength-2
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur]
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.strength: 2
+    first.characteristics.toughness: 3
+
+# The control: the same Priest without the Mark keeps the fixture's S3.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/profile.characteristics
+  id: the-same-priest-without-the-mark-keeps-strength-3
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.characteristics.strength: 3
+    first.characteristics.toughness: 3

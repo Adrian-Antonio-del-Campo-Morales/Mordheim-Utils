@@ -124,7 +124,10 @@ RECIPIENT_CASES = [
                          ids=[f"{row[0]}:{row[1]}:{row[2]}" for row in RECIPIENT_CASES])
 def test_a_printed_recipient_reaches_its_profile_and_no_peer(band, item, recipient, peer):
     assert item in offers(band, recipient)
-    assert item not in offers(band, peer)
+    # The peer never obtains the item: either the list line names only the
+    # recipient, or (single source since 2026-11-16) the peer's own printed
+    # restriction refuses it.
+    assert item not in offers(band, peer) or refusal(band, peer, item, None) == "equipment_forbidden"
 
 
 def test_the_hero_only_sacred_marking_reaches_every_hero_and_no_henchman():
@@ -186,8 +189,8 @@ def test_the_undead_and_mootlander_lists_reach_their_own_profiles():
 
 def test_the_estalian_variant_keeps_the_heavy_armour_its_rules_add():
     """F074-pirate-variants: the Estalian line adds heavy armour to the printed
-    Pirate Equipment List, while the profile entry keeps 'may not wear armour'
-    for the other body armour of that same list."""
+    Pirate Equipment List, while the profile entry still forbids the other body
+    armour of that same list (light armour and toughened leathers)."""
     estalian = dict(band_id="estalian-corsairs-sar", profile_id="captain")
     assert compile_fighter(FighterBuild("mordheim", **estalian,
                                         main_weapon_id="weapon.rapier",
@@ -222,6 +225,7 @@ def test_the_promoted_ghoul_reaches_the_fallen_list_and_the_henchman_does_not():
                                         variant_ids=("promotion.hero",)))
 
 
+@pytest.mark.covers("rule/mordheim/disciples-of-maldred-mou/mercenaries--equipment-restrictions/profile.equipment-restrictions")
 def test_the_maldred_mercenaries_use_the_mercenary_list_only_before_the_first_game():
     """The printed phase of `mercenaries--equipment-restrictions`: the Mercenary
     Equipment list is open before the first game and the Squire and Men-at-Arms
@@ -435,7 +439,7 @@ def test_the_leader_exception_decides_a_selection_and_keeps_the_clause_halves():
     # The other two printed halves keep their verdict for the same bearer: the
     # Sacrifice Dagger stays refused and a missile without Thrown Weapon does too.
     assert [issue["code"] for issue in decisions(leader, ("sacrifice_dagger",))] \
-        == ["equipment_not_permitted"]
+        == ["equipment_forbidden"]  # Red Teeth's own printed ban (single source since 2026-11-16)
     assert [issue["code"] for issue in decisions(leader, ("short_bow",))] == ["equipment_forbidden"]
 
 
@@ -768,6 +772,8 @@ def inherited_rule(band: str, rule_id: str) -> dict:
     return next(rule for rule in PACKAGES[band].special_rules if str(rule["id"]) == rule_id)
 
 
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-mors-kaz/band--rulebook-inheritance/profile.skill-access")
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access")
 def test_the_rulebook_skaven_table_is_published_for_its_heroes_and_the_excluded_skill_is_refused():
     """The clause is one access list: four published members, one named denial.
 
@@ -792,7 +798,7 @@ def test_the_rulebook_skaven_table_is_published_for_its_heroes_and_the_excluded_
         denial = [effect for effect in rule["runtime"]["effects"]
                   if effect["id"].endswith(".art-of-silent-death")]
         assert len(denial) == 1 and denial[0]["binding"] is None, band
-        assert "Art of Silent Death" in denial[0]["reason"], band
+        assert denial[0]["reason"] == "out-of-scope.construction", band
         # Every published member names the same recipients in its own rule.
         for member in RULEBOOK_SKAVEN_SKILLS:
             published = inherited_rule(band, member)
@@ -824,6 +830,8 @@ def test_the_rulebook_skaven_table_is_published_for_its_heroes_and_the_excluded_
                 variant_ids=("promotion.hero",), special_rule_ids=(EXCLUDED_SKAVEN_SKILL,)))
 
 
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-mors-kaz/band--rulebook-inheritance/profile.skill-access")
+@pytest.mark.covers("rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/profile.skill-access")
 def test_the_admitted_skaven_choices_reach_the_compiled_fighter_through_their_existing_contracts():
     """Reused operators: the mechanic and the compiler contract of the table.
 

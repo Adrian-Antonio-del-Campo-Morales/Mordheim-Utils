@@ -63,7 +63,7 @@ TypeScript domain/eligibility → browser domain/application adapters
 
 ## Shared resources and entry points
 
-`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in modular mechanics and E2E tests, not in runtime resources.
+`mordheim_knowledge.loader.knowledge_root()` resolves `sources/knowledge/`, including the `MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` override and frozen-executable support. Structural verification (`check verify`) audits the editorial and execution contracts, binding contracts and default construction. Rule evidence lives in the modular mechanics suite and the rules-conformance suite, not in runtime resources.
 
 Python entry points declared in `pyproject.toml`:
 
@@ -93,6 +93,8 @@ and compiles its own facts; it does not consume campaign `special_rules`.
 
 `mordheim_combat/vectorized/` is the batch engine for analysis. `_operators.py` contains local projections, `_attacks.py` handles attack preparation and wound resolution, `_driver.py` runs the batch state machine, and the package facade preserves the public import surface. It is certified against the modular oracle by the parity tools.
 
+Each batch draws its own stream from `(seed, batch index)`, so the batch size selects the sample. `simulate_duel_parallel` follows `parallel_plan`: with at least as many batches as workers it splits along whole batches and reproduces the sequential totals exactly; with fewer it cuts each batch into independent parts of at least `PARALLEL_MIN_PART` duels, a statistically equivalent sample that is reproducible for the same seed, size, batch and worker count. Pass `executor=` to reuse one pool across samples, since starting a pool costs about as much as a cheap 100k-duel sample. Combat Lab, the benchmark strategies and the parity sampler keep the whole-batch path (`batch_segment`), so their results never depend on the worker count.
+
 ### Native candidate
 
 `mordheim_combat/native/` contains the optional Cython implementation and its pure-Python compile/folding layer. The extension is `mordheim_combat._combat_native`; it is built from `_combat_native.pyx` (and `.pxd`), and the Cython output `_combat_native.c` that every build regenerates is ignored, not versioned. The compile layer reuses helpers of the vectorized and modular packages and runs through `vectorized.simulate_duel`, so native results also depend on those sources; the native engine digest covers them, while the built extension's hash is recorded separately because it differs between machines. Machines without a compatible compiler retain the NumPy backend. `available_backends()` reports what is actually installed.
@@ -117,11 +119,11 @@ The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export bel
 
 ## Verification corpus and reports
 
-`tests/engines/modular/mechanics/` checks written rules against the modular reference; `tests/integration/e2e/` checks the connected KB/compiler/modular path, and `check verify` runs the structural audit. Verification tooling provides structural audits, inventory export, statistical parity and coverage; the former semantic YAML runner is retired.
+`tests/engines/modular/mechanics/` checks written rules against the modular reference; the rules-conformance suite in `tests/conformance/` checks the connected KB/compiler/modular path, and `check verify` runs the structural audit. Verification tooling provides structural audits, inventory export, statistical parity and coverage; the former semantic YAML runner is retired.
 
 Generated reports are written below ignored `outputs/`:
 
-- `audit/` — rule inventory and review status (`check report rules`).
+- `audit/` — rule inventory and clause coverage (`check report rules`).
 - `test-report/` — technical and optional statistical CSVs (`check report tests`).
 - `parity/` — machine-readable parity certificates.
 - `benchmarks/` — benchmark results.
@@ -139,7 +141,7 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Combat Lab use case/UI | `apps/combat-lab/` |
 | Web domain/application/adapters | `packages/typescript/` |
 | Web shell and presentation | `apps/warband-manager-web/` |
-| Verification evidence | `tests/integration/e2e/`, `tests/engines/modular/mechanics/`, `tests/engines/parity/`, `tests/tooling/{architecture,coverage,parity}/`, related test suites |
+| Verification evidence | `tests/conformance/`, `tests/engines/modular/mechanics/`, `tests/engines/parity/`, `tests/tooling/{architecture,coverage,parity}/`, related test suites |
 | Build/release tooling | `tools/`, `.github/workflows/` |
 
 See [Knowledge base](knowledge-base.md) and [Verification](verification.md)

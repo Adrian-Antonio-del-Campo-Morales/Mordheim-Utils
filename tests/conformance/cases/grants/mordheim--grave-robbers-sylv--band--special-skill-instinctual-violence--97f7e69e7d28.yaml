@@ -1,0 +1,130 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.nominated-strike-first
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the band's printed
+#   Graver selecting Instinctual Violence nominates one of two attacks to strike before a faster
+#   opponent while the other keeps the ordinary order, the same Graver declining both offers keeps the
+#   ordinary order, the unselected Graver is offered no nomination, and a henchman the printed table
+#   excludes is refused the selection.  The sibling identity (…/mechanic.fear-immunity-undead-chargers)
+#   carries the rule's Fear sentence and the one-attack nomination.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/grave-robbers-sylv/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, band--special-skill-instinctual-violence, warband_skill, grant
+# selectable, applies_to band): "... Additionally, he may nominate one of his attacks to Strike First."
+# This binding is mechanic.nominated-strike-first (consumer modular/rounds.py ~1527-1575: each
+# allocated attack is offered through `round.<i>.<side>.strike-first.attack.<position>`, the accepted
+# one resolves as a tier-1 strike-first event under `…strike-first.attack.0.hit`, the remainder keeps
+# its printed priority re-indexed from 0).  Recipient: the band's printed Graver (profiles.yaml id
+# graver, skill_access with `special`) with supplied facts (WS3 S3 T3 W2 I2 A2; printed Ld8 stays), a
+# list club and the selection through special_rule_ids.  A band-wide warband skill with no eligibility
+# list is admitted only to a profile with the `special` access (eligibility/index.ts
+# specialRuleRestriction), so the band's Thugs (skill_access []) are refused with the band/profile
+# fragment.  Opponent: hand-built (WS3 S3 T3 W3 I5 A1 Ld7, club), living, so the band's Hatred of the
+# Undead never acts; nobody charges and every attack die is a natural 1, so the order of the rolls is
+# the evidence.
+
+# The selected Graver nominates his first attack: it resolves before the faster opponent, the other
+# attack after him.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.nominated-strike-first
+  id: the-selected-graver-nominates-one-of-two-attacks-to-strike-first
+  fighters:
+    first: &gr-graver
+      collection: mordheim
+      band_id: grave-robbers-sylv
+      profile_id: graver
+      special_rule_ids: [band--special-skill-instinctual-violence]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+    second: &gr-opponent
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: true}
+  rolls:
+    - {key: round.0.first.strike-first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: true}
+    - {kind: roll, key: round.0.first.strike-first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# "may nominate": the selected Graver declining both offers keeps the ordinary order.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.nominated-strike-first
+  id: the-selected-graver-declining-both-offers-keeps-the-ordinary-order
+  fighters:
+    first: *gr-graver
+    second: *gr-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: false}
+    - {key: round.0.first.strike-first.attack.1, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: false}
+    - {kind: decision, key: round.0.first.strike-first.attack.1, value: false}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+
+# The selectable control: the same Graver without the selection is offered no nomination.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.nominated-strike-first
+  id: the-unselected-graver-is-offered-no-nomination
+  fighters:
+    first:
+      collection: mordheim
+      band_id: grave-robbers-sylv
+      profile_id: graver
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+    second: *gr-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+
+# The printed recipients are the band's Heroes with the special access; a henchman is refused.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.nominated-strike-first
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: grave-robbers-sylv
+      profile_id: thugs
+      special_rule_ids: [band--special-skill-instinctual-violence]
+      main_weapon_id: weapon.club
+    second: *gr-opponent
+  expect_error: "special rule is not available to grave-robbers-sylv/thugs: band--special-skill-instinctual-violence"

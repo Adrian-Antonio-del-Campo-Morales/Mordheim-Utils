@@ -1,0 +1,164 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/wheelo--special-skill-modifications/mechanic.wheelo-skill-modifications
+# authoring_status: AUTHORED
+# authoring_progress: the admitted weapons-training clause carries four authored scenarios derived
+# from the printed rule and the recorded contract: two fittings and (added 2026-11-16) the Mighty Blow
+# sentence with its no-Mighty-Blow contrast; the axe and club fitting faces remain recorded as pending
+# in the clause note.  The bearer is the printed Wheelo identity
+# that owns the rule.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--weapons-training-and-mighty-blow (scope: YES)
+#   EVIDENCED: 2 scenarios cover two printed fittings on
+# a real Wheelo.  The morning star scenario declares the fitting and reads the printed first-round
+# Strength 5: the declared To Wound two reaches Toughness 3 on the 2+ that only the fitted impact has,
+# where the unfitted Strength 4 needs a 3.  The spear scenario is the printed counter hit: with the
+# Wheelo charged, the collision resolves exactly one hit although the Wheelo did not charge, which is
+# why no count die is requested in that tape.
+# EVIDENCED (2026-11-16): the Mighty Blow sentence ("the crew gains +1 to wound in combat") is
+# authored through the armour step, where it is readable: a crew with Mighty Blow keeps its printed
+# Strength 4 and gains +1 to wound, so a wound die of 2 wounds Toughness 3 and the target's light
+# armour still saves on the 6 that a Strength 4 dagger blow leaves it (6+, -1 Strength, +1 dagger);
+# the ordinary Mighty Blow's Strength 5 would leave no save at all.  The contrast without Mighty Blow
+# shows the same 2 failing to wound.  The earlier note that this facet is unassertable looked only at
+# the wound target, where the two readings coincide; the armour modifier separates them.
+# PARTIAL[whole--scope--weapons-training-and-mighty-blow]: the axe's printed -1 armour save and the
+# club's Concussion are not asserted here.  The axe's armour-penetration facet and the club's injury-band consequence belong
+# to the weapon and injury files of their own origins, which carry that evidence; this band row
+# asserts the two fittings whose whole printed term is readable in the impact tape.  The printed Sprint
+# sentence is the out-of-scope clause of this same record and is retained as context.
+# REVIEWED still requires manual semantic review.
+#
+# Status corrected 2026-11-18: the two items the clause note holds back are not applicable
+#   requirements of this identity.  The axe fitting's printed -1 armour save and the club fitting's
+#   Concussion are the armour-penetration and injury-band consequences of the axe and the club, whose
+#   own weapon and injury files carry that evidence; this band row's own printed term is the fitting's
+#   impact, which the four scenarios read on both fittings and on both faces of the Mighty Blow
+#   sentence.  The printed Sprint sentence is the `scope: NO` clause of the same record.  The
+#   PARTIAL[whole--scope--weapons-training-and-mighty-blow] block above is kept as the disposition.
+# AUTHORED: the admitted weapons-training-and-mighty-blow clause is evidenced by four scenarios on a
+#   real Wheelo - the morning star fitting's first-round Strength 5, the spear fitting's single
+#   counter hit, and the Mighty Blow sentence with its no-Mighty-Blow contrast read at the armour step.
+#
+# Clause: whole--scope--sprint (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the band package; no engine output was
+# consulted.  Both scenarios build the Wheelo from its own band and profile, whose printed two crew
+# attacks follow the impact block in the same round.
+- audit_id: rule/mordheim/snotlings-web/wheelo--special-skill-modifications/mechanic.wheelo-skill-modifications
+  id: the-morning-star-first-impact-resolves-at-strength-five
+  covers: [whole--scope--weapons-training-and-mighty-blow]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+      trait_overrides: {wheelo_fitting: morning-star}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact-count, value: 1}
+    - {key: round.0.first.impact.0.wound, value: 2}
+    - {key: round.0.first.impact.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN, state.first.resources_spent: ['wheelo.first-impact']}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/wheelo--special-skill-modifications/mechanic.wheelo-skill-modifications
+  id: the-spear-fitted-wheelo-still-hits-a-charger-once
+  covers: [whole--scope--weapons-training-and-mighty-blow]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+      trait_overrides: {wheelo_fitting: spear}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.impact.0.wound, value: 4}
+    - {key: round.0.first.impact.0.injury.0, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed Mighty Blow sentence.  The Wheelo is not charging, so no Impact Hit is made and only the
+# crew's two printed attacks (Weapon Skill 2 against 3: a 4 hits) strike, first by its Initiative 5.
+# With Mighty Blow the crew keeps Strength 4 and gains +1 to wound: the 2 wounds Toughness 3 (3+ less
+# one).  The target's light armour (6+) takes -1 for Strength 4 and +1 for the dagger, so it still
+# saves on 6, and the six is declared and saves.  The second crew attack misses on a natural one.
+- audit_id: rule/mordheim/snotlings-web/wheelo--special-skill-modifications/mechanic.wheelo-skill-modifications
+  id: mighty-blow-gives-the-crew-plus-one-to-wound-not-strength
+  covers: [whole--scope--weapons-training-and-mighty-blow]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+      skill_ids: [skill.mighty-blow]
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same Wheelo without Mighty Blow wounds Toughness 3 only on 3+, so the 2 fails.
+- audit_id: rule/mordheim/snotlings-web/wheelo--special-skill-modifications/mechanic.wheelo-skill-modifications
+  id: without-mighty-blow-the-same-two-does-not-wound
+  covers: [whole--scope--weapons-training-and-mighty-blow]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: wheelo
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -3,15 +3,14 @@ band_id: woodsmen-de-artois-mou
 rules:
 - id: band--woodsmen-special-skills
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.woodsmen-de-artois-mou.band.woodsmen-special-skills
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: pending-implementation
   name: Woodsmen Special Skills
   effect: >-
     Woodsmen Heroes with the Special skill available to them may choose to use the following Skill
@@ -103,18 +102,16 @@ rules:
     band: true
 - id: chief--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.woodsmen-de-artois-mou.chief.leader
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Chief may use his Leadership value when taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 4
@@ -122,13 +119,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Jefe puede usar su valor de Liderazgo cuando haga pruebas
-      de Liderazgo.
   applies_to:
     profile_ids:
     - chief
+  rule_ref: shared-rule.leader
 - id: friar--wizard
   runtime:
     scope: 'NO'
@@ -138,8 +132,7 @@ rules:
     - id: unimplemented.woodsmen-de-artois-mou.friar.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Friar is a Priest of Taal and may use the prayers of Taal in TC 11.
   source:
@@ -163,8 +156,7 @@ rules:
     - id: unimplemented.woodsmen-de-artois-mou.bowman.expert-shot
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.shooting
   name: Expert Shot
   effect: >-
     Bowmen are used to shooting in dense forests and ignore penalties for cover when using a bow or
@@ -192,8 +184,7 @@ rules:
     - id: unimplemented.woodsmen-de-artois-mou.trapper.set-traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.movement
   name: Set Traps
   effect: >-
     Trappers are not surprisingly experts in setting traps. A Trapper may set a trap if he spends a
@@ -234,8 +225,7 @@ rules:
     - id: unimplemented.woodsmen-de-artois-mou.hunting-hound.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.campaign
   name: Animals
   effect: Hunting Hounds are animals and do not gain experience (or learn new tricks).
   source:
@@ -259,8 +249,7 @@ rules:
     - id: unimplemented.woodsmen-de-artois-mou.hunting-hound.dog-handler
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.construction
   name: Dog Handler
   effect: >-
     You may purchase no more Hunting Hounds than you have Trappers. If the number of Trappers is

@@ -1,0 +1,125 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery/mechanic.psychology-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, 2026-11-18): the Rat Ogre takes
+#   no Fear test when charged by a fear-causer; a supplied frenzy flag is suppressed; the Bard
+#   control is tested by the same charge; and the refusal outside the profile.  The former PARTIAL
+#   blocker (the Bio-Mechanical Armour had no canonical combat mapping) is resolved by the
+#   2026-11-18 ruling: the part-mechanical body's 4+ save is the innate profile grant
+#   defence.bio-armour and "Jaws and claws!" is the innate weapon.natural-attacks, so the profile
+#   compiles through the hireling route.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), mirroring the authored Priest of Morr Augur
+# psychology-immunity file of this directory.  The recipient is the printed Rat Ogre profile
+# compiled through the hireling route (hirelings.hired-sword.1b /
+# hireling.hired-sword.clan-skryre-rat-ogre); its printed Bio Machinery is a profile grant, so the
+# build selects nothing.  Its physical characteristics are the fixture facts (WS3 S3 T3 W2 I5 A1);
+# its innate natural attacks are silenced (attacks: 0) and no declared opponent blow ever lands, so
+# its innate 4+ bio-armour save (defence.bio-armour) requests no die.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads (causes_fear).  The
+# control is the grade-1b Bard, whose charged Fear dice are requested by the same charge.  The
+# refusal selects the printed rule on that control through special_rule_ids.
+# Dice: a 2D6 Fear test of 5+4 fails Ld7 and 3+3 passes it.
+
+# The fear-causer charges the Rat Ogre: immune to Psychology, so no Leadership dice are requested
+# for the charged recipient.  The charger causes fear himself, and a fear-causer does not fear
+# (modular/psychology.py needs_test), so his own fear.charge dice are not requested either; the
+# same clause means the Rat Ogre's sibling Fear rule would already spare him a charged test, so
+# this no-dice tape is shared evidence and the discriminating scenario for this identity is the
+# frenzy suppression below.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery/mechanic.psychology-immunity
+  id: the-rat-ogre-is-not-tested-for-fear-when-charged-by-a-fear-causer
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Frenzy is Psychology: a supplied frenzy flag is suppressed on the immune warrior from
+# initialisation.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery/mechanic.psychology-immunity
+  id: bio-machinery-suppresses-a-frenzy-flag-on-the-rat-ogre
+  fighters:
+    first:
+      <<: *recipient
+      trait_overrides: {frenzy: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: False}
+  expect_rounds:
+    0: {state.first.frenzy: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, printed Ld7) is charged by the same fear-causer: its two Leadership dice are
+# requested and 9 fails.  The Bard causes no fear, so the charger itself takes no test.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery/mechanic.psychology-immunity
+  id: a-hireling-without-bio-machinery-is-tested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling of the same
+# package is refused by the eligibility gate (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery/mechanic.psychology-immunity
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

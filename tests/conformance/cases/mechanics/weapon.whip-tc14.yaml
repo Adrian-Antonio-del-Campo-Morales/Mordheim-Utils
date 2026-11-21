@@ -1,0 +1,310 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.whip-tc14
+# authoring_status: AUTHORED
+# authoring_progress: 11 scenarios (survival-saves-and-rerolls batch, 2026-11-18) pin the printed
+#   Strength -1 at its wound boundary (a 5 wounds Toughness 3, the 4 fails, the mace control's 4
+#   wounds), the +1 enemy armour save on both faces of the granted 6+, "cannot be parried" with its
+#   sword-and-mace control, and the adopted disarm contract: the declared target decision before the
+#   hit roll, the single hold parry on a strict-higher comparison (4 fails, 5 holds, a 6 cannot be
+#   beaten), the dropped mace replaced by fists for the reply of the same round, the disarm that
+#   still rolls to hit and replaces the injury against a knocked-down enemy, and fists as no disarm
+#   target.  Reach and use outside contact are excluded by the ruling.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 11 scenarios cover the Strength -1 boundary with its mace control, the granted 6+ on
+#   both faces, the no-parry rule with its control, and the declared disarm (hold fails / holds /
+#   six unbeatable / knocked-down target / fists excluded).
+
+# --- Authored scenarios ---
+# mechanic/weapon.whip-tc14 - Town Cryer 14, Mule Skinner / Whip (PDF p.11), ruling "TC14 whip:
+# disarm is a declared replacement action" (design-rulings.md, 2026-10-15): melee at Strength as
+# user -1, cannot be parried, +1 enemy armour save; the target physical weapon is declared before
+# the hit roll; the disarm replaces the injury (including a coup de grace) but still rolls to hit;
+# the enemy gets exactly one independent hold parry irrespective of equipment, Strength or the
+# whip's no-parry clause, on the ordinary strict-higher comparison (a six cannot be beaten); the
+# dropped piece is unavailable for the rest of the combat and the fighter falls back to backups in
+# kit order, otherwise to fists, already for the reply of the same round.  Indestructible and
+# natural weapons (and fists) are not disarm targets.
+#
+# Record: execution.yaml weapon.whip-tc14 (strength_bonus -1, target_armour_bonus 1,
+# cannot_be_parried).  Consumer: packages/python/combat-engine/mordheim_combat/modular/attacks.py
+# (_choose_whip_disarm, decision `round.<i>.<side>.attack.<n>.whip-disarm.<slot>` offered per
+# held candidate before the hit; the disarm hold `...attack.<n>.disarm-hold` resolved as a parry
+# with can_parry_six and the strict comparison; `broken_hands` gains the slot) and
+# modular/equipment.py (a broken main slot falls to the compiled unarmed fallback) with
+# modular/rounds.py (the reply of the same round uses the surviving equipment).  The compiled hand
+# slots are `main` and `off` (mordheim_core/models.py).
+#
+# Expectations come from the printed entry and the ruling, never from engine output.  Fixtures:
+# a WS3 S3 T3 W2 I5 A1 bearer against a WS3 S3 T3 W2 I2 A1 mace opponent; uncharged, so the bearer
+# strikes first.  WS3 against WS3 hits on 4+.  The whip strikes at Strength 2, which wounds T3 on
+# 5+ (the mace's Strength 3 on 4+) and carries no save penalty, so the unarmoured opponent is
+# granted the printed 6+.  A hold parry must beat the hit roll: against a 4 the die 5 holds and
+# the 4 does not; against a 6 nothing can.  The disarmed opponent replies with fists (Strength 2,
+# one attack), whose wound die 4 fails where the mace's 4 wounds.
+
+# The printed Strength -1: the bearer's whip strikes at Strength 2, the 5 reaches the T3 target,
+# and the granted 6+ save fails on a 1.  The declared decision declines the disarm of the mace.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-whip-strikes-at-strength-minus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: &wh-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &wh-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &wh-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the Strength 2 target: the identical 4 fails to wound and no save die follows.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-same-wound-die-of-four-fails-at-strength-two
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mace control: the same 4 wounds at the unreduced Strength 3 and the mace grants no save.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-mace-control-wounds-on-the-same-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed +1 enemy armour save: the unarmoured opponent is granted a 6+ and the 6 saves.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-whip-grants-an-unarmoured-enemy-a-six-plus-save
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Cannot be parried: the sword-armed opponent is offered no parry die against the whip's hit (the
+# strict tape proves the absence), and the wound lands through the failed 6+.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-whip-cannot-be-parried
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same sword parries a mace bearer's identical hit with a 5.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-same-sword-parries-a-mace-in-the-same-setup
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The declared disarm: the mace is named before the hit roll, the 4 hits, the opponent's single
+# hold die 4 does not beat it, and the mace is dropped instead of any wound.  The reply of the
+# same round is made with fists: Strength 2 needs a 5 against T3, so the 4 that a mace would have
+# wounded with fails.
+- audit_id: mechanic/weapon.whip-tc14
+  id: a-declared-disarm-strips-the-mace-when-the-hold-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.disarm-hold, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.disarm_slot: main, attacks.0.parried: false, attacks.0.wounded: false,
+        attacks.0.damage: 0, state.second.broken_hands: [main], state.second.wounds: 2,
+        attacks.1.hit: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The hold parry beats the hit roll: the 5 holds the mace, nothing is dropped, and the mace's own
+# reply wounds on the 4 the fists could not.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-hold-parry-beats-the-hit-roll-and-keeps-the-mace
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.disarm-hold, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.disarm_slot: main, attacks.0.parried: true, attacks.0.wounded: false,
+        state.second.broken_hands: [], state.second.wounds: 2,
+        attacks.1.wounded: true, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The strict-higher comparison: a whip hit of 6 cannot be beaten, so the hold die 6 fails and the
+# mace is dropped; the ruling grants the hold even against a six, so the die is still rolled.
+- audit_id: mechanic/weapon.whip-tc14
+  id: a-whip-hit-of-six-cannot-be-held
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.disarm-hold, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.disarm_slot: main, attacks.0.parried: false,
+        state.second.broken_hands: [main], state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Disarm replaces the injury, including a coup de grace: against a knocked-down opponent the whip
+# still rolls to hit (no automatic hit), the hold fails, and the opponent keeps his wounds and his
+# condition while losing the mace.  A knocked-down warrior makes no reply.
+- audit_id: mechanic/weapon.whip-tc14
+  id: the-disarm-still-rolls-to-hit-and-spares-a-knocked-down-enemy
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wh-opponent
+  initial_state: {second: {condition: KNOCKED_DOWN}}
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.disarm-hold, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_roll: 4, attacks.0.disarm_slot: main, attacks.0.wounded: false,
+        state.second.broken_hands: [main], state.second.wounds: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Fists are no disarm target: an unarmed opponent prompts no disarm decision at all (the strict
+# tape declares none), and the whip resolves an ordinary wound through the failed 6+.
+- audit_id: mechanic/weapon.whip-tc14
+  id: fists-are-not-a-disarm-target
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wh-bearer
+    second:
+      main_weapon_id: weapon.fist
+      characteristics: *wh-opponent
+  duel_context: *wh-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.disarm_slot: null, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

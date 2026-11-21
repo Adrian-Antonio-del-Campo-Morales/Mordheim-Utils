@@ -1,0 +1,122 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/skill.ignore-pain
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, survival-injury-and-immunity batch
+#   2026-11-18): when the construct die fails, the printed independent No Pain conversion leaves a
+#   Stunned result Knocked Down; when the construct die succeeds the whole result is ignored and the
+#   conversion has nothing to act on; the plain-hireling control is Stunned by the same face; the rule
+#   is refused outside its printed profile.  REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the profile's sibling rule No Pain ("Treats Stunned as Knocked
+#   Down") binds the same skill.ignore-pain, so the KB delivers this conversion twice on the Bone
+#   Goliath and the removal of this binding alone leaves the effect in place.  Both printed rules are
+#   kept as the source prints them; the duplicate is named here rather than resolved by an authoring
+#   file.  The construct die itself belongs to the sibling binding mechanic.undead-construct of this
+#   same rule and is declared here only as the gate the conversion must pass.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
+#
+# AUTHORED: the printed rule ("For each Injury result roll a D6: on 4+ the result is ignored, without
+#   restoring lost Wounds. Magical attacks and magical weapons bypass this roll. The ordinary Undead No
+#   Pain conversion still applies independently") binds mechanic.undead-construct and skill.ignore-pain
+#   (this identity).  Consumers: the table conversion Stunned -> Knocked Down
+#   (packages/python/combat-engine/mordheim_combat/phases.py injury_condition, ignore_pain) and the
+#   construct die rolled by the defender after each Injury result
+#   (round.<r>.<side>.attack.<n>.injury.<i>.undead-construct, modular/attacks.py), which on 4+ drops
+#   that result while the Wound stays lost.  This binding decides the face the construct die lets
+#   through; the profile has no Incorporeal-style injury profile, so a real face exists.
+#
+# Hireling family model (P0, 2026-11-17) in the Cairn Wraith No Pain shape.  The recipient is the
+# printed profile compiled through the hireling route (hirelings.hired-sword.1c /
+# hireling.hired-sword.bone-goliath) with the fixture characteristics (WS3 S3 T3 I5 A1) and wounds 1 so
+# the first wound reaches the Injury table; it contributes no attack of its own (initial_state).  Its
+# innate natural attacks have no parry, it wears no armour, and its Fear tests only a charging
+# attacker; nobody charges.  The attacker is the stronger hand-built fixture (WS10 S8 I10, mace): 3+ to
+# hit, 2+ to wound with no critical face, a mundane attack so the construct die is rolled.  The control
+# is the grade-1b Bard (dagger; kit armour owned, not worn) with the same fixture.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/skill.ignore-pain
+  id: when-the-construct-die-fails-the-independent-no-pain-leaves-a-stunned-result-knocked-down
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.bone-goliath
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    # 3 is Stunned on the printed table; No Pain converts it to Knocked Down.
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    # The construct D6 of 2 does not ignore the result, so the converted result stands.
+    - {key: round.0.first.attack.0.injury.0.undead-construct, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# On 4+ the construct ignores the whole Injury result: nothing is left for No Pain to convert, the
+# Goliath stays standing and the lost Wound is not restored.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/skill.ignore-pain
+  id: when-the-construct-die-succeeds-the-stunned-result-is-ignored-outright
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    - {key: round.0.first.attack.0.injury.0.undead-construct, value: 4}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) takes the same face of three and is Stunned; it has no construct die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/skill.ignore-pain
+  id: a-hireling-without-the-rule-is-stunned-by-the-same-result
+  fighters:
+    first: *strong-attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Bone Goliath's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/skill.ignore-pain
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *strong-attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.bone-goliath.rule.undead-construct]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

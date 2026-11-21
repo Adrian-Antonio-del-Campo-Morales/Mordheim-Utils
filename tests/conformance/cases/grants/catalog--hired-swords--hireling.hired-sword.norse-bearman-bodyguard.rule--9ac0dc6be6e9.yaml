@@ -1,0 +1,137 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the Norse Bearman Bodyguard's start-of-turn D6 of 1 forces a Stupidity test whose
+#   failure cancels his charge and leaves him without attacks; a 6 is Frenzy for the turn (the axe
+#   pool doubles); a 3 is the no-effect band (one attack); the plain-hireling control rolls no
+#   Drunken die; the rule is refused outside the Bearman's package.  REVIEWED still requires manual
+#   semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2b.yaml, hireling.hired-sword.norse-bearman-bodyguard.rule.drunken, grant profile):
+# "Roll a D6 at the start of each turn.  On a roll of 1, they must test for stupidity that turn.  On
+# a roll of 2-5 nothing happens and on a roll of 6 they become subject to frenzy for that turn.
+# While subject to both stupidity and frenzy they are immune to all other forms of psychology" -
+# binding mechanic.centigor-drunken (model mechanics/mechanic.centigor-drunken.yaml).  Hireling
+# family model (README, Hireling recipients): the real Bearman through the hireling route
+# (hirelings.hired-sword.2b / hireling.hired-sword.norse-bearman-bodyguard) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays) and his kit axe named in hand (the kit's first
+# close-combat weapon; the shield, light armour and wolf cloak stay owned, not held or worn, so
+# Shieldmaster offers no shield parry).  He charges, so he is the active player and the D6 is
+# requested at the start of his own turn as round.0.first.drunken; on a 1 the Stupidity test follows
+# as round.0.first.stupidity.{0,1} (2D6 against Ld7: 6+6 fails).  The opponent is hand-built (WS3 S3
+# T3 W3 I2 A1 Ld7, mace); its declared hit is a miss, so Bulwark's close-combat save bonus is never
+# rolled.  The control is the grade-1b Bard with his kit dagger.  Every declared attack is a miss, so
+# no wound die is requested.
+
+# A 1 forces the Stupidity test; 6+6 fails Leadership 7, the voluntary charge cannot establish
+# contact and the Bearman makes no attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-one-forces-the-stupidity-test-on-the-norse-bearman
+  fighters:
+    first: &bearman
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.norse-bearman-bodyguard
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &bearman-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first.frenzy: false, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# A 6 is Frenzy for the turn: the axe pool doubles to two hit dice; no Stupidity test is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-six-grants-the-norse-bearman-frenzy-for-the-turn
+  fighters:
+    first: *bearman
+    second: *opponent
+  duel_context: *bearman-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.drunken, sides: 6, value: 6}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The 2-5 band does nothing: one attack, no Frenzy, no Stupidity test.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-three-leaves-the-norse-bearman-unchanged
+  fighters:
+    first: *bearman
+    second: *opponent
+  duel_context: *bearman-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.drunken, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The control (Bard, kit dagger) charging in the same setup rolls no Drunken die: the tape opens
+# with its attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+  id: a-hireling-without-the-rule-rolls-no-drunken-die
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *bearman-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The printed grant belongs to the Bearman's profile; selecting it on a hireling of another package
+# is refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.norse-bearman-bodyguard.rule.drunken/mechanic.centigor-drunken
+  id: the-rule-is-refused-on-a-hireling-outside-the-bearmans-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.norse-bearman-bodyguard.rule.drunken]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

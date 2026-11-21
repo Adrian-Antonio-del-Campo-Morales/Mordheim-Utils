@@ -1,0 +1,172 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.sea-shanty
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (sea-shanty family model, 2026-11-18): a chosen enemy
+#   that fails the Leadership test loses one attack that turn; a passing enemy keeps both; an
+#   Undead enemy is never tested (the printed exclusion of this origin); a Psychology-immune
+#   living enemy is still tested (that exemption belongs to the sibling mechanic
+#   mechanic.sea-shanty-psychology; TODO.md records the Mordheim Pirates band scenario that
+#   contradicts this print - its claim is not copied here); and a two-round tape showing the song
+#   is offered only at the start of the singer's own Close Combat phase and that the loss expires
+#   with the turn.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the sea-shanty family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# The Mordheim Pirates print (pirates/special-rules.yaml,
+# band--pirate-special-skills-sea-shanty-singer): "At the start of his Close Combat phase he can
+# suddenly burst out in song, distracting one opponent in base contact of his choosing.  That
+# enemy must pass a Leadership test, or lose 1 Attack that turn.  This does not affect Undead or
+# other non-living creatures, such as Possessed."  The singer is a hand-built fixture that
+# injects the shared mechanic through skill_ids (legal: a hand-built build passes no profile
+# skill-list gate), the route the authored Pirates and Trollheim band files use through their
+# band rule.  The offer is the decision round.<i>.<singer>.sea-shanty, the chosen enemy's test is
+# rolled under round.<i>.<singer>.sea-shanty.leadership.0/.1, and the printed loss is read from
+# the round attack ledger (the strict tape fails loudly when a declared or undeclared attack die
+# disagrees).  The enemy's Leadership 7 and Attacks 2 are fixture facts; every declared attack
+# die is a natural 1, a miss, and the singer's Initiative 5 strikes before the enemy's 2, so the
+# ledger order is singer first.
+# Consumer: modular/rounds.py (the _SHANTY_TAGS block): the Undead/non-living exclusion reads the
+# target's nature tags, the Psychology-immunity exemption is tested only for the sibling
+# mechanic.sea-shanty-psychology, and own_shanty_phase restricts this mechanic to the singer's
+# own player turn.
+
+# 5+5 = 10 fails the enemy's Leadership 7, so the enemy resolves only one of its two printed
+# attacks: the ledger holds the singer's miss and a single enemy miss.
+- audit_id: mechanic/mechanic.sea-shanty
+  id: a-chosen-enemy-that-fails-the-test-loses-one-attack-that-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty]
+      characteristics: &shanty-singer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &shanty-enemy {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: &shanty-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# 3+4 = 7 passes the test exactly at Leadership 7, so the enemy keeps both printed attacks.
+- audit_id: mechanic/mechanic.sea-shanty
+  id: an-enemy-that-passes-the-test-keeps-both-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty]
+      characteristics: *shanty-singer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *shanty-enemy
+  duel_context: *shanty-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 3}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exclusion: an Undead enemy is never tested - no song is offered, no Leadership die
+# is declared and both of its attacks are resolved.
+- audit_id: mechanic/mechanic.sea-shanty
+  id: an-undead-enemy-is-never-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty]
+      characteristics: *shanty-singer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: *shanty-enemy
+  duel_context: *shanty-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# This print exempts only Undead and other non-living creatures, so a Psychology-immune living
+# enemy is still tested and still loses the attack (the Psychology exemption is the Lustria
+# sibling's own print, mechanic.sea-shanty-psychology; TODO.md records the Mordheim band scenario
+# that wrongly claims it here).
+- audit_id: mechanic/mechanic.sea-shanty
+  id: a-psychology-immune-living-enemy-is-still-tested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty]
+      characteristics: *shanty-singer
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: *shanty-enemy
+  duel_context: *shanty-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "At the start of his Close Combat phase": the song is offered in round 0 (the singer's own
+# player turn) and not in round 1 (the enemy's turn, where the strict tape declares no decision),
+# and the round-0 loss of "1 Attack that turn" has expired, so the enemy resolves both attacks
+# in round 1.
+- audit_id: mechanic/mechanic.sea-shanty
+  id: the-song-is-sung-only-in-the-singers-own-turn-and-the-loss-expires
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sea-shanty]
+      characteristics: *shanty-singer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *shanty-enemy
+  duel_context: *shanty-context
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.sea-shanty, value: true}
+  rolls:
+    - {key: round.0.first.sea-shanty.leadership.0, value: 5}
+    - {key: round.0.first.sea-shanty.leadership.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false}
+    1: {attacks.2.hit: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

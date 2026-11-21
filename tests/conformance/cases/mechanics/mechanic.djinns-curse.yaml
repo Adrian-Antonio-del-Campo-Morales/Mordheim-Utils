@@ -1,0 +1,170 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.djinns-curse
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the chosen Curse worsens
+#   an ordinary 5+ armour save to 6+ and the enemy's to-hit roll by one, both faces stand without the
+#   power, an expressly unmodifiable save (the Chaos Fury's Daemonic Flesh 5+) keeps its face, and the
+#   curse persists through the enemy's turn and is not offered twice running.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Djinn's Curse): "At own Recovery may choose one power until next own
+# Recovery, never the same power on consecutive turns. Curse imposes -1 to all enemy hit rolls and
+# saves within 4 inches."  Both of Khar-Mel's powers bind the one mechanic mechanic.djinns-curse:
+# it is the power choice itself (a Djinn declares at most one power per own turn), consumed by
+# modular/rounds.py ~613-626 (decision round.<i>.<side>.djinn-power.curse, then .luck only when
+# the curse was declined; a power equal to the previous own-turn choice is not offered; the chosen
+# power projects condition.djinns-<power>-active on the Djinn until its next own Recovery).  The
+# Curse condition is read by modular/contexts.py ~523 (-1 to hit for melee attacks against the
+# Djinn), ~841 (incoming_save_modifier +1 on the enemy's armour target, phases.py armour_target,
+# which an expressly unmodifiable natural save ignores) and ~698-699 (+1 on the enemy's ward and
+# regeneration thresholds).  Governing ruling: "Djinn's Curse respects expressly unmodifiable saves"
+# (2026-10-15): ordinary armour, wards and regeneration are worsened; Daemonic Flesh's unmodified
+# 5+, Marks of Ranald's 6+, Ethereal's interception and the Djinn's intrinsic 5+ keep their faces.
+# Hireling family model: the recipient is the printed Khar-Mel compiled through the hireling route
+# (hirelings.dramatis-personae.1b / hireling.dramatis.khar-mel-the-djinn) with the fixture facts
+# (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays); his kit sword is the omitted default.  The power is
+# chosen at the Djinn's own Recovery, so the Djinn is the active charger (first) and the charged
+# opponent tests Fear (3+3 passes Ld7).  The opponent is hand-built (mace, WS3 S3 T3 W3 I2 A1 Ld7)
+# wearing heavy armour (an ordinary 5+) where a save is at stake.  Every opponent swing at the
+# Djinn is declared to miss (a 4 under the curse's 5+, a 1 otherwise) so the sword's parry window
+# never opens; attacks.<n>.hit_target records the target even on a miss.  Wound dice are fours.
+# Semantic wrinkle (2026-11-18): the ruling's "Curse still worsens Djinn's Luck" composition needs a
+#   second Djinn cursing the first and is unreachable in a two-fighter duel; the printed 4-inch
+#   radius and shooting producers are excluded by the record.  The Ethereal interception (4+) is
+#   read from the defender's own threshold with no incoming modifier, so it is unaffected; that face
+#   is not separately asserted here.
+
+# Curse chosen: the opponent's ordinary 5+ needs a six, so its five fails; its own swing at the
+# Djinn needs a five, so its four misses.
+- audit_id: mechanic/mechanic.djinns-curse
+  id: the-curse-worsens-an-ordinary-five-plus-save-and-the-enemys-hit-roll-by-one
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.khar-mel-the-djinn
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.djinn-power.curse, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2,
+        attacks.1.hit_target: 5, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Both powers declined: the same five saves at 5+ and the opponent's target is the ordinary four.
+- audit_id: mechanic/mechanic.djinns-curse
+  id: without-the-curse-the-same-five-saves-and-the-enemy-hits-on-four
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.khar-mel-the-djinn
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.djinn-power.curse, value: false}
+    - {key: round.0.first.djinn-power.luck, value: false}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3,
+        attacks.1.hit_target: 4, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The ruling's exception: the Chaos Fury's Daemonic Flesh is an expressly unmodifiable 5+, so the
+# curse leaves it at 5+ and its five holds.  The Fury causes Fear (the charging Djinn tests, 3+3
+# passes Ld8) and is itself immune to psychology, so it is asked nothing; it contributes no swing.
+- audit_id: mechanic/mechanic.djinns-curse
+  id: the-curse-does-not-worsen-an-expressly-unmodifiable-save
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.khar-mel-the-djinn
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.chaos-fury
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.djinn-power.curse, value: true}
+  rolls:
+    # The Djinn causes fear himself, and a fear-causer does not fear (psychology.py
+    # needs_test), so no charge test is requested against the fear-causing Fury.
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The curse lasts until the Djinn's next own Recovery and may not be chosen twice running: chosen
+# in round 0, it still worsens the enemy's hit roll in the enemy's turn (round 1); at the Djinn's
+# next Recovery (round 2) only Luck is offered (declined), so the target returns to four.  The
+# Djinn contributes no swing of its own.
+- audit_id: mechanic/mechanic.djinns-curse
+  id: the-curse-persists-through-the-enemy-turn-and-is-not-offered-twice-running
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.khar-mel-the-djinn
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 3
+  decisions:
+    - {key: round.0.first.djinn-power.curse, value: true}
+    - {key: round.2.first.djinn-power.luck, value: false}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 5, attacks.0.hit: false, state.first.wounds: 2}
+    1: {attacks.0.hit_target: 5, attacks.0.hit: false, state.first.wounds: 2}
+    2: {attacks.0.hit_target: 4, attacks.0.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}

@@ -1,0 +1,107 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dark-emissary.rule.the-spiral/defence.spiral
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (hireling family model): the real Dark Emissary
+#   wearing his printed Spiral on its 5+ boundary pair (the ward die 5 saves, the
+#   4 does not) and the Bard control whose identical attack requests no ward die.
+#   The printed "cannot be reduced by anything" face is a recorded TODO defect
+#   against Djinn's Curse, noted and deliberately not evidenced.  REVIEWED still
+#   requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# AUTHORED: 3 scenarios of the hireling family model cover the worn Spiral's 5+
+#   ward boundary pair and the Bard control without a ward die.
+
+# --- Authored scenarios ---
+# Hireling family model.  The printed rule (Town Cryer 15, Albion): the Spiral
+# "grants the Dark Emissary a 5+ save that cannot be reduced by anything",
+# carried as an ordinary ward (design ruling 2026-11-18, like the Eye Pendant).
+# The Spiral is a worn icon, so the real Dark Emissary wears it through
+# defence_ids; his printed kit holds no close-combat weapon (the Staff of
+# Darkness is an excluded casting bonus), so he fights unarmed, and his attacks
+# are silenced so the attacker's tape is the only one.  Fixture characteristics
+# (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays).  The control is the grade-1b
+# Bard: the same hit and wound reach him with no ward die requested.
+
+# The printed save on its own face.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dark-emissary.rule.the-spiral/defence.spiral
+  id: the-dark-emissarys-spiral-saves-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &gsp-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &gsp-emissary
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.dark-emissary
+      defence_ids: [defence.spiral]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  # The unarmed Emissary keeps one fist swing (the unarmed minimum), so his
+  # scripted miss closes the tape instead of an attacks: 0 override.
+  duel_context: &gsp-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.global_effects.ward_save: 5
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 4 is not a 5+ and the wound is taken.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dark-emissary.rule.the-spiral/defence.spiral
+  id: one-face-below-the-spiral-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gsp-attacker
+    second:
+      <<: *gsp-emissary
+  duel_context: *gsp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same attack against a hireling without the icon (the Bard)
+# requests no ward die - the strict tape ends at the wound and the damage goes
+# straight through.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.dark-emissary.rule.the-spiral/defence.spiral
+  id: a-hireling-without-the-spiral-has-no-ward-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gsp-attacker
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *gsp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_fighters:
+    second.global_effects.ward_save: 7
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

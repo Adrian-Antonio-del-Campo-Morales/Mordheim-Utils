@@ -1,0 +1,177 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch
+#   2026-11-18): the printed Gaoler's first-round re-roll against a member of an Undead warband (a human Dreg),
+#   of a Skaven warband (a Verminkin) and of the Cult of the Possessed (a human Brethren); the same miss
+#   standing against an Undead creature outside those warbands; the Bard control; the refusal.  REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the printed Hatred is of warband membership "regardless of that
+#   member's own species", so the fact read is the opponent's band identity: an Undead creature declared by
+#   trait alone (no warband) is not hated.  The Gaoler's omitted weapon is the kit's heavy chain (a flail);
+#   its first-round Strength bonus only lowers the wound target, and the declared 4 wounds T3 either way.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Gaoler compiled through
+# the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.gaoler); its printed Hatred is granted
+# by the profile itself, so nothing is selected; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld7
+# stays); the omitted main weapon is the printed kit's default.  Printed text: "Hates every member of
+# Skaven, Possessed, Beastmen, Carnival of Chaos and Undead warbands, regardless of that member's own
+# species."  The hated opponents are compiled band profiles with fixture characteristics (WS3 S3 T3 W3 I2
+# A1, printed Ld) and a printed kit weapon; the controls are hand-built (Ld7, mace).  Dice: a natural 2
+# misses WS3, the first-round Hatred re-roll (`round.0.first.attack.0.hit.reroll`) of 4 hits, the wound
+# roll of 4 wounds T3, and the opponent's W3 keeps the tape off the injury table.  The control is the
+# grade-1b Bard, a hireling without any psychology rule; the refusal selects the printed rule on it.
+
+# A Dreg of the Undead warband is human, and hated all the same.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: a-first-round-miss-by-the-gaoler-is-rerolled-against-a-member-of-an-undead-warband
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.gaoler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: undead
+      profile_id: dregs
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Verminkin of a Skaven warband.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: a-first-round-miss-by-the-gaoler-is-rerolled-against-a-member-of-a-skaven-warband
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      collection: mordheim
+      band_id: skaven-clan-eshin
+      profile_id: verminkin
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A human Brethren of the Cult of the Possessed.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: a-first-round-miss-by-the-gaoler-is-rerolled-against-a-member-of-the-cult-of-the-possessed
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: brethren
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    # The Gaoler's sibling Torturer's Grapple is offered each round; declined here.
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The hatred reads warband membership: an Undead creature outside those warbands is not hated and the
+# strict tape holds no re-roll key.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: the-same-miss-stands-against-an-undead-creature-outside-the-hated-warbands
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the Undead warband's Dreg: the miss is not offered a re-roll.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: a-hireling-without-the-hatred-receives-no-reroll-against-the-same-undead-warband-member
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: undead
+      profile_id: dregs
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.gaoler.rule.hatred/mechanic.gaoler-hatred
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.gaoler.rule.hatred]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

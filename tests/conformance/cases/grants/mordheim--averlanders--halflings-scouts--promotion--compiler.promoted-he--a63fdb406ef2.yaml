@@ -1,0 +1,77 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+# authoring_status: AUTHORED
+# authoring_progress: the admitted construction restriction carries 3 authored scenarios.  The two
+#   datums the earlier note called unresolved do exist: the rule's own recipient is the band profile
+#   halflings-scouts (the rule halflings-scouts--promotion declares applies_to.profile_ids
+#   [halflings-scouts] in sources/knowledge/bands/mordheim/averlanders/special-rules.yaml), and the
+#   promoted two-list choice is declared through the skill-list variants the contract reads
+#   (`b.variant_ids` filtered on the skill-list. prefix).  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios evidence the printed restriction as construction refusals on the
+#   printed recipient averlanders/halflings-scouts.  Declaring the denied Strength list is refused with
+#   "Strength skill list is forbidden for averlanders/halflings-scouts" and declaring three selections
+#   is refused with "a promoted Hero may choose at most two skill lists" (the same contract's second
+#   branch), while a single non-Strength selection is accepted at construction and runs.  Both messages
+#   are the contract's own branches: `if (promoted.includes("strength")) return "Strength skill list is
+#   forbidden for ${who}"; if (promoted.length > 2) return "a promoted Hero may choose at most two skill
+#   lists";` with `promoted = b.variant_ids.filter((id) => id.startsWith("skill-list.")).map((id) =>
+#   id.slice(11))`.  Consumer: the shared eligibility stage
+#   (packages/python/roster-construction/mordheim_construction/_eligibility.js, profileSelections).
+#   Recorded interpretation kept: the prohibition applies to the promoted profile only, and the
+#   non-promoted Captain is not asserted here.
+
+# --- Authored scenarios ---
+# The promoted hero's two skill-list selections are declared as the skill-list.* variants the contract
+# reads; the refusal message is the contract branch verbatim.
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-the-strength-list-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.strength]
+  expect_error: Strength skill list is forbidden for averlanders/halflings-scouts
+
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-three-lists-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.combat, skill-list.academic, skill-list.speed]
+  expect_error: a promoted Hero may choose at most two skill lists
+
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-an-ordinary-list-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.combat]
+    second:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

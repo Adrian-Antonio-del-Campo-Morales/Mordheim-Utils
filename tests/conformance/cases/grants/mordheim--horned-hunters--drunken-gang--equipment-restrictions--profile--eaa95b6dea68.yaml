@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/horned-hunters/drunken-gang--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/horned-hunters/special-rules.yaml
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the declared prohibition (forbids: armour; "the profile
+#   entry does not allow armour") as a construction refusal on the boundEquipment stage
+#   (packages/typescript/domain/eligibility/index.ts; the Python mirror _eligibility.js is generated):
+#   the token "armour" refuses a worn suit or a held shield/buckler/helmet with "armour is forbidden
+#   for <band>/<profile>".  Both refused items sit on the Henchmen list the gang reads
+#   (equipment-access.yaml: toughened_leathers -> armour.toughened-leathers, shield -> defence.shield),
+#   so the clause's own token, not the list gate, is what refuses them; the armourless gang with a
+#   sword of the same list is accepted and compiles with no armour save (7 = none).
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/horned-hunters/drunken-gang--equipment-restrictions/profile.equipment-restrictions
+  id: drunken-gang-with-toughened-leathers-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: horned-hunters
+      profile_id: drunken-gang
+      main_weapon_id: weapon.sword
+      armour_id: armour.toughened-leathers
+  expect_error: armour is forbidden for horned-hunters/drunken-gang
+
+- audit_id: rule/mordheim/horned-hunters/drunken-gang--equipment-restrictions/profile.equipment-restrictions
+  id: drunken-gang-with-a-shield-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: horned-hunters
+      profile_id: drunken-gang
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+  expect_error: armour is forbidden for horned-hunters/drunken-gang
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).
+- audit_id: rule/mordheim/horned-hunters/drunken-gang--equipment-restrictions/profile.equipment-restrictions
+  id: drunken-gang-without-armour-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: horned-hunters
+      profile_id: drunken-gang
+      main_weapon_id: weapon.sword
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

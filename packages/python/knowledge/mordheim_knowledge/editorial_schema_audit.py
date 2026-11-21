@@ -136,11 +136,15 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "unused_enum_value",
         "#/$defs/catalog_status",
     ): "`draft` is the editorial state docs/guides/campaign-knowledge.md prescribes for unconfirmed rules",
+    # `pending-classification` is the intake reason of `registry/runtime-schema.yaml`
+    # for an unbound effect nobody has reviewed yet. The 2026-11-13 review classified
+    # every effect that carried it, so no document uses it today; the code stays so a
+    # newly transcribed rule can declare its runtime block before its review.
     (
-        "catalog-rules-implemented-canonical-families.yaml.schema.json",
+        "defs.schema.json",
         "unused_enum_value",
-        "#/$defs/family.implemented",
-    ): "the classification vocabulary of the audit it documents; every family is YES today",
+        "#/$defs/runtime_effect.reason",
+    ): {"str:pending-classification": "intake reason for unreviewed effects; none pending since 2026-11-13"},
     # -- vocabularies the campaign engine dispatches on ------------------
     # `post_battle_engine` reads `recipient`, `subject` and `note`; `scenario_rewards`
     # documents `hero_and_henchman_group | leader | hero | manual`.

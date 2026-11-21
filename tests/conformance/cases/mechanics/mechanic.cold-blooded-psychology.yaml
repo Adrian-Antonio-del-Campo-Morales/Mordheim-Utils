@@ -1,0 +1,64 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.cold-blooded-psychology
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the three dice on an
+#   individual Psychology test and the untouched two-dice other Leadership
+#   test.
+
+# --- Authored scenarios ---
+# The charged warrior's Fear test rolls three dice and discards the highest, so the
+# declared six costs nothing and the test passes on 7 against Leadership 7.
+- audit_id: mechanic/mechanic.cold-blooded-psychology
+  id: an-ordinary-psychology-test-keeps-the-lowest-two
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-psychology]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.2, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, state.second.fear_hit_sixes: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A fire-fear test is not an individual Psychology test, so the printed 'does not
+# alter other Leadership tests' shows in the tape: only two dice are taken and their
+# sum of 12 fails the Leadership 7.
+- audit_id: mechanic/mechanic.cold-blooded-psychology
+  id: another-leadership-test-rolls-only-two-dice
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-psychology, mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

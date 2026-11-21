@@ -1,0 +1,151 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch,
+#   2026-11-18): the first-round re-roll against a Middenheim Mercenary once his Frenzy has ended, the
+#   same miss standing against a Reikland Mercenary, the frenzied Maximilian receiving no re-roll
+#   (Frenzy waives Psychology, Hatred included), the Bard control with no re-roll against the same
+#   Middenheimer, and the refusal outside the printed profile.  REVIEWED still requires manual semantic
+#   review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): while Maximilian's Religious Fervour Frenzy is active the engine
+#   waives his Psychology, Hatred included (contexts.py _hit_reroll: `psychology_allowed = not frenzy
+#   and ...`), exactly as the Rulebook's Frenzy ("immune to psychology") reads; the B04 automatic-
+#   leadership sibling adopted the same isolation.  The re-roll scenarios therefore supply the ended-
+#   Frenzy state (a frenzied warrior knocked down earlier in the battle loses Frenzy for the rest of
+#   it) through `initial_state: {first: {frenzy: false}}`, and one scenario shows the frenzied state
+#   receiving no re-roll so the reading is stated, not hidden.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Maximilian the Mad compiled
+# through the hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.maximilian-the-mad)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld10 stays) and his printed Double-Handed
+# Holy Weapon (the canonical double-handed weapon: Strength +2, so S5 wounds T3 on 2+).  His printed
+# Fanatical rule is granted by the profile itself, so the build selects nothing; the printed hated list
+# names Middenheimers, read on the opponent's supplied Mercenary origin (trait_overrides
+# mercenary_origin -> mercenary-origin.<origin>); a Reikland origin is a human warband the print never
+# names.  His other printed rules: he causes Fear, so the charging opponent tests Fear for its charge
+# (`round.0.second.fear.charge.{0,1}`, 3+3 passes Ld7); his automatic Leadership never rolls; his
+# Frenzy is supplied as ended (see the Discrimination note) except where it is the scenario's subject.
+# The opponent charges so that it strikes first whatever Strongman does to the holy weapon's order.
+# The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and its own hit is a natural 1.  The
+# control is the grade-1b Bard compiled through the same route; the refusal selects the printed rule on
+# that control.
+
+# Frenzy ended: the first-round miss (2) against the Middenheimer is re-rolled, 4 hits and the S5 blow
+# wounds on the declared 2.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+  id: a-first-round-miss-by-maximilian-is-rerolled-against-a-middenheimer-after-frenzy-ends
+  fighters:
+    first:
+      &fanatical-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.maximilian-the-mad
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &middenheimer
+      main_weapon_id: weapon.mace
+      trait_overrides: {mercenary_origin: middenheim}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1, frenzy: false}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 3}
+    - {key: round.0.second.fear.charge.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {state.first.frenzy: False, attacks.1.hit: true, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Reikland Mercenary is not on the printed list: the strict tape holds no re-roll key and the 2 stands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+  id: the-same-miss-stands-against-a-reiklander-outside-the-printed-list
+  fighters:
+    first:
+      <<: *fanatical-recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {mercenary_origin: reikland}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1, frenzy: false}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 3}
+    - {key: round.0.second.fear.charge.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Frenzy intact (his Religious Fervour): the frenzied warrior is immune to Psychology, so his two
+# doubled strikes miss on 2 and 2 with no Hatred re-roll offered against the same Middenheimer.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+  id: the-frenzied-maximilian-receives-no-hatred-reroll
+  fighters:
+    first:
+      <<: *fanatical-recipient
+    second:
+      <<: *middenheimer
+  initial_state: {first: {attacks: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 3}
+    - {key: round.0.second.fear.charge.1, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.1.hit, value: 2}
+  expect_rounds:
+    0: {state.first.frenzy: True, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, no Fear and no Hatred) is charged by the same Middenheimer: no Fear dice are
+# requested of the charger and the Bard's 2 is not offered a re-roll.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+  id: a-hireling-without-the-rule-receives-no-reroll-against-the-same-middenheimer
+  fighters:
+    first:
+      &fanatical-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *middenheimer
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.fanatical-hatred
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *fanatical-control
+      special_rule_ids: [hireling.dramatis.maximilian-the-mad.rule.fanatical]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

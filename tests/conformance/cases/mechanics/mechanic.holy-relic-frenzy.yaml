@@ -1,0 +1,122 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.holy-relic-frenzy
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hatred batch, 2026-11-18): the bearer of the mechanic is
+#   frenzied and strikes twice; a frenzied bearer who also has Hatred is offered no first-round re-roll
+#   (the printed reminder); the printed carrier - a Battle Pilgrim owning a Holy Relic - is frenzied and
+#   its printed Hatred is suppressed; the same Pilgrim without the relic is not frenzied and keeps the
+#   Hatred re-roll.  REVIEWED still requires manual semantic review.
+# AUTHORED: 4 scenarios cover the Frenzy and doubled attacks, the Hatred immunity of the frenzied bearer, the printed Battle Pilgrim carrier with and without the relic.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (mordheimer.net, Bretonnian Chapel Guard / 0-5 Battle Pilgrims / Holy Relics, bound by
+# battle-pilgrims--holy-relics through compiler.holy-relic-frenzy): "If a Battle Pilgrim owns a Holy
+# Relic, he gains the ability Frenzy (Reminder: when frenzied, he is immune to Hatred.)"  The grant
+# follows the owned piece: the construction layer adds this mechanic to a Battle Pilgrim whose
+# owned_item_ids carry the relic (holy_relic_pilgrim_only, the band's own list entry), and the mechanic's
+# execution entry sets Frenzy.  Frenzy model (the authored band file ...459fbf1b6b26 is the template): a
+# frenzied fighter doubles a supplied attacks 1 into two To Hit dice, and a frenzied fighter is not
+# subject to Hatred, so no round.0.<side>.attack.<n>.hit.reroll key exists even against an enemy its
+# Hatred would otherwise reach (the Battle Pilgrims' own printed Hatred reaches every enemy).  The owned
+# relic also carries defence.holy-relic (an automatic first Leadership pass), which no scenario here
+# requests.  Scenarios 1-2 inject the mechanic into a hand-built fixture through skill_ids; scenarios 3-4
+# build the printed Battle Pilgrim with the fixture facts, mace in hand.
+
+# The bearer is frenzied: its supplied single attack becomes two To Hit dice (both misses).
+- audit_id: mechanic/mechanic.holy-relic-frenzy
+  id: the-bearer-is-frenzied-and-strikes-twice
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.holy-relic-frenzy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed reminder: a frenzied bearer is immune to Hatred, so its two first-round misses (natural 2s)
+# are offered no re-roll key although the fixture also carries Hatred.
+- audit_id: mechanic/mechanic.holy-relic-frenzy
+  id: the-frenzied-bearer-is-immune-to-its-own-hatred
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.holy-relic-frenzy, skill.hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.1.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed carrier: a Battle Pilgrim owning a Holy Relic is frenzied (two To Hit dice) and its printed
+# Hatred of every enemy is suppressed, so the two misses stand without a re-roll key.
+- audit_id: mechanic/mechanic.holy-relic-frenzy
+  id: the-battle-pilgrim-owning-a-holy-relic-is-frenzied-and-its-hatred-is-suppressed
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: battle-pilgrims
+      main_weapon_id: weapon.mace
+      owned_item_ids: [holy_relic_pilgrim_only]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.1.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Battle Pilgrim without the relic is not frenzied, strikes once, and its printed
+# Hatred re-rolls the first-round miss, which then hits and wounds.
+- audit_id: mechanic/mechanic.holy-relic-frenzy
+  id: the-battle-pilgrim-without-the-relic-is-not-frenzied-and-keeps-its-hatred
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: battle-pilgrims
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

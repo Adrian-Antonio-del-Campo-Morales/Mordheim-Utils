@@ -1,0 +1,133 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Troll Slayer with the selected skill wounds a Toughness 5 opponent on a four (the 6+ his
+#   Strength 3 would need is capped at 4+); a three still fails (the cap is a ceiling, not a bonus); a
+#   naturally easier target keeps its own lower number; the same profile without the selection cannot
+#   wound on the same four; the skill is refused outside its printed profile.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/core.yaml
+#
+# --- Authored scenarios ---
+# Printed skill (Slayer special skills, Monster Slayer): the Slayer always wounds any opponent on a
+# roll of 4+ at least, regardless of Toughness.  The Troll Slayer's selectable skill binds the shared
+# mechanic skill.monster-slayer; its execution entry carries that tag, read by
+# packages/python/combat-engine/mordheim_combat/modular/contexts.py (~729): the To Wound target is
+# capped at 4 for the tagged attacker (the natural target stands when it is already lower).  The
+# model is the authored mechanics file cases/mechanics/skill.monster-slayer.yaml.  The operator reads
+# no size: a Toughness 5 hand-built opponent is the clean boundary (S3 against T5 needs a 6 unaided);
+# a Large opponent (condition.large-target) would change nothing here and is not supplied.  The
+# ogre-hunting band's Monster Slayer access refusals live in the Crude Belch file and are not repeated.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Troll Slayer compiled through
+# the hireling route (hirelings.hired-sword.core / hireling.hired-sword.dwarf-troll-slayer) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld9 stays); his omitted main weapon is the kit's
+# first option, an axe (its armour penetration meets no armour).  Deathwish is Psychology immunity;
+# Hard to Kill and Hard Head read only his own Injury roll and he is never wounded here.  The skill is
+# selected with special_rule_ids on the real profile; the unselected control is the same profile
+# without it; the refusal selects the skill on the grade-1b Bard.  The opponent is hand-built (WS3 S3
+# W3 I2 A1 Ld7, mace) with the one fact the rule meets, Toughness 5 (or 2 for the easier target); his
+# reply is a natural 1.  Dice: WS3 against WS3 hits on 4+; no sixes (a six would open the critical die).
+
+# S3 against T5 needs a six unaided; Monster Slayer caps the target at 4, so the four wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+  id: the-slayer-wounds-a-toughness-five-opponent-on-four
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.dwarf-troll-slayer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer]
+    second:
+      &tough-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &slayer-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The cap is a ceiling of 4+, not a bonus: a three still fails against the same opponent.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+  id: a-three-still-fails-under-the-cap
+  fighters:
+    first: *recipient
+    second: *tough-opponent
+  duel_context: *slayer-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "At least": S3 against T2 wounds on 3+ unaided and the skill does not worsen it, so the three wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+  id: a-naturally-easier-target-keeps-its-own-number
+  fighters:
+    first: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: *slayer-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Troll Slayer without the selection: S3 against T5 needs a six, so the four cannot wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+  id: the-same-slayer-without-the-skill-cannot-wound-on-four
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.dwarf-troll-slayer
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *tough-opponent
+  duel_context: *slayer-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The skill is printed for the Troll Slayer; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer/skill.monster-slayer
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer]
+    second: *tough-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

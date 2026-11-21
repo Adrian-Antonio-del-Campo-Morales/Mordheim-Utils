@@ -1,0 +1,131 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.elf-ranger.skill.luck/skill.luck
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (luck family model, 2026-11-18): the real Elf Ranger
+#   with the selected Elven skill rerolls his own failed hit and the spent resource leaves his
+#   later failed wound standing with no second offer; his own failed wound rerolled instead; the
+#   control of the same profile without the selection, whose identical miss is offered no Luck
+#   decision; and the refusal outside the printed eligibility.  The family model is the authored
+#   mechanics file tests/conformance/cases/mechanics/skill.luck.yaml (the same skill.luck binding
+#   through skill_ids) and the adopted Luck ruling.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the scenarios of the luck family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/core.yaml
+#
+# --- Authored scenarios ---
+# The Elf Ranger's Luck is a selectable Elven skill ("Once per game the Elf Ranger may reroll one
+# of his own dice rolls", eligibility: the Elf Ranger alone) bound to the shared skill.luck; the
+# adopted ruling (docs/decisions/design-rulings.md) reads it as one re-roll of a failed roll of
+# his own (hit or wound), spent for the rest of the duel.  The Ranger is compiled through the
+# hireling route (hirelings.hired-sword.core / hireling.hired-sword.elf-ranger) with the skill
+# selected through special_rule_ids on the real profile and the fixture facts (WS3 S3 T3 W2 I5
+# A1; his printed Ld8 stays).  His omitted main weapon takes the printed kit's close-combat
+# default, the sword (the elf bow shoots and the elven cloak guards against shooting, both silent
+# here); his excluded rules (Seeker, Excellent Sight) request nothing.  The opponent is the
+# hand-built fixture (mace, WS3 S3 T3 W3 I2 A1 Ld7) and every roll of his is a declared natural
+# 1, a miss.  WS3 against WS3 hits on 4+ and S3 against T3 wounds on 4+.  The bearer declares the
+# Luck choice on each own roll before the second die is taken (consumer: modular/contexts.py, the
+# skill.luck offer and the spent `luck` resource).
+
+# The failed hit of 2 is rolled again on the declared choice and the 4 hits; the resource is
+# spent, so the later failed wound of 1 is offered nothing and stands - the strict tape declares
+# no second Luck decision.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.elf-ranger.skill.luck/skill.luck
+  id: the-rangers-failed-hit-is-rerolled-and-the-spent-luck-leaves-the-failed-wound-standing
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.elf-ranger
+      special_rule_ids: [hireling.hired-sword.elf-ranger.skill.luck]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, attacks.0.damage: 0, state.second.wounds: 3, state.first.resources_spent: [luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The ruling's other face: Luck may instead reroll his own failed wound.  The hit of 4 declines
+# the offer, the wound of 1 takes it and the reroll of 5 wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.elf-ranger.skill.luck/skill.luck
+  id: the-rangers-failed-wound-is-rerolled-instead
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.elf-ranger
+      special_rule_ids: [hireling.hired-sword.elf-ranger.skill.luck]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.wound.luck, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.0.wound.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2, state.first.resources_spent: [luck]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for a selectable skill is the same profile without the selection: the identical
+# miss of 2 is offered no Luck decision at all, so it stands and no wound die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.elf-ranger.skill.luck/skill.luck
+  id: the-ranger-without-the-selection-is-offered-no-luck-decision
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.elf-ranger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed eligibility names the Elf Ranger alone; selecting the skill on a hireling of
+# another package is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.elf-ranger.skill.luck/skill.luck
+  id: the-skill-is-refused-on-a-hireling-outside-its-printed-eligibility
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.elf-ranger.skill.luck]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

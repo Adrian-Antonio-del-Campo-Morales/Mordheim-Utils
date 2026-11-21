@@ -1,0 +1,155 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.axe-mastery
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (operators-band-rules batch, 2026-11-18): the skill on a
+#   hand-built axe fighter rerolls a missed hit in the combat phase of the turn he charges, not when he
+#   does not charge, not with a mace, and not in the following round; the printed Giant Slayer with the
+#   skill selected from the Slayer table rerolls the same way; the selection is refused on a Troll Slayer
+#   henchman.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (Dwarf Slayer Cult, Slayer Special Skills, bands/mordheim/dwarf-slayer-cult-web/
+# special-rules.yaml band--slayer-special-skills): "Axe Mastery - he may reroll all missed attacks if
+# using an axe or dwarven axe in the hand-to-hand phase of the turn that he charges; may not be used with
+# Whirling Blades."  The execution entry carries the tags skill.axe-expert and skill.axe-mastery
+# (catalog/mechanics/execution.yaml ~1320); the consumer is modular/contexts.py ~339-341 in _hit_reroll:
+# `charging and first_round and has_tag(effect, "skill.axe-expert") and weapon in (weapon.axe,
+# weapon.dwarf-axe)`.  Hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7) with skill_ids [skill.axe-mastery];
+# the opponent is the unarmoured mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) whose swing is a declared 1.  The
+# reroll is automatic, on key round.<i>.<side>.attack.<n>.hit.reroll.  The real recipient is the printed
+# Giant Slayer (fixture characteristics, axe from the Slayer list), whose skill table
+# (band--slayer-special-skills) publishes skill.axe-mastery for the Slayer Heroes; his Slayer Rules and
+# Leader add no request here.  Whirling Blades is a skill the KB does not carry here (not asserted).
+# Semantic wrinkle (2026-11-18): the dwarf axe face is not declared - a single dwarf axe parries and adds
+# its own requests, and TODO.md records an unprinted parry re-roll for two Dwarf axes.
+
+# The charging axe bearer rerolls his missed hit (2 -> 4) and wounds.
+- audit_id: mechanic/skill.axe-mastery
+  id: a-charging-axe-bearer-rerolls-his-missed-hit
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.axe-mastery]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "The turn that he charges": the same bearer who does not charge is offered no reroll.
+- audit_id: mechanic/skill.axe-mastery
+  id: without-a-charge-the-miss-stands
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "If using an axe or dwarven axe": a charging mace bearer with the skill is offered no reroll.
+- audit_id: mechanic/skill.axe-mastery
+  id: with-a-mace-the-charging-miss-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.axe-mastery]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The reroll belongs to the charge turn: round 0 rerolls (the reroll's wound fails), the identical
+# round-1 miss stands.
+- audit_id: mechanic/skill.axe-mastery
+  id: the-reroll-does-not-reach-the-following-round
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false}
+    1: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The real recipient: the printed Giant Slayer selects Axe Mastery from the Slayer table (skill_ids) and
+# charges with an axe; the same miss is rerolled and wounds.
+- audit_id: mechanic/skill.axe-mastery
+  id: the-printed-giant-slayer-with-the-skill-rerolls-his-charging-miss
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.axe-mastery]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Slayer table is a Hero table: a Troll Slayer henchman is refused the skill.
+- audit_id: mechanic/skill.axe-mastery
+  id: the-skill-is-refused-on-a-troll-slayer-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.axe-mastery]
+    second:
+      <<: *opponent
+  expect_error: "skills are not available to dwarf-slayer-cult-web/troll-slayers: ['skill.axe-mastery']"

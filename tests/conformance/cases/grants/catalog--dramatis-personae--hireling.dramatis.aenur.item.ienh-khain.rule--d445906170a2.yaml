@@ -1,0 +1,112 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.parry/weapon.ienh-khain
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, equipment-items batch
+#   2026-11-18): the real Aenur wielding Ienh-Khain is offered the parry and a 5 turns a
+#   hit landed on a 4; an equal 4 does not and the wound then meets his Step Aside 5+
+#   (declared failing) before landing; the Bard control is offered no parry die; the
+#   sword is refused in the hand of a hireling outside Aenur's printed kit.  REVIEWED
+#   still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): Aenur's printed Step Aside grants a 5+ special
+#   save against every close-combat wound, so the failed-parry branch requests a ward die
+#   (round.0.first.attack.0.special.ward) after the wound; it is declared as a 1 so the
+#   parry's own outcome stays the observable.  Expert Swordsman (first-round charging
+#   re-roll) and Lightning Reflexes (when charged) ask nothing in this uncharged duel.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Rule (core.yaml, hireling.dramatis.aenur.item.ienh-khain.rule.parry, grant profile): "Ienh-Khain
+# can parry" - binding weapon.ienh-khain (execution.yaml: parry true).  Hireling family model
+# (README, Hireling recipients): the real Aenur through the hireling route
+# (hirelings.dramatis-personae.core) with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld8 stays)
+# and his unique sword wielded by its mechanic id; he is silenced (attacks 0) so the only dice are
+# the attacker's and his own defence.  The attacker is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, so
+# the parry is never denied by Strength); WS3 against WS3 hits on 4+ and an ordinary parry must beat
+# the hit die.  The control is the grade-1b Bard with his kit dagger (no parry).
+
+# The printed parry: Aenur, struck on a 4, is offered the parry and the 5 turns the blow.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.parry/weapon.ienh-khain
+  id: the-real-aenur-parries-a-hit-with-ienh-khain
+  fighters:
+    first:
+      &ienh-parry-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &ienh-parry-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.aenur
+      main_weapon_id: weapon.ienh-khain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_fighters:
+    second.main_weapon.parry: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An equal parry die does not beat the hit: the 4 fails, the wound lands, Step Aside's 5+ is
+# rolled and declared failing (1), and the wound is taken.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.parry/weapon.ienh-khain
+  id: an-equal-parry-die-does-not-block-and-the-wound-lands
+  fighters:
+    first: *ienh-parry-attacker
+    second: *ienh-parry-recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.wounded: true, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, dagger): the same hit is offered no parry die and the wound lands directly.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.parry/weapon.ienh-khain
+  id: a-hireling-without-the-sword-is-offered-no-parry
+  fighters:
+    first: *ienh-parry-attacker
+    second:
+      &ienh-parry-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Ienh-Khain is Aenur's unique item: wielded by a hireling of another printed kit it is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.parry/weapon.ienh-khain
+  id: the-sword-is-refused-in-the-hand-of-another-hireling
+  fighters:
+    first: *ienh-parry-attacker
+    second:
+      <<: *ienh-parry-control
+      main_weapon_id: weapon.ienh-khain
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

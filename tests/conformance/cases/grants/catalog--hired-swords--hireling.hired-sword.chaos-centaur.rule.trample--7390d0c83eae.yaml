@@ -1,0 +1,122 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.trample/mechanic.centaur-trample
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the charging Chaos Centaur rolls its sword attack and one trample attack (two hit
+#   dice; the compiled extra attack is the natural trample); the trample strikes at the Centaur's
+#   own Strength beside the sword (both wound on a 4, the trample's 3 fails); the plain-hireling
+#   control rolls the printed single attack; the rule is refused outside the Centaur's package.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1c.yaml, hireling.hired-sword.chaos-centaur.rule.trample, grant profile): "One
+# additional natural attack, separate from the printed A1, which receives no weapon bonuses or
+# penalties" - binding mechanic.centaur-trample (model mechanics/mechanic.centaur-trample.yaml).
+# Hireling family model (README, Hireling recipients): the real Chaos Centaur through the hireling
+# route (hirelings.hired-sword.1c / hireling.hired-sword.chaos-centaur) with the fixture facts (WS3
+# S3 T3 W2 I5 A1; the printed Ld7 stays) and the kit's sword choice named in hand (the kit's
+# throwing axe is out of the duel and its shield stays owned, not held).  The opponent is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and its declared hit is a miss, so the sword's parry
+# is never offered.  The Centaur's other printed rule, Drunken, rolls a D6 at the start of its own
+# turn (round.0.first.drunken): the declared 3 is the "nothing happens" band, so the pool is the
+# printed one; Woodland is outside the duel.  The control is the grade-1b Bard with his kit
+# dagger, which rolls neither the Drunken die nor a second attack.  Dice: WS3 against WS3 hits on
+# 4+, S3 wounds T3 on 4+; all hits of a side precede its wounds.
+
+# The charging Centaur rolls two hit dice: the sword's and the trample's (both declared misses);
+# the compiled extra attack carries the natural trample identity.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.trample/mechanic.centaur-trample
+  id: the-chaos-centaur-tramples-beside-its-sword-attack
+  fighters:
+    first: &centaur
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.chaos-centaur
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &centaur-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Drunken (the Centaur's other printed rule): 3 is the no-effect band.
+    - {key: round.0.first.drunken, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.wounds: 2, state.first.frenzy: false}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.trample]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.drunken, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The trample is a separate attack at the Centaur's own Strength: the sword's 4 wounds, the
+# trample's 3 is one face short, and the opponent loses exactly one wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.trample/mechanic.centaur-trample
+  id: the-trample-wounds-at-the-centaurs-own-strength
+  fighters:
+    first: *centaur
+    second: *opponent
+  duel_context: *centaur-charges
+  maximum_rounds: 1
+  rolls:
+    # Drunken: 3 is the no-effect band.
+    - {key: round.0.first.drunken, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.hit: true, attacks.1.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger) rolls the printed single attack and no Drunken die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.trample/mechanic.centaur-trample
+  id: a-hireling-without-the-rule-rolls-the-printed-single-attack
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *centaur-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The printed grant belongs to the Centaur's profile; selecting it on a hireling of another package
+# is refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.trample/mechanic.centaur-trample
+  id: the-rule-is-refused-on-a-hireling-outside-the-centaurs-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.chaos-centaur.rule.trample]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

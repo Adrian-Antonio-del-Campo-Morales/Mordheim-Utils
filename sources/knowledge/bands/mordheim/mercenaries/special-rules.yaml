@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Mercenary Captain may use his Leadership characteristic when taking
-    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,19 +20,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Capitán mercenario puede usar su característica de Liderazgo
-      cuando realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - mercenary-captain
+  rule_ref: shared-rule.leader
 - id: swordsmen--expert-swordsmen
   kind: profile_ability
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: selectable
+    grant: profile
     effects:
     - id: skill.expert-swordsman
       scope: 'YES'
@@ -74,8 +68,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-twelve
   name: Reikland — Military Discipline
-  effect: >-
-    Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -83,14 +75,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
     es: Reikland — Disciplina Militar
-  effect_i18n:
-    es: >-
-      Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando a 12" en lugar de los
-      6" habituales.
   applies_to:
     band: true
     profile_ids:
     - mercenary-captain
+  rule_ref: shared-rule.reikland-military-discipline
 - id: band--reikland-marksman-training
   runtime:
     scope: 'NO'
@@ -100,8 +89,7 @@ rules:
     - id: unimplemented.mercenaries.band.reikland-marksman-training
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Reikland — Marksman Training
   effect: >-
     All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband is
@@ -160,8 +148,7 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-traders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Marienburg — Natural Traders
   source:
     manual: mordheimer.net
@@ -182,8 +169,7 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Marienburg — Enormous Wealth
   source:
     manual: mordheimer.net
@@ -204,8 +190,10 @@ rules:
     - id: unimplemented.mercenaries.band.ostermark-stubborn-resolve
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: deferred.psychology
+      clauses:
+      - id: fear-immunity
+        scope: 'NO'
   name: Ostermark — Stubborn Resolve
   effect: >-
     Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the

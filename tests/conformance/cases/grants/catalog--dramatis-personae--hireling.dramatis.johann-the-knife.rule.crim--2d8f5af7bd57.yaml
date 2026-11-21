@@ -1,0 +1,96 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.crimson-shade/compiler.johann-crimson-shade
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): Johann
+#   compiled with the rule's contract on his construction tags, Johann taking Crimson Shade before the
+#   battle admitted (the drug's +1 Movement on the compiled build, its D3 Initiative rolled at duel
+#   start), and the same drug refused on a hireling whose printed kit does not offer it.  REVIEWED
+#   still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Discrimination note (2026-11-18): compiler.johann-crimson-shade is a registered contract
+#   (contracts.py) with no branch of its own in compiler.py or the shared eligibility stages
+#   (packages/typescript/domain/eligibility/index.ts); the printed permission is carried by the record's
+#   `optional_items: [crimson_shade]` kit entry, which the hireling kit resolver (resolveHirelingKit)
+#   admits as an optional copy, and by the catalogue drug's own execution entry
+#   (preparation.crimson-shade: +1 Movement in compiler.py, +D3 Initiative at initialisation).  The
+#   admission therefore survives the removal of this binding; its evidence here is the compiled
+#   construction tag (Proud to a Fault precedent, design-rulings.md second triage batch) and the
+#   duplicate carriers are the kit entry and the drug mechanic.  The refusal on the Bard is the kit
+#   matcher's sentence, not this binding's.
+# Semantic wrinkle (2026-11-18): Johann's Long Daggers count as two swords (the unique item's
+#   counts_as), so weapon.sword is the main weapon; his Poisoned Weapons rule coats it with Black Lotus
+#   as a profile mechanic and adds no request.  Movement is read from the printed M4 (the fixture
+#   supplies none), so the drug's +1 lands on 4.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Printed text (core.yaml, Crimson Shade): "Johann may take Crimson Shade before a battle."  The
+# recipient is the printed Johann the Knife compiled through the hireling route
+# (hirelings.dramatis-personae.core / hireling.dramatis.johann-the-knife) with the fixture facts (WS3 S3
+# T3 W2 I5 A1; the printed Ld7 stays).  The sorted construction_tags of Johann are this contract beside
+# the catalogue-wide fixed-equipment clause.  The shape is construction-only (no charge, the bearer out
+# of action before the first phase); the drug's D3 is requested at Johann's initialisation under the key
+# `first.crimson-shade` (as the high-elves Honorable file ...a8b460897af6 rolls `second.crimson-shade`),
+# and its face is irrelevant to the construction asserted.  The control is the grade-1b Bard.
+
+# Johann's compiled build carries the rule's contract.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.crimson-shade/compiler.johann-crimson-shade
+  id: johann-carries-the-crimson-shade-contract
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.johann-the-knife
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment, compiler.johann-crimson-shade]
+    first.characteristics.movement: 4
+
+# Johann taking Crimson Shade before the battle: admitted, +1 Movement on the compiled build.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.crimson-shade/compiler.johann-crimson-shade
+  id: johann-taking-crimson-shade-before-the-battle-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.johann-the-knife
+      main_weapon_id: weapon.sword
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  rolls:
+    # The drug's +D3 Initiative, rolled at Johann's initialisation (preparation.crimson-shade).
+    - {key: first.crimson-shade, sides: 3, value: 1}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment, compiler.johann-crimson-shade]
+    first.characteristics.movement: 5
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# The control: a hireling whose printed kit offers no Crimson Shade is refused the same drug.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.johann-the-knife.rule.crimson-shade/compiler.johann-crimson-shade
+  id: crimson-shade-is-refused-on-a-hireling-whose-kit-does-not-offer-it
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

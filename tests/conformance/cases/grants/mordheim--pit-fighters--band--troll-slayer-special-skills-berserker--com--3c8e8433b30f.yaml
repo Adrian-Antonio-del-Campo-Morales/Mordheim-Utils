@@ -1,0 +1,55 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/compiler.berserker-incompatible-with-ferocious-charge
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
+# sentence and the recorded contract: the pair of printed rules is refused at construction with the
+# module's own message, and the same bearer holding only Berserker is accepted.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed exclusivity from both sides: the combination of
+# Berserker and Ferocious Charge is refused with the message the construction module emits, and the same
+# bearer holding only Berserker constructs cleanly.  The printed halves that belong to the two skills
+# themselves are the sibling files' obligations, this clause being the construction incompatibility only.
+# REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# exclusivity is a construction fact, so the trigger is the pair of selected printed rules.
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/compiler.berserker-incompatible-with-ferocious-charge
+  id: the-slayer-may-not-hold-berserker-with-ferocious-charge
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker, band--troll-slayer-special-skills-ferocious-charge]
+  expect_error: Berserker may not be combined with Ferocious Charge
+
+# The same bearer holding only Berserker is accepted.  Both attack pools are suppressed, so the accepted
+# construction is the only thing the round shows: the one die is the shared priority/Initiative tie the
+# two equal warriors must resolve before their empty pools, and no attack, wound or save die follows.
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/compiler.berserker-incompatible-with-ferocious-charge
+  id: berserker-alone-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

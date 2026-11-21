@@ -1,0 +1,80 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/band--not-so-tough-gits/trait.injury-profile
+# authoring_status: AUTHORED
+# authoring_progress: the admitted injury-ladder clause carries authored scenarios derived from the
+# printed sentence and the recorded contract (the band grant carries injury profile 1).  The band
+# rule is granted to the band's Snotling members, so the bearer is the profile build
+# mordheim/snotlings-web/runts, a member that does not carry one of the explicit exemptions of the
+# same band; it starts at one Wound and contributes no attacks, so a single unsaved wound reaches
+# the injury table and the die alone decides the condition.  A 2 stuns it and a 4 takes it out; the
+# normal table would knock it down and merely stun it, so the pair isolates the printed ladder.  The
+# henchman-death and hero-reroll sentences of the same print stay outside the duel and are recorded
+# as an exclusion, not a test.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: injury-ladder (scope: YES)
+# AUTHORED[injury-ladder]: 2 scenarios show the band grant's printed ladder on a Snotling member: a
+#   2 leaves it Stunned and a 4 takes it Out of Action, where the normal table would have knocked it
+#   down and stunned it.  The two faces together also show that the printed post-battle death rule is
+#   not needed for either outcome.
+#
+# Clause: henchman-death-and-hero-rolls (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# band grants the rule to its Snotling members, so the bearer is one of those printed profiles rather
+# than an ad hoc build.  It starts the duel at one Wound and contributes no attacks of its own, so
+# round 0 carries only the attacker's dice and the wound that lands is the one that reaches the
+# injury table.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's printed
+# Weapon Skill it needs a 3, and Strength 8 against its Toughness needs a 2, so the declared 5 and 5
+# both pass.  Five is deliberately below a natural six, which would be a critical hit and add a
+# further critical die and an injury modifier.  A single point of damage at one Wound leaves the
+# injury die as the only undeclared input, so the strict tape also proves no further die is consumed.
+
+- audit_id: rule/mordheim/snotlings-web/band--not-so-tough-gits/trait.injury-profile
+  id: a-two-on-the-granted-ladder-stuns-the-bearer
+  covers: [injury-ladder]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: runts}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/band--not-so-tough-gits/trait.injury-profile
+  id: a-four-on-the-granted-ladder-takes-the-bearer-out
+  covers: [injury-ladder]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: runts}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

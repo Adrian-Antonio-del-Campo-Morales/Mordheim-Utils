@@ -25,6 +25,11 @@ from mordheim_core.models import CompiledFighter, EffectSet
 
 from mordheim_combat.vectorized._types import CombatState, OUT, STANDING, has
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from mordheim_combat.vectorized._row_equipment import RowEquipment
+
 
 #: The per-battle Leadership resources the modular ``FighterState`` keeps in
 #: ``resources_spent``.  ``CombatState`` has no generic resource set, so the
@@ -650,13 +655,13 @@ def with_death_fighting_threshold(fighter: CompiledFighter) -> CompiledFighter:
         fighter.global_effects, out_of_action_threshold=6))
 
 
-def patch_death_fighting(equipment: dict[int, CompiledFighter],
+def patch_death_fighting(equipment: RowEquipment,
                          rows: np.ndarray | None,
                          active: np.ndarray | None = None) -> None:
     """Raise the out-of-action threshold of ``rows`` in a per-row projection.
 
-    ``equipment`` is the driver's row -> ``CompiledFighter`` map (the same one
-    Black Hunger patches).  ``rows`` is the mask :func:`apply_death_fighting`
+    ``equipment`` is the driver's row -> ``CompiledFighter`` map, a
+    ``RowEquipment`` (the same one Black Hunger patches).  ``rows`` is the mask :func:`apply_death_fighting`
     returned; ``active`` optionally restricts the patch to the rows the round
     still resolves.  A ``None`` mask is a no-op, so the driver needs no branch.
     """

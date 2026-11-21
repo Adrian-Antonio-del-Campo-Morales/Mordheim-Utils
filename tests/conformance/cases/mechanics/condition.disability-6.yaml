@@ -1,0 +1,172 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.disability-6
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (supplied-condition batch, 2026-11-18): the Head Injured
+#   Cripple tests for Stupidity at the start of its own turn (failed, the declared charge is lost;
+#   passed, the round fights), owes no test on the opponent's turn, a sibling result owes no test at
+#   all, the statline is unchanged (the result has no characteristic sibling), and the result is
+#   refused on a build without the Cripples' Disability.  The six-inch Hero exemption is the sibling
+#   identity condition.disability-hero-nearby (its own file).  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.disability-6): "Head
+#   injury: Stupidity unless within six inches of a Hero.  Permanent supplied result; no group
+#   creation or reroll."  Source: Chaos in the Streets p149, result 6.
+# AUTHORED: the ruling of 2026-10-15 reads "Head Injury uses ordinary Stupidity unless a friendly
+#   active Hero is within six inches".  Consumers: modular/state.py marks the compiled tag as the
+#   `disability.6` resource at initialization; modular/psychology.py (resolve_stupidity) tests the
+#   active duelist whose resources carry `disability.6` with the ordinary Stupidity Leadership test
+#   (`round.<i>.<side>.stupidity.{0,1}`, the bearer's own Leadership) at the start of its own player
+#   turn, and a failed test on the initial charge cancels the charge (failed_charges, engaged false).
+#   The Hero exemption is read in the same function from `condition.disability-hero-nearby` and the
+#   nearby Hero records; it is authored in the sibling file mechanics/condition.disability-hero-
+#   nearby.yaml, so here the bearer always stands without a Hero.  Stupidity tests fall on the bearer's
+#   own active turn, so the bearer is the active participant and charger, as the authored Stupidity
+#   files do.  The recipient gate is the compiler's own ("Disability result requires a Cripple with
+#   Disability").
+
+# --- Authored scenarios ---
+# Fixture: the printed Cripples profile with the corpus fixture characteristics (Leadership 7), armed
+# with the outcasts list's club; the opponent is the hand-built mace fixture.  Leadership arithmetic:
+# 4+4 = 8 fails Ld 7, 3+3 = 6 passes it.
+
+# The ordinary Stupidity test on the bearer's own turn, failed: the Head Injured Cripple's declared
+# charge is lost and the duel never engages.
+- audit_id: mechanic/condition.disability-6
+  id: the-head-injured-cripple-fails-stupidity-on-its-own-turn-and-loses-the-charge
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false, state.failed_charges: ['first'], attacks: []}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The same test passed: the charge stands and both pools resolve.
+- audit_id: mechanic/condition.disability-6
+  id: a-passed-stupidity-test-keeps-the-charge-and-the-attacks
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true, attacks.0.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Timing: the test belongs to the bearer's own turn.  Charged on the opponent's turn, the Head Injured
+# Cripple owes no Stupidity die in this round and simply fights.
+- audit_id: mechanic/condition.disability-6
+  id: no-stupidity-test-is-owed-on-the-opponents-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false, state.engaged: true, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The "without" half: the same charging Cripple carrying a sibling result (4, Sickly) owes no
+# Stupidity test at all, so the dice above belong to result 6.
+- audit_id: mechanic/condition.disability-6
+  id: a-sibling-result-owes-no-stupidity-test
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-4]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 6 has no characteristic sibling: the compiled statline is exactly the supplied one.
+- audit_id: mechanic/condition.disability-6
+  id: head-injury-leaves-the-compiled-statline-unchanged
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+      main_weapon_id: weapon.club
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7, movement: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+    first.characteristics.toughness: 3
+    first.characteristics.initiative: 5
+    first.characteristics.movement: 4
+    first.characteristics.leadership: 7
+
+# The result is a Cripple's: on a build without the band's Disability mechanic the compiler refuses
+# it with its own sentence.
+- audit_id: mechanic/condition.disability-6
+  id: the-result-on-a-build-without-the-cripples-disability-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.disability-6]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "Disability result requires a Cripple with Disability"

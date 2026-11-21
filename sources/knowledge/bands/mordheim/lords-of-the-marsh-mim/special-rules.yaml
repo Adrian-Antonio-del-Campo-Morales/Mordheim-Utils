@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.mutations
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Mutations
   effect: >-
     Any Fimir Hero may start the campaign with a single mutation from the Corrupted Characters
@@ -39,9 +37,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.from-the-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.movement
   name: From the Mist
   effect: >-
     Fimir can see and move normally through all fogs, including magically created mist. The warband
@@ -92,8 +88,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.movement
   name: Aquatic
   effect: >-
     Fimir are amphibious and may move through water terrain with no penalty, counting as being in
@@ -120,10 +115,8 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.swamp-striders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.movement
   name: Swamp Striders
-  effect: Fimir can move through any swamp and marshland terrain without penalty.
   source:
     manual: broheim.net
     printed_page: 1
@@ -131,10 +124,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Zancudos del Pantano
-  effect_i18n:
-    es: Los Fimir pueden moverse por cualquier terreno de ciénaga y pantano sin penalización.
   applies_to:
     band: true
+  rule_ref: shared-rule.swamp-striders
 - id: band--scaly-skin
   runtime:
     scope: 'YES'
@@ -147,6 +139,7 @@ rules:
         kind: compiler
         id: compiler.lizardmen-scaly-skin
         parameters:
+          default: 6
           profile_ids:
           - fimir-warriors
           value: 5
@@ -177,9 +170,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.cyclopean-fiends
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Cyclopean Fiends
   effect: >-
     Heroes re-roll on the Serious Injury Chart when the result is 'Blinded in One Eye'. If the same
@@ -206,9 +197,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Hired Swords
   effect: >-
     Fimir warbands may hire the following Hired Swords: Slaver, Highwayman, Swashbuckler, Bog
@@ -238,9 +227,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any warrior within 6 inches of the Draich may use his Leadership value instead of his own when
-    taking Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -248,13 +234,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Draich puede usar su valor de Liderazgo en los chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - draich
+  rule_ref: shared-rule.leader
 - id: draich--wizard
   runtime:
     scope: 'NO'
@@ -264,8 +247,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     Draichs are sorcerers and have two spells. One is generated using the Chaos Rituals; the other
@@ -295,8 +277,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.mind-focus
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.magic
   name: Mind Focus
   effect: >-
     When using a spell or prayer the Draich may re-roll one dice roll used in the difficulty roll.
@@ -348,10 +329,8 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.draich.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.shooting
   name: Large
-  effect: Any model may shoot at a Draich, even if it is not the closest model.
   source:
     manual: broheim.net
     printed_page: 3
@@ -359,11 +338,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: Cualquier modelo puede disparar a un Draich, aunque no sea el modelo más cercano.
   applies_to:
     profile_ids:
     - draich
+  rule_ref: shared-rule.kroxigor-large
 - id: draich--craven
   runtime:
     scope: 'YES'
@@ -375,14 +353,16 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.draich.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
-  effect: A Draich is subject to the effects of fear unless they are protected by Mystic Mist.
   source:
     manual: broheim.net
     printed_page: 3
@@ -390,11 +370,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Cobarde
-  effect_i18n:
-    es: Un Draich está sujeto a los efectos del miedo salvo que esté protegido por Niebla Mística.
   applies_to:
     profile_ids:
     - draich
+  rule_ref: shared-rule.craven-mystic-mist
 - id: daemon-fimm--fear
   runtime:
     scope: 'YES'
@@ -429,8 +408,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.daemon-fimm.daemon-soul
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.magic
   name: Daemon Soul
   effect: >-
     A Daemon lives within the warrior's soul, giving demonomaniacs a 4+ save against the effects of
@@ -461,9 +439,6 @@ rules:
         kind: compiler
         id: profile-rule.young-nobles--spiked-tail
   name: Spiked Tail
-  effect: >-
-    Fimir Nobles have a flexible tail with a mace-like bony tip; the Young Noble gains an extra tail
-    attack in each hand-to-hand combat phase at the Fimir's Strength +1.
   source:
     manual: broheim.net
     printed_page: 4
@@ -471,13 +446,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Cola con Púas
-  effect_i18n:
-    es: >-
-      Los nobles Fimir tienen una cola flexible con punta ósea de maza; el Joven Noble obtiene un
-      ataque de cola extra en cada fase de combate cuerpo a cuerpo a la Fuerza del Fimir +1.
   applies_to:
     profile_ids:
     - young-nobles
+  rule_ref: shared-rule.spiked-tail
 - id: young-nobles--craven
   runtime:
     scope: 'YES'
@@ -489,14 +461,16 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
-  effect: Young Nobles are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
     manual: broheim.net
     printed_page: 4
@@ -504,13 +478,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Cobarde
-  effect_i18n:
-    es: >-
-      Los Jóvenes Nobles están sujetos a los efectos del miedo salvo que estén protegidos por Niebla
-      Mística.
   applies_to:
     profile_ids:
     - young-nobles
+  rule_ref: shared-rule.craven-mystic-mist
 - id: young-nobles--stupidity
   runtime:
     scope: 'YES'
@@ -522,18 +493,20 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity
+        scope: 'YES'
+      - id: mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
     - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Mystic Mist protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Stupidity
-  effect: Young Nobles are subject to stupidity unless they are protected by Mystic Mist.
   source:
     manual: broheim.net
     printed_page: 4
@@ -541,11 +514,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Estupidez
-  effect_i18n:
-    es: Los Jóvenes Nobles están sujetos a estupidez salvo que estén protegidos por Niebla Mística.
   applies_to:
     profile_ids:
     - young-nobles
+  rule_ref: shared-rule.stupidity-mystic-mist
 - id: shearls--craven
   runtime:
     scope: 'YES'
@@ -557,14 +529,16 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.craven
+      clauses:
+      - id: craven--scope--craven
+        scope: 'YES'
+      - id: craven--scope--mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.shearls.craven.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside Combat Lab's supported normal-duel scope: Mystic Mist
-        protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Craven
-  effect: Shearls are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
     manual: broheim.net
     printed_page: 4
@@ -572,13 +546,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Cobarde
-  effect_i18n:
-    es: >-
-      Los Siervos están sujetos a los efectos del miedo salvo que estén protegidos por Niebla
-      Mística.
   applies_to:
     profile_ids:
     - shearls
+  rule_ref: shared-rule.craven-mystic-mist
 - id: shearls--stupidity
   runtime:
     scope: 'YES'
@@ -590,18 +561,20 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity
+        scope: 'YES'
+      - id: mystic-mist-exemption
+        scope: 'NO'
     - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
     - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.mystic-mist
       scope: 'NO'
       binding: null
-      reason: >-
-        Mystic Mist protection is an excluded map/environmental rule.
+      reason: out-of-scope.movement
   name: Stupidity
-  effect: Shearls are subject to stupidity unless they are protected by Mystic Mist.
   source:
     manual: broheim.net
     printed_page: 4
@@ -609,11 +582,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Estupidez
-  effect_i18n:
-    es: Los Siervos están sujetos a estupidez salvo que estén protegidos por Niebla Mística.
   applies_to:
     profile_ids:
     - shearls
+  rule_ref: shared-rule.stupidity-mystic-mist
 - id: fimir-warriors--fear
   runtime:
     scope: 'YES'
@@ -648,10 +620,8 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.shooting
   name: Large
-  effect: Any model may shoot at a Fimir Warrior, even if it is not the closest model.
   source:
     manual: broheim.net
     printed_page: 4
@@ -659,11 +629,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Grande
-  effect_i18n:
-    es: Cualquier modelo puede disparar a un Guerrero Fimir, aunque no sea el modelo más cercano.
   applies_to:
     profile_ids:
     - fimir-warriors
+  rule_ref: shared-rule.kroxigor-large
 - id: fimir-warriors--spiked-tail
   runtime:
     scope: 'YES'
@@ -676,9 +645,6 @@ rules:
         kind: compiler
         id: profile-rule.fimir-warriors--spiked-tail
   name: Spiked Tail
-  effect: >-
-    Fimir warriors have a flexible tail with a mace-like bony tip; the warrior gains an extra tail
-    attack in each hand-to-hand combat phase at the Fimir's Strength +1.
   source:
     manual: broheim.net
     printed_page: 4
@@ -686,13 +652,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
   name_i18n:
     es: Cola con Púas
-  effect_i18n:
-    es: >-
-      Los guerreros Fimir tienen una cola flexible con punta ósea de maza; el guerrero obtiene un
-      ataque de cola extra en cada fase de combate cuerpo a cuerpo a la Fuerza del Fimir +1.
   applies_to:
     profile_ids:
     - fimir-warriors
+  rule_ref: shared-rule.spiked-tail
 - id: fimir-warriors--stupidity
   runtime:
     scope: 'YES'
@@ -707,8 +670,7 @@ rules:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.stupidity.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Random board movement after failure is outside the 1v1 duel scope.
+      reason: out-of-scope.movement
   name: Stupidity
   effect: Fimir Warriors are subject to stupidity.
   source:
@@ -725,16 +687,17 @@ rules:
     - fimir-warriors
 - id: fimir-warriors--monstrous
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.monstrous
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: henchman-injury-chart
+        scope: 'NO'
   name: Monstrous
   effect: >-
     When rolling for injury on the henchman chart only a roll of 1 kills; on a roll of 2-6 no
@@ -757,15 +720,17 @@ rules:
     - fimir-warriors
 - id: band--maximum-characteristics
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lords-of-the-marsh-mim.band.maximum-characteristics
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Fimir Maximum Characteristics
   effect: >-
     Characteristics for Fimir warriors may not be increased beyond the maximum limits: M 6, WS 6, BS

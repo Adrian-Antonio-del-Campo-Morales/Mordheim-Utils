@@ -42,7 +42,7 @@ criteria, propagating all repository limits. One writer per shared file still
 applies; the parent integrates shared changes and remains responsible for the
 complete package. Reuse the subagents' source findings and valid test output
 instead of repeating their investigation or checks. Subagents do not write the
-shared CSV or create separate completion documents; return changes, focused
+shared knowledge-base documents or create separate completion documents; return changes, focused
 evidence and blockers to the parent, which produces the single package delivery.
 
 ## Testing rework: verification and parallel execution

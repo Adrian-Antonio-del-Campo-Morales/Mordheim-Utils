@@ -1,0 +1,140 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/mechanic.songster
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause now carries the supplied Leadership reroll the printed Songster
+#   aura delivers, in the receipt shape the accepted sea-ghosts Minstrels sibling documents, plus its
+#   control, and (2026-11-16) a third scenario in which the printed Rememberer, built from the band package
+#   with this row selected, is the supplied provider.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Disposition (carried as the PARTIAL block until 2026-11-18): the printed clause is the Songster facet and its
+#   accepted reading is asserted at the end of this file, now including the real provider projection.
+#   ACCEPTED FACET: the shared supplied-Leadership reroll (reviewed family EQ-mechanic.leadership-reroll,
+#   verified facet "leadership/optional-reroll", consumer packages/python/combat-engine/mordheim_combat/
+#   modular/leadership.py::resolve_local_leadership, boundary "Optional failed individual Leadership reroll.
+#   Hound requires the supplied Priest within 12 inches; Songster also supplies +1 Leadership").  The accepted
+#   sibling for the same printed ability is the sea-ghosts Minstrels Songster origin
+#   (mordheim--sea-ghosts-mim--minstrels--songster--*.yaml), whose three authored tapes supply that operator
+#   on the beneficiary; the receipt shape they document - the optional decision
+#   round.N.<side>.fear.charged.reroll together with its own reroll dice - is the shape used here, so no key
+#   is invented.  The printed six-inch radius is the supplied provider condition and is never measured.
+#   PROVIDER PROJECTION (2026-11-16): the row now binds mechanic.songster in the KB, and the third scenario
+#   supplies the Rememberer selecting this row as a nearby same-side participant six inches away; the reroll
+#   with +1 Leadership is offered to the tested warrior through that provider alone.  The earlier note that
+#   this origin bound no operator of its own is superseded.  The Song of Honor facet (post-game experience)
+#   stays outside the duel.
+#   REVIEWED still requires manual semantic review.
+# Status corrected 2026-11-18: nothing this note withholds is an applicable requirement of the
+#   admitted clause.  The Songster facet itself is evidenced on three tapes, the last through the
+#   band's own printed Rememberer as the supplied provider, so the clause's observable is authored.
+#   The printed six-inch radius is the supplied provider condition and is never measured by the duel
+#   (an accepted scope disposition, not a gap), and the Song of Honor facet is post-game experience,
+#   dispositioned out of the duel.  The PARTIAL block above is kept as the standing disposition.
+# AUTHORED: the printed Songster clause - the supplied Leadership reroll with +1 Leadership - is
+#   evidenced on three tapes, including the real-provider projection through the printed Rememberer.
+#
+
+
+# --- Authored scenarios ---
+# Derived from the printed Songster clause, the reviewed EQ-mechanic.leadership-reroll facet and the accepted
+# sea-ghosts Minstrels sibling's receipt shape; no engine output was consulted.  Both fighters strike once with
+# a plain mace and every declared attack die is a natural one, a miss, so the Leadership test and its reroll
+# are the whole of the evidence.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/mechanic.songster
+  id: one-optional-reroll-turns-the-failed-leadership-test-around
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 1}
+    - {key: round.0.second.fear.charged.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/mechanic.songster
+  id: without-the-supplied-provider-the-first-failure-stands
+  # The control of the same contract: the identical failed test without the supplied reroll stands, and no
+  # reroll die is requested at all, so the turn-around above belongs to the supplied provider.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+
+# Real recipient (2026-11-16): the printed provider is the band's own Rememberer built from the band
+# package with the Rememberer Skills entry selected through special_rule_ids, standing six inches from the
+# tested warrior on the same side (the printed radius is the supplied distance, never measured).  The tested
+# warrior carries no reroll of its own, so the offered reroll and its +1 Leadership come only from the
+# provider's selected KB row: the first test (6+6 = 12) fails Leadership 6, the reroll (3+4 = 7) passes only
+# the tested Leadership 6 +1, and the warrior is not reduced to hitting on sixes.  Without the row no
+# reroll decision is offered and the declared decision and reroll dice would go unused.
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/mechanic.songster
+  id: the-printed-rememberer-s-song-lets-a-friendly-warrior-retake-the-failed-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: bard
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: rememberer, special_rule_ids: [band--rememberer-skills]}
+    distances:
+      - [second, bard, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

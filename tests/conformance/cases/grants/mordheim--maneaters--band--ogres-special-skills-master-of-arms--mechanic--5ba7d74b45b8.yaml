@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: ruling "Master of Arms relaxes only Difficult to Use weapons"
+#   (design-rulings.md): the Morning Star is Difficult to Use, so the admission face has a legal Maneaters
+#   recipient again (Morning Star + club, with its no-skill contrast), and the relaxation no longer frees
+#   a great weapon's second hand. "But not two Difficult to Use weapons" is unreachable: no Difficult to
+#   Use weapon may be selected in the off hand (off_hand: false), so it is a disposition, not a gap.
+# authoring_progress: 1 of the two faces of the printed loadout relaxation is authored.  The
+#   refusal half is evidenced: a fighter offered a main weapon that occupies both hands without the
+#   binding present is rejected with the shared "main weapon occupies both hands" diagnostic, which
+#   is the restriction the printed rule relaxes.  The admission half (one Difficult to Use weapon
+#   together with an ordinary hand weapon) stays pending because the record does not establish how the
+#   compiler contract is activated for a supplied build: the record itself notes that the binding id
+#   is compiler.master-of-arms while the candidate operator was mechanic.master-of-arms, and no band
+#   rule id is recorded as carrying it, so no build can be shown to hold the contract.  Named pending
+#   requirement: the surface that installs compiler.master-of-arms on a legal ogre build, after which
+#   the admission scenario is the same build with the two-handed main weapon and an ordinary hand
+#   weapon in the other hand.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# Real-recipient addendum (2026-11-16): the activation surface named above is the band skill
+# selected through special_rule_ids on an Ogre Hero; one further scenario authors the admission half
+# with the printed Difficult to Use weapon (a Morning Star) and a club on the Maneaters Captain. It
+# currently fails (ENGINE-DEFECT noted on the scenario). The "not two Difficult to Use weapons" half
+# stays pending: a Morning Star cannot be carried in the off hand, so no build offers two.
+# Ruling B2 addendum (2026-11-18): "Difficult to Use" is a declared item property. Only two catalogue
+# items print it - the Broadsword ("Difficult to use : A model with a Broadsword may not use a second
+# weapon or buckler in his other hand") and the Ceremonial Scythe ("Difficult to use, Two-handed") -
+# and both now carry the `difficult-to-use` item tag; the Master of Arms exception reads that tag
+# instead of naming weapon.morning-star, whose entry prints only "Heavy".
+#   (1) Admission face - disposition, no legal recipient: no Maneaters list (ogre-equipment-list,
+#       mountain-guide-equipment-list) offers a Broadsword or a Ceremonial Scythe, and the skill is
+#       granted by no other band, so no legal build holds a Difficult to Use weapon together with
+#       the skill.  A Broadsword on the Captain is refused with "equipment is not available to
+#       maneaters/captain: ['weapon.broadsword']".  The relaxation itself is witnessed at the
+#       construction layer (tests/construction/test_restricted_weapon_contracts.py,
+#       test_master_of_arms_reads_the_declared_difficult_to_use_property).
+#   (2) "but not two Difficult to Use weapons" - disposition, unreachable: both Difficult to Use
+#       weapons are main-hand only (off_hand: false), so no build can hold one in the off hand.
+#   (3) The Morning Star admission scenario below encodes the reading Ruling B2 reverses (the Morning
+#       Star as "the rulebook's Difficult to Use weapon"); it now fails with "weapon.morning-star
+#       cannot be combined with weapon.club".  Its expectation is NOT edited here; it is reported to
+#       the rules owner for retirement or replacement, together with the open source question of the
+#       Morning Star's own entry in the shared `restricted` combination table.
+#   The file stays PARTIAL until the owner disposes of scenario (3).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios cover the admission, its contrast and both refusals (settled 2026-11-19).
+# Superseded note (2026-11-19, kept as provenance): (narrowed 2026-11-19) the Morning Star admission was retired (see the end of this file) and the
+#   Broadsword/Scythe admission has no Maneaters recipient. What keeps this file PARTIAL is an open
+#   behaviour question, not a scenario: index.ts lifts "main weapon occupies both hands" for ANY
+#   two-handed main weapon when compiler.master-of-arms is present (a great weapon + sword is admitted;
+#   tests/construction asserts it), while the print relaxes only a Difficult to Use weapon. Recorded in TODO.md.
+# Former note: [C] 1 authored scenario declares the restriction the printed relaxation removes - the
+#   two-handed main weapon is refused with the shared diagnostic - and (2026-11-16) 1 authored scenario
+#   declares the admission half on the Maneaters Captain (Morning Star and club), which fails on the
+#   engine refusal noted on it.  The printed "but not two Difficult to Use weapons" half stays pending:
+#   no build can carry a second Difficult to Use weapon in the off hand.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the shared construction diagnostic; no engine output was
+# consulted.  The refusal is the restriction the printed rule relaxes: without the contract a main
+# weapon that occupies both hands is rejected, which is what the authored half witnesses here.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: a-two-handed-main-weapon-is-refused-without-the-contract
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      off_hand_id: weapon.dagger
+      off_hand_id: weapon.dagger
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 3, attacks: 2}
+  expect_error: main weapon occupies both hands
+
+# Real recipient: the printed admission half. The Maneaters Captain selects Master of Arms and carries
+# a Morning Star (on his equipment list; Difficult to Use by the 2026-11-19 ruling) with a club in the
+# other hand - "a Difficult to Use weapon and a hand weapon at the same time". The build must construct;
+# the bearer starts out of action so no die is needed. Restored 2026-11-19 unchanged from its 2026-11-16
+# authoring (it was briefly retired under the 2026-11-18 reading that the Morning Star is only Heavy).
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: a-master-of-arms-captain-wields-a-morning-star-and-a-hand-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: captain
+      special_rule_ids: [band--ogres-special-skills-master-of-arms]
+      main_weapon_id: weapon.morning-star
+      off_hand_id: weapon.club
+    second: {main_weapon_id: weapon.mace}
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first: {condition: OUT}
+  expect_fighters: {first.main_weapon.tags.0: weapon.morning-star, first.off_hand.tags.0: weapon.club}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Contrast: without the skill the same Captain may not pair the Morning Star with a second weapon.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: without-master-of-arms-the-morning-star-takes-no-second-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: captain
+      main_weapon_id: weapon.morning-star
+      off_hand_id: weapon.club
+  expect_error: "weapon.morning-star cannot be combined with weapon.club"
+
+# Ruling 2026-11-19: the relaxation applies only to a Difficult to Use weapon. A great weapon is not one,
+# so the skill does not free its second hand.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: master-of-arms-does-not-free-a-great-weapons-second-hand
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: captain
+      special_rule_ids: [band--ogres-special-skills-master-of-arms]
+      main_weapon_id: weapon.double-handed-weapon
+      off_hand_id: weapon.sword
+  expect_error: main weapon occupies both hands

@@ -1,0 +1,122 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/mechanic.mer-creature
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a Marine Hunter's wound on
+#   the Buccaneer with Mer-Creature is doubled, the same Buccaneer without it loses one, and an
+#   attacker without Marine Hunter wounds the Mer-Creature once, and the mutation is refused on a Henchman.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Mer-Creature): "Aquatic terrain and submersion are excluded;
+# when moving on land the Hero has Movement reduced by one."  This binding is the mutation's
+# identity half: the mechanic's execution entry carries the tag species.aquatic, the fact that
+# marks the bearer as an aquatic model.  Its only duel reader is the Whaler's Marine Hunter
+# ("Double any wounds inflicted to aquatic models", modular/attacks.py ~762-764: an attacker tagged
+# mechanic.marine-hunter doubles the damage of an ordinary wound against a defender tagged
+# species.aquatic).  The Movement penalty is the sibling profile.characteristics binding
+# (...78405f6bb0e6) and is not asserted here.  The mutation is selected through special_rule_ids
+# on the band's Buccaneer (a printed Hero; one mutation per Hero under Aquatic Mutants), who
+# carries a club from the heroes' list and the fixture facts with three Wounds (WS3 S3 T3 W3 I2 A1)
+# so a doubled wound leaves him standing; he contributes no swing.  The hunter is a hand-built
+# attacker (mace, WS3 S3 T3 W3 I5 A1 Ld7) with the shared Marine Hunter mechanic injected through
+# skill_ids, because the clause under test is the bearer's aquatic identity; the control is the
+# same Buccaneer without the mutation, and a hunter-less attacker shows the identity alone changes
+# nothing.  Wound dice are fours (no critical die joins).
+# Semantic wrinkle (2026-11-18): the mutation's own printed duel effect is the Movement loss; the
+#   aquatic identity is a consequence of "Mer-Creature" rather than a printed sentence of its own,
+#   and is evidenced through its one reader (Marine Hunter) as the KB records it.
+
+# A Marine Hunter's single wound on the Mer-Creature is doubled: three Wounds become one.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/mechanic.mer-creature
+  id: a-marine-hunters-wound-on-the-mer-creature-is-doubled
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.marine-hunter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-mer-creature]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Buccaneer without the mutation is not aquatic, so the same hunter's wound
+# costs one.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/mechanic.mer-creature
+  id: the-same-hero-without-the-mutation-loses-a-single-wound-to-the-hunter
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.marine-hunter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The identity alone changes nothing: an attacker without Marine Hunter wounds the Mer-Creature once.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/mechanic.mer-creature
+  id: an-ordinary-attacker-wounds-the-mer-creature-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-mer-creature]
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are Heroes: a Wrecker (Henchman) selecting the mutation is refused.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-mer-creature/mechanic.mer-creature
+  id: the-mutation-is-refused-on-a-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-mer-creature]
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers"

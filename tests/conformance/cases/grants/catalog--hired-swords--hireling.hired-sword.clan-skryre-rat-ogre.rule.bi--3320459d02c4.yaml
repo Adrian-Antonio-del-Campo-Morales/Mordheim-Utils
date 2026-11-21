@@ -1,0 +1,124 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour/defence.bio-armour
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (hireling family model): the real Rat Ogre's innate
+#   4+ armour save on its boundary pair (the die 4 saves, the 3 does not), the Bard
+#   control whose identical attack requests no armour die, and the refusal of the
+#   profile-granted rule outside its printed profile.  REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# AUTHORED: 4 scenarios of the hireling family model cover the innate 4+ save
+#   boundary pair, the Bard control and the out-of-profile refusal.
+
+# --- Authored scenarios ---
+# Hireling family model.  The printed rule (Town Cryer 25): "The part-mechanical
+# body of the Rat Ogre is very hardy and confers a 4+ armour save."  The save is
+# the body itself, not removable gear, so the profile grants it innately
+# (grant: profile, design ruling 2026-11-18) and the build selects nothing.
+# The recipient is compiled through the hireling route with fixture
+# characteristics (WS3 S3 T3 W2 I5 A1; the printed Ld10 stays) and its attacks
+# silenced.  The charging attacker declares a passing 3+3 Fear test against its
+# Ld7 (the Rat Ogre causes Fear); the charged Rat Ogre is psychology-immune
+# (Bio Machinery) and tests nothing.  The control is the grade-1b Bard: the same
+# hit and wound reach him with no armour die requested.
+
+# The printed save on its own face.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour/defence.bio-armour
+  id: the-rat-ogres-bio-armour-saves-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &gba-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &gba-rat-ogre
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &gba-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 4
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour/defence.bio-armour
+  id: one-face-below-the-bio-armour-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gba-attacker
+    second:
+      <<: *gba-rat-ogre
+  initial_state: {second: {attacks: 0}}
+  duel_context: *gba-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same attack against a hireling without the rule (the Bard,
+# no fear, no armour) requests no armour die and the damage goes through.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour/defence.bio-armour
+  id: a-hireling-without-the-rule-has-no-armour-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *gba-attacker
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *gba-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_fighters:
+    second.armour_save: 7
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Rat Ogre's profile; selecting it on another
+# hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour/defence.bio-armour
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-armour]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -1,0 +1,123 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.frustratingly-tiny
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios: the melee To-Hit penalty (2
+#   scenarios) and the printed mutual exclusion with Big Bully (a construction refusal plus two accepted
+#   controls).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: cannot-combine-with-big-bully (scope: YES)
+# AUTHORED[cannot-combine-with-big-bully]: 3 scenarios.  Printed text: Big Bully "Cannot be combined
+#   with the skill 'Frustratingly Tiny'" and Frustratingly Tiny "This skill cannot be combined with the
+#   'Big Bully' skill above" (sources/knowledge/bands/mordheim/snotlings-web/special-rules.yaml).  The
+#   earlier blocker in this note was FALSE and is corrected: bigsnotz--big-bully is now runtime scope YES /
+#   implemented YES / grant selectable (binding profile.skill-access, category strength), and the shared
+#   construction stage packages/python/roster-construction/mordheim_construction/_eligibility.js::
+#   specialRuleRestriction ("prerequisites" stage) refuses either id of the printed pair declared with the
+#   other with the literal sentence "Frustratingly Tiny cannot be combined with Big Bully".  The refusal
+#   build gives the BigSnot exactly one Strength skill, so Big Bully's own "grants exactly one Strength
+#   skill" guard cannot be what refuses it; the two controls show that each skill of the pair alone, on the
+#   same printed bearer, constructs.
+#
+# Clause: minus-one-to-hit-in-melee (scope: YES)
+# AUTHORED[minus-one-to-hit-in-melee]: 2 scenarios show the same declared To-Hit face of four missing against the bearer and hitting the same way against a warrior without the trait.
+
+# --- Authored scenarios ---
+# The printed penalty is suffered against the bearer, so the trait sits on the defending model
+# and the attacker's declared die is the only input that changes between the pair: Weapon Skill
+# 3 against Weapon Skill 3 needs a 4+ normally and a 5+ with the penalty.
+- audit_id: mechanic/mechanic.frustratingly-tiny
+  id: the-same-face-of-four-misses-against-the-bearer
+  covers: [minus-one-to-hit-in-melee]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.frustratingly-tiny]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control for the clause: the same declared four hits a warrior without the trait, so the
+# miss above is the printed melee penalty and not the ordinary to-hit table.
+- audit_id: mechanic/mechanic.frustratingly-tiny
+  id: the-same-face-of-four-hits-without-the-trait
+  covers: [minus-one-to-hit-in-melee]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exclusion: a BigSnot (a printed recipient of both skills) declaring the pair is refused at
+# construction with the shared stage's own sentence for this pair.  The single Strength skill satisfies
+# Big Bully's own grant, so only the pair can be the reason.
+- audit_id: mechanic/mechanic.frustratingly-tiny
+  id: a-bigsnot-with-both-frustratingly-tiny-and-big-bully-is-refused
+  covers: [cannot-combine-with-big-bully]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      skill_ids: [skill.resilient]
+      special_rule_ids: [bullied-goblin--frustratingly-tiny, bigsnotz--big-bully]
+  expect_error: Frustratingly Tiny cannot be combined with Big Bully
+# Control: the same BigSnot with Big Bully and its one Strength skill, without Frustratingly Tiny,
+# constructs.  The bearer is put out of action before the first phase so no die is needed.
+- audit_id: mechanic/mechanic.frustratingly-tiny
+  id: the-same-bigsnot-with-big-bully-alone-constructs
+  covers: [cannot-combine-with-big-bully]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      skill_ids: [skill.resilient]
+      special_rule_ids: [bigsnotz--big-bully]
+    second: &ft-opponent {main_weapon_id: weapon.mace}
+  duel_context: &ft-context {charging: [], active_participant: first}
+  initial_state: &ft-out {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+# Control: the same BigSnot with Frustratingly Tiny alone constructs.
+- audit_id: mechanic/mechanic.frustratingly-tiny
+  id: the-same-bigsnot-with-frustratingly-tiny-alone-constructs
+  covers: [cannot-combine-with-big-bully]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bullied-goblin--frustratingly-tiny]
+    second: *ft-opponent
+  duel_context: *ft-context
+  initial_state: *ft-out
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

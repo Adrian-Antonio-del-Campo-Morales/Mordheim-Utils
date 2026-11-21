@@ -1,0 +1,73 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.halberd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored wound-chart scenarios and one
+#   authored refusal. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios evidence the printed Strength bonus at the
+#   wound target and one face below it, plus the printed two-handed
+#   occupancy as a refused loadout. Pending semantic review.
+
+# --- Authored scenarios ---
+# weapon.halberd - A halberd is a two-handed weapon granting +1 Strength.
+# A halberd is a two-handed weapon granting +1 Strength. Against Toughness 3 the bonus moves the wound target to 3+.
+
+- audit_id: mechanic/weapon.halberd
+  id: halberd-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.halberd
+      characteristics: &atk-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &dfn-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the boosted wound target.
+
+- audit_id: mechanic/weapon.halberd
+  id: halberd-does-not-wound-one-face-below
+  fighters:
+    first:
+      main_weapon_id: weapon.halberd
+      characteristics: *atk-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dfn-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.halberd
+  id: halberd-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.halberd
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

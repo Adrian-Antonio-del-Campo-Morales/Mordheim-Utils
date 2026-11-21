@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (2026-11-18): the real Fallen Noble carrying the supplied
+#   refusal misses on a 4 in melee, a 5 still hits (the printed penalty is exactly one), the control
+#   without the condition hits on the same 4, and a non-Hero recipient is refused with the compiler's
+#   own sentence.  The canonical condition row this identity binds has existed in
+#   sources/knowledge/catalog/rules/conditions.yaml since 2026-10-18 (condition.ye-give-way-refused),
+#   so the former missing-identity blocker no longer applies.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# Discrimination note (2026-11-18, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule fallen-noble--ye-give-way binds
+#   condition.ye-give-way-refused with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build, so the probe's non-discriminating verdict for
+#   this identity is expected.  The only place the band rule could become observable is the recipient
+#   gate, which compiler.py hard-codes (compile_fighter's supplied-condition check on the challenged
+#   Hero) instead of reading this rule's applies_to; that is a compiler choice, not a KB duplicate.
+#   The challenge procedure itself stays the accepted scope exclusion
+#   (ye-give-way-challenge-producer, out-of-scope.group).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/mazzalupo-web/special-rules.yaml (fallen-noble--ye-give-way):
+#   "... the warrior who refused the challenge suffers a -1 to hit in hand-to-hand combat,
+#   non-cumulative, until the end of the game."
+# AUTHORED: 4 scenarios cover the supplied -1 to hit on the real Fallen Noble (a 4 misses, a 5 still
+#   hits), the control without the condition, and the Hero recipient gate's refusal.
+
+# --- Authored scenarios ---
+# Fixture arithmetic: WS3 against WS3 hits on 4+; the printed -1 makes the target a 5, so a 4 misses
+# and a 5 still hits (the penalty is exactly one, which also carries the printed "non-cumulative"
+# as far as a single supplied result can: the condition is a presence fact read once per attack, and
+# no authored model declares the same condition twice).  "Until the end of the game" exceeds the
+# one-round horizon and stays a lasting fact of the supplied condition.  The bearer is the band's
+# real Fallen Noble (a Hero, as the printed recipient gate requires) carrying fixture
+# characteristics; the opponent is a hand-built fixture whose own swing is a scripted miss, and W2
+# on both sides keeps every blow short of an injury roll.
+
+# The refusal boundary on the printed recipient: the Fallen Noble's 4, a hit under the normal
+# rules, misses under the supplied -1.
+- audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+  id: the-refused-fallen-nobles-four-misses-in-melee
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: fallen-noble
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.hit_target: 5, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The penalty is exactly one, as printed: a 5 still hits through the refusal and the blow lands.
+- audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+  id: a-five-still-hits-through-the-refusal
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: fallen-noble
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 5, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical Fallen Noble without the supplied refusal hits on the same 4, so the
+# missed 4 above is attributable to the condition and not to the build shape.
+- audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+  id: without-the-supplied-refusal-the-same-four-hits
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: fallen-noble
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed sufferer is "the warrior who refused the challenge" of a charge declared against a
+# Hero: a non-Hero recipient of the supplied refusal is refused by the compiler's own
+# supplied-condition gate.
+- audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/condition.ye-give-way-refused
+  id: a-non-hero-recipient-of-the-refusal-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-refused]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "Ye Give Way refusal requires the challenged Hero recipient"

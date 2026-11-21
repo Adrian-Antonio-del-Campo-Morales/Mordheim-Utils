@@ -589,6 +589,8 @@ def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rero
     dice.finish()
 
 
+@pytest.mark.covers("rule/mordheim/dwarf-slayer-cult-web/rememberer--rememberer/rememberer--rememberer.provider")
+@pytest.mark.covers("rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/rememberer--rememberer.provider")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_limits():
     unit = canonical("dwarf-slayers-kaz", "giant-slayer", "weapon.mace",
@@ -629,6 +631,7 @@ def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_lim
     decisions.finish()
 
 
+@pytest.mark.covers("rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save", "combines-with-armour")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_exception(precompiled):
     # ``first`` is the recorded chieftain in light armour and shield, ``second``
@@ -1110,6 +1113,7 @@ def test_native_bone_goliath_ignores_injury_only_on_four_and_magic_denies_it(pre
     dice.finish()
 
 
+@pytest.mark.covers("core/combat-injury-states", "chart", "highest-result")
 def test_the_highest_of_several_injury_results_applies(precompiled):
     compiled = precompiled()
     unit, target = compiled.first, compiled.second
@@ -1407,6 +1411,8 @@ def dwarf_combatant(main_weapon, off_hand):
                      off_hand_id=off_hand)
 
 
+@pytest.mark.covers("core/combat-parry", "parry-attempt")
+@pytest.mark.covers("mechanic/weapon.dwarf-axe")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
     for combo in (("weapon.dwarf-axe", "weapon.sword"), ("weapon.sword", "weapon.dwarf-axe")):
@@ -1416,6 +1422,8 @@ def test_dwarf_axe_with_sword_gains_the_printed_failed_parry_reroll():
         assert context.reroll is True, combo
 
 
+@pytest.mark.covers("core/combat-parry", "reroll-and-capacity")
+@pytest.mark.covers("mechanic/weapon.dwarf-axe")
 def test_dwarf_axe_pair_keeps_the_reroll_and_two_swords_get_none(precompiled):
     compiled = precompiled()
     pair = compiled.first

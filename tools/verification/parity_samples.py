@@ -6,11 +6,11 @@ While the native engine is being debugged that couples the expensive oracle
 sample to every native rebuild.  This command splits the campaign into three
 steps that persist on disk:
 
-``sample --engine modular``
+``sample --backend modular``
     Run the oracle for the selected scenarios and store its outcome counts.
-``sample --engine native``
+``sample --backend native``
     Run the compiled engine for the selected scenarios and store its counts.
-``sample --engine numpy``
+``sample --backend numpy``
     Run the vectorized engine and store canonical NumPy batches.
 ``compare --backend numpy`` (or ``native``, the default)
     Decide the stored pairs with the unchanged six-sigma gate and write the
@@ -28,13 +28,13 @@ reproduce the engines' own sampling exactly:
 - the native chunk with index ``k`` is one batch seeded
   ``seed + 1_000_003 + k * 0x9E3779B97F4A7C15``, the extension's own per-batch
   stream, so the stored total equals ``native.simulate_duel(DuelRequest(N,
-  seed + 1_000_003, batch_size=chunk))``;
+  seed + 1_000_003, batch_size=batch))``, with ``batch`` = ``--batch-size``;
 - NumPy chunks use the canonical ``batch_segment`` stream for their batch
-  index, matching a NumPy request with ``batch_size=chunk``.
+  index, matching a NumPy request with the same ``--batch-size``.
 
 Stores accept plain JSON and losslessly compressed ``.json.gz`` records.
-New records use JSON unless ``sample --compress`` is supplied; resuming an
-existing record preserves its format.
+New records are written compressed; resuming an existing record preserves its
+format.
 
 A record names the fighters it sampled (the corpus ``inputs_sha256`` of the
 case) and the engine it ran as a source digest of everything that engine
@@ -49,20 +49,20 @@ decides stored pairs produced by other engine versions and reports every
 difference as a prominent warning (stderr and report), and ``sample`` extends
 such a record with a warning, each new chunk recording its own provenance
 (``--replace`` discards the record instead).  Only a different experiment
-identity (fighters, seed, rounds or chunk size) is refused.  The engine is
+identity (fighters, seed, rounds or batch size) is refused.  The engine is
 digested where it was imported from; pool workers must import exactly the
 parent's engine, or the run stops, because that would mix engines inside one
 sample.
 
 Usage (from the repository root)::
 
-    python -m tools.verification.parity_samples sample --engine modular \
-        --level long --simulations 10000 --workers 4 --store reports/parity-store
-    python -m tools.verification.parity_samples sample --engine native \
-        --level long --simulations 10000 --store reports/parity-store
-    python -m tools.verification.parity_samples compare \
-        --level long --store reports/parity-store --output reports/parity-store/compare
-    python -m tools.verification.parity_samples status --level long --store reports/parity-store
+    python tools/mordheim-utils.py check samples sample --backend modular --scenarios big --workers 4
+    python tools/mordheim-utils.py check samples sample --backend native --scenarios big
+    python tools/mordheim-utils.py check samples compare --backend native --scenarios big
+    python tools/mordheim-utils.py check samples status --scenarios big
+
+(the store defaults to ``outputs/parity-store``; ``python -m
+tools.verification.parity_samples`` runs the same tool directly)
 
 Exit codes: ``sample`` returns 0 when every selected scenario reached the
 requested width, 1 when something is still missing (including after an
@@ -93,8 +93,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
-from tools.verification.e2e_parity import bootstrap_paths
-from tools.verification.e2e_parity import repository_root
+from tools.verification.parity_deliveries import KEY_PREFIX as DELIVERY_PREFIX
+from tools.verification.parity_deliveries import bootstrap_paths
+from tools.verification.parity_deliveries import repository_root
 
 # Before any engine import: the digests below hash this checkout, so the parent
 # and every pool worker must import the engine from it too.
@@ -102,6 +103,7 @@ bootstrap_paths(repository_root())
 
 from mordheim_core.models import DuelRequest
 
+from mordheim_combat_lab.cli.options import add_scenarios, size
 from mordheim_combat_lab.provenance import digest_files
 from mordheim_combat_lab.provenance import engine_sources
 from mordheim_combat_lab.provenance import native_build_sha256
@@ -109,14 +111,11 @@ from mordheim_combat_lab.provenance import provenance_warning
 from mordheim_combat_lab.provenance import source_revision
 
 from tools.verification.compiled_cases import CompiledCaseError
-from tools.verification.compiled_cases import load_cases
 from tools.verification.parity_campaign import campaign_markdown
 from tools.verification.parity_campaign import campaign_payload
 from tools.verification.parity_catalog import CORPUS
-from tools.verification.parity_catalog import LEVELS
 from tools.verification.parity_catalog import CampaignScenario
-from tools.verification.parity_catalog import load
-from tools.verification.parity_catalog import select
+from tools.verification.parity_catalog import resolve
 from mordheim_combat_lab.verification.parity import ParityRow
 from mordheim_combat_lab.verification.parity import parity_row
 from mordheim_combat_lab.verification.parity import compare_samples
@@ -404,8 +403,9 @@ def sample_path(store: Path, engine: str, corpus_key: str) -> Path:
     """Resolve an existing JSON/gzip sample, or a new JSON path."""
     if engine not in ENGINES:
         raise ValueError(f"unknown engine {engine!r}")
-    name = ("e2e__" + hashlib.sha256(corpus_key.encode()).hexdigest()
-            if corpus_key.startswith("e2e/") else corpus_key.replace("/", "__"))
+    # Delivery keys embed whole audit ids: hash them to keep Windows paths short.
+    name = ("delivery__" + hashlib.sha256(corpus_key.encode()).hexdigest()
+            if corpus_key.startswith(DELIVERY_PREFIX) else corpus_key.replace("/", "__"))
     path = Path(store) / engine / f"{name}.json"
     compressed = path.with_suffix(".json.gz")
     return compressed if not path.exists() and compressed.exists() else path
@@ -809,13 +809,18 @@ def _record_warnings(record: SampleRecord, current: Mapping[str, object]) -> lis
 def compare_stored(
     scenario: CampaignScenario, store: Path, *, simulations: int | None = None, backend: str = "native",
     reference_store: Path | None = None, current: Mapping[str, Mapping[str, object]] | None = None,
+    reference: str = "modular",
 ) -> tuple[ParityRow, dict[str, object]]:
     """Decide one scenario from its two stored samples.
 
-    ``simulations`` selects the compared prefix; by default the widest prefix
-    both samples cover.  Returns the row and a provenance record naming the
-    files, digests and coverage that produced it.  A missing, mismatched or
-    too-narrow sample yields a ``NOT_RUN`` row, never a verdict.
+    ``reference`` is the engine whose sample the candidate ``backend`` is
+    judged against: the modular oracle by default, or a candidate -- NumPy
+    against its own earlier sample (``reference_store``) to show a change
+    moved nothing, or native against NumPy.  ``simulations`` selects the
+    compared prefix; by default the widest prefix both samples cover.  Returns
+    the row and a provenance record naming the files, digests and coverage
+    that produced it.  A missing, mismatched or too-narrow sample yields a
+    ``NOT_RUN`` row, never a verdict.
 
     Samples produced by another engine version than ``current`` (the current
     provenance per engine, computed here when omitted) are still compared:
@@ -824,20 +829,28 @@ def compare_stored(
     """
     if backend not in ("native", "numpy"):
         raise ValueError(f"unsupported candidate backend: {backend}")
+    if reference not in ENGINES:
+        raise ValueError(f"unsupported reference engine: {reference}")
     case = scenario.case
     rounds = case.limits.maximum_rounds
+    # Keyed by engine name, except a reference of the candidate's own engine.
+    roles = {"reference": reference if reference != backend else f"{reference}-reference",
+             "candidate": backend}
+    engines = {"reference": reference, "candidate": backend}
     records: dict[str, SampleRecord | None] = {}
     provenance: dict[str, object] = {"corpus_key": scenario.key}
-    for engine in ("modular", backend):
-        engine_store = reference_store if engine == "modular" and reference_store is not None else store
+    for role in ("reference", "candidate"):
+        engine = engines[role]
+        engine_store = (reference_store if role == "reference" and reference_store is not None
+                        else store)
         path = sample_path(engine_store, engine, scenario.key)
         try:
             record = load_sample(path)
         except SampleStoreError as error:
             return _not_run(scenario.key, rounds, simulations or 0, str(error), backend=backend), provenance
-        records[engine] = record
+        records[role] = record
         now = (current or {}).get(engine) or current_provenance(engine)
-        provenance[engine] = None if record is None else {
+        provenance[roles[role]] = None if record is None else {
             "path": path.as_posix(), "coverage": record.coverage(),
             "seed": record.seed, "maximum_rounds": record.maximum_rounds,
             "chunk_size": record.chunk_size, "engine_digest": record.engine_digest,
@@ -846,43 +859,53 @@ def compare_stored(
             "recorded": record_provenance(record),
             "warnings": _record_warnings(record, now),
         }
-    missing = [engine for engine, record in records.items() if record is None]
+    missing = [roles[role] for role, record in records.items() if record is None]
     if missing:
         return _not_run(
             scenario.key, rounds, simulations or 0,
             f"no stored {' and '.join(missing)} sample under {Path(store).as_posix()}", backend=backend,
         ), provenance
-    modular, candidate = records["modular"], records[backend]
-    assert modular is not None and candidate is not None
+    oracle, candidate = records["reference"], records["candidate"]
+    assert oracle is not None and candidate is not None
     expected = str(case.fingerprints.get("inputs_sha256", ""))
     problems = []
-    for record in (modular, candidate):
+    for role, record in (("reference", oracle), ("candidate", candidate)):
         if record.inputs_sha256 != expected:
-            problems.append(f"{record.engine} sample was taken on other fighters")
-    if modular.maximum_rounds != candidate.maximum_rounds:
+            problems.append(f"{roles[role]} sample was taken on other fighters")
+    if oracle.maximum_rounds != candidate.maximum_rounds:
         problems.append(
-            f"round budgets differ (modular {modular.maximum_rounds}, "
+            f"round budgets differ ({roles['reference']} {oracle.maximum_rounds}, "
             f"{backend} {candidate.maximum_rounds})"
         )
-    if modular.seed != candidate.seed:
-        problems.append(f"seeds differ (modular {modular.seed}, {backend} {candidate.seed})")
+    if oracle.seed != candidate.seed:
+        problems.append(f"seeds differ ({roles['reference']} {oracle.seed}, {backend} {candidate.seed})")
     if problems:
         return _not_run(scenario.key, rounds, simulations or 0, "; ".join(problems), backend=backend), provenance
     width = simulations if simulations is not None else min(
-        modular.coverage(), candidate.coverage(),
+        oracle.coverage(), candidate.coverage(),
     )
     if width < 1:
-        return _not_run(scenario.key, modular.maximum_rounds, 0, "a stored sample is empty", backend=backend), provenance
+        return _not_run(scenario.key, oracle.maximum_rounds, 0, "a stored sample is empty", backend=backend), provenance
     try:
         result = compare_samples(
-            scenario.key, width, modular.counts(width), candidate.counts(width),
-            reference_seconds=modular.seconds(width),
+            scenario.key, width, oracle.counts(width), candidate.counts(width),
+            reference_seconds=oracle.seconds(width),
             candidate_seconds=candidate.seconds(width), backend=backend,
         )
     except SampleStoreError as error:
-        return _not_run(scenario.key, modular.maximum_rounds, width, str(error), backend=backend), provenance
+        return _not_run(scenario.key, oracle.maximum_rounds, width, str(error), backend=backend), provenance
     provenance["compared_simulations"] = width
-    return parity_row(result, maximum_rounds=modular.maximum_rounds), provenance
+    row = parity_row(result, maximum_rounds=oracle.maximum_rounds)
+    if reference == backend:
+        # The same engine on the same seed and batch draws the same duels: a
+        # change meant to preserve results must reproduce the counts exactly,
+        # which the six-sigma gate alone would not show.
+        before, after = tuple(oracle.counts(width)), tuple(candidate.counts(width))
+        provenance["identical_counts"] = before == after
+        note = ("identical counts" if before == after
+                else f"counts differ (first/second/unresolved {before} -> {after})")
+        row = replace(row, detail=f"{note}; {row.detail}" if row.detail else note)
+    return row, provenance
 
 
 # ---------------------------------------------------------------------------
@@ -897,59 +920,58 @@ def _positive(value: str) -> int:
 
 
 def _add_selection(parser: argparse.ArgumentParser) -> None:
-    group = parser.add_argument_group("scenario selection")
-    group.add_argument(
-        "--level", choices=(*LEVELS, "e2e"), default="small",
-        help="cumulative scenario level: small, normal, long; or all E2E deliveries (default: small)",
-    )
-    group.add_argument(
-        "--id", dest="ids", action="append", default=[], metavar="KEY",
-        help="uniform corpus key to keep, repeatable; must belong to the level",
-    )
+    group = parser.add_argument_group("what runs")
+    add_scenarios(group, default="small")
     parser.add_argument(
-        "--store", default="reports/parity-store", metavar="DIR",
+        "--store", default="outputs/parity-store", metavar="DIR",
         help="directory holding <engine>/<scenario>.json[.gz] samples "
-             "(default: reports/parity-store)",
+             "(default: outputs/parity-store)",
     )
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="python -m tools.verification.parity_samples",
-        description="Sample the modular, native and NumPy engines separately, persist "
-                    "the samples chunk by chunk, and compare them later.",
+        prog="python tools/mordheim-utils.py check samples",
+        description="Sample one engine at a time into a store, chunk by chunk "
+                    "(resumable), and compare stored samples later without "
+                    "running either engine again.",
     )
     commands = parser.add_subparsers(dest="command", required=True)
 
     sample = commands.add_parser("sample", help="run one engine and store its counts")
     _add_selection(sample)
-    sample.add_argument("--engine", choices=ENGINES, required=True)
+    sample.add_argument("--backend", choices=ENGINES, required=True,
+                        help="engine to sample")
     sample.add_argument(
-        "--simulations", type=_positive, default=1_000, metavar="DUELS",
-        help="target duels per scenario; existing chunks are kept (default: 1000)",
-    )
+        "--simulations", type=size, default=10_000, metavar="N",
+        help="target duels per scenario; k/m suffixes; stored chunks are kept "
+             "(default: 10000)")
     sample.add_argument("--seed", type=int, default=2_026,
-                        help="oracle seed; candidate samples use seed + 1000003 (default: 2026)")
-    sample.add_argument("--rounds", type=_positive, default=None, metavar="N",
-                        help="override every scenario's round budget (default: 50 for E2E, frozen limits otherwise)")
-    sample.add_argument("--chunk", type=_positive, default=DEFAULT_CHUNK, metavar="DUELS",
-                        help=f"duels per stored chunk / candidate batch (default: {DEFAULT_CHUNK})")
+                        help="random seed; candidate samples use seed + 1000003 (default: 2026)")
+    sample.add_argument("--rounds", type=size, default=None, metavar="N",
+                        help="round limit replacing each scenario's own")
+    sample.add_argument("--batch-size", type=size, default=DEFAULT_CHUNK, metavar="N",
+                        help="duels per engine batch, which is also the stored chunk; "
+                             "the batch selects the random streams, so a re-sample "
+                             f"must repeat it (default: {DEFAULT_CHUNK})")
     sample.add_argument("--workers", type=_positive, default=1, metavar="N",
-                        help="worker processes for any engine (default: 1)")
-    sample.add_argument("--compress", action="store_true",
-                        help="write new samples as lossless .json.gz; existing samples keep their format")
+                        help="worker processes, for any engine (default: 1)")
     sample.add_argument("--replace", action="store_true",
                         help="discard a stored sample whose identity or engine digest differs")
-    sample.add_argument("--verbose", action="store_true",
-                        help="also log each saved chunk (default: case start and completion only)")
 
     compare = commands.add_parser("compare", help="decide stored pairs and write the report")
     _add_selection(compare)
-    compare.add_argument("--backend", choices=("native", "numpy"), default="native",
-                         help="candidate to compare against modular (default: native)")
+    compare.add_argument("--backend", choices=("native", "numpy"), default="numpy",
+                         help="candidate engine (default: numpy)")
+    compare.add_argument(
+        "--reference", choices=ENGINES, default="modular",
+        help="engine the candidate is judged against: modular (the oracle), or "
+             "numpy -- the candidate's own earlier sample in --reference-store "
+             "shows a change moved nothing, native against numpy cross-checks "
+             "the port (default: modular)")
     compare.add_argument("--reference-store", default=None, metavar="DIR",
-                         help="separate store for saved modular samples (default: --store)")
-    compare.add_argument("--simulations", type=_positive, default=None, metavar="DUELS",
+                         help="store holding the reference samples (default: --store)")
+    compare.add_argument("--simulations", type=size, default=None, metavar="N",
                          help="compared prefix width (default: widest common coverage)")
     compare.add_argument("--output", default=None, metavar="DIR",
                          help="report directory (default: <store>/compare)")
@@ -959,41 +981,12 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _selection(args) -> tuple[tuple[CampaignScenario, ...], tuple[tuple[str, str], ...], tuple[tuple[str, str], ...]]:
-    if args.level == "e2e":
-        from tools.verification import e2e_parity
-
-        index, defects = e2e_parity.discover()
-        if defects or not index:
-            raise SampleStoreError("; ".join(defects) or "the E2E delivery catalogue is empty")
-        try:
-            deliveries = e2e_parity.select(index, args.ids or list(index))
-        except e2e_parity.SelectionError as error:
-            raise SampleStoreError(str(error)) from error
-        scenarios, rejected, chosen = [], [], []
-        policy = e2e_parity.decision_policy_evidence()
-        if not policy["corresponds"]:
-            # Without corresponding default policies no stored pair means
-            # anything; this is a fault of the run, not of the samples' age.
-            raise SampleStoreError(f"cannot admit E2E deliveries: {policy['detail']}")
-        for delivery in deliveries:
-            chosen.append((delivery.case_key, delivery.test_id))
-            validation = e2e_parity.validate(delivery)
-            admission = e2e_parity.admit(
-                delivery.with_validation(validation), policy_corresponds=policy["corresponds"],
-            )
-            if admission.state == "admitted":
-                case = replace(admission.case, limits=replace(
-                    admission.case.limits, maximum_rounds=e2e_parity.CAMPAIGN_MAXIMUM_ROUNDS,
-                ))
-                scenarios.append(CampaignScenario(delivery.case_key, delivery.test_id, case))
-            else:
-                rejected.append((delivery.case_key, f"{admission.state}: {admission.detail}"))
-        return tuple(scenarios), tuple(rejected), tuple(chosen)
-    chosen = select(level=args.level, keys=args.ids)
-    cases = load_cases(CORPUS)
-    scenarios, rejected = load(chosen, cases)
-    return scenarios, rejected, chosen
+def _selection(args):
+    """``(runnable cases, rejected, selected entries)`` for ``--scenarios``."""
+    try:
+        return resolve(args.scenarios or ("small",))
+    except ValueError as error:
+        raise SampleStoreError(str(error)) from error
 
 
 def _log(message: str) -> None:
@@ -1001,7 +994,7 @@ def _log(message: str) -> None:
 
 
 def _run_sample(args) -> int:
-    if args.engine == "native":
+    if args.backend == "native":
         try:
             from mordheim_combat.vectorized import available_backends
         except ImportError:
@@ -1019,13 +1012,13 @@ def _run_sample(args) -> int:
     store = Path(args.store)
     global _REVISION
     _REVISION = None
-    origins = check_engine_origins(args.engine)
-    _log(f"{args.engine} digest {engine_digest(args.engine)[:12]}; store {store.as_posix()}; "
-         f"{len(scenarios)} scenario(s), target {args.simulations} duels, chunk {args.chunk}")
+    origins = check_engine_origins(args.backend)
+    _log(f"{args.backend} digest {engine_digest(args.backend)[:12]}; store {store.as_posix()}; "
+         f"{len(scenarios)} scenario(s), target {args.simulations} duels, batch {args.batch_size}")
     pool = None
     if args.workers > 1:
         pool = ProcessPoolExecutor(max_workers=args.workers, initializer=_check_worker_origins,
-                                   initargs=(args.engine, origins))
+                                   initargs=(args.backend, origins))
 
     # First SIGINT/SIGTERM: stop submitting, save the in-flight chunks, exit
     # 130.  Second one: abandon the in-flight chunks (they are not saved).
@@ -1044,10 +1037,10 @@ def _run_sample(args) -> int:
     try:
         try:
             for scenario, record in sample_scenarios(
-                args.engine, scenarios, store, simulations=args.simulations,
-                seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.chunk,
+                args.backend, scenarios, store, simulations=args.simulations,
+                seed=args.seed, maximum_rounds=args.rounds, chunk_size=args.batch_size,
                 executor=pool, workers=args.workers, replace_stale=args.replace,
-                stop=stop, log=_log, verbose=args.verbose, compress=args.compress,
+                stop=stop, log=_log, compress=True,
             ):
                 if record.coverage() >= args.simulations:
                     incomplete.discard(scenario.key)
@@ -1083,37 +1076,44 @@ def _run_compare(args) -> int:
     started = time.perf_counter()
     rows: list[ParityRow] = []
     provenance: list[dict[str, object]] = []
-    current = {engine: current_provenance(engine) for engine in ("modular", args.backend)}
+    current = {engine: current_provenance(engine) for engine in (args.reference, args.backend)}
+    reference_key = (args.reference if args.reference != args.backend
+                     else f"{args.reference}-reference")
     for scenario in scenarios:
         row, record = compare_stored(scenario, store, simulations=args.simulations, backend=args.backend,
                                      reference_store=Path(args.reference_store) if args.reference_store else None,
-                                     current=current)
+                                     current=current, reference=args.reference)
         rows.append(row)
         provenance.append(record)
     warnings = _grouped_warnings(provenance)
     for message in warnings:
         provenance_warning(message)
-    corpus = CORPUS
-    if args.level == "e2e":
-        from tools.verification import e2e_parity
+    from tools.verification import parity_deliveries
 
-        corpus = e2e_parity.deliveries_directory()
-    corpus_digest = (_digest_files(corpus.glob("*.json")) if corpus.is_dir()
-                     else hashlib.sha256(corpus.read_bytes()).hexdigest())
+    kinds = {entry.kind for entry in chosen}
+    sources = [path for kind, path in (
+        ("scenario", CORPUS),
+        ("delivery", parity_deliveries.deliveries_directory()),
+        ("battery", _ROOT / "apps/combat-lab/mordheim_combat_lab/verification/parity/_battery_cases.py"),
+    ) if kind in kinds]
+    corpus_digest = _digest_files(
+        file for path in sources
+        for file in (sorted(path.glob("*.json")) if path.is_dir() else (path,)))
     config = {
-        "level": args.level,
-        "scenario_keys": [key for key, _name in chosen],
+        "scenarios": list(args.scenarios or ("small",)),
+        "scenario_keys": [entry.key for entry in chosen],
         "simulations": args.simulations if args.simulations is not None else "stored coverage",
         "seed": sorted({
-            item["modular"]["seed"] for item in provenance
-            if isinstance(item.get("modular"), dict)
+            item[reference_key]["seed"] for item in provenance
+            if isinstance(item.get(reference_key), dict)
         }) or None,
         "maximum_rounds": None,
         "workers": "stored samples",
-        "corpus": corpus.relative_to(_ROOT).as_posix(),
+        "corpus": ", ".join(path.relative_to(_ROOT).as_posix() for path in sources),
         "corpus_sha256": corpus_digest,
         "store": store.as_posix(),
         "candidate_backend": args.backend,
+        "reference": args.reference,
         # The engines that produced the compared samples, and today's engines.
         "recorded_engine_digests": {
             engine: sorted({item[engine]["engine_digest"] for item in provenance

@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.veskit-claws
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the claws
+#   wound at fixed Strength 5 and carry a total -3 armour-save modifier (the Strength's -2 plus the
+#   claws' own -1), a failed parry with the claws is re-rolled, and the same armour die saves against an
+#   ordinary mace bearer.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: the printed weapon (Veskit's Integrated Warplock Pistols: "In close combat Veskit uses fixed
+#   Strength 5 with a total -3 armour-save modifier ... The claws retain their parry and failed-parry
+#   reroll under the adopted paired-claw convention; shooting is excluded") is the execution entry
+#   weapon.veskit-claws: fixed_strength 5, armour_penetration 1, parry, two_handed, tag
+#   weapon.fighting-claws (sources/knowledge/catalog/mechanics/execution.yaml).  Consumers: the
+#   armour target adds max(0, S-3) plus the armour penetration
+#   (packages/python/combat-engine/mordheim_combat/phases.py armour_target), and a defender whose main
+#   weapon carries weapon.fighting-claws re-rolls a failed parry
+#   (packages/python/combat-engine/mordheim_combat/modular/contexts.py, the parry context).  The weapon
+#   sits in the main_weapon_id slot, so the removal probe neutralises its entry.
+#
+# Fixtures.  The bearer is hand-built (WS3 S3 T3 W2 I5 A1) holding the claws; the opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1, mace) in Gromril armour (4+) with a shield (+1): a 3+ save.  WS3 against WS3
+# hits on 4+; fixed Strength 5 wounds T3 on 2+ (the bearer's own S3 would need 4+); the save against
+# the claws is 3+ worsened by 3 = 6+, so the declared armour die of 5 fails there and saves (3+) against
+# the mace control.  No wound die is a natural six, so no critical die is on the tape.  A parry blocks
+# when the parry die beats the hit die; the bearer's higher Initiative puts its own (missed) swing first.
+
+# --- Authored scenarios ---
+
+- audit_id: mechanic/weapon.veskit-claws
+  id: the-claws-wound-at-fixed-strength-5-with-a-total-minus-3-save-modifier
+  fighters:
+    first:
+      &claw-bearer
+      main_weapon_id: weapon.veskit-claws
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &armoured-opponent
+      main_weapon_id: weapon.mace
+      armour_id: armour.gromril-armour
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # 3 wounds at the fixed Strength 5 (2+); the bearer's own Strength 3 would have needed a 4.
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # 3+ save, -2 for Strength 5 and -1 for the claws: a 6 is needed and the 5 fails.
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.main_weapon.fixed_strength: 5
+    first.main_weapon.armour_penetration: 1
+    first.main_weapon.parry: True
+    first.main_weapon.two_handed: True
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The paired-claw convention: a failed parry is re-rolled, and the re-roll of 5 beats the hit die of 4.
+- audit_id: mechanic/weapon.veskit-claws
+  id: a-failed-parry-with-the-claws-is-rerolled
+  fighters:
+    first: *claw-bearer
+    second: *armoured-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 2}
+    - {key: round.0.second.attack.0.parry.reroll, value: 5}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: a mace bearer of the same profile against the same armour; the identical armour die of 5
+# saves on the unmodified 3+ (Strength 3 carries no penalty), so the claws' modifier is the difference.
+- audit_id: mechanic/weapon.veskit-claws
+  id: without-the-claws-the-same-armour-die-saves
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *armoured-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

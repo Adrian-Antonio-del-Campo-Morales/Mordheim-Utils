@@ -3,18 +3,12 @@ band_id: trollheim-cult-of-the-possessed
 rules:
 - id: magister--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 1 Magister / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Magister puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - magister
@@ -28,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: magister--spellcaster
   name: Spellcaster
   effect: >-
@@ -54,8 +49,7 @@ rules:
     - id: unimplemented.trollheim-cult-of-the-possessed.magister.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: the-possessed--fear
   name: Fear
   effect: The Possessed cause Fear.
@@ -139,9 +133,7 @@ rules:
     - id: campaign.mutant-mutation-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment costs and the prohibition on adding mutations later require
-        campaign history.
+      reason: out-of-scope.campaign
 - id: darksouls--crazed
   name: Crazed
   effect: >-
@@ -209,9 +201,7 @@ rules:
     - id: campaign.mutation-purchase-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment timing, later campaign purchases and escalating gold costs require
-        campaign history.
+      reason: out-of-scope.campaign
 - id: band--mutations-daemon-soul
   kind: mutation
   runtime:
@@ -222,8 +212,7 @@ rules:
     - id: unimplemented.band-mutations-daemon-soul
       scope: 'NO'
       binding: null
-      reason: >-
-        only affects spells and prayers
+      reason: out-of-scope.magic
   name: Daemon Soul
   effect: >-
     The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.
@@ -283,8 +272,7 @@ rules:
     - id: unimplemented.band-mutations-cloven-hooves
       scope: 'NO'
       binding: null
-      reason: >-
-        movement is outside the close-combat duel
+      reason: out-of-scope.movement
   name: Cloven Hooves
   effect: >-
     The model gains +1" Movement. Cost: 40 gc.
@@ -347,6 +335,11 @@ rules:
         id: trait.acid-blood
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--acid-blood
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
   name: Acid Blood
   effect: >-
     Whenever the model loses a Wound in close combat, every model in base contact suffers one
@@ -381,6 +374,11 @@ rules:
         id: trait.spines
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--spines
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
   name: Spines
   effect: >-
     At the start of each close-combat phase, every model in base contact with the bearer suffers one
@@ -415,6 +413,11 @@ rules:
         id: trait.scorpion-tail
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--scorpion-tail
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
   name: Scorpion Tail
   effect: >-
     The model gains one additional Strength 5 attack in each close-combat phase. Against a model
@@ -480,6 +483,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+      clauses:
+      - id: cause-fear--scope--cause-fear
+        scope: 'YES'
+      - id: cause-fear--scope--cost
+        scope: 'NO'
   name: Hideous
   effect: >-
     The model causes Fear. Cost: 40 gc.

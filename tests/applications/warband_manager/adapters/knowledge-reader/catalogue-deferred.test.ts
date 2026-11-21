@@ -226,7 +226,9 @@ describe("deferred campaign catalogue", () => {
   });
 
   it("rejects an artefact that neither publishes nor defers the equipment catalogue", () => {
-    const { catalogue_url: _url, catalogue_digest: _digest, ...withoutCatalogue } = initialDocument();
+    const withoutCatalogue = initialDocument();
+    delete withoutCatalogue.catalogue_url;
+    delete withoutCatalogue.catalogue_digest;
 
     expect(() => ArtefactKnowledgeReader.from(withoutCatalogue)).toThrow(/items is missing and no catalogue_url/);
   });

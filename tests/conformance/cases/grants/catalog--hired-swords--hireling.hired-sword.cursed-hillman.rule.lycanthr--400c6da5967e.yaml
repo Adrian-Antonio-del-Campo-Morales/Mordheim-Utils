@@ -1,0 +1,219 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a lost Wound's die of four
+#   frees the beast (the werewolf state flag flips, the wolf line and two Wounds are on the state, no
+#   injury die), a three leaves him a man, a transformation on the last Wound replaces the injury
+#   roll, an untransformed Hillman rolls injury at -1 (a five only stuns, a six alone takes him
+#   out), and a hireling without the rule rolls no transformation die, and the rule is refused outside the profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Lycanthrope): "Any time he loses a wound, he must roll a D6. On a
+# roll of 4+, the beast within escapes and he transforms into a werewolf. Ignore any injury table
+# rolls. Should he not transform, roll on the injury table at -1 (thus knocked down is 2-3, stunned
+# is 4-5, and OOA is on a 6 only)."  The wound-transformation binding is mechanic.hillman-lycanthrope,
+# consumed by modular/attacks.py ~775-784 (after the damage is fixed and before the injury step, one
+# die round.<i>.<attacker>.attack.<n>.lycanthrope.<k> per lost Wound for a Hillman not yet in wolf
+# form; a 4+ sets the werewolf state - hillman_wolf, the printed wolf line WS4 S4 T4 I5 A2 and the
+# wolf's two Wounds, Standing - and ends the attack with no injury roll) and ~811-813 (an
+# untransformed Hillman's injury roll is at -1).  The werewolf state is the same one the supplied
+# Wolf Form opens the duel in (state.py ~363; siblings ...30fedd9c41b9 and ...5f4379099266):
+# equipment_for_state then discards the kit and supplies the Bite.
+# Hireling family model: the recipient is the printed Cursed Hillman compiled through the hireling
+# route (hirelings.hired-sword.2a / hireling.hired-sword.cursed-hillman) with the fixture facts (WS3
+# S3 T3 W2 I5 A1; the printed Ld8 stays); his kit axe is the omitted default and his man-form fur
+# cloak is the rule's trait sibling (a 6+ natural save in close combat, so the armour die
+# round.<i>.<attacker>.attack.<n>.armour is asked and declared a one).  Thin Flesh (-1 Toughness in
+# hand-to-hand) makes the Strength 3 wound a 3+, and a four wounds either way.  The Hillman is the
+# active charger (first) and contributes no swing, so the transformation lands after his own
+# activation and the werewolf's attacks are not reached in the round; the opponent is hand-built
+# (mace, WS3 S3 T3 W3 I2 A1 Ld7) and strikes as the charged side.  A single Wound is supplied where
+# the injury step must be reached.  The control is the grade-1b Bard: the same wound asks for no
+# transformation die.
+# Semantic wrinkle (2026-11-18): the discarded kit, the Bite and the wolf's lost cloak act through
+#   the werewolf state in the following activation (equipment_for_state); the state flag flipping
+#   from False to True and the wolf line on the state are the legible evidence of this origin, the
+#   kit itself has no per-round snapshot face, and the werewolf's own attack keys are not reached
+#   here.  The transformation's "wounds: 2" is the printed wolf W2, not the fixture's remaining
+#   Wounds.  Control and Rage (the shooting-phase transformation) are out of scope by the record.
+
+# The lost Wound's die comes up four: the beast escapes.  The state flag flips, the wolf line is on
+# the state, the Hillman stands at the wolf's two Wounds, and no injury die was asked.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: a-lost-wound-on-four-plus-frees-the-beast
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.lycanthrope.0, value: 4}
+  expect_initial: {first.hillman_wolf: False}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.first.hillman_wolf: True,
+        state.first.condition: STANDING, state.first.wounds: 2, state.first.weapon_skill: 4,
+        state.first.strength: 4, state.first.toughness: 4, state.first.initiative: 5, state.first.attacks: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the Hillman stays a man at one Wound (no injury step, he has a Wound left).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: three-leaves-the-hillman-a-man
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.lycanthrope.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.hillman_wolf: False, state.first.wounds: 1,
+        state.first.condition: STANDING, state.first.strength: 3, state.first.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Ignore any injury table rolls": on his last Wound the four transforms him and no injury die is
+# asked; the werewolf stands at the wolf's two Wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: a-transformation-on-the-last-wound-replaces-the-injury-roll
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.lycanthrope.0, value: 4}
+  expect_rounds:
+    0: {state.first.hillman_wolf: True, state.first.condition: STANDING, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Untransformed on his last Wound, the injury roll is at -1: a five (Out of Action on the ordinary
+# chart) reads four and only stuns him.  He wears no helmet, so no stun-reaction die follows.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: an-untransformed-hillman-rolls-injury-at-minus-one-so-five-only-stuns
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.lycanthrope.0, value: 2}
+    - {key: round.0.second.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.first.hillman_wolf: False, state.first.condition: STUNNED, state.first.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "OOA is on a 6 only": the six reads five and takes the untransformed Hillman out.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: six-alone-takes-the-untransformed-hillman-out
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.lycanthrope.0, value: 2}
+    - {key: round.0.second.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.first.hillman_wolf: False, state.first.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: first_out}
+
+# The control: the same wound on the Bard (no rule, no cloak) asks for no transformation die and
+# the ordinary injury chart stands - a five is Out of Action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: a-hireling-without-the-rule-rolls-no-transformation-die
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.first.hillman_wolf: False, state.first.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: first_out}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.lycanthrope/wound-transformation
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.lycanthrope]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

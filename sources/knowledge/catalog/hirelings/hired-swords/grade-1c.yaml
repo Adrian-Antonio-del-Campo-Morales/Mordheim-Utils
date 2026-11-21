@@ -63,9 +63,7 @@ profiles:
       - id: bone-goliath-may-not-run
         scope: 'NO'
         binding: null
-        reason: >-
-          Running is a movement mechanic; the duel resolves a close combat, so the prohibition has
-          no consumer.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Immune to psychology.
@@ -154,9 +152,7 @@ profiles:
       - id: bone-goliath-assembly
         scope: 'NO'
         binding: null
-        reason: >-
-          Assembly is the campaign construction of the Goliath by a Liche, with cost and
-          consequences outside the duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.bone-goliath.rule.large
     name: Large
     effect: Counts as a large target.
@@ -166,16 +162,22 @@ profiles:
     name_i18n:
       es: Grande
     runtime:
-      scope: 'NO'
-      implemented: 'NO'
-      grant: none
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
       effects:
+      # Uniform Large Target binding (design ruling 2026-11-18): the printed
+      # size fact is the supplied Large identity; the shooting consequences
+      # stay out of scope.
+      - id: condition.large-target
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: condition.large-target
       - id: bone-goliath-large
         scope: 'NO'
         binding: null
-        reason: >-
-          Being a Large target is a shooting-resolution definition with no admitted close-combat
-          consequence.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.bone-goliath.rule.no-pain
     name: No Pain
     effect: Treats Stunned as Knocked Down.
@@ -210,8 +212,10 @@ profiles:
       - id: bone-goliath-mindless
         scope: 'NO'
         binding: null
-        reason: >-
-          Experience gain is campaign progression; no consumer exists in the duel.
+        reason: out-of-scope.campaign
+  combat_traits:
+    creature_kind: undead
+  hiring_traits: [evil]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -267,9 +271,7 @@ profiles:
       - id: cathayan-merchant-pawnbroker-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The improved merchant sale proceeds are settled during the post-battle trading phase and
-          no duel-time consequence remains.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.cathayan-merchant.rule.marketeer
     name: Marketeer
     effect: Uses special-market rule.
@@ -286,9 +288,7 @@ profiles:
       - id: cathayan-merchant-marketeer-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Searching a special merchant market after a battle is a campaign acquisition action with
-          no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.cathayan-merchant.rule.stone-cutter
     name: Stone Cutter
     effect: Uses source stone-cutting rule.
@@ -305,9 +305,7 @@ profiles:
       - id: cathayan-merchant-stone-cutter-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Refining wyrdstone when the warband sells it is a post-battle trading income clause with
-          no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.cathayan-merchant.rule.guardian
     name: Guardian
     effect: Uses source guardian rule.
@@ -324,10 +322,7 @@ profiles:
       - id: cathayan-merchant-guardian-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The printed Guardian is a second model with its own profile that intercepts shooting and
-          charges aimed at the Merchant; a second independent fighter is outside the resolved duel
-          and the acquisition is a roster matter.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Human or Dwarf Composition
     effect: >-
@@ -347,8 +342,9 @@ profiles:
       - id: cathayan-merchant-campaign-eligibility-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The roster-composition restriction is evaluated when the warband is hired and has no duel-time consequence.
+        reason: out-of-scope.construction
+  combat_traits:
+    species: human
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -450,8 +446,7 @@ profiles:
       - id: hireling.hired-sword.chaos-centaur.rule.woodland.terrain
         scope: 'NO'
         binding: null
-        reason: >-
-          Woodland movement is excluded.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.chaos-centaur.rule.trample
     name: Trample
     effect: >-
@@ -481,6 +476,7 @@ profiles:
   unresolved_references:
   - kind: advancement_choice
     source_name: may take a mutation instead of a skill
+  hiring_traits: [evil]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -542,8 +538,7 @@ profiles:
       - id: coachman-driver-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Driving the coach belongs to the excluded vehicle subsystem and has no consequence for a duelist on foot.
+        reason: deferred.mounts
   - id: hireling.hired-sword.coachman.rule.handyman
     name: Handyman
     effect: Uses source repair rule.
@@ -560,8 +555,9 @@ profiles:
       - id: coachman-handyman-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Repairing the warband's equipment is a post-battle action with no consequence in a resolved duel.
+        reason: out-of-scope.campaign
+  combat_traits:
+    species: human
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -654,9 +650,7 @@ profiles:
       - id: grave-robber-exploration-table
         scope: 'NO'
         binding: null
-        reason: >-
-          The grave-robbing chart is rolled in the post-battle exploration phase and produces gold,
-          roster additions and artefacts; nothing in it reaches the duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.grave-robber.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Necromantic Roster
     effect: >-
@@ -676,9 +670,10 @@ profiles:
       - id: grave-robber-campaign-eligibility
         scope: 'NO'
         binding: null
-        reason: >-
-          Hiring based on the roster's Vampire, Necromancer or Liche is a campaign roster
-          consequence.
+        reason: out-of-scope.campaign
+  combat_traits:
+    species: human
+  hiring_traits: [evil]
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -742,8 +737,7 @@ profiles:
       - id: hireling.hired-sword.hobgoblin-scout.rule.ride.non-duel
         scope: 'NO'
         binding: null
-        reason: >-
-          Mounted skill and Giant Wolf model are excluded.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.hobgoblin-scout.rule.loner
     name: Loner
     effect: >-
@@ -768,9 +762,7 @@ profiles:
       - id: hireling.hired-sword.hobgoblin-scout.rule.loner.group
         scope: 'NO'
         binding: null
-        reason: >-
-          All Alone counting and map independence are excluded; personal Leadership prohibition
-          remains executable.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.hobgoblin-scout.rule.traitor
     name: Traitor
     effect: >-
@@ -811,8 +803,7 @@ profiles:
       - id: hireling.hired-sword.hobgoblin-scout.rule.spy.non-duel
         scope: 'NO'
         binding: null
-        reason: >-
-          Deployment and repositioning other models are excluded.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.hobgoblin-scout.rule.potshot
     name: Potshot
     effect: May fire a bow while running with a -2 To Hit modifier.
@@ -829,11 +820,12 @@ profiles:
       - id: hireling.hired-sword.hobgoblin-scout.rule.potshot.non-duel
         scope: 'NO'
         binding: null
-        reason: >-
-          Shooting and map running are excluded.
+        reason: out-of-scope.shooting
   unresolved_references:
   - kind: mount_profile
     source_name: Giant Wolf profile M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
+  combat_traits:
+    species: goblin
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -881,6 +873,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.ninja.item.smoke-bomb
       name: Smoke Bomb
+      # The printed kit links the trading-post Smoke Bomb itself; its
+      # escape/detonation procedure is outside the duel.
+      counts_as: smoke_bomb
       name_i18n:
         es: Bomba de Humo
   skill_access: []
@@ -906,9 +901,7 @@ profiles:
       - id: ninja-strictly-business-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The one-job condition governs recruitment and retention between battles and has no
-          consequence in a resolved duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.ninja.rule.secrecy
     name: Secrecy
     effect: Uses the source secrecy rule.
@@ -925,9 +918,7 @@ profiles:
       - id: ninja-secrecy-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Keeping the Ninja's employment hidden is a campaign record-keeping condition with no
-          consequence in a resolved duel.
+        reason: out-of-scope.movement
   - id: hireling.hired-sword.ninja.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
@@ -944,13 +935,14 @@ profiles:
       - id: ninja-no-experience-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Experience and advancement are settled between battles, so the clause has no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   unresolved_references:
   - kind: skill
     source_name: Lightning Speed
   - kind: skill
     source_name: Leap of Faith
+  combat_traits:
+    species: human
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -982,10 +974,17 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.pyromaniac.item.fireworks
       name: Fireworks
+      # The fireworks are the rockets of the printed Rockets rule (artillery
+      # dice, fire on 4+), excluded as shooting; the item carries no duel use.
+      rules:
+      - hireling.hired-sword.pyromaniac.rule.rockets
       name_i18n:
         es: Fuegos Artificiales
     - id: hireling.hired-sword.pyromaniac.item.firecrackers
       name: Firecrackers
+      # The printed kit links the trading-post Firecrackers themselves
+      # (animal/mount panic, thrown in the shooting phase; outside the duel).
+      counts_as: firecrackers
       name_i18n:
         es: Petardos
   skill_access:
@@ -994,10 +993,15 @@ profiles:
   rules:
   - id: hireling.hired-sword.pyromaniac.rule.crazed-firestarter
     name: Crazed Firestarter
-    effect: Uses source pyromania rule.
+    effect: >-
+      The Pyromaniac loves nothing more than the lights and sparks of his fireworks. Each turn he
+      either starts one of his rockets or throws some of his firecrackers at hostile animals.
+      Therefore he will move but never run or charge. If he is attacked he will fight back normally.
     effect_i18n:
       es: >-
-        Usa la regla de piromanía de la fuente.
+        El Piromaníaco no ama nada más que las luces y chispas de sus fuegos artificiales. Cada
+        turno enciende uno de sus cohetes o lanza algunos de sus petardos a los animales hostiles.
+        Por tanto, se moverá pero nunca correrá ni cargará. Si es atacado, luchará con normalidad.
     name_i18n:
       es: Piromaníaco Enajenado
     runtime:
@@ -1012,10 +1016,15 @@ profiles:
           id: mechanic.cannot-charge
   - id: hireling.hired-sword.pyromaniac.rule.rockets
     name: Rockets
-    effect: Uses source rocket rule.
+    effect: >-
+      In every shooting phase the Pyromaniac starts one rocket; artillery and scatter dice drive its
+      flight. Anything hit suffers an automatic Strength 4 hit and is set on fire on a roll of 4+; a
+      misfire detonates on the fireworks table.
     effect_i18n:
       es: >-
-        Usa la regla de cohetes de la fuente.
+        En cada fase de disparo el Piromaníaco enciende un cohete; los dados de artillería y de
+        dispersión dirigen su vuelo. Todo lo alcanzado sufre un impacto automático de Fuerza 4 y se
+        incendia con un 4+; un fallo detona en la tabla de fuegos artificiales.
     name_i18n:
       es: Cohetes
     runtime:
@@ -1026,9 +1035,7 @@ profiles:
       - id: pyromaniac-rockets-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The rocket is resolved in the shooting phase through the excluded fireworks and artillery
-          subsystem and has no close-combat consequence.
+        reason: out-of-scope.shooting
   - id: hireling.hired-sword.pyromaniac.rule.rocket-science
     name: Rocket Science
     effect: Special skill option.
@@ -1045,8 +1052,7 @@ profiles:
       - id: pyromaniac-rocket-science-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          The +1/-1 modifier applies only to the fireworks table roll used by the excluded rocket subsystem.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.pyromaniac.rule.display-artist
     name: Display Artist
     effect: Special skill option.
@@ -1063,9 +1069,9 @@ profiles:
       - id: pyromaniac-display-artist-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Detonating the rocket immediately by Initiative test belongs to the excluded fireworks and
-          artillery subsystem.
+        reason: out-of-scope.campaign
+  combat_traits:
+    species: human
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1125,8 +1131,7 @@ profiles:
       - id: swordsmith-master-craftsman-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Crafting weapons between battles is a post-battle action with no consequence in a resolved duel.
+        reason: out-of-scope.campaign
   - id: hireling.hired-sword.swordsmith.rule.honing
     name: Honing
     effect: Special skill option.
@@ -1151,9 +1156,9 @@ profiles:
       - id: swordsmith-farrier-excluded
         scope: 'NO'
         binding: null
-        reason: >-
-          Shoeing and caring for mounts concerns the excluded mount subsystem and has no consequence
-          for a duelist on foot.
+        reason: deferred.mounts
+  combat_traits:
+    species: human
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

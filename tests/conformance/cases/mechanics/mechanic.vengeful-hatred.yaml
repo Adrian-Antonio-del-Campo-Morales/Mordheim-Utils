@@ -1,0 +1,221 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.vengeful-hatred
+# authoring_status: AUTHORED
+# authoring_progress: 8 authored scenarios (hatred batch, 2026-11-18): the individual kind re-rolls the
+#   first-round miss against the supplied instance and not against another instance; the leader kind
+#   names the same individual; the warband kind re-rolls against the supplied warband instance and not
+#   against another; the warband-type kind re-rolls against the opponent's compiled warband group and not
+#   against an opponent outside it; the mechanic without a supplied target grants nothing; a half-supplied
+#   pair is refused by construction.  REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the construction layer adds this mechanic's tag together with the
+#   supplied enmity-target marker from trait_overrides (enmity_kind / enmity_target), not through an id
+#   list, so the removal probe's neutralisation of the execution entry does not reach the trait path; the
+#   no-target scenario is the only one that carries the id in skill_ids.  The probe's verdict here is
+#   measurement of that encoding, not of the scenarios.
+# AUTHORED: 9 scenarios cover the four printed target kinds with a matching and a non-matching opponent each, the missing target and the half-supplied refusal.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (mordheimer.net, Campaigns / Serious Injuries / Heroes' chart / 56 Bitter Enmity;
+# catalog/campaign/serious-injuries.yaml): the warrior permanently hates an enemy determined by a further
+# D6 - 1-3 the individual who caused the injury (the enemy leader if a Henchman), 4 the leader of that
+# warband, 5 the entire warband, 6 all warbands of that type.  Recorded contract (close-combat.yaml note):
+# the duel is supplied the printed kind and the concrete identity (trait_overrides enmity_kind /
+# enmity_target); the three instance kinds read the opponent's supplied instance_id or warband_instance,
+# never a catalogue profile or band; only the warband-type kind reads the opponent's compiled warband
+# group; a missing target never grants the re-roll and the campaign D6 is not simulated.  Hatred model
+# (mechanics/skill.hatred.yaml is the template): a natural 2 misses WS3 against WS3; the first-round
+# re-roll is requested at round.0.<side>.attack.0.hit.reroll, a 4 hits and S3 wounds T3 on a 4; outside the
+# hated identity the strict tape holds no re-roll key.  The warband-type scenarios use the compiled group
+# tag of a hand-built Mercenary (trait_overrides mercenary_origin, the warband-group.human-mercenary tag).
+
+# Individual kind: the opponent is the supplied instance, so the first-round miss is re-rolled.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-individual-kind-rerolls-against-the-supplied-instance
+  fighters:
+    first:
+      &avenger_individual
+      main_weapon_id: weapon.mace
+      trait_overrides: {enmity_kind: individual, enmity_target: grimgor-7}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &grimgor
+      main_weapon_id: weapon.mace
+      trait_overrides: {instance_id: grimgor-7}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Individual kind: another instance - even of the same build - is not the hated warrior; the miss stands.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-individual-kind-does-not-reroll-against-another-instance
+  fighters:
+    first:
+      <<: *avenger_individual
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {instance_id: snaga-2}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Leader kind: the individual determined when the injury occurred is hated as that instance, so the same
+# supplied warrior is re-rolled against without any Leader rule being read.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-leader-kind-rerolls-against-the-supplied-individual
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {enmity_kind: leader, enmity_target: grimgor-7}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *grimgor
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Warband kind: the opponent belongs to the supplied warband instance, so the miss is re-rolled.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-warband-kind-rerolls-against-the-supplied-warband-instance
+  fighters:
+    first:
+      &avenger_warband
+      main_weapon_id: weapon.mace
+      trait_overrides: {enmity_kind: warband, enmity_target: red-hand}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {warband_instance: red-hand}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Warband kind: a warrior of another warband instance is not hated; the miss stands.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-warband-kind-does-not-reroll-against-another-warband-instance
+  fighters:
+    first:
+      <<: *avenger_warband
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {warband_instance: black-fang}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Warband-type kind: every warband of the type is hated, read on the opponent's compiled warband group
+# (a Reikland Mercenary carries warband-group.human-mercenary), so the miss is re-rolled.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-warband-type-kind-rerolls-against-the-opponents-warband-group
+  fighters:
+    first:
+      &avenger_type
+      main_weapon_id: weapon.mace
+      trait_overrides: {enmity_kind: warband-type, enmity_target: human-mercenary}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {mercenary_origin: reikland}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Warband-type kind: an opponent outside that warband group is not hated; the miss stands.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: the-warband-type-kind-does-not-reroll-outside-the-group
+  fighters:
+    first:
+      <<: *avenger_type
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mechanic without a supplied target grants nothing: no kind matches every enemy, so the miss stands
+# even against the warrior the earlier scenarios hate.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: without-a-supplied-target-no-reroll-is-granted
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.vengeful-hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *grimgor
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A half-supplied pair (the kind without its concrete identity) is refused rather than guessed.
+- audit_id: mechanic/mechanic.vengeful-hatred
+  id: a-half-supplied-enmity-pair-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {enmity_kind: individual}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *grimgor
+  expect_error: "Bitter Enmity needs the supplied target kind and its concrete identity together"

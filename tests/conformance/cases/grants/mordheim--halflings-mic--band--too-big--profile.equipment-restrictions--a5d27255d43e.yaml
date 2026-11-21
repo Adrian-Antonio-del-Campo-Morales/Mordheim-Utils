@@ -1,0 +1,51 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/halflings-mic/band--too-big/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/halflings-mic/special-rules.yaml
+#
+# Discrimination note (2026-11-18): the printed category ban ("Halflings may never use Long bows, Elf
+#   Bows, Handguns, Long Rifles or Blunderbusses") has no reachable refusal of its own, per the
+#   Proud-to-a-Fault precedent (docs/decisions/design-rulings.md, Conformance triage decisions, second
+#   batch).  The record now binds profile.equipment-restrictions (scope YES, implemented YES) with the
+#   five bare catalogue ids as forbids tokens (long_bow, elf_bow, handgun, hochland_long_rifle,
+#   blunderbuss), and none of the six printed recipients' own lists
+#   (sources/knowledge/bands/mordheim/halflings-mic/equipment-access.yaml: the Adventurer list offers
+#   short_bow and bow; the Thief list crossbow_pistol, pistol and throwing_knives; the only long_bow row
+#   belongs to the Village Ogre list, outside the recipient set) offers any of the five.  In
+#   equipmentIssue() (packages/typescript/domain/eligibility/index.ts) the offered-set gate answers
+#   before the forbids loop ('"long_bow" is not on any equipment list of halflings-mic/<profile>.'),
+#   and on the duel-hand route the bare item tokens never equal a held mechanic id, so the gate that
+#   enforces the ban is the equipment-list gate.  The earlier PARTIAL note's claim that the record was
+#   scope LATER / implemented NO is outdated and is corrected here.
+#
+# AUTHORED: (2026-11-18) 1 scenario asserts the admission face: a Halfling Warrior (a printed recipient)
+#   carrying a bow of its own list beside a sword compiles, so the band clause refuses nothing the
+#   recipient may legally own.  REVIEWED still requires manual semantic review.
+# authoring_progress: 1 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenario ---
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).  The Halfling Warriors' own list offers no bow, so the admitted kit is the sword.
+
+- audit_id: rule/mordheim/halflings-mic/band--too-big/profile.equipment-restrictions
+  id: halfling-warrior-with-a-sword-of-its-own-list-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: halflings-mic
+      profile_id: halfling-warriors
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword]
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.wounds: 1
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

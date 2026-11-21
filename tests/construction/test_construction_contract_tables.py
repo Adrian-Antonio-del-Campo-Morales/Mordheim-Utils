@@ -6,11 +6,13 @@ facts the Web domain cannot derive from the generated artefact: the
 KB rules that declare a binding while ``runtime.implemented != YES``.  This gate
 projects both straight from ``sources/knowledge``, so the table cannot drift.
 
-``construction-clauses.json`` is the construction ledger of the accepted obligations: the
-``open_clauses`` whose KB record publishes no executable shape (owner KB) and
-the ``transfers`` whose subsystem belongs to a later layer.  Every entry is resolved
-against the promoted KB here, and the reconciliation totals are pinned so that
-absorbing a clause is a deliberate edit instead of silent drift.
+``construction-clauses.json`` holds the ``open_clauses`` whose KB record publishes no
+executable construction shape (owner KB).  Every entry is resolved against the
+promoted KB here, and their number is pinned so that absorbing a clause is a
+deliberate edit instead of silent drift.  The retired T09 bookkeeping (transfers,
+review matrix, reconciliation totals) is archived in
+``docs/archive/construction-clauses-ledger-2026-11-12.json``; the clauses it recorded as
+absorbed are pinned below so they keep publishing structure.
 
 The gate only reads; regenerating the tables stays in ``build/cache/t09``.
 """
@@ -70,9 +72,9 @@ def test_both_tables_declare_their_schema():
     tables = _load(TABLES)
     clauses = _load(CLAUSES)
     assert tables["schema_version"] == 1
-    assert clauses["schema_version"] == 1
+    assert clauses["schema_version"] == 2
     assert {"profile_exclusions", "pending_bindings"} <= set(tables)
-    assert {"reconciliation", "open_clauses", "transfers"} <= set(clauses)
+    assert set(clauses) == {"schema_version", "comment", "open_clauses"}
 
 
 def test_runtime_scope_exclusions_are_a_verbatim_projection():
@@ -175,57 +177,6 @@ def test_open_clauses_are_unique_per_band_and_rule():
     assert len(keys) == len(set(keys)), "an open clause is listed twice for the same band"
 
 
-def test_transfers_are_declared_once_and_owned():
-    transfers = _load(CLAUSES)["transfers"]
-    ids = [row["effect_id"] for row in transfers]
-    assert len(ids) == len(set(ids)), "a transferred obligation is listed twice"
-    for row in transfers:
-        assert set(row) == TRANSFER_KEYS, row
-        assert row["mechanism"] in MECHANISMS, row
-        assert row["to_task"] in {"T10", "T13"}, row
-        # `owner` is the rule or effect the accepted matrix attributes the
-        # clause to; `effect_id` is the obligation key. Both must be present.
-        assert row["owner"].strip() and row["effect_id"].strip(), row
-        assert row["reason"].strip(), row
-
-
-def test_every_non_covered_obligation_carries_a_review_category():
-    clauses = _load(CLAUSES)
-    review = clauses["review"]
-    categories = review["categories"]
-    assert set(categories) <= {
-        "blocker",
-        "pending-owner",
-        "covered-data",
-        "combat",
-        "by-plan",
-        "system-excluded",
-    }, sorted(categories)
-    assert categories.get("blocker", 0) == 0, (
-        "The construction contract must not close with an open blocker: absorb it (KB + contract + test) or it stays a "
-        "construction-validity defect"
-    )
-    assert sum(categories.values()) == (
-        len(clauses["open_clauses"])
-        + len(clauses["transfers"])
-        + len(review["system_excluded"])
-    ), "every non-covered obligation must be reviewed exactly once"
-    assert len(review["rows"]) == sum(categories.values())
-    review_keys = {row["key"] for row in review["rows"] if "key" in row}
-    declared = {
-        f"{row['band_id']}|{row['rule_id']}" if row["band_id"] else row["rule_id"]
-        for row in clauses["open_clauses"]
-    }
-    assert review_keys == declared, "the review must cover every open clause"
-    for row in review["rows"]:
-        assert row["category"].strip(), row
-        if row["category"] == "blocker":
-            continue
-        # Clause rows carry `evidence`, transferred obligations carry `reason`.
-        assert (row.get("evidence") or row.get("reason") or "").strip(), row
-    assert review["categories"] == clauses["reconciliation"]["review_categories"]
-
-
 SECTION_SIX_RULES = {
     "band--barbarian-special-skills",
     "band--dwarf-special-skills",
@@ -235,104 +186,50 @@ SECTION_SIX_RULES = {
     "band--bow-restrictions",
     "band--hired-swords",
 }
-ABSORBED_KEYS = {
-    "rule_id", "band_id", "mechanism", "impact", "kb_change", "contract", "test", "evidence",
-    "category", "key",
-}
+
+#: The clauses the retired T09 ledger recorded as absorbed (band, rule, mechanism).
+ABSORBED = (
+    ("dwarf-slayer-cult-web", "axe-hurlers--born-marksmen", "E02-skill-access"),
+    ("dwarf-slayer-cult-web", "band--slayer-special-skills", "E02-skill-access"),
+    ("dwarf-slayers-kaz", "band--slayer-special-skills", "E02-skill-access"),
+    ("adventurers-kaz", "band--barbarian-special-skills", "E02-skill-access"),
+    ("adventurers-kaz", "band--dwarf-special-skills", "E02-skill-access"),
+    ("adventurers-kaz", "band--elf-special-skills", "E02-skill-access"),
+    ("outlaws-of-stirwood-forest-redux-fbg", "band--bow-restrictions", "E05-equipment-list"),
+    ("snotlings-web", "runts--teeny-hands", "E05-equipment-list"),
+    ("knights-of-the-bitter-moors-mim", "band--hired-swords", "E06-hiring-eligibility"),
+    ("silent-brotherhood-sc", "band--the-silence", "E06-hiring-eligibility"),
+)
 
 
-def test_the_section_six_blockers_are_absorbed_with_kb_contract_and_test():
+def test_the_absorbed_clauses_keep_publishing_kb_structure():
     clauses = _load(CLAUSES)
-    absorbed = clauses["review"]["closed_by_t09"]
     bands = _bands()
-    assert {row["rule_id"] for row in absorbed} >= SECTION_SIX_RULES, (
-        "the seven blockers of \u00a76 must be recorded as absorbed: %s"
-        % sorted(SECTION_SIX_RULES - {row["rule_id"] for row in absorbed})
-    )
-    open_keys = {
-        f"{row['band_id']}|{row['rule_id']}" if row["band_id"] else row["rule_id"]
-        for row in clauses["open_clauses"]
-    }
+    assert {rule_id for _, rule_id, _ in ABSORBED} >= SECTION_SIX_RULES
+    open_keys = {(row["band_id"], row["rule_id"]) for row in clauses["open_clauses"]}
     hired = read_yaml(KB / "catalog" / "campaign" / "hired-swords-and-dramatis.yaml")
     hiring_rules = {str(row["rule_id"]) for row in hired.get("band_hiring_clauses") or ()}
-    for row in absorbed:
-        assert set(row) == ABSORBED_KEYS, row
-        assert row["category"] == "absorbed", row
-        assert row["impact"] in {"over-allow", "under-allow"}, row
-        assert row["kb_change"].strip() and row["contract"].strip() and row["test"].strip(), row
-        assert row["evidence"].strip(), row
-        assert row["key"] not in open_keys, (
-            f"{row['key']} is absorbed but still listed as an open clause"
-        )
-        rule = _rule(bands, row["band_id"], row["rule_id"])
+    for band_id, rule_id, mechanism in ABSORBED:
+        assert (band_id, rule_id) not in open_keys, f"{rule_id} is absorbed but listed as open"
+        rule = _rule(bands, band_id, rule_id)
         # The clause became structure: either the rule publishes an executable
         # construction binding, or the campaign catalogue carries its band clause.
-        bindings = runtime_bindings(rule)
-        structured = bool(bindings) or row["rule_id"] in hiring_rules
-        assert structured, (
-            f"{row['rule_id']} is recorded as absorbed but publishes no construction binding"
-        )
-        if row["mechanism"] == "E02-skill-access":
+        assert runtime_bindings(rule) or rule_id in hiring_rules, (
+            f"{rule_id} is recorded as absorbed but publishes no construction binding")
+        if mechanism == "E02-skill-access":
             effects = [
                 effect
                 for effect in (rule.get("runtime") or {}).get("effects") or ()
                 if (effect.get("binding") or {}).get("id") == "profile.skill-access"
             ]
             assert (rule.get("applies_to") or {}).get("profile_ids"), (
-                f"{row['rule_id']} must name its recipients"
-            )
+                f"{rule_id} must name its recipients")
             assert any(
                 (effect.get("binding") or {}).get("parameters", {}).get("skills")
                 for effect in effects
-            ), f"{row['rule_id']} must publish the printed member list, not the whole catalogue"
+            ), f"{rule_id} must publish the printed member list, not the whole catalogue"
 
 
-def test_battle_magic_records_are_adjudicated_as_system_excluded():
-    review = _load(CLAUSES)["review"]
-    coordination = review["coordination"]
-    assert coordination["decided_by"] == "coordinador", coordination
-    assert coordination["decision"] == "sistema excluido", coordination
-    assert coordination["motive"] == "X4", coordination
-    excluded = review["system_excluded"]
-    assert len(excluded) == 12, "the twelve spell records are the adjudicated set"
-    transferred = {row["effect_id"] for row in _load(CLAUSES)["transfers"]}
-    for row in excluded:
-        assert row["effect_id"].startswith("spell."), row
-        assert row["category"] == "system-excluded", row
-        assert row["destination"] == "sistema excluido" and row["motive"] == "X4", row
-        assert row["owner_task"] == "plan" and row["reason"].strip(), row
-        assert row["effect_id"] not in transferred, (
-            f"{row['effect_id']} is excluded by the plan, not transferred to another task"
-        )
-        # Traceability: the effect stays in the review matrix.
-        assert any(entry.get("effect_id") == row["effect_id"] for entry in review["rows"]), row
-    assert coordination["effects"] == sorted(row["effect_id"] for row in excluded)
-    assert {row["effect_id"] for row in review["misrouted_by_t06"]} == set(coordination["effects"])
-    for row in review["combat"]:
-        assert row["to_task"] == "T13", row
-    for row in review["pending_owner"]:
-        assert row["owner_task"] in {"T10", "T13", "KB", "plan"}, row
-    for row in review["covered_by_published_data"]:
-        assert row["category"] == "covered-data" and row["evidence"].strip(), row
-
-
-def test_the_125_obligations_are_reconciled_totals_in_the_table():
-    clauses = _load(CLAUSES)
-    reconciliation = clauses["reconciliation"]
-    review = clauses["review"]
-    assert reconciliation["total_obligations"] == 125, (
-        "the accepted matrix routes 125 obligations to construction; regenerate the ledger "
-        "(python build/cache/t09/t09-classify.py) instead of editing this number"
-    )
-    assert reconciliation["open_clauses"] == len(clauses["open_clauses"])
-    assert reconciliation["transfers"] == len(clauses["transfers"])
-    assert reconciliation["excluded_by_plan"] == len(review["system_excluded"])
-    assert reconciliation["absorbed_clauses"] == len(review["closed_by_t09"])
-    assert reconciliation["review_categories"] == review["categories"]
-    assert reconciliation["covered_by_contract"] == (
-        reconciliation["total_obligations"]
-        - reconciliation["open_clauses"]
-        - reconciliation["transfers"]
-        - reconciliation["excluded_by_plan"]
-    ), "the four buckets must exhaust the matrix"
-    assert reconciliation["review_categories"] == review["categories"]
+def test_the_open_clause_count_is_pinned():
+    # 26 since the T09 ledger; absorbing one is a deliberate edit of this number.
+    assert len(_load(CLAUSES)["open_clauses"]) == 26

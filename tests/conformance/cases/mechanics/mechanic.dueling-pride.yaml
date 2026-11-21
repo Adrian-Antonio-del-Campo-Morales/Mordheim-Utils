@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.dueling-pride
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the first-round reroll against an enemy Hero and
+#   its absence against an enemy Henchman, both supplied as explicit fighter roles.
+
+# --- Authored scenarios ---
+# The Fierezza House Guard Hero fights an enemy Hero in the first round, so the failed
+# mace hit is taken again.  Both sides declare their fighter role, never a band name.
+- audit_id: mechanic/mechanic.dueling-pride
+  id: a-missed-hit-against-an-enemy-hero-is-taken-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.dueling-pride]
+      trait_overrides: {house_guard_house: fierezza, fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed target is the enemy Hero: against a Henchman the same two stands.
+- audit_id: mechanic/mechanic.dueling-pride
+  id: the-same-miss-stands-against-an-enemy-henchman
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.dueling-pride]
+      trait_overrides: {house_guard_house: fierezza, fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: henchman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/band--town-crier-6-dwarf-special-skills/profile.skill-access
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction admission/refusal pair, B11/B12 skill-access
+#   batch 2026-11-18): a Dwarf Hero of the band (giant-slayer) declaring a member of the Town Cryer 6
+#   Dwarf Special Skills list through `skill_ids` compiles with the skill in its effect tags, and a
+#   henchman of the band (slayers) declaring the same skill is refused with the shared
+#   skill-availability sentence.  REVIEWED still requires manual semantic review.
+# AUTHORED: the admission and the refusal of the printed list are declared below; REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): skill access is a construction rule, so the probe's
+#   construction-only verdict (the admission becomes a refusal without the binding) is the rule's own
+#   effect and expected per the README's Rule-removal probe section.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Rule (special-rules.yaml, band--town-crier-6-dwarf-special-skills, grant band, applies_to profile_ids
+# [giant-slayer, troll-slayers, rememberer]): binds profile.skill-access {category: special, skills: [skill.unbeatable-warrior,
+# skill.tough-as-steel, skill.thick-skull]}; Extra Tough and Resource Hunter are scope-NO campaign
+# entries of the same record.  The printed text (Karak Azgal p.32): "Dwarf Heroes may use any of the
+# Dwarf Special Skills listed in Town Crier 6".  The admission mirrors the band's AUTHORED inheritance
+# sibling (…town-crier-6-inheritance, scenario the-inherited-skill-table-expects-its-access-projection),
+# whose tag list for this build is the accepted compiled projection: the admitted skill.thick-skull
+# precedes the Hero's printed facts.  The refusal fragment is the eligibility gate's skill-availability
+# sentence (index.ts, `skills are not available to <band>/<profile>`): a henchman's access is empty.
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--town-crier-6-dwarf-special-skills/profile.skill-access
+  id: a-dwarf-hero-is-admitted-to-a-town-cryer-6-dwarf-special-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      skill_ids: [skill.thick-skull]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.global_effects.tags: [skill.thick-skull, mechanic.leader-six, identity.slayer, skill.hard-to-kill, mechanic.hatred-orcs-goblins, armour.no-armour, concussion_immune, fighter-kind.hero, band.dwarf-slayers-kaz]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/band--town-crier-6-dwarf-special-skills/profile.skill-access
+  id: a-henchman-of-the-band-is-refused-the-same-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: slayers
+      skill_ids: [skill.thick-skull]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayers-kaz/slayers: ['skill.thick-skull']"

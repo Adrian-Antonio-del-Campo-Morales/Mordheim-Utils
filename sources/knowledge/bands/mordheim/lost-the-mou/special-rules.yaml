@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.lost-the-mou.band.leaders-the-lost
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.group
   name: Leaders (the Lost)
   effect: >-
     The Lost don't follow established leaders. Instead, the Hero with the highest Leadership at the
@@ -41,9 +39,7 @@ rules:
     - id: unimplemented.lost-the-mou.band.traps
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.movement
   name: Traps
   effect: >-
     The Lost use traps to harm their enemies and catch food. Note down on a piece of paper which
@@ -74,9 +70,7 @@ rules:
     - id: unimplemented.lost-the-mou.band.special-skills-the-lost
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Special Skills of the Lost
   effect: >-
     Heroes of the Lost with the Special skill available to them may choose to use the following
@@ -107,16 +101,14 @@ rules:
     band: true
 - id: barons--mob-mentality
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lost-the-mou.barons.mob-mentality
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: deferred.psychology
   name: Mob Mentality (Barons)
   effect: >-
     The Lost band together for safety in numbers. For every other member of the warband within 3",
@@ -144,9 +136,7 @@ rules:
     - id: unimplemented.lost-the-mou.elders.advisor
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.group
   name: Advisor (Elders)
   effect: >-
     The Elders know every aspect of the city, having lived and survived for longer than any can
@@ -175,9 +165,7 @@ rules:
     - id: unimplemented.lost-the-mou.greycoats.trap-masters
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.movement
   name: Trap Masters (Greycoats)
   effect: >-
     Greycoats operate outside the normal limits of combat, scouting the ruins and laying traps to
@@ -206,9 +194,7 @@ rules:
     - id: unimplemented.lost-the-mou.mummers.brutes
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Brutes (Mummers)
   effect: >-
     Mummers are brutish fighters, no longer able to function properly in even the Lost's society,
@@ -244,8 +230,6 @@ rules:
           forbids:
           - armour-suit
   name: Equipment Restrictions
-  effect: >-
-    May not wear armour.
   source:
     manual: broheim.net
     printed_page: 5
@@ -253,9 +237,7 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      es
   applies_to:
     profile_ids:
     - greycoats
+  rule_ref: shared-rule.no-body-armour

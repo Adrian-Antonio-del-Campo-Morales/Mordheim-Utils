@@ -33,12 +33,8 @@ rules:
     - id: unimplemented.amazons-mordheim.priestess.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
-  effect: >-
-    The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at
-    random from the list.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -46,13 +42,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      La Sacerdotisa es una Hechicera y puede usar los Rituales de las Amazonas. Comienza con un
-      ritual elegido aleatoriamente de la lista.
   applies_to:
     profile_ids:
     - priestess
+  rule_ref: shared-rule.amazon-priestess-wizard
 - id: totem-warriors--frenzy
   runtime:
     scope: 'YES'
@@ -97,8 +90,7 @@ rules:
     - id: unimplemented.amazons-mordheim.scouts.stealthy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Stealthy
   effect: >-
     A Scout may deploy twice the distance onto the battlefield than other warriors and may start the
@@ -126,8 +118,7 @@ rules:
     - id: unimplemented.amazons-mordheim.band.sacrifice
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Sacrifice
   effect: >-
     The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for
@@ -154,8 +145,7 @@ rules:
     - id: unimplemented.amazons-mordheim.band.not-one-of-us
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Not One of Us
   effect: >-
     Due to the Amazons’ isolationism and suspicions about other races they never side with anyone
@@ -184,9 +174,7 @@ rules:
     - id: unimplemented.amazons-mordheim.band.human-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Human Maximum Characteristics
   effect: >-
     Although outsiders consider the Amazons to be immortal, the maximum characteristics for each

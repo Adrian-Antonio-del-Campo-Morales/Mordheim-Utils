@@ -1,0 +1,179 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause of this ID is represented by an
+#   authored scenario, or recorded as PARTIAL with its concrete blocker.
+#   REVIEWED is authoring and semantic contrast only; execution_status stays
+#   UNEXECUTED and no functional result exists.
+# AUTHORED: 8 scenarios read the printed band contract (parameters: Fimir Warriors
+#   5 while the rest of the band keeps 6+): the Draich 6+ save and its 6+ Strength cap on
+#   the real attack route, the named Fimir Warriors 5+ against a Strength 3 attacker, the
+#   light-armour combination the Heroes list offers, a further profile keeping the band
+#   default, and the printed negation by an armour-denying critical.
+# --- Authored scenarios ---
+# Derived from the printed rule text, the recorded parameters of this register
+# row and the band package; no engine output was consulted.  The duel is
+# uncharged (`charging: []`) and the attacker holds the higher Initiative, so
+# the attacker's pool always resolves first and the only Strength modifier
+# reaching the defender's save is the attacker's own Strength.  A recipient that
+# survives the incoming attack still strikes back, so each of its own attacks is
+# scripted as a miss; the count is the profile's Attacks plus the extra attacks
+# its own rules grant (the Saurus bite, the Fimir and Young Noble spiked tail).
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: the-draich-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: draich, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: the-draich-is-wounded-below-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: draich, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-strength-six-attacker-cannot-push-the-draich-save-beyond-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: draich, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: the-fimir-warriors-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: fimir-warriors, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.3.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: the-fimir-warriors-are-wounded-below-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: fimir-warriors, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.3.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: light-armour-improves-the-draich-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: draich, main_weapon_id: weapon.mace, armour_id: armour.light-armour}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: the-young-nobles-keep-the-band-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: young-nobles, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lords-of-the-marsh-mim/band--scaly-skin/compiler.lizardmen-scaly-skin
+  id: a-critical-that-denies-armour-denies-the-shearls-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: mordheim, band_id: lords-of-the-marsh-mim, profile_id: shearls, main_weapon_id: weapon.mace}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

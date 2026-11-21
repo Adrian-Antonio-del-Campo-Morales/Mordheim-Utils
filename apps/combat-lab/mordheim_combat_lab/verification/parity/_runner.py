@@ -9,10 +9,6 @@ performs the whole orchestration once:
 - sample each requested candidate backend;
 - compare the declared magnitudes with the documented six-sigma gate, and
   record the stages each row actually reached (executed, compared, approved);
-- expand a case at several round limits when ``horizons`` is supplied, which is
-  how round truncation is configured instead of using a separate runner;
-- re-certify suspicious rows at a larger oracle sample when ``escalate`` is set,
-  bounded by ``max_modular_duels`` (charged with the duels actually executed).
 
 The pooled oracle runs in worker processes that re-import the engine from
 ``sys.path`` under the platform's default start method (forkserver on Linux
@@ -77,10 +73,6 @@ from mordheim_combat_lab.verification.parity._statistical import (
 NATIVE_OBSERVED_NOTE = (
     "native core with NumPy RNG; production native seeding not exercised"
 )
-
-#: Horizons swept by a truncation certification.  Cases keep only the horizons
-#: within their own round budget (filtered by ``run_parity``).
-TRUNCATION_HORIZONS = (2, 4, 6, 8, 10, 12, 15, 20)
 
 #: Terminal outcome codes each engine actually publishes.  The oracle uses
 #: 0/1/2; the optimized candidate uses 1/-1/0.  ``0`` means opposite things in
@@ -167,7 +159,6 @@ class ParityRow:
     modular_seconds: float = 0.0
     candidate_seconds: float = 0.0
     detail: str = ""
-    escalated: bool = False
     blocked_by: str | None = None
     #: The reference sample came from the run's cache; ``modular_seconds`` is
     #: then the original sample's wall time, not time spent by this row.
@@ -546,7 +537,6 @@ def statistical_result(row: ParityRow) -> StatisticalParityResult:
         passed=comparison.passed,
         reference_seconds=row.modular_seconds,
         candidate_seconds=row.candidate_seconds,
-        escalated=row.escalated,
     )
 
 
@@ -800,6 +790,16 @@ def _count_row(case, backend, simulations, reference_counts, modular_seconds):
     )
 
 
+def _slack(item: MagnitudeComparison) -> float:
+    """How close the magnitude came to failing (higher is tighter)."""
+    return max(
+        abs(left - right) - tolerance
+        for left, right, tolerance in zip(
+            item.modular_rates, item.candidate_rates, item.tolerances,
+        )
+    )
+
+
 def _observed_row(
     case, backend, simulations, oracle, modular_seconds, magnitudes, *,
     repeat_candidate,
@@ -927,104 +927,6 @@ def _observed_row(
     )
 
 
-def _slack(item: MagnitudeComparison) -> float:
-    """How close the magnitude came to failing (higher is tighter)."""
-    return max(
-        abs(left - right) - tolerance
-        for left, right, tolerance in zip(
-            item.modular_rates, item.candidate_rates, item.tolerances,
-        )
-    )
-
-
-def _rate_sigma(row: ParityRow) -> float:
-    """Worst winner-rate deviation of one row, in sigma units."""
-    comparison = row.winner
-    if comparison is None:
-        return 0.0
-    worst = 0.0
-    for left, right in zip(comparison.modular_rates, comparison.candidate_rates):
-        variance = (
-            left * (1 - left) / row.simulations
-            + right * (1 - right) / row.simulations
-        )
-        if variance > 0:
-            worst = max(worst, abs(left - right) / np.sqrt(variance))
-    return worst
-
-
-def _unresolved_rate(row: ParityRow) -> float:
-    comparison = row.winner
-    if comparison is None or len(comparison.modular_rates) < 3:
-        return 0.0
-    return max(comparison.modular_rates[2], comparison.candidate_rates[2])
-
-
-def escalation_plan(
-    prepared: Iterable[tuple[ParityCase, int]], rows: Sequence[ParityRow], *,
-    factor: int, sigma: float, unresolved: float, remaining: int | None,
-):
-    """Pick the cases that deserve a larger oracle sample, in priority order.
-
-    A case is escalated when its first pass is suspicious (``sigma <=
-    worst < 6`` — the band where doubling the sample decides between a defect
-    and noise) or when its unresolved rate shows the timing-prone profile the
-    flat gate is blind to.  Conclusive failures (six sigma and above) are not
-    re-run.  Escalated sizes are ``base * factor``, allocated greedily in
-    priority order until ``remaining`` duels run out.  Each escalation costs
-    its whole new size: the larger sample is drawn afresh, not extended.
-    """
-    prepared = tuple(prepared)
-    plan = []
-    for case, size in prepared:
-        own = [row for row in rows if row.case == case.label]
-        if not own or not any(row.winner is not None for row in own):
-            continue
-        worst = max(_rate_sigma(row) for row in own)
-        unresolved_rate = max(_unresolved_rate(row) for row in own)
-        if not (sigma <= worst < 6.0 or unresolved_rate >= unresolved):
-            continue
-        plan.append((case, size * factor, worst, unresolved_rate))
-    plan.sort(key=lambda item: (-item[2], -item[3]))
-    chosen = []
-    budget = remaining
-    for case, new_size, _worst, _unresolved in plan:
-        if budget is not None:
-            if new_size > budget:
-                continue
-            budget -= new_size
-        chosen.append((case, new_size))
-    return tuple(chosen)
-
-
-def _expand(case: ParityCase, *, simulations: int, seed: int,
-            maximum_rounds: int, horizons: Sequence[int] | None):
-    """One entry per round limit; a bare case keeps its own label."""
-    if horizons is None:
-        return (
-            ParityCase(
-                label=case.label, first=case.first, second=case.second,
-                maximum_rounds=maximum_rounds, simulations=simulations,
-                seed=seed, magnitudes=case.magnitudes,
-                decisions=case.decisions, context=case.context,
-                blocked_by=case.blocked_by,
-            ),
-        )
-    effective = tuple(sorted({h for h in horizons if 1 <= h <= maximum_rounds}))
-    if not effective:
-        raise ValueError("no truncation horizon fits the round budget")
-    return tuple(
-        ParityCase(
-            label=f"{case.label}@rounds={horizon}", first=case.first,
-            second=case.second, maximum_rounds=horizon,
-            simulations=simulations, seed=seed, magnitudes=case.magnitudes,
-            decisions=case.decisions, context=case.context,
-            blocked_by=case.blocked_by,
-        )
-        for horizon in effective
-    )
-
-
 def run_parity(
     cases: Iterable[ParityCase], *,
     backends: Sequence[str] = ("numpy",),
@@ -1034,14 +936,8 @@ def run_parity(
     seed: int | None = None,
     maximum_rounds: int | None = None,
     workers: int | str | None = 1,
-    horizons: Sequence[int] | None = None,
     repeat_candidate: bool = False,
     cache: dict | None = None,
-    escalate: bool = False,
-    escalation_factor: int = 2,
-    escalate_sigma: float = 3.0,
-    escalate_unresolved: float = 0.01,
-    max_modular_duels: int | None = None,
     on_progress: Callable[[], None] | None = None,
 ) -> ParityRun:
     """Run every case through the modular reference and the requested candidates.
@@ -1050,13 +946,8 @@ def run_parity(
     which certifies native against a NumPy sample).  ``candidate`` is
     ``"counts"`` (winner-only aggregate samples) or ``"observed"`` (per-duel
     rows, needed for ``rounds``).  ``simulations``,
-    ``seed`` and ``maximum_rounds`` override the per-case declaration.
-    ``horizons`` expands each case at several round limits (round truncation).
-    ``escalate`` re-certifies suspicious winner-only cases at
-    ``escalation_factor`` times the sample, bounded by ``max_modular_duels``:
-    the ceiling is checked against the modular duels this run actually
-    executed, an escalation costs its whole new sample, and ``modular_duels``
-    reports every executed duel (cache hits cost nothing).
+    ``seed`` and ``maximum_rounds`` override the per-case declaration; a
+    caller comparing several round limits submits the case once per limit.
     ``cache`` reuses modular samples keyed by label, sample width, seed, round
     limit, context and decisions; rows served from it carry
     ``reference_cached=True`` and the original sample's ``modular_seconds``.
@@ -1079,12 +970,6 @@ def run_parity(
             raise ValueError(f"unknown optimized backend: {backend}")
     if "modular" in backends and (backends != ("modular",) or reference != "modular"):
         raise ValueError("modular-only execution cannot be mixed with candidate backends")
-    if backends == ("modular",) and escalate:
-        raise ValueError("modular-only execution has no comparisons to escalate")
-    if escalate and (candidate != "counts" or reference != "modular"):
-        raise ValueError(
-            "escalation is defined for modular winner-only samples"
-        )
     if reference == "numpy" and candidate != "counts":
         raise ValueError("the NumPy reference compares aggregate counts only")
     if workers is not None and str(workers).casefold() != "auto" and int(workers) < 1:
@@ -1110,13 +995,12 @@ def run_parity(
             raise ValueError(f"case {case.label} declares no simulation count")
         if int(size) < 1:
             raise ValueError("statistical parity needs at least one simulation")
-        expanded.extend(_expand(
+        expanded.append(replace(
             case, simulations=int(size),
             seed=case.seed if seed is None else seed,
             maximum_rounds=(
                 case.maximum_rounds if maximum_rounds is None else maximum_rounds
             ),
-            horizons=horizons,
         ))
 
     worker_counts = tuple(
@@ -1153,30 +1037,6 @@ def run_parity(
             if on_progress is not None and item_rows:
                 on_progress()
 
-        if escalate and expanded:
-            remaining = (
-                None if max_modular_duels is None
-                else max_modular_duels - modular_duels
-            )
-            plan = escalation_plan(
-                tuple((item, item.simulations) for item in expanded), rows,
-                factor=escalation_factor, sigma=escalate_sigma,
-                unresolved=escalate_unresolved, remaining=remaining,
-            )
-            for item, new_size in plan:
-                replacement, duels = _case_rows(
-                    item, new_size, backends=backends, reference=reference,
-                    candidate=candidate,
-                    workers=resolve_oracle_workers(
-                        workers, new_size, item.maximum_rounds),
-                    executor=executor, cache=cache, repeat_candidate=False,
-                )
-                modular_duels += duels
-                rows = [row for row in rows if row.case != item.label]
-                rows.extend(replace(row, escalated=True) for row in replacement)
-                if on_progress is not None:
-                    on_progress()
-
     return ParityRun(rows=tuple(rows), modular_duels=modular_duels)
 
 
@@ -1188,8 +1048,6 @@ __all__ = (
     "ParityPoolError",
     "ParityRow",
     "ParityRun",
-    "TRUNCATION_HORIZONS",
-    "escalation_plan",
     "run_parity",
     "statistical_result",
 )

@@ -1,0 +1,91 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/giant-slayer--equipment-restrictions/mechanic.slayer-identity
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the compiled Giant
+#   Slayer carries the Slayer identity among its facts, the Giant Slayer is admitted the supplied
+#   Rememberer support the compiler gates on that identity, and the band's Rememberer (a Hero outside
+#   this rule's recipients) is refused it.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Removal-probe expectation (2026-11-18): the identity is a construction fact; without this binding the
+#   compiled tag list loses identity.slayer and the Rememberer-support admission becomes a refusal, so
+#   a construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Rule (special-rules.yaml, giant-slayer--equipment-restrictions, grant profile, applies_to giant-slayer,
+# Karak Azgal p.33 "1 Giant Slayer"): beside the equipment restriction (its own identity) the row binds
+# mechanic.slayer-identity with parameters profile_ids [giant-slayer], the Slayer identity the Slayer
+# Rules print for the Giant Slayer.  Readers: roster-construction compiler.py ~1152-1159 (a supplied
+# condition.rememberer-kaz-support requires a dwarf-slayers-kaz Hero whose loadout carries
+# identity.slayer, else "Rememberer support requires a Slayer Hero of the printed source variant") and
+# modular/attacks.py ~270-278 (the Rememberer re-roll, needing a large or tough opponent, never reached
+# here).  The compiled-tag scenario is the accepted projection of the band's AUTHORED TC6 files (mace,
+# supplied WS4 S3 T3 W2 I3 A1, charging hand-built opponent with a natural-1 hit, the Slayer silenced).
+# The admission uses an ordinary hand-built opponent so no re-roll is offered; both blows are natural 1s.
+
+# The compiled Giant Slayer carries identity.slayer.
+- audit_id: rule/mordheim/dwarf-slayers-kaz/giant-slayer--equipment-restrictions/mechanic.slayer-identity
+  id: the-compiled-giant-slayer-carries-the-slayer-identity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.global_effects.tags: [mechanic.leader-six, identity.slayer, skill.hard-to-kill, mechanic.hatred-orcs-goblins, armour.no-armour, concussion_immune, fighter-kind.hero, band.dwarf-slayers-kaz]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The identity admits the Giant Slayer to the supplied Rememberer support.
+- audit_id: rule/mordheim/dwarf-slayers-kaz/giant-slayer--equipment-restrictions/mechanic.slayer-identity
+  id: the-giant-slayer-is-admitted-the-supplied-rememberer-support
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      condition_ids: [condition.rememberer-kaz-support]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Hero of the band outside this rule's recipients (the Rememberer) carries no Slayer identity and is
+# refused the same support.
+- audit_id: rule/mordheim/dwarf-slayers-kaz/giant-slayer--equipment-restrictions/mechanic.slayer-identity
+  id: the-rememberer-without-the-identity-is-refused-the-support
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: rememberer
+      condition_ids: [condition.rememberer-kaz-support]
+      main_weapon_id: weapon.mace
+    second: *opponent
+  expect_error: "Rememberer support requires a Slayer Hero of the printed source variant"

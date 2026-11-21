@@ -1,0 +1,76 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.shield
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 migrated scenarios; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 migrated scenarios show the shield adding +1 to the armour save worn with light armour (saved on 5, wounded on 4).
+#
+# --- Migrated authored scenarios ---
+# Source: cases/mechanics/defences.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# Pilot scenarios for admitted defence mechanics: an armour save threshold, a
+# shield's combined bonus and a once-per-battle resource.
+#
+# Expectations come from the accepted clauses of
+# the knowledge-base clause contracts (sources/knowledge), never from engine output.
+# Each identity is exercised by more than one scenario, sharing the same
+# declarative contract with only the rolled faces and their outcomes changed.
+#
+# The first scenario declares the shared WS3/S3/T3 profiles and the mace duel
+# context as YAML anchors; siblings alias them and keep their own dice,
+# decisions and expectations.
+#
+
+- audit_id: mechanic/defence.shield
+  id: shield-improves-the-armour-save-by-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/defence.shield
+  id: shield-bonus-does-not-save-one-below
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

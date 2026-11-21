@@ -3,19 +3,12 @@ band_id: chaos-streets-bretonnian-knights
 rules:
 - id: questing-knight--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Questing Knight may use his Leadership when taking Leadership
-    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 1 Questing Knight / Special Rules / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Caballero Andante puede usar su Liderazgo cuando realice
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - questing-knight
@@ -29,21 +22,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: questing-knight--knights-virtue
   name: Knight's Virtue
-  effect: >-
-    The Questing Knight never panics or flees from combat and never needs to take a Leadership test
-    for fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 1 Questing Knight / Special Rules / Knight's Virtue
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      El Caballero Andante nunca entra en pánico ni huye del combate y jamás necesita hacer un
-      chequeo de Liderazgo por luchar solo.
   applies_to:
     profile_ids:
     - questing-knight
@@ -55,19 +42,21 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.questing-knight.knights-virtue
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: no-panic-and-all-alone--scope--no-panic
+        scope: 'NO'
+      - id: no-panic-and-all-alone--scope--all-alone
+        scope: 'NO'
+  rule_ref: shared-rule.knights-virtue
 - id: questing-knight--ride-warhorse
   name: Ride Warhorse
-  effect: The Questing Knight has the Ride Warhorse skill.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 1 Questing Knight / Special Rules / Ride Warhorse
   name_i18n:
     es: Montar Corcel de Guerra
-  effect_i18n:
-    es: El Caballero Andante tiene la habilidad Montar corcel de guerra.
   applies_to:
     profile_ids:
     - questing-knight
@@ -79,23 +68,19 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.questing-knight.ride-warhorse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
+  rule_ref: shared-rule.ride-warhorse
 - id: knights-errant--knights-virtue
   name: Knight's Virtue
-  effect: >-
-    A Knight Errant never panics or flees from combat and never needs to take a Leadership test for
-    fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 0-2 Knights Errant / Special Rules / Knight's Virtue
   name_i18n:
     es: Virtud del Caballero
-  effect_i18n:
-    es: >-
-      Un Caballero Novel nunca entra en pánico ni huye del combate y jamás necesita hacer un chequeo
-      de Liderazgo por luchar solo.
   applies_to:
     profile_ids:
     - knights-errant
@@ -107,19 +92,21 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.knights-errant.knights-virtue
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.psychology
+      clauses:
+      - id: no-panic-and-all-alone--scope--no-panic
+        scope: 'NO'
+      - id: no-panic-and-all-alone--scope--all-alone
+        scope: 'NO'
+  rule_ref: shared-rule.knights-virtue
 - id: knights-errant--ride-warhorse
   name: Ride Warhorse
-  effect: A Knight Errant has the Ride Warhorse skill.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 0-2 Knights Errant / Special Rules / Ride Warhorse
   name_i18n:
     es: Montar Corcel de Guerra
-  effect_i18n:
-    es: Un Caballero Novel tiene la habilidad Montar corcel de guerra.
   applies_to:
     profile_ids:
     - knights-errant
@@ -131,8 +118,11 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.knights-errant.ride-warhorse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
+  rule_ref: shared-rule.ride-warhorse
 - id: squires--ride-horse
   name: Ride Horse
   effect: A Squire has the Ride Horse skill.
@@ -155,8 +145,10 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.squires.ride-horse
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: deferred.mounts
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--lady-of-the-lake-blessing
   name: Lady of the Lake's Blessing
   effect: >-
@@ -190,8 +182,7 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.band.lady-of-the-lake-blessing
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--virtue-of-purity
   name: Virtue of Purity
   effect: Any spell cast on this Knight is dispelled on a D6 roll of 4+.
@@ -217,8 +208,7 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.band.virtue-of-purity
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--virtue-of-valour
   kind: warband_skill
   runtime:
@@ -249,6 +239,7 @@ rules:
   - questing-knight
   - knights-errant
   - squires
+  eligibility_admits_promoted: true
   applies_to:
     band: true
 - id: band--virtue-of-noble-disdain
@@ -307,8 +298,7 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.band.virtue-of-the-impetuous-knight
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.movement
 - id: band--virtue-of-discipline
   name: Virtue of Discipline
   effect: >-
@@ -338,5 +328,4 @@ rules:
     - id: unimplemented.chaos-streets-bretonnian-knights.band.virtue-of-discipline
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the 1v1 duel: a warband Rout-test reroll.
+      reason: out-of-scope.group

@@ -1,0 +1,221 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.devoted
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hatred batch, 2026-11-18): the failed Leadership check is
+#   re-rolled while the supplied Warrior Priest is within 12 inches and the second pair passes; the offer
+#   declined keeps the failure; the Priest at 13 inches offers nothing; a Knocked Down Priest still grants
+#   the re-roll (the print requires no standing Priest); a Priest out of action grants nothing; a supplied
+#   band-mate who is not the Leader grants nothing.  REVIEWED still requires manual semantic review.
+# Carrier note: the recorded contract reads the provider through the recipient's own band tag (a same-band
+#   Leader within range), which a hand-built fixture does not carry, so the bearer is the printed hound of
+#   the single binding band (mordheim/protectorate-of-sigmar-lotd3, hound--devoted) with its printed
+#   Warrior Priest supplied as a nearby participant; the removal probe neutralises this mechanic's
+#   execution entry on that build.
+# AUTHORED: 6 scenarios cover the re-roll taken and declined, the printed range, a Knocked Down and an out-of-action Warrior Priest and a non-Leader band-mate.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (mordheimer.net, Protectorate of Sigmar / 0-5 Hounds / Devoted, bound by hound--devoted):
+# "A Hound may re-roll a failed Leadership check if within 12 inches of the Warrior Priest."  Provider
+# model (the authored band file ...357661203cdb and the B04 leadership files are the template): the
+# Warrior Priest - the band's only Leader profile - is supplied as a nearby participant of the hound's own
+# side with its distance row; the hound (printed Ld6, W1, S4) charges a hand-built Fear-causer, fails its
+# Fear test (6+6) and is offered one re-roll as the decision round.0.first.fear.charge.reroll with dice
+# .reroll.{0,1}.  A failed charge test ends in termination_reason disengaged.  The hound's natural
+# attacks need no weapon; S4 wounds T3 on 3+ and the unarmoured opponent has no save die.
+
+# The re-roll taken: the second pair of ones passes against Ld6 and the charge survives.
+- audit_id: mechanic/mechanic.devoted
+  id: the-offered-reroll-turns-the-failed-leadership-check-around
+  fighters:
+    first:
+      &hound
+      {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: hound}
+    second:
+      &fear_causer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: priest
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
+    distances:
+      - [first, priest, 10]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The offer is optional: declining it consumes no die, the failure stands and the charge is cancelled.
+- audit_id: mechanic/mechanic.devoted
+  id: declining-the-offer-keeps-the-first-failure
+  fighters:
+    first:
+      <<: *hound
+    second:
+      <<: *fear_causer
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: priest
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
+    distances:
+      - [first, priest, 10]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: false}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed range: the same Priest at 13 inches offers nothing, so no re-roll decision or die exists.
+- audit_id: mechanic/mechanic.devoted
+  id: beyond-twelve-inches-the-supplied-priest-offers-nothing
+  fighters:
+    first:
+      <<: *hound
+    second:
+      <<: *fear_causer
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: priest
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
+    distances:
+      - [first, priest, 13]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The print requires only the Priest's presence within range: a Knocked Down Priest still grants the
+# re-roll, and the second pair passes.
+- audit_id: mechanic/mechanic.devoted
+  id: a-knocked-down-priest-within-range-still-grants-the-reroll
+  fighters:
+    first:
+      <<: *hound
+    second:
+      <<: *fear_causer
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: priest
+        side_id: first
+        condition: knocked-down
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
+    distances:
+      - [first, priest, 10]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, state.engaged: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Priest out of action is no longer present: nothing is offered and the failure stands.
+- audit_id: mechanic/mechanic.devoted
+  id: a-priest-out-of-action-grants-nothing
+  fighters:
+    first:
+      <<: *hound
+    second:
+      <<: *fear_causer
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: priest
+        side_id: first
+        condition: out
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
+    distances:
+      - [first, priest, 10]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The print names the Warrior Priest: a supplied band-mate who is not the Leader (another hound) within
+# range grants nothing.
+- audit_id: mechanic/mechanic.devoted
+  id: a-band-mate-who-is-not-the-warrior-priest-grants-nothing
+  fighters:
+    first:
+      <<: *hound
+    second:
+      <<: *fear_causer
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: kennel-mate
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: hound}
+    distances:
+      - [first, kennel-mate, 4]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: false, state.failed_charges: ['first'], state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

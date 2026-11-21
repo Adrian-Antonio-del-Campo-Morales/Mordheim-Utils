@@ -1,0 +1,101 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.petru-fortitude
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 4 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "One extra Wound for
+#   this battle; once lost it cannot be restored" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.petru-fortitude) through the supplied condition_ids entry on the printed Petru; the
+#   compiler gate "Petru's supplied draught requires a Hero recipient" needs a Hero, so the recipient is
+#   the band's own hero profile carrying the fixture's characteristics, as in the AUTHORED strength
+#   grant file (...condition.petru-strength--dae2c9119a74.yaml).  Scenarios: the extra Wound at duel
+#   start (declared 2, supplied 3); the extra Wound absorbing a wounding hit so the hero stands at 2
+#   with no injury die; the control without a draught taking the same hit down to 1; and the non-Hero
+#   refusal.  Unlike the three stat draughts this result has no own-recovery expiry die, so none is
+#   declared.  Removing the supplied id (the mechanic probe) changes the observed Wounds.  REVIEWED
+#   still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the printed rider "once lost it cannot be restored" needs a
+#   healing or recovery step the 1v1 duel does not carry (no Herb Lore or regeneration is declared on
+#   the drinker), so it is recorded here and not asserted.
+
+# --- Authored scenarios ---
+# Arithmetic: WS3 hits WS3 on 4+; S3 wounds T3 on 4+.  Petru is the active participant and is silenced
+# (attacks: 0), so the tape is the opponent's hit and wound only.
+
+# The supplied draught starts the printed Petru with one Wound more than it declares.
+- audit_id: mechanic/condition.petru-fortitude
+  id: the-fortitude-draught-grants-the-affected-hero-one-extra-wound
+  fighters:
+    first:
+      &petru-fortitude-drinker
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-fortitude]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      &petru-fortitude-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.wounds: 3}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# The extra Wound absorbs a wounding hit: 3 becomes 2, the hero stands and no injury die is asked.
+- audit_id: mechanic/condition.petru-fortitude
+  id: the-extra-wound-absorbs-a-wounding-hit-and-the-hero-stands-at-two
+  fighters:
+    first: *petru-fortitude-drinker
+    second: *petru-fortitude-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical hero without a supplied draught starts at its declared 2 and the same hit
+# takes it to 1.
+- audit_id: mechanic/condition.petru-fortitude
+  id: without-the-draught-the-same-hit-takes-the-declared-two-wounds-to-one
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: petru
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second: *petru-fortitude-opponent
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_initial: {first.wounds: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recipient gate: a hand-built fixture declares no Hero kind and is refused by the compiler's own
+# sentence.
+- audit_id: mechanic/condition.petru-fortitude
+  id: the-draught-is-refused-on-a-recipient-that-is-not-a-hero
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.petru-fortitude]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 7}
+  expect_error: "Petru's supplied draught requires a Hero recipient"

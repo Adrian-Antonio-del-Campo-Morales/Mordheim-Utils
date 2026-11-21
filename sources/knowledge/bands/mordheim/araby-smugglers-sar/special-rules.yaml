@@ -10,9 +10,7 @@ rules:
     - id: unimplemented.araby-smugglers-sar.band.slavers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Slavers
   effect: >-
     Captured warriors who willingly join become Crew; unwilling captives become Slaves and do not
@@ -47,7 +45,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6 inches of the Rais may use his Leadership for Leadership tests.
   source:
     manual: broheim.net
     printed_page: 3
@@ -55,25 +52,20 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas del Rais puede usar su Liderazgo para los chequeos de
-      Liderazgo.
   applies_to:
     profile_ids:
     - rais
+  rule_ref: shared-rule.leader
 - id: merchant--fine-craftsmanship
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.araby-smugglers-sar.merchant.fine-craftsmanship
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: deferred.other
   name: Fine Craftsmanship
   effect: >-
     Once per turn, reroll any dice roll made by the Merchant. If he is not taken out of action, roll
@@ -102,9 +94,7 @@ rules:
     - id: unimplemented.araby-smugglers-sar.janissaries.not-pirates
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.construction
   name: Not Pirates
   effect: >-
     Janissaries may not use the Leader's Leadership and heroes cannot learn Pirate skills or become
@@ -132,13 +122,8 @@ rules:
     - id: unimplemented.araby-smugglers-sar.slaves.life-of-slavery
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Life of Slavery
-  effect: >-
-    A Slave may gain experience, but if he rolls Lad's got Talent the leader executes him and
-    removes him from the roster; the rest of the group may reroll their advance.
   source:
     manual: broheim.net
     printed_page: 3
@@ -146,26 +131,21 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
   name_i18n:
     es: Vida de Esclavitud
-  effect_i18n:
-    es: >-
-      Un Esclavo puede ganar experiencia, pero si obtiene Chaval con Talento el líder lo ejecuta y
-      lo elimina del roster; el resto del grupo puede repetir su mejora.
   applies_to:
     profile_ids:
     - slaves
+  rule_ref: shared-rule.life-of-slavery
 - id: band--skill-pious-fury
   kind: warband_skill
   runtime:
-    scope: 'NO'
+    scope: LATER
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.araby-smugglers-sar.band.pious-fury
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Out of scope: Hatred is a psychology-subsystem interaction, and the abstinence clause is flavour
-        with no engine effect.
+      reason: pending-implementation
   name: Pious Fury
   effect: >-
     The Hero feels the call of the One in his soul, vowing to cleanse the lands and seas of evil. The

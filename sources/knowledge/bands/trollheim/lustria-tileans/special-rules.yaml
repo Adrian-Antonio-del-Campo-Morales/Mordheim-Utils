@@ -3,19 +3,12 @@ band_id: lustria-tileans
 rules:
 - id: mercenary-captain--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Mercenary Captain may use his Leadership when taking
-    Leadership tests.
   source:
     manual: lustria
     printed_page: 49
     section: Heroes / 1 Mercenary Captain / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Capitán mercenario puede usar su Liderazgo al realizar
-      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - mercenary-captain
@@ -29,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: duelists--cloak-and-dagger
   runtime:
     scope: 'YES'
@@ -83,8 +77,7 @@ rules:
     - id: unimplemented.lustria-tileans.band.miragliano-crossbow-mastery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--miragliano-marksman-accuracy
   name: Miragliano — Marksman Accuracy
   effect: >-
@@ -117,8 +110,7 @@ rules:
     - id: unimplemented.lustria-tileans.band.miragliano-marksman-accuracy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.shooting
 - id: band--miragliano-hatred-skaven
   name: Miragliano — Hatred of Skaven
   effect: >-
@@ -164,15 +156,17 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lustria-tileans.band.remas-dark-elf-rout
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
 - id: band--remas-officer-leadership
   kind: warband_variant
   name: Remas — Veteran Officers
@@ -239,5 +233,4 @@ rules:
     - id: unimplemented.lustria-tileans.band.trantio-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.construction

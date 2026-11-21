@@ -1,0 +1,130 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.hatred-slavers
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hatred batch, 2026-11-18): the first-round miss against a
+#   slaver is re-rolled; the same miss stands against an opponent without the slaver identity; a slave
+#   (the opposite supplied fact) is not hated; the re-roll is first-round only; the control without the
+#   mechanic.  REVIEWED still requires manual semantic review.
+# AUTHORED: 5 scenarios cover the first-round re-roll against a slaver, the non-slaver and slave boundaries, the later round and the control.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (mordheimer.net, Pit Fighters / Special Rules / Free the Slaves!, bound by
+# shared-rule.free-the-slaves and the two Pit Fighters band rows): "Pit Fighters hate slavers and will
+# never sell captured opponents to slavers."  The hated group is the opponent's own slaver identity
+# (trait_overrides slaver: true, the compiled identity.slaver), so belonging to a slave-taking warband is
+# not by itself enough; the never-sell clause is campaign scope.  Hatred model (the authored band file
+# ...5df1c2841eac and the hireling file ...99bd3ea4081b are the template): a natural 2 misses WS3 against
+# WS3; the Hatred re-roll of the first round is requested at round.0.<side>.attack.0.hit.reroll, a 4 hits
+# and S3 wounds T3 on a 4; outside the hated identity the strict tape holds no re-roll key.  The bearer is
+# a hand-built fixture carrying the mechanic through skill_ids; the real Pit Fighter builds are exercised
+# by the band files.
+
+# The first-round miss against a slaver is re-rolled, hits and wounds.
+- audit_id: mechanic/mechanic.hatred-slavers
+  id: a-first-round-miss-against-a-slaver-is-rerolled
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hatred-slavers]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &slaver
+      main_weapon_id: weapon.mace
+      trait_overrides: {slaver: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the slaver identity the same miss stands and no re-roll key exists.
+- audit_id: mechanic/mechanic.hatred-slavers
+  id: the-same-miss-stands-against-an-opponent-who-is-not-a-slaver
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A slave is the opposite printed fact, not a slaver: the miss stands.
+- audit_id: mechanic/mechanic.hatred-slavers
+  id: a-slave-is-not-the-hated-slaver
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {slave: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred is a first-round effect: the round-0 miss is re-rolled (and misses again), the round-1 miss
+# against the same slaver stands with no re-roll key.
+- audit_id: mechanic/mechanic.hatred-slavers
+  id: the-reroll-is-not-offered-in-a-later-round
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *slaver
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+    1: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: without the mechanic the identical miss against the slaver stands.
+- audit_id: mechanic/mechanic.hatred-slavers
+  id: without-the-mechanic-the-miss-against-a-slaver-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *slaver
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

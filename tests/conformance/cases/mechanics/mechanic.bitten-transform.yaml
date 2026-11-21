@@ -1,0 +1,193 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.bitten-transform
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (operators-band-rules batch, 2026-11-18): the per-turn
+#   form die on a hand-built bearer - a six transforms him and the form's Frenzy doubles his single
+#   attack, a four leaves him acting normally, a one is the printed Madness (a this-turn Stupidity
+#   test that fails on 6+6 and silences him), the form casts off worn armour (a saved wound before, no
+#   armour die after) and asks for no die while it lasts in combat, and the transformed bearer fights
+#   unarmed without the -1 Strength (the same wound face fails untransformed).
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed carrier: Masters of Horror, The Bitten, Transform (bands/mordheim/masters-of-horror-sylv/
+# special-rules.yaml the-bitten--transform, grant profile): each own turn the Bitten rolls a D6 - a 6
+# transforms him (Frenzy, discards all equipment but a dagger, no unarmed penalties), 2-5 act as normal,
+# a 1 is Madness (Stupidity this turn; a Transformed Bitten reverts).  Consumer: modular/rounds.py ~470-515
+# (die round.<i>.<side>.bitten on the bearer's own turn unless already transformed and engaged; a 6 sets
+# transformed/equipment_cast_off, a 1 sets bitten_result 1 which psychology.resolve_stupidity reads as a
+# supplied Stupidity; the form grants rule.unarmed-without-penalties and Frenzy; equipment_for_state
+# projects the cast-off kit).  Model: the PARTIAL grant file (...99f10ef924a1) on the real Bitten, whose
+# dice grammar these tapes mirror on a hand-built fixture (WS3 S3 T3 W2 I5 A1 Ld7) carrying the shared
+# operator through skill_ids.  The opponent is the mace fixture (WS3 S3 T3 W3 I2 A1 Ld7), silenced with
+# attacks 0 where only the bearer's pool matters (it carries a mace, so no fist swing survives).
+# Semantic wrinkle (2026-11-18): the "revert to human form" half of Madness needs a transformed bearer
+# disengaged at his own turn, which the 1v1 harness cannot reach (the grant file's named gap); the
+# cast-off mace leaves the transformed bearer fighting with fists, so his two Frenzy swings are unarmed.
+
+# A declared six is the printed transformation: the state records the form and its Frenzy, so the
+# bearer's single Attack becomes two blows (two hit dice are consumed).
+- audit_id: mechanic/mechanic.bitten-transform
+  id: a-declared-six-transforms-the-bearer-and-frenzy-doubles-his-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: true, state.first.frenzy: true, state.first.bitten_result: 6,
+        attacks.0.hit_roll: 1, attacks.1.hit_roll: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Two to five is the printed "act as normal": the result is recorded, the form is not entered and only
+# the single profile attack is rolled.
+- audit_id: mechanic/mechanic.bitten-transform
+  id: a-declared-four-leaves-the-bearer-acting-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.transformed: false, state.first.frenzy: false, state.first.bitten_result: 4, attacks.0.hit_roll: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A declared one is the printed Madness: Stupidity this turn, tested on two dice against the bearer's
+# own Leadership 7; 6+6 fails, so he makes no attack of his own while the opponent still strikes
+# (its declared 1 misses).  The reversion half of the same result is the recorded harness gap.
+- audit_id: mechanic/mechanic.bitten-transform
+  id: a-declared-one-is-madness-and-a-failed-this-turn-stupidity-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first.bitten_result: 1, state.first.transformed: false,
+        attacks.0.hit_roll: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The cast-off: while untransformed (rounds 0 and 1) the worn light armour saves the incoming wound on
+# its 6+; in round 2 (the bearer's own turn again) the declared six enters the form, the armour is cast
+# off with the rest of the kit, the same incoming wound asks no armour die and lands.  Round 1 is the
+# opponent's turn, so no form die is asked there; the strict tape declares none.
+- audit_id: mechanic/mechanic.bitten-transform
+  id: transforming-casts-off-the-worn-armour-and-asks-no-die-on-the-opponents-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.armour, value: 6}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.armour, value: 6}
+    - {key: round.2.first.bitten, value: 6}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.first.attack.1.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 4}
+    - {key: round.2.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.transformed: false, attacks.1.saved: true, state.first.wounds: 2}
+    1: {state.first.transformed: false, attacks.1.saved: true, state.first.wounds: 2}
+    2: {state.first.transformed: true, state.first.equipment_cast_off: true, attacks.2.saved: false,
+        attacks.2.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}
+
+# The printed penalty removal: a transformed bearer fighting with the Fist keeps his Strength 3, so a
+# wound face of four takes a Wound from Toughness 3 (and the fist's +1 enemy save is not granted, so no
+# armour die is asked).  The second Frenzy swing misses on a declared 1.
+- audit_id: mechanic/mechanic.bitten-transform
+  id: a-transformed-bearer-fights-unarmed-without-the-strength-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.transformed: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same bearer and faces without entering the form (a four on the form die) fight with
+# the ordinary fist, Strength 2 against Toughness 3 needs a five, so the four does not wound.
+- audit_id: mechanic/mechanic.bitten-transform
+  id: untransformed-the-unarmed-penalty-leaves-the-same-face-unwounded
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [mechanic.bitten-transform]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.bitten, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.transformed: false, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

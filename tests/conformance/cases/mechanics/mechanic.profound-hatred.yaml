@@ -1,0 +1,97 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.profound-hatred
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   first-round re-roll against an ordinary opposing warrior (every warband is hated), the same miss
+#   standing against a printed Sister of Sigmar (the one printed exception), and the second round
+#   offering no re-roll (ordinary Hatred lasts the first round).  REVIEWED still requires manual
+#   semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the any-warband re-roll, the Sisters exception and the second-round boundary are declared
+#   below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Chaos in the Streets p.148, Mordheim Inhabitants / Desolate Soul / Profound Hatred):
+# "The Desolate Soul is subject to Hatred against warriors from every opposing warband except the
+# Sisters of Sigmar."  Hatred (Rulebook) re-rolls the bearer's missed hits in the first round of a
+# combat only.  Family model (shared Hatred contract): the bearer is hand-built with the mechanic
+# injected (WS3 S3 T3 W2 I5 A1, mace) and charges; an ordinary hand-built opponent (WS3 S3 T3 W3 I2 A1
+# Ld7, mace) carries no exempting identity, while the exception is a printed Sisters of Sigmar Augur
+# (sisters-of-sigmar / augur, the corpus's Sisters build, with the list mace and silenced) whose
+# compiled band identity the consumer reads.  A natural 2 misses WS3 on 4+; the re-roll of 4 hits and
+# S3 wounds T3 on 4+ (no critical die below a 6).
+
+# Any opposing warrior is hated: the first-round miss is re-rolled, hits and wounds.
+- audit_id: mechanic/mechanic.profound-hatred
+  id: a-first-round-miss-is-rerolled-against-any-opposing-warrior
+  fighters:
+    first:
+      &profound-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.profound-hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &ordinary-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exception: against a Sister of Sigmar the strict tape holds no re-roll key and the 2 stands.
+- audit_id: mechanic/mechanic.profound-hatred
+  id: the-same-miss-stands-against-a-sister-of-sigmar
+  fighters:
+    first:
+      <<: *profound-bearer
+    second:
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: augur
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Ordinary Hatred lasts the first round: the second-round miss against the same warrior is not re-rolled.
+- audit_id: mechanic/mechanic.profound-hatred
+  id: the-second-round-miss-is-not-rerolled
+  fighters:
+    first:
+      <<: *profound-bearer
+    second:
+      <<: *ordinary-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.wounds: 2}
+    1: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

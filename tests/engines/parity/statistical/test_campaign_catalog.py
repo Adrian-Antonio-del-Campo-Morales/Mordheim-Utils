@@ -36,51 +36,64 @@ def test_former_duplicate_names_appear_once_and_multiattack_twice():
     assert "multiattack" not in names
 
 
-def test_levels_are_cumulative_and_long_is_the_catalogue():
-    assert LEVELS == ("small", "normal", "long")
+def test_levels_are_cumulative_and_big_is_the_catalogue():
+    assert LEVELS == ("small", "normal", "big")
     assert {level: len(LEVEL_SCENARIOS[level]) for level in LEVELS} == {
-        "small": 8, "normal": 30, "long": 43,
+        "small": 8, "normal": 30, "big": 43,
     }
     assert set(LEVEL_SCENARIOS["small"]) <= set(LEVEL_SCENARIOS["normal"])
-    assert set(LEVEL_SCENARIOS["normal"]) < set(LEVEL_SCENARIOS["long"])
-    assert set(LEVEL_SCENARIOS["long"]) == {scenario.name for scenario in SCENARIOS}
+    assert set(LEVEL_SCENARIOS["normal"]) < set(LEVEL_SCENARIOS["big"])
+    assert set(LEVEL_SCENARIOS["big"]) == {scenario.name for scenario in SCENARIOS}
+
+
+def test_level_names_never_collide_with_scenario_names():
+    # A --scenarios value must select the same scenarios in every tool, so no
+    # scenario may be named like a level or another reserved selection value.
+    reserved = {*LEVELS, "deliveries"}
+    names = {scenario.name for scenario in SCENARIOS}
+    assert reserved.isdisjoint(names)
+    assert not any(name.startswith("battery-") for name in names)
 
 
 def test_level_selection_returns_its_scenarios_in_catalogue_order():
     for level in LEVELS:
-        chosen = select(level=level)
-        assert [name for _key, name in chosen] == list(LEVEL_SCENARIOS[level])
-        assert {name for _key, name in chosen} == {
+        chosen = select((level,))
+        assert [entry.name for entry in chosen] == list(LEVEL_SCENARIOS[level])
+        assert {entry.kind for entry in chosen} == {"scenario"}
+        assert {entry.name for entry in chosen} == {
             scenario.name for scenario in scenarios_for_level(level)
         }
-    # Without a level the campaign selects the eight cheap scenarios.
-    assert select() == select(level="small")
+    # Without --scenarios the campaign selects the eight cheap scenarios.
+    assert select() == select(("small",))
     assert len(select()) == 8
 
 
-def test_long_level_keeps_the_expensive_round_limits():
-    by_name = {scenario.name: scenario for scenario in scenarios_for_level("long")}
+def test_big_level_keeps_the_expensive_round_limits():
+    by_name = {scenario.name: scenario for scenario in scenarios_for_level("big")}
     assert {"long", "heavy-grind"} <= set(by_name)
     assert by_name["long"].maximum_rounds == 75
     assert by_name["heavy-grind"].maximum_rounds == 75
-    # ``normal`` stops before the 75-round grinds; only ``long`` carries them.
+    # ``normal`` stops before the 75-round grinds; only ``big`` carries them.
     normal = {scenario.name for scenario in scenarios_for_level("normal")}
     assert {"long", "heavy-grind"}.isdisjoint(normal)
 
 
-def test_explicit_keys_keep_order_and_reject_unknown_or_out_of_level_keys():
-    chosen = select(level="long", keys=("scenario/long", "scenario/basic"))
-    assert [key for key, _name in chosen] == ["scenario/basic", "scenario/long"]
-    with pytest.raises(ValueError, match="not selected"):
-        select(keys=("scenario/missing",))
-    with pytest.raises(ValueError, match="not selected"):
-        select(level="normal", keys=("scenario/heavy-grind",))
-    with pytest.raises(ValueError, match="unknown level"):
-        select(level="full")
+def test_scenario_values_select_names_keys_and_unions_and_reject_unknowns():
+    # Names and corpus keys are the same scenario; the order asked is kept.
+    chosen = select(("scenario/long", "basic"))
+    assert [entry.key for entry in chosen] == ["scenario/long", "scenario/basic"]
+    # A level plus a name outside it is their union, never a narrowing.
+    union = select(("normal", "heavy-grind"))
+    assert len(union) == 31 and union[-1] == ("scenario/heavy-grind", "heavy-grind", "scenario")
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("scenario/missing",))
+    # The retired level names are not levels any more.
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("full",))
 
 
 def test_every_catalogue_key_resolves_to_its_frozen_case(cases):
-    scenarios, rejected = load(select(level="long"), cases)
+    scenarios, rejected = load(select(("big",)), cases)
     assert rejected == ()
     by_key = {scenario.key: scenario for scenario in scenarios}
     assert set(by_key) == {key for key, _name in CATALOGUE}
@@ -101,7 +114,7 @@ def test_every_catalogue_key_resolves_to_its_frozen_case(cases):
 
 def test_a_missing_frozen_case_is_reported_and_never_replaced(cases):
     scenarios, rejected = load(
-        select(level="long", keys=("scenario/basic", "scenario/long")),
+        select(("basic", "long")),
         {"scenario/basic": cases["scenario/basic"]},
     )
     assert [scenario.key for scenario in scenarios] == ["scenario/basic"]
@@ -114,9 +127,75 @@ def test_inputs_the_samplers_cannot_pass_on_reject_the_case(cases):
 
     basic = cases["scenario/basic"]
     scenarios, rejected = load(
-        select(level="long", keys=("scenario/basic",)),
+        select(("basic",)),
         {"scenario/basic": replace(basic, initial_state={"first": {"attacks": 0}})},
     )
     assert scenarios == ()
     assert rejected[0][0] == "scenario/basic"
     assert rejected[0][1].startswith("incompatible: initial_state overrides")
+
+
+def test_deliveries_and_battery_are_named_sets_like_the_levels():
+    # Every tool takes the same values: the parity deliveries and the battery
+    # are selected whole by name, or one case at a time by key.
+    deliveries = select(("deliveries",))
+    assert len(deliveries) > 2_000 and {entry.kind for entry in deliveries} == {"delivery"}
+    assert all(entry.key.startswith("delivery/") for entry in deliveries)
+    battery = select(("battery",))
+    assert {entry.kind for entry in battery} == {"battery"}
+    assert all(entry.key == f"battery/{entry.name}" for entry in battery)
+    one = select((battery[0].key, deliveries[0].key, "basic"))
+    assert [entry.kind for entry in one] == ["battery", "delivery", "scenario"]
+    with pytest.raises(ValueError, match="unknown scenario"):
+        select(("battery/no-such-case",))
+
+
+def test_an_unknown_token_is_not_looked_up_as_a_delivery(monkeypatch):
+    # Only "deliveries", delivery/<...> keys and <audit_id>::<id> ids consult
+    # the delivery catalogue; a typo is reported without loading it.
+    from tools.verification import parity_catalog
+
+    def unexpected():
+        raise AssertionError("the delivery catalogue must not be loaded")
+
+    monkeypatch.setattr(parity_catalog, "_delivery_index", unexpected)
+    with pytest.raises(ValueError, match="unknown scenario.*'smal'"):
+        select(("smal",))
+
+
+def test_loading_reports_every_case_a_tool_cannot_run(cases):
+    # Battery cases compile from the knowledge base into frozen-case form; a
+    # scripted-decision case is reported instead of run without its script.
+    runnable, rejected = load(select(("battery",)), cases)
+    assert runnable and all(item.case.fingerprints["inputs_sha256"] for item in runnable)
+    reasons = dict(rejected)
+    assert any("scripted decisions" in reason for reason in reasons.values())
+    assert len(runnable) + len(rejected) == len(select(("battery",)))
+
+
+def test_realistic_sets_are_cumulative_and_disjoint_from_scenarios():
+    from tests.engines.fixtures.realistic_sets import REALISTIC_SETS
+
+    small, large = REALISTIC_SETS["realistic-50"], REALISTIC_SETS["realistic-100"]
+    assert (len(small), len(large)) == (50, 100)
+    assert len(set(large)) == 100 and set(small) <= set(large)
+    assert all(key.startswith("realistic/") for key in large)
+    assert set(REALISTIC_SETS).isdisjoint({*LEVELS, "deliveries", "battery"})
+    assert set(REALISTIC_SETS).isdisjoint(scenario.name for scenario in SCENARIOS)
+
+
+def test_realistic_sets_resolve_to_frozen_charging_duels(cases):
+    from tests.engines.fixtures.realistic_sets import REALISTIC_SETS
+
+    scenarios, rejected = load(select(("realistic-100",)), cases)
+    assert rejected == ()
+    assert [scenario.key for scenario in scenarios] == list(REALISTIC_SETS["realistic-100"])
+    for scenario in scenarios:
+        assert scenario.kind == "scenario"
+        assert scenario.case is cases[scenario.key]
+        assert scenario.case.origin.kind == "benchmark"
+        assert scenario.case.limits.maximum_rounds == 50
+        assert scenario.case.limits.simulations is None
+        # Every realistic duel opens with a charge by exactly one fighter.
+        assert len(scenario.case.context.charging) == 1
+    assert [entry.key for entry in select(("realistic/007",))] == ["realistic/007"]

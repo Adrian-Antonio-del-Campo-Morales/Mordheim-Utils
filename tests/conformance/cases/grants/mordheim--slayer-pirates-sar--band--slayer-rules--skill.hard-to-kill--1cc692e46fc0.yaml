@@ -1,0 +1,93 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole--scope--hard-to-kill clause carries three authored scenarios
+# derived from the printed Hard to Kill sentence of the block: a five that the ordinary chart takes Out of
+# Action leaves this bearer Stunned, the six still takes it out, and the non-regression control shows the
+# same five on an unmarked bearer is Out of Action.  The bearer is the printed Slayer Captain profile and
+# the composite Slayer-rules key supplies the printed block; both facts are read from the band source, not
+# from the engine.  Only the Hard to Kill sentence is asserted here; the Hard Head sentence has its own
+# file and the hiring sentence stays outside the admitted clause scope.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--hard-to-kill (scope: YES)
+# AUTHORED[whole--scope--hard-to-kill]: 3 scenarios evidence the Printed Slayer sentence at its
+#   boundary (a five Stuns instead of taking the bearer out), the six that still takes it out, and the
+#   ordinary chart on an unmarked bearer.  The bearer is the printed Slayer Captain profile and the
+#   composite Slayer-rules key supplies the printed block; only the Hard to Kill sentence is asserted,
+#   because the Hard Head sentence of the same block carries its own row and the Grudgebearers sentence
+#   is retained outside the admitted scope.  REVIEWED still requires manual semantic review.
+#
+# Clause: whole--scope--grudgebearers-hiring (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed Hard to Kill sentence and the printed band record; no engine output was
+# consulted.  The mace is the concussion weapon of the sibling injury-chart cases, the fixture's
+# Initiative lets it strike first, and the bearer starts at its printed single wound.
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: a-five-only-stuns-the-slayer-captain
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: slayer-pirates-sar, profile_id: slayer-captain}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: only-the-six-takes-the-slayer-captain-out
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: slayer-pirates-sar, profile_id: slayer-captain}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

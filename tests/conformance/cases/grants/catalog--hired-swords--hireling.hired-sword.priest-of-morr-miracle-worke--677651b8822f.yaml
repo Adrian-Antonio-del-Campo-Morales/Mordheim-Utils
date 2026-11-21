@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/haunted-mien.combat-access
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (construction admission/control pair, B11/B12 skill-access
+#   batch 2026-11-18): the Black Guardsman (Haunted Mien selected) declaring a combat skill through
+#   `skill_ids` compiles, and the unmarked Priest declaring the same skill is refused with the shared
+#   skill-availability sentence.  REVIEWED still requires manual semantic review.
+# AUTHORED: the admission and the control refusal are declared below; REVIEWED still requires manual
+#   semantic review.
+# Removal-probe expectation (2026-11-18): the probe un-selects Haunted Mien, so the admission becomes the
+#   control's refusal: construction-only, expected for a skill-access rule.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2b.yaml, hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien, grant
+# selectable): "The Black Guardsman ignores Priest strictures and may choose Combat and Strength skills";
+# bindings mechanic.haunted-mien, haunted-mien.combat-access {category: combat} and
+# haunted-mien.strength-access {category: strength}.  Ruling "Haunted Mien lifts the Priest kit
+# restriction" (2026-10-15): Combat/Strength access is added by the existing source bindings; an unmarked
+# Priest retains Strictures.  The Priest prints Academic and Speed access only.  This file evidences the
+# combat half (skill.step-aside, a catalogue combat row with an executable binding); the sibling identity carries
+# the other half and mechanic.haunted-mien carries the kit consequences (B00 file …45c97d805c6e).
+# Hireling conventions (README, Hireling recipients): band hirelings.hired-sword.2b, the real profile, the
+# fixture characteristics, the printed kit's default weapon (the ceremonial dagger) taken by omission, so
+# the strictures are not touched and the observation is access alone.
+
+# Admission: the Black Guardsman takes a combat skill.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/haunted-mien.combat-access
+  id: the-black-guardsman-is-admitted-to-a-combat-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien]
+      skill_ids: [skill.step-aside]
+    second: {}
+  # Construction is the observation: no charge is declared and the bearer is out of action before the
+  # first phase (the corpus's construction-only shape), so the duel requests no die.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+# Control: the unmarked Priest declaring the same skill is refused (printed access Academic/Speed).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien/haunted-mien.combat-access
+  id: the-unmarked-priest-is-refused-the-same-combat-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      skill_ids: [skill.step-aside]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "skills are not available to hirelings.hired-sword.2b/hireling.hired-sword.priest-of-morr-miracle-workers: ['skill.step-aside']"

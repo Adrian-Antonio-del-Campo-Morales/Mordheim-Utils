@@ -1,0 +1,118 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.armour-specialist
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the bearer in
+#   heavy armour and shield keeps a 5+ save against a Strength 5 blow (a 5 saves), the same 5 fails
+#   without the feat (6+), a Strength 6 blow still leaves the 5+, and without a shield the feat does
+#   not apply (no save die at all).  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): the printed movement half ("ignores the standard movement penalty")
+#   and the horseback exclusion are outside the duel (design-rulings.md: Lancer is outside the duel
+#   scope; Armour Specialist remains separate); only the save cap is evidenced.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (catalog/skills/warband.yaml, Knights Feats / Armour Specialist): "When using Heavy
+# armour and shield, the character ignores the standard movement penalty and his armour save cannot
+# be modified beyond 5+ due to Strength.  This does not work on horseback."  Consumer:
+# phases.armour_specialist_strength_cap (~585-596: the bearer carries skill.armour-specialist and the
+# armour.heavy-armour tag, is not mounted and carries a shield in the shield-and-skill provenance; the
+# Strength penalty is then capped at 5 minus the compiled save) read by contexts.py ~842 and applied
+# in phases.armour_target (~620-623).  Fixture: the attacker (first, WS3 S5 T3 W2 I5 A1, mace) charges
+# the bearer (second, WS3 S3 T3 W2 I2 A1, mace, armour.heavy-armour, off-hand defence.shield,
+# skill_ids [skill.armour-specialist]).  WS3 against WS3 hits on 4+; S5 wounds T3 on 2+; heavy armour
+# 5+ with the shield is 4+, which Strength 5 worsens by two to 6+ unless the feat caps the penalty at
+# one, leaving 5+.  The bearer's own blow is a natural 1 in every tape.
+
+# The cap: a Strength 5 blow leaves the save at 5+, so the 5 saves.
+- audit_id: mechanic/skill.armour-specialist
+  id: the-save-cannot-be-worsened-beyond-five-by-strength
+  fighters:
+    first: &as-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &as-bearer
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      off_hand_id: defence.shield
+      skill_ids: [skill.armour-specialist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the feat the same blow needs a 6, so the 5 fails.
+- audit_id: mechanic/skill.armour-specialist
+  id: without-the-feat-the-same-five-fails
+  fighters:
+    first: *as-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "cannot be modified beyond 5+": a Strength 6 blow (7+, no save, without the feat) still leaves 5+.
+- audit_id: mechanic/skill.armour-specialist
+  id: even-a-strength-six-blow-leaves-the-five-plus
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *as-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Heavy armour and shield": without the shield the feat does not apply, so heavy armour alone (5+)
+# against Strength 5 is 7+ and no armour die is requested at all.
+- audit_id: mechanic/skill.armour-specialist
+  id: without-a-shield-the-feat-does-not-apply
+  fighters:
+    first: *as-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      skill_ids: [skill.armour-specialist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

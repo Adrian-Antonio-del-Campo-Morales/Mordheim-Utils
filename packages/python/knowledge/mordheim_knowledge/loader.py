@@ -24,6 +24,15 @@ RUNTIME_GRANTS = frozenset({"profile", "band", "selectable", "none"})
 RUNTIME_BINDING_KINDS = frozenset({"mechanic", "trait", "profile", "compiler"})
 
 
+#: A clause is in the duel runtime (``YES``) or documented as outside it (``NO``).
+CLAUSE_SCOPES = frozenset({"YES", "NO"})
+
+
+#: The closed vocabulary of ``reason`` values (``registry/runtime-schema.yaml``
+#: ``reason_codes``); ``reason_label`` renders a code for the applications.
+RUNTIME_REASON_CODES = frozenset({"pending-classification", "pending-implementation", "source-blocked", "out-of-scope.magic", "out-of-scope.shooting", "out-of-scope.movement", "out-of-scope.campaign", "out-of-scope.construction", "out-of-scope.group", "out-of-scope.non-duel", "covered.elsewhere", "deferred.psychology", "deferred.mounts", "deferred.other"})
+
+
 SELECTABLE_RULE_KINDS = frozenset({
     "warband_skill", "mutation", "blessing", "virtue", "mark",
     "modification", "profile_ability", "warband_variant",
@@ -54,6 +63,40 @@ def read_yaml(path: Path) -> dict:
     value = yaml.load(path.read_text(encoding="utf-8"), Loader=SAFE_YAML_LOADER)
     if not isinstance(value, dict): raise ValueError(f"expected a mapping in {path}")
     return value
+
+
+def validate_clauses(record: dict, *, context: str) -> tuple[dict, ...]:
+    """Validate the optional ``clauses`` list of a classified record.
+
+    A clause is one observable part of the record's printed text: ``id``
+    (unique within the record) and ``scope`` (``YES`` inside the duel runtime,
+    ``NO`` documented as outside it).  A record declares clauses only when it
+    has several parts or excludes one; a record without clauses is one
+    undivided obligation.  Clauses carry no text and no evidence.
+    """
+    clauses = record.get("clauses")
+    if clauses is None:
+        return ()
+    if not isinstance(clauses, list) or not clauses:
+        raise ValueError(f"{context}: clauses must be a non-empty list")
+    seen = set()
+    for clause in clauses:
+        if not isinstance(clause, dict):
+            raise ValueError(f"{context}: clause must be a mapping")
+        clause_id = str(clause.get("id") or "")
+        if not clause_id:
+            raise ValueError(f"{context}: clause has no id")
+        if clause_id in seen:
+            raise ValueError(f"{context}: duplicate clause id {clause_id!r}")
+        seen.add(clause_id)
+        if clause.get("scope") not in CLAUSE_SCOPES:
+            raise ValueError(f"{context}/{clause_id}: invalid clause scope {clause.get('scope')!r}")
+        unknown = set(clause) - {"id", "scope"}
+        if unknown:
+            raise ValueError(f"{context}/{clause_id}: unknown clause fields {sorted(unknown)}")
+    if len(clauses) == 1 and clauses[0].get("scope") == "YES":
+        raise ValueError(f"{context}: a single YES clause is the record itself; declare clauses only to split or exclude")
+    return tuple(clauses)
 
 
 def validate_rule_runtime(rule: dict, *, context: str = "special rule") -> None:
@@ -103,8 +146,11 @@ def validate_rule_runtime(rule: dict, *, context: str = "special rule") -> None:
                              "planned bindings require implemented NO")
         if binding is None and not str(effect.get("reason") or ""):
             raise ValueError(f"{context} {rule.get('id')}/{effect_id}: unbound effect needs a reason")
+        if effect.get("reason") is not None and effect.get("reason") not in RUNTIME_REASON_CODES:
+            raise ValueError(f"{context} {rule.get('id')}/{effect_id}: unknown reason code {effect.get('reason')!r}")
         if implemented == "YES" and effect_scope == "YES" and binding is None:
             raise ValueError(f"{context} {rule.get('id')}/{effect_id}: implemented YES effect has no binding")
+        validate_clauses(effect, context=f"{context} {rule.get('id')}/{effect_id}")
         effect_ids.append(effect_id)
         effect_scopes.append(effect_scope)
     if len(effect_ids) != len(set(effect_ids)):
@@ -142,6 +188,26 @@ def runtime_bindings(rule: dict, kind: str | None = None, *, include_pending: bo
                 and (kind is None or binding.get("kind") == kind)):
             result.append(binding)
     return tuple(result)
+
+
+@lru_cache(maxsize=None)
+def reason_codes(root: Path | None = None) -> tuple[dict, ...]:
+    """The ``reason_codes`` records of the runtime schema (id, label, label_i18n)."""
+    document = read_yaml((root or knowledge_root()) / "registry/runtime-schema.yaml")
+    rows = tuple(document.get("reason_codes") or ())
+    ids = {str(row.get("id")) for row in rows}
+    if ids != RUNTIME_REASON_CODES:
+        raise ValueError(f"runtime-schema reason_codes {sorted(ids)} differ from the loader vocabulary")
+    return rows
+
+
+def reason_label(code: str, root: Path | None = None) -> str:
+    """Display label of a reason code in the active locale; an unknown code is returned as is."""
+    from mordheim_knowledge.i18n import display_name
+    for row in reason_codes(root):
+        if str(row.get("id")) == code:
+            return display_name({"name": row.get("label"), "name_i18n": row.get("label_i18n")}, str(row.get("label")))
+    return code
 
 
 @lru_cache(maxsize=None)
@@ -226,6 +292,20 @@ def load_items(ruleset: str, root: Path | None = None):
     ids = [str(row.get("id") or "") for row in rows]
     if any(not item_id for item_id in ids) or len(ids) != len(set(ids)):
         raise ValueError("item catalogue has missing or duplicate IDs")
+    # ``effect_ref`` makes an item a list row naming another item: it shows that
+    # item's printed entry instead of restating it. The text lives once, so the
+    # referencing record carries no prose of its own and the target must carry
+    # its own (one level, no chains).
+    by_id = {str(row["id"]): row for row in rows}
+    for row in rows:
+        target_id = row.get("effect_ref")
+        if target_id is None:
+            continue
+        target = by_id.get(str(target_id))
+        if "effect" in row or "effect_i18n" in row:
+            raise ValueError(f"item {row['id']} declares both effect_ref and its own effect")
+        if target is None or not target.get("effect") or target.get("effect_ref"):
+            raise ValueError(f"item {row['id']} effect_ref {target_id!r} is not an item with its own effect")
     return tuple(rows)
 
 

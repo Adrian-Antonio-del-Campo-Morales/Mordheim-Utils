@@ -1,0 +1,150 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   printed Slayer Captain charged by a fear-causer is asked no Fear die and hits on his ordinary
+#   4+, he charges a fear-causer with no charge test, a supplied Frenzy flag is suppressed on him
+#   from initialisation ("This includes Frenzy"), the band's Landlubber - a profile Deathwish does
+#   not name - charged the same way is tested and a failure clamps him to sixes, and the rule is
+#   refused when selected on that Landlubber.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/slayer-pirates-sar/special-rules.yaml
+#
+# AUTHORED: the printed Deathwish ("all members of this warband are completely immune to all
+#   psychology and never need to test if fighting alone. This includes Frenzy & Stupidity", Slayer
+#   Pirates p.1) binds the shared Psychology immunity to the four slayer profiles its applies_to
+#   names (slayer-captain, master-gunner, mates, sea-trollslayers); the Landlubbers, Gunners and
+#   Thaggi are outside it (as the band's authored B04 leader file already relies on).  The
+#   "fighting alone" face is the excluded group effect (unimplemented, out-of-scope.group) and owes
+#   no scenario.  Consumer: modular/psychology.py needs_test() (`not
+#   mechanic.psychology-immunity`), modular/leadership.py resolve_local_leadership (the
+#   psychology flag) and the compiler's frenzy suppression on an immune build.  REVIEWED still
+#   requires manual semantic review.
+
+# --- Authored scenarios ---
+# Family model (psychology-immunity): the bearer is the printed Slayer Captain (fixture WS3 S3 T3
+# W2 I5 A1; the printed Ld9 stays) with an axe from the band's Pirate equipment list; his Leader
+# rule lends Leadership only to a supplied nearby comrade and requests nothing here, and the band's
+# Slayer Rules act only on injury.  The non-recipient control is the printed Landlubber (same
+# list, a dagger, printed Ld8; his Skittish rule is out of runtime scope).  The enemy is the
+# hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) declaring causes_fear: true, silenced
+# (attacks 0) so the bearer's hit target is the observable.  The immune warrior's own 4 hits on
+# its ordinary 4+ and S3 wounds T3 on 4+, the positive evidence for the skip; the Landlubber's
+# 2D6 of 6+4 = 10 fails his Ld8 and clamps him to sixes.
+
+# A fear-causer charges the Slayer Captain: no Fear die is asked and his 4 hits and wounds.
+- audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+  id: the-slayer-captain-charged-by-a-fear-causer-is-not-tested
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: slayer-pirates-sar
+      profile_id: slayer-captain
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Slayer Captain charging a fear-causer takes no charge test either: the charge lands.
+- audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+  id: the-slayer-captain-charging-a-fear-causer-takes-no-charge-test
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: True, state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "This includes Frenzy": a supplied frenzy flag is suppressed on the immune Captain from
+# initialisation, so he strikes his single fixture attack rather than a doubled pair.
+- audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+  id: deathwish-suppresses-a-frenzy-flag-on-the-slayer-captain
+  fighters:
+    first:
+      collection: mordheim
+      band_id: slayer-pirates-sar
+      profile_id: slayer-captain
+      main_weapon_id: weapon.axe
+      trait_overrides: {frenzy: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: False}
+  expect_rounds:
+    0: {state.first.frenzy: False, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A profile Deathwish does not name: the Landlubber charged the same way is tested, 10 fails his
+# Ld8 and his 4 now needs a 6.
+- audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+  id: a-landlubber-outside-deathwish-is-tested-and-a-failure-clamps-him-to-sixes
+  fighters:
+    first:
+      collection: mordheim
+      band_id: slayer-pirates-sar
+      profile_id: landlubbers
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant names the four slayer profiles only; selecting it on a Landlubber is refused.
+- audit_id: rule/mordheim/slayer-pirates-sar/band--deathwish/mechanic.psychology-immunity
+  id: the-rule-is-refused-on-a-landlubber
+  fighters:
+    first:
+      collection: mordheim
+      band_id: slayer-pirates-sar
+      profile_id: landlubbers
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [band--deathwish]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to slayer-pirates-sar/landlubbers"

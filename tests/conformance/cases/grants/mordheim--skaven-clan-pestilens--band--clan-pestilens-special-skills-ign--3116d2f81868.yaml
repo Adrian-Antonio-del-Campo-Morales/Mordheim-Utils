@@ -1,0 +1,94 @@
+﻿# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios: ignore-pain (the Stunned-to-Knocked-Down
+#   conversion on the printed recipient) and requires-resilient (a construction refusal of the bearer
+#   without Resilient, with the conversion scenario, which declares Resilient, as its accepted control).
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: ignore-pain (scope: YES)
+# AUTHORED[ignore-pain]: 1 scenario evidences the conversion (see the closing note above).
+#
+# Clause: requires-resilient (scope: YES)
+# AUTHORED[requires-resilient]: 2 scenarios.  Printed text (shared-rule.ignore-pain): "Requires the
+#   Resilient Strength skill."  The earlier blocker in this note was FALSE and is corrected: the refusal
+#   identity does exist - packages/python/roster-construction/mordheim_construction/_eligibility.js::
+#   specialRuleRestriction ("prerequisites" stage) returns the literal sentence "Ignore Pain requires
+#   Resilient" when band--clan-pestilens-special-skills-ignore-pain is declared without skill.resilient
+#   among the build's skills or starting skills.  The refusal is the printed recipient declaring Ignore
+#   Pain without Resilient; the accepted control is the conversion scenario below, the same recipient
+#   declaring both.
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile (the printed recipient that binds the
+# rule is read statically from the band's eligibility and applies_to declaration); no engine
+# output was consulted. The fixture's Initiative is higher and the bearer contributes no
+# attacks of its own (initial_state), so the die of 3 at the injury table is Stunned,
+# converted to Knocked Down by the bearer's rule.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+  id: a-stunned-result-becomes-knocked-down
+  covers:
+  - ignore-pain
+  - requires-resilient
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      # The printed Ignore Pain is a band skill the recipient selects, together with
+      # the printed Resilient prerequisite; neither is an automatic profile trait.
+      skill_ids: [skill.resilient]
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+  initial_state:
+    second:
+      wounds: 1
+      attacks: 0
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 5
+  - key: round.0.first.attack.0.injury.0
+    value: 3
+  expect_rounds:
+    0:
+      state.second.wounds: 0
+      state.second.condition: KNOCKED_DOWN
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# The printed prerequisite: the same printed recipient declaring Ignore Pain without the Resilient
+# Strength skill is refused at construction with the shared stage's own sentence for this skill.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+  id: ignore-pain-without-resilient-is-refused
+  covers:
+  - requires-resilient
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+  expect_error: Ignore Pain requires Resilient

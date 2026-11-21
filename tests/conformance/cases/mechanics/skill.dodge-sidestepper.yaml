@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.dodge-sidestepper
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (survival-saves-and-rerolls batch, 2026-11-18) on the printed
+#   bearer, the Dark Jester compiled through the hireling route: the chosen dodge trick saves a
+#   melee wound on a 4 (the printed 4+), fails on a 3, and a round in which every trick is declined
+#   rolls no dodge die.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# Discrimination note (2026-11-18): the engine reads no `mechanic.dodge-sidestepper` tag
+#   (kernel.py lists it among "catalogue tags with no engine read"); the Jester's sibling Confound
+#   and Confuse (`mechanic.confound-and-confuse`) owns the per-round chooser that lights
+#   `dodge_trick_active`, which the special-save context reads (modular/contexts.py
+#   prepare_special_save_context, ward 4+ in close combat).  A hand-built fighter injecting
+#   skill.dodge-sidestepper through skill_ids therefore has no chooser and no dodge, so none is
+#   authored; the printed bearer is used instead, and the removal probe neutralising this entry is
+#   expected to report the identity non-discriminating (the sibling binding is the carrier).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the 4+ dodge on both faces and the declined trick with no die.
+
+# --- Authored scenarios ---
+# mechanic/skill.dodge-sidestepper - the Dark Jester in Mordheim (dramatis-personae/grade-2a.yaml,
+# rule sidestepper): "May use the source 4+ special dodge" - one of the three tricks his Confound
+# and Confuse chooses each combat turn.  Protocol (tests/construction/test_dark_jester_contracts.py
+# and the authored Confound and Confuse file): each round the chooser offers
+# `round.<i>.<side>.jester-trick.dodge_trick_active`, `.banter_trick_active`, `.trip_trick_active`
+# in that order and stops at the first acceptance; the dodge is the ordinary ward die
+# `round.<i>.<attacking side>.attack.<n>.special.ward` (the skill.step-aside grammar) at 4+ for
+# the round.  The ruling "The Starsword printed Dodge save is the ward save" keeps the printed dodge
+# on the ward face.
+#
+# Expectations come from the printed sentence, never from engine output.  The Jester is compiled
+# through the hireling route (hirelings.dramatis-personae.2a / hireling.dramatis.the-dark-jester-in-
+# mordheim) with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld7 stays) and his printed club;
+# his Leap, Acrobat, Jump Up and Lightning Reflexes add no die in an uncharged duel and his Dodge
+# skill is a shooting save.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour):
+# WS3 against WS3 hits on 4+, S3 wounds T3 on 4+.  The Jester's own blow is a declared natural 1.
+
+# The chosen dodge trick: the opponent's wound is saved on the ward die 4 (the printed 4+).
+- audit_id: mechanic/skill.dodge-sidestepper
+  id: the-chosen-dodge-trick-saves-a-melee-wound-on-four
+  fighters:
+    first:
+      &sidestepper-jester
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.the-dark-jester-in-mordheim
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &sidestepper-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: true, attacks.1.wounded: true, attacks.1.saved: true, attacks.1.damage: 0, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 4+: the ward die 3 fails and the wound lands.
+- audit_id: mechanic/skill.dodge-sidestepper
+  id: a-three-fails-the-dodge
+  fighters:
+    first: *sidestepper-jester
+    second: *sidestepper-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.special.ward, value: 3}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: true, attacks.1.saved: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Every trick declined: no slot lights and the same wound rolls no dodge die at all.
+- audit_id: mechanic/skill.dodge-sidestepper
+  id: a-declined-trick-rolls-no-dodge-die
+  fighters:
+    first: *sidestepper-jester
+    second: *sidestepper-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: false}
+    - {key: round.0.first.jester-trick.trip_trick_active, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: false, attacks.1.saved: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

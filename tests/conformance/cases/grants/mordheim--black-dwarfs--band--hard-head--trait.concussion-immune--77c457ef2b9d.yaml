@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/band--hard-head/trait.concussion-immune
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios.  concussion-immunity: the injury
+# chart's two is Knocked Down while the club/mace concussion rule raises 2-4 to Stunned, so on the printed
+# Chaos Dwarf bearer the mace no longer converts the two and a genuine stunned total of three still stuns.
+# bearer-scope: the printed Informer, which the printed sentence excludes, keeps the conversion, so the
+# same mace still turns a two into a Stunned result.  The bearer profiles are read from the band source and
+# the band rule is supplied through its printed rule key; no engine output was consulted.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: bearer-scope (scope: YES)
+# AUTHORED[bearer-scope]: 1 scenario exercises the printed exclusion: the Informer profile named in the
+#   printed sentence keeps the ordinary club/mace conversion, so the same mace that leaves the Chaos Dwarf
+#   Knocked Down still turns the Informer's two into a Stunned result.  The exclusion is evidenced by the
+#   absence of the immunity on a printed excluded recipient rather than by re-stating the applicability
+#   sentence.
+#
+# Clause: concussion-immunity (scope: YES)
+# AUTHORED[concussion-immunity]: 2 scenarios evidence the discrimination the immunity makes (a mace
+#   injury total of two leaves the bearer Knocked Down where an unmarked bearer is Stunned) and its
+#   boundary (a total of three still Stuns), so the immunity suppresses the club/mace conversion only and
+#   is not immunity to being Stunned.  The recipient is the printed Chaos Dwarf profile of the band and
+#   the band rule is supplied by its printed rule key.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed band record; no engine output was consulted.
+# The mace is the printed club/mace weapon whose concussion rule the bearer ignores; the fixture's
+# Initiative lets it strike first and each bearer starts at its printed single wound.  The wound die
+# stays below a natural six, so no critical die is part of this evidence.
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-head/trait.concussion-immune
+  id: the-mace-no-longer-converts-a-two-into-a-stun
+  covers: [concussion-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: chaos-dwarfs}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-head/trait.concussion-immune
+  id: a-genuine-stunned-total-still-stuns-the-chaos-dwarf
+  covers: [concussion-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: chaos-dwarfs}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-dwarfs/band--hard-head/trait.concussion-immune
+  id: the-excluded-informer-keeps-the-conversion
+  covers: [bearer-scope]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    # The excluded recipient: the printed scope ("excluded_profile_ids": ["informers"]) is the reason
+    # the rule does not apply, so the control declares no rule at all - the informer keeps the ordinary
+    # conversion because Hard Head never reached it. Declaring the id here would both contradict the
+    # clause's own exclusion and be refused as an unavailable recipient.
+    second: {collection: mordheim, band_id: black-dwarfs, profile_id: informers}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

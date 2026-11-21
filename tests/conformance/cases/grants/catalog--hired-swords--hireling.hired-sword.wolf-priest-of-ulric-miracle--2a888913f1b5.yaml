@@ -1,0 +1,133 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, equipment-items batch
+#   2026-11-18): the real Wolf-Priest wearing his printed pelt saves an S3 wound on the
+#   armour die 6 and takes it on the 5 (the compiled armour_save is the printed 6+); the
+#   Bard control wearing nothing is offered no save; the pelt is refused on a hireling
+#   outside the priest's printed kit; a suit of armour worn beside the pelt is refused.
+#   The strictures' two refusals are evidenced through the kit matcher, as the
+#   mechanics file records.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the kit's pelt is owned, not worn, until the
+#   build declares it (defence_ids: [defence.wolf-pelt-cloak]); the compiler notes that the
+#   carried piece grants its save once even when also selected explicitly.  The printed
+#   kit is enforced before the profile.equipment-restrictions binding, so the forbidden
+#   suit is refused as an incomplete printed kit, never with a stricture-specific
+#   diagnostic (recorded limitation in mechanics/defence.wolf-pelt-cloak.yaml).
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The pelt's 6+ save is carried by the worn catalogue item (defence.wolf-pelt-cloak); the strictures
+#   binding only names it, so filtering the binding leaves the worn pelt (KB double delivery).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2b.yaml, hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures,
+# grant profile): "Wolf-Priests of Ulric may never wear armour ... every Wolf-Priest is garbed in a
+# cloak made from the pelt of a white wolf; the pelt allows a 6+ saving throw ... may never be
+# equipped with blackpowder weapons" - this binding is the pelt's mechanic defence.wolf-pelt-cloak
+# (execution.yaml: armour_save_bonus 1, so the compiled save is 7-1 = 6+); the forbids binding
+# (armour, blackpowder) is the sibling identity.  Hireling family model (README, Hireling
+# recipients): the real Wolf-Priest through the hireling route (hirelings.hired-sword.2b) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld8 stays), his kit dagger in hand and the kit pelt
+# declared worn; he is silenced (attacks 0) so the only dice are the attacker's.  The attacker is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and charges.  The control is the grade-1b Bard with
+# nothing worn (his kit light armour is owned, not worn).  WS3 against WS3 hits on 4+; S3 against
+# T3 wounds on 4+; an S3 blow carries no save modifier, so the pelt's 6+ is rolled unmodified.
+# His Intense Rivals hatred reads Sigmarite enemies only, so a hand-built opponent asks nothing.
+
+# The printed 6+ on its own face: the armour die 6 turns the wound and the compiled save is 6.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+  id: the-real-wolf-priests-pelt-saves-on-six
+  fighters:
+    first:
+      &pelt-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &pelt-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers
+      main_weapon_id: weapon.dagger
+      defence_ids: [defence.wolf-pelt-cloak]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+ and the wound is taken.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+  id: the-real-wolf-priests-pelt-does-not-save-on-five
+  fighters:
+    first: *pelt-attacker
+    second: *pelt-recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, nothing worn) takes the same wound with no armour die requested at all.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+  id: a-hireling-without-the-pelt-is-offered-no-save
+  fighters:
+    first: *pelt-attacker
+    second:
+      &pelt-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The pelt is the Wolf-Priest's printed kit; worn by a hireling of another kit it is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+  id: the-pelt-is-refused-on-a-hireling-outside-the-priests-printed-kit
+  fighters:
+    first: *pelt-attacker
+    second:
+      <<: *pelt-control
+      defence_ids: [defence.wolf-pelt-cloak]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The strictures forbid every other armour: a suit worn beside the pelt is refused before any
+# round runs (through the kit matcher - recorded limitation, see the header).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures/defence.wolf-pelt-cloak
+  id: a-suit-of-armour-worn-beside-the-pelt-is-refused
+  fighters:
+    first: *pelt-attacker
+    second:
+      <<: *pelt-recipient
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

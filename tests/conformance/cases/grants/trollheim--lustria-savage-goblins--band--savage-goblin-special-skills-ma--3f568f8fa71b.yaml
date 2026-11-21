@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (B12 construction-equipment, 2026-11-18): five carried missile
+#   weapons admitted with the skill, six refused, three refused without the skill (the baseline two the
+#   clause replaces) and two admitted without it.  REVIEWED still requires manual semantic review;
+#   execution_status stays UNEXECUTED.
+# AUTHORED: the selectable allowance's possession bound and the baseline it replaces are evidenced on both
+#   sides of each boundary (see authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/lustria-savage-goblins/special-rules.yaml
+
+# Model (B12 2026-11-18): the KB binds this selectable skill's profile.equipment-restrictions with
+#   max_missile_weapons: 5 and baseline_max_missile_weapons: 2 (special-rules.yaml, p.105; eligibility
+#   [trackers]).  profileFactsProjection publishes the five as the profile's own missile_weapon_limit while
+#   the rule is selected, and the baseline two for the eligible bearer while it is not; equipmentSetIssues
+#   counts the carried units (itemIsMissile: ranged-weapon kind or bow/crossbow/blackpowder/thrown tag) and
+#   answers `${band}/${profile} carries ${n} missile weapons; the printed clause allows ${maximum}.`  The
+#   bound exempts no item, so the message ends at the bound.  Every carried id is a row of savage-goblin-
+#   hero-equipment-list (short_bow: bow; javelin: thrown), so no offered-set refusal can stand in.  The
+#   recipient face ('Trackers only') belongs to the rule's eligibility and is authored in the sibling
+#   mechanic.master-of-throwing-weapons file.
+
+# Discrimination note (2026-11-18): the sibling binding compiler.master-of-throwing-weapons sets the
+#   compiled missile_weapon_limit (asserted in the sibling file); the carried-kit bound and its baseline are
+#   this binding's own, so the refusals here are the construction effect of this binding alone.
+
+# Removal-probe expectation (2026-11-18): construction rule; construction-only or discriminating (the six-
+#   unit refusal is admitted without the binding) is expected.
+
+# --- Authored scenarios ---
+# Derived from the KB record, the band's equipment list and the gate's message template; no engine output
+#   was consulted.
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/profile.equipment-restrictions
+  id: a-tracker-with-the-skill-carries-five-missile-weapons
+  # The printed allowance: five counted missile weapons (short bows: bow tag; javelins: thrown tag) are
+  # admitted with the skill selected.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]
+      owned_item_ids: [short_bow, short_bow, short_bow, javelin, javelin]
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [short_bow]
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/profile.equipment-restrictions
+  id: a-tracker-with-the-skill-carrying-six-missile-weapons-is-refused
+  # One unit above the printed five: the profile-scoped bound of this binding (max_missile_weapons: 5)
+  # refuses the kit.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]
+      owned_item_ids: [short_bow, short_bow, short_bow, javelin, javelin, javelin]
+  expect_error: 'lustria-savage-goblins/trackers carries 6 missile weapons; the printed clause allows 5.'
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/profile.equipment-restrictions
+  id: a-tracker-without-the-skill-is-refused-at-three-missile-weapons
+  # The 'usual two' the clause replaces: the same binding publishes baseline_max_missile_weapons: 2 for the
+  # eligible, unselected bearer.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [short_bow, short_bow, javelin]
+  expect_error: 'lustria-savage-goblins/trackers carries 3 missile weapons; the printed clause allows 2.'
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/profile.equipment-restrictions
+  id: a-tracker-without-the-skill-carries-two-missile-weapons
+  # The ordinary bound's admitted side: two counted units without the skill.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [short_bow, javelin]
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

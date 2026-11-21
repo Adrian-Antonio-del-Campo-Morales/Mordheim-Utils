@@ -1,0 +1,88 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.danse-macabre-controlled
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 3 scenarios (supplied-conditions batch, 2026-11-18) read the catalogue row "The supplied cursed
+#   target may not attack the controlling Piper and takes a Leadership test in its own recovery;
+#   success clears the effect" (sources/knowledge/catalog/rules/conditions.yaml,
+#   condition.danse-macabre-controlled) on hand-built fighters with the supplied condition_ids entry
+#   (the row has no compiler recipient gate); the AUTHORED grant file
+#   grants/mordheim--cursed-cavalcade--cursed-piper--danse-macabre--condition.danse--8703576b6cca.yaml
+#   is the template (break-free test grammar round.0.<side>.danse-macabre.{0,1}, controlled side
+#   active).  Scenarios: the failed own-recovery re-test (5+4 = 9 above Leadership 6) leaves the warrior
+#   dancing and attackless - the only attack die is the opponent's; the passed re-test (3+3 = 6, the
+#   exact boundary) clears the state and restores its attacks; and with the controlled side inactive no
+#   re-test is asked (the test belongs to its own recovery) while its attack share stays empty.
+#   Removing the supplied id (the mechanic probe) removes the re-test die and restores the attacks, so
+#   the pairs discriminate.  REVIEWED still requires manual semantic review.
+# Semantic wrinkles (recorded, not asserted): the row excludes shooting activation, distances, movement
+#   and the retargeting of external models; the Piper's control roll is the excluded producer.  The
+#   controlled warrior's charge: when the controlled side charged and fails its re-test the duel's
+#   charge flag is withdrawn (TODO.md, Danse Macabre band rules are `grant: none`); the scenarios here
+#   keep the controlled side uncharged except the passed re-test, which mirrors the template.
+
+# --- Authored scenarios ---
+# Leadership 2D6: a total at or under Leadership passes.  Every strike is a natural 1 so no wound die
+# exists; the controlled fighter declares Leadership 6.
+
+# The failed re-test: 5+4 = 9 fails Leadership 6, the warrior keeps dancing (danse_macabre_controlled
+# true) and its attack share is zero - the only attack die in the tape is the opponent's.
+- audit_id: mechanic/condition.danse-macabre-controlled
+  id: the-failed-own-recovery-retest-leaves-the-warrior-dancing-and-attackless
+  fighters:
+    first:
+      &danse-controlled
+      condition_ids: [condition.danse-macabre-controlled]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      &danse-opponent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 5}
+    - {key: round.0.first.danse-macabre.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: true, attacks.0.hit: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed re-test: 3+3 = 6 against Leadership 6 is the exact boundary; the state clears and the
+# recovered warrior resumes attacking, so the pool carries both fighters' strikes.
+- audit_id: mechanic/condition.danse-macabre-controlled
+  id: the-passed-own-recovery-retest-clears-the-state-and-restores-the-attacks
+  fighters:
+    first: *danse-controlled
+    second: *danse-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 3}
+    - {key: round.0.first.danse-macabre.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The re-test belongs to the controlled warrior's own recovery: with the opponent active no
+# danse-macabre die is asked, the state persists and the held warrior still contributes no attack.
+- audit_id: mechanic/condition.danse-macabre-controlled
+  id: with-the-controlled-side-inactive-no-retest-is-asked-and-its-attack-share-stays-empty
+  fighters:
+    first: *danse-opponent
+    second: *danse-controlled
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.danse_macabre_controlled: true, attacks.0.hit: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

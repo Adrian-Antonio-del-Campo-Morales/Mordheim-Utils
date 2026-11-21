@@ -39,8 +39,7 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.mystic.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: >-
     A Mystic is a Wizard. He uses spells from the Elemental Magic list. He starts with a single
@@ -68,8 +67,7 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.bedouin.desert-trader
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Desert Trader
   effect: >-
     Add +1 to your search for Equipping/Trading result. Note that you only get +1 even if you have
@@ -97,12 +95,8 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.slaves.life-of-slavery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Life of Slavery
-  effect: >-
-    A Slave may gain experience, but if he rolls Lad’s got Talent, the leader executes the Slave,
-    and he is removed from the roster. The rest of the group may then re-roll their advance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -110,13 +104,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
   name_i18n:
     es: Vida de Esclavitud
-  effect_i18n:
-    es: >-
-      Un Esclavo puede ganar experiencia, pero si saca 'El mozo tiene talento', el líder ejecuta al
-      Esclavo y se retira de la lista. El resto del grupo puede entonces repetir su mejora.
   applies_to:
     profile_ids:
     - slaves
+  rule_ref: shared-rule.life-of-slavery
 - id: band--hate-undead
   runtime:
     scope: 'YES'
@@ -180,8 +171,11 @@ rules:
     es: >-
       Los héroes árabes pueden usar la siguiente tabla de habilidades en lugar de cualquiera de las
       tablas de habilidades estándar disponibles para ellos.
+  # "Arab Heroes may use the following skill table" (ruling 2026-11-19): the table reaches the band's
+  # Heroes only; a Henchman is refused it.
   applies_to:
     band: true
+    profile_types: [hero]
 - id: band--arabian-tomb-raiders-special-skills-sand-worm
   kind: warband_skill
   runtime:
@@ -192,8 +186,7 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-sand-worm
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Sand Worm
   effect: >-
     The warrior can bury himself in sand and become almost undetectable. The model can hide in open
@@ -221,8 +214,7 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-hit-and-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: to-hit rolls.
+      reason: out-of-scope.shooting
   name: Hit and Run
   effect: The warrior can run and shoot but suffer -2 to hit instead of the -1 to hit for moving.
   source:
@@ -248,8 +240,7 @@ rules:
     - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-weather-tolerant
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.non-duel
   name: Weather Tolerant
   effect: >-
     The warrior has grown so used to the weather it doesn't even affect him anymore. Weather

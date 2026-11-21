@@ -1,0 +1,160 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-songster/mechanic.songster
+# authoring_status: AUTHORED
+# authoring_progress: the admitted songster clause carries 4 scenarios read from the printed sentence with a
+#   supplied Songster Hero as the nearby provider.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
+#
+# Clause: songster (scope: YES)
+# AUTHORED[songster]: 4 scenarios read the printed "Any friendly model within 6" of the Hero may re-roll
+#   any failed Leadership test with a +1 to Leadership" (Strigany Special Skills / Songster; the same
+#   sentence as the sea-ghosts Minstrels Songster, but that sibling supplies the reroll through
+#   mechanic.leadership-reroll on the beneficiary and asserts neither the +1 nor the radius, so its shape
+#   is not reused).  Here the Songster is the band's own Tinker credited with this row through
+#   special_rule_ids and supplied as a nearby same-side participant at a declared distance; the
+#   beneficiary is a printed Gypsy (Ld 7) charged by a fear-causer, so the tested Leadership is its Fear
+#   test.  Within 4": the failed 8 is rerolled at Ld 8 and the second 8 passes (it would fail at Ld 7, so
+#   the +1 is asserted); a rerolled 9 still fails with no third attempt; at 8" no reroll is offered; and a
+#   Tinker without the skill offers none.  Implemented by
+#   packages/python/combat-engine/mordheim_combat/modular/leadership.py (_supplied_provider returns the
+#   six-inch "songster" contract for a provider tagged mechanic.songster; the reroll uses min(10, value+1)).
+#   The excluded group-emission and rout halves are not asserted.
+#
+# Clause: songster-group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: songster-rout (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence; no engine output was consulted.  Both fighters attack once (a mace
+# and the Gypsy's axe) and every declared attack die is a natural one, a miss, so the Fear test and its reroll are the
+# whole of the evidence.
+
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-songster/mechanic.songster
+  id: the-reroll-at-plus-one-leadership-passes
+  covers: [songster]
+  fighters:
+    first: &songster-fear-charger
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: &songster-gypsy
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: gypsies
+      main_weapon_id: weapon.axe
+  duel_context: &songster-near
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[second, songster, 4]]
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: &songster-tinker
+          collection: mordheim
+          band_id: channel-rats-mim
+          profile_id: tinker
+          special_rule_ids: [band--strigany-special-skills-songster]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.fear.charged.reroll.0, value: 4}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-songster/mechanic.songster
+  id: a-failed-reroll-stands-with-no-third-attempt
+  covers: [songster]
+  fighters:
+    first: *songster-fear-charger
+    second: *songster-gypsy
+  duel_context: *songster-near
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.fear.charged.reroll.0, value: 5}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Outside the printed six inches the Songster offers nothing: the same failed 8 stands and no reroll
+# decision or die is requested.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-songster/mechanic.songster
+  id: beyond-six-inches-no-reroll-is-offered
+  covers: [songster]
+  fighters:
+    first: *songster-fear-charger
+    second: *songster-gypsy
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[second, songster, 8]]
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: *songster-tinker
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The non-bearer control: the same Tinker at the same 4 inches without the skill offers no reroll.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-songster/mechanic.songster
+  id: a-hero-without-the-skill-offers-no-reroll
+  covers: [songster]
+  fighters:
+    first: *songster-fear-charger
+    second: *songster-gypsy
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[second, songster, 4]]
+    nearby:
+      - participant_id: songster
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: channel-rats-mim, profile_id: tinker}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

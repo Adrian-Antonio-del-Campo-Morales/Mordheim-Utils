@@ -1,0 +1,74 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.fungus-brew-dizzy
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (supplied-conditions batch, 2026-11-18): the supplied Dizzy
+#   brew lowers the bearer's compiled and initial Initiative by one; the identical bearer without it
+#   keeps its printed value (compiled single-model projection pair).  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/rules/conditions.yaml (condition.fungus-brew-dizzy, "Dizzy Fungus
+#   Brew": "Initiative is reduced by one for the battle.")
+# Band-rule note (2026-11-18, recorded, Discrimination-style): the band rule shaman--fungus-brew
+#   (bands/mordheim/night-goblins-web/special-rules.yaml) binds this condition with `grant: none` only to
+#   name the printed brew that produces it; it is never a compile route - construction refuses it on the
+#   printed recipients, so the band-level identity probes `inert` (TODO.md, "Conditions and bull-charge
+#   unreachable by scenarios").  The condition is reached through the supplied condition_ids entry these
+#   scenarios declare, which the rule-removal probe deletes from every id list, so the with/without pairs
+#   below discriminate for this mechanic identity.  No compiler gate exists for the brew results (the
+#   compiler only lists them among the drug ids that Drug Immunity strips, compiler.py:859-866), so the
+#   hand-built bearers below carry the condition directly.
+# AUTHORED: the 2 scenarios below are the compiled/initial Initiative pair; REVIEWED still requires
+#   manual semantic review.  Consumer: the compiler lowers the characteristic itself
+#   (compiler.py:876-877, "condition.fungus-brew-dizzy" in global_ids -> initiative - 1), so the
+#   execution entry carries only its own tag and the harness observes the compiled fighter
+#   (expect_fighters first.characteristics.initiative) and the initial state (first.initiative), never
+#   recomputing either (README, Harness capacities: compiled single-model projection pairs).
+# Semantic wrinkle (2026-11-18, recorded): a strike-order consequence cannot be shown as a clean pair -
+#   no integer Initiative lies strictly between the bearer's two values, so one side of any with/without
+#   pair would be an Initiative tie resolved by a roll-off; the pair is therefore the projected
+#   characteristic, which is the whole of the printed effect inside the duel.
+#
+# --- Authored scenarios ---
+# Fixtures: hand-built bearer (WS3 S3 T3 W2 I5 A1 Ld7, mace); the opponent starts out of action so only
+# the compiled fighter and the initial state are read.
+
+# The brew: Initiative 5 compiles and initializes as 4.
+- audit_id: mechanic/condition.fungus-brew-dizzy
+  id: the-supplied-brew-lowers-initiative-by-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.fungus-brew-dizzy]
+      characteristics: &fb-dizzy-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &fb-dizzy-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_fighters: {first.characteristics.initiative: 4}
+  expect_initial: {first.initiative: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# The control: without the brew the identical bearer keeps Initiative 5.
+- audit_id: mechanic/condition.fungus-brew-dizzy
+  id: without-the-brew-the-same-bearer-keeps-its-initiative
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-dizzy-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fb-dizzy-opponent
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_fighters: {first.characteristics.initiative: 5}
+  expect_initial: {first.initiative: 5}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

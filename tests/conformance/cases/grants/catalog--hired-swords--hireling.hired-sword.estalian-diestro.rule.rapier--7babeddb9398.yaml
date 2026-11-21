@@ -1,0 +1,153 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the Diestro's rapier grants the wounded enemy a 6+ save on both faces (the die 6
+#   saves, the 5 does not); the rapier parries a higher roll; Barrage continues after a landed hit
+#   that fails to wound, one point harder to hit (the continuation's 4 now misses); the
+#   plain-hireling control is offered neither parry nor Barrage; the rule is refused outside the
+#   Diestro's package.  REVIEWED still requires manual semantic review; execution_status stays
+#   UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The rapier's duel profile is carried by the catalogue item mapping (weapon.rapier) the kit wields;
+#   the rule binding only names it, so filtering the binding leaves the wielded item.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.estalian-diestro.rule.rapier, grant profile): "The
+# rapier parries and has Barrage: a landed hit that fails to wound grants another attack with a
+# cumulative -1 To Hit, capped at needing 6, and each further attack benefits from Barrage" -
+# binding weapon.rapier (the catalogue rapier: Strength as user, +1 enemy armour save, parry,
+# Barrage; model mechanics/weapon.rapier.yaml).  Hireling family model (README, Hireling
+# recipients): the real Diestro through the hireling route (hirelings.hired-sword.2a /
+# hireling.hired-sword.estalian-diestro) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8
+# stays) and his printed kit rapier named in hand (the kit's first close-combat weapon; the kit's
+# main gauche and light armour stay owned, not held or worn, so the Main Gauche rule's per-turn
+# choice is never requested and no save of his own is rolled).  The opponent is hand-built (WS3 S3
+# T3 W3 I2 A1 Ld7, mace, no armour: the rapier's +1 is the only save he has).  The duel is
+# uncharged, so the Diestro's Initiative 5 strikes before the opponent's 2.  The control is the
+# grade-1b Bard with his kit dagger.  Dice: WS3 against WS3 hits on 4+ (5+ under one Barrage
+# point), S3 wounds T3 on 4+.  Barrage is optional, so the continuation is a declared decision
+# (round.0.first.attack.0.barrage) and its dice carry the .barrage.1 key.
+
+# The rapier's printed +1 to the enemy save: the unarmoured opponent is granted a 6+ and the die
+# 6 saves the wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: the-diestros-rapier-grants-the-wounded-enemy-a-six-plus-save
+  fighters:
+    first: &diestro
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.estalian-diestro
+      main_weapon_id: weapon.rapier
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the granted 6+: the 5 fails and the wound lands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: the-granted-save-fails-on-five
+  fighters:
+    first: *diestro
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The rapier parries: the Diestro's own strike misses first (Initiative 5), then the opponent's
+# hit on a 4 is beaten by the parry die 5.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: the-diestro-parries-with-the-rapier
+  fighters:
+    first: *diestro
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Barrage: the landed 4 fails to wound (1), the printed continuation is taken, and the next attack
+# is one point harder to land: the identical 4 now misses the 5+ and the chain ends unwounded.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: barrage-continues-one-point-harder-after-a-hit-that-fails-to-wound
+  fighters:
+    first: *diestro
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.barrage, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.0.barrage.1.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, kit dagger): the same landed 4 and failed wound offer no Barrage decision, and
+# the opponent's hit on a 4 is offered no parry die, so the Bard takes the wound.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: a-hireling-without-the-rule-is-offered-neither-barrage-nor-parry
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.1.parried: false, attacks.1.damage: 1, state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Diestro's profile; selecting it on a hireling of another package
+# is refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.rapier/weapon.rapier
+  id: the-rule-is-refused-on-a-hireling-outside-the-diestros-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.estalian-diestro.rule.rapier]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

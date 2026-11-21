@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): the
+#   Wolf Priest of Ulric's first-round miss against a Sister of Sigmar is re-rolled; the same against the Warrior-Priest of a
+#   Witch Hunters warband; the same miss stands against an opponent outside the rival cult; the Bard control
+#   gets no re-roll against the same Sister; the refusal.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the consumer (modular/contexts.py `_hit_reroll`,
+#   `mechanic.ulric-intense-rivals` and `identity.ulric-rival` in the enemy tags) reads the opponent's compiled
+#   cult identity, which compiler.py (`ulric_rival`) produces for every Sisters of Sigmar build, for the Witch
+#   Hunters' captain, Witch Hunters and Warrior-Priest, and for the hired Warrior-Priest of Sigmar and Sister
+#   of Sigmar; a hand-built `trait_overrides: {ulric_rival: true}` is the supplied-fact route and is not used
+#   here, so the opponents are compiled band profiles with fixture characteristics.  The KB record abbreviates the printed list to "the source-listed Sigmarite models"; the binding is the shared Ulric rivalry operator, so the two compiled rivals shown are the operator's own members.  His kit's wolfcloak is the out-of-scope Middenheim hunt cloak and adds nothing.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Wolf Priest of Ulric compiled through
+# the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.wolf-priest-of-ulric), its printed rule granted by the
+# profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8 stays); the kit dagger is named.
+# Printed text: "Hates the source-listed Sigmarite models."
+# The Sigmarite opponents are compiled band profiles (sisters-of-sigmar / sigmarite-matriarch and
+# witch-hunters / warrior-priest, mace, fixture WS3 S3 T3 W3 I2 A1, printed Ld); the plain opponent is
+# hand-built (Ld7, mace).  Dice: a natural 2 misses WS3-vs-WS3 (4+), the Hatred re-roll of 4 hits, S3 wounds
+# T3 on a 4, and the dagger's printed +1 to the target's save asks an armour die (a 1 fails any save); every
+# opposing swing is a declared natural 1.  The control is the grade-1b Bard; the refusal selects the printed
+# rule on the Bard.
+
+# Against a Sister of Sigmar the first-round miss is re-rolled, hits and wounds.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+  id: a-first-round-miss-against-a-sister-of-sigmar-is-rerolled
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.wolf-priest-of-ulric
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &sister
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: sigmarite-matriarch
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Warrior-Priest of a Witch Hunters warband is another printed rival.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+  id: a-first-round-miss-against-a-witch-hunters-warrior-priest-is-rerolled
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      collection: mordheim
+      band_id: witch-hunters
+      profile_id: warrior-priest
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opponent outside the rival cult: the strict tape holds no re-roll key and the same miss stands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+  id: the-same-miss-stands-against-an-opponent-outside-the-rival-cult
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) charges the same Sister of Sigmar: the miss is not offered a re-roll.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+  id: a-hireling-without-the-hatred-receives-no-reroll-against-the-same-sister
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *sister
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.wolf-priest-of-ulric.rule.hatred/mechanic.ulric-intense-rivals
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.wolf-priest-of-ulric.rule.hatred]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

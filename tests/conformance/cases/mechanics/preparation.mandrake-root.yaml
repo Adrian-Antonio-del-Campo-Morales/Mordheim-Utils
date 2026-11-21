@@ -1,0 +1,66 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/preparation.mandrake-root
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 scenarios (the +1 Toughness and the Stunned conversion); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios show the one
+#   higher Toughness in the state and the Stunned injury result converted to
+#   Knocked Down.
+
+# --- Authored scenarios ---
+# mechanic/preparation.mandrake-root - authored from the printed rule and the
+# admitted clauses, never from engine output.  The preparation is supplied
+# on `preparation_ids`.
+# The +1 Toughness raises the defender's Toughness in the fighter state, so the
+# wound target moves with it; the same preparation turns a Stunned injury result
+# into Knocked Down after the ordinary bands.  In the conversion scenario the
+# bearer acts first, so its own attack is resolved before the blow that lays it
+# down.
+- audit_id: mechanic/preparation.mandrake-root
+  id: mandrake-root-raises-toughness-by-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &mr-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mandrake-root]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.toughness: 4, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Stunned injury result is converted to Knocked Down for the prepared bearer.
+- audit_id: mechanic/preparation.mandrake-root
+  id: a-stunned-result-becomes-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *mr-attacker
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mandrake-root]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

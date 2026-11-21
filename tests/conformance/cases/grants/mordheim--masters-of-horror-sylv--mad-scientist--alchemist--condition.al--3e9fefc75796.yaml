@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-backleys-brew
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule mad-scientist--alchemist binds
+#   condition.alchemist-backleys-brew with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.
+# Record: sources/knowledge/bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# Disposition (carried as the PARTIAL block until 2026-11-18): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/masters-of-
+#   horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist, whose
+#   KB effect is now unbound (a supplied-condition split: the start-of-game potion roll stays unbound,
+#   each potion is a bound condition); the duel behaviour they exercise is this identity's.  Inputs,
+#   dice and expectations are unchanged by the move; each scenario's own comments carry its derivation
+#   and may still name the placeholder record they were authored against.  One scenario shows the
+#   supplied potion lowers Strength and Initiative by one on the printed Mad Scientist.  Gap: this
+#   identity has no contrast of its own; the no-potion control lives in condition.alchemist-resilience.
+# Status corrected 2026-11-18: the recorded gap is not an applicable requirement of this identity.
+#   The missing "contrast" is the shared no-potion control of the mad-scientist--alchemist results,
+#   authored once on the sibling identity condition.alchemist-resilience (file mordheim--masters-of-
+#   horror-sylv--mad-scientist--alchemist--condition.al--e164bfe0c919.yaml, authoring_status
+#   AUTHORED) - covered elsewhere, not absent.  The one requirement that was genuinely unauthored,
+#   the printed expiry, is now authored below on both faces: the earlier note that "the source gives
+#   no test timing" is superseded by the project ruling the KB record itself carries.  The
+#   disposition block above is kept.
+# AUTHORED: "5: Backley's Brew - -1 Strength and -1 Initiative until a Toughness test is passed."
+#   Three scenarios: the supplied potion lowers both characteristics by one on the printed Mad
+#   Scientist, a passed Toughness test at the start of its own turn restores both, and a failed one
+#   leaves the penalty in force.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-backleys-brew
+  id: backleys-brew-lowers-strength-and-initiative-by-one
+  # "5: Backley's Brew - Remove -1 from both Strength and Initiative until a Toughness test is passed."
+  # The printed penalty is read on both characteristics; the printed expiry is not asserted because the
+  # source gives no test timing (recorded in the clause marker).
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 2, first.initiative: 3}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+# The printed expiry, authored 2026-11-18: "-1 Strength and -1 Initiative until a Toughness test is
+# passed".  The KB record now carries the project ruling that fixes the cadence the source leaves
+# open ("test once at the start of each own turn until recovery; the source does not specify the
+# timing", sources/knowledge/catalog/rules/conditions.yaml, condition.alchemist-backleys-brew), so
+# the test is a declarable face: the Mad Scientist starts its own turn at the lowered Strength 2 and
+# Initiative 3, the declared two passes its printed Toughness 3, and both characteristics are back at
+# their printed values for the rest of the round.  The restored Strength is what the blow reads: the
+# declared wound four reaches Toughness 3 only at Strength 3 (4+); at the brewed Strength 2 it would
+# need a 5.  The opponent's declared blow is a natural one.
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-backleys-brew
+  id: a-passed-toughness-test-ends-the-brews-strength-and-initiative-penalty
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 2, first.initiative: 3}
+  rolls:
+    - {key: round.0.first.alchemist-backley, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.strength: 3, state.first.initiative: 4, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The other face of the same printed sentence: the test is failed, so the penalty is still in force.
+# The declared five is above the printed Toughness 3, Strength stays 2 and Initiative stays 3, and the
+# same declared wound four now fails against Toughness 3 (Strength 2 needs a 5), so the opponent keeps
+# both Wounds.  The pair isolates the expiry from the penalty itself.
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/condition.alchemist-backleys-brew
+  id: a-failed-toughness-test-leaves-the-brews-penalty-in-force
+  fighters:
+    first:
+      collection: mordheim
+      band_id: masters-of-horror-sylv
+      profile_id: mad-scientist
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 2, first.initiative: 3}
+  rolls:
+    - {key: round.0.first.alchemist-backley, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.strength: 2, state.first.initiative: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

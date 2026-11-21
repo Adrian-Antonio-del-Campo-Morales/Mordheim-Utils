@@ -1,0 +1,118 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elf-corsairs-mou/captain--hardened/mechanic.fear-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   printed Captain charged by a fear-causer is asked no Fear die and hits on his ordinary 4+, he
+#   charges a fear-causer with no charge test, a band comrade without the rule (a Reaver) charged
+#   the same way is tested and a failure clamps him to sixes, and the rule is refused when selected
+#   on that Reaver.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/dark-elf-corsairs-mou/special-rules.yaml
+#
+# AUTHORED: the printed Hardened ("Seen everything, done everything... it makes him immune to
+#   fear", Dark Elf Corsairs p.3) is a profile grant to the Captain alone (applies_to captain).
+#   Consumer: modular/psychology.py needs_test() (`not mechanic.fear-immunity`) and
+#   modular/leadership.py resolve_local_leadership (the fear flag short-circuit).  The Captain's
+#   other printed rules add no request here: Leader lends Leadership only to a supplied nearby
+#   comrade and Slaver is out of runtime scope.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Family model (fear-immunity): the bearer is the printed Captain (fixture WS3 S3 T3 W2 I5 A1; the
+# printed Ld9 stays) with a sword from the band's Reaver equipment list; the comrade control is
+# the printed Reaver (same list, printed Ld8), who binds no rule at all.  The enemy is the
+# hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7) declaring causes_fear: true, silenced
+# (attacks 0) so the bearer's hit target is the observable.  The immune warrior's own 4 hits on
+# its ordinary 4+ and S3 wounds T3 on 4+, the positive evidence for the skip; the Reaver's 2D6 of
+# 6+4 = 10 fails his Ld8 and clamps him to sixes.
+
+# A fear-causer charges the Captain: no Fear die is asked and his 4 hits and wounds.
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/captain--hardened/mechanic.fear-immunity
+  id: the-hardened-captain-charged-by-a-fear-causer-is-not-tested
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: dark-elf-corsairs-mou
+      profile_id: captain
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Captain charging a fear-causer takes no charge test either: the charge lands.
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/captain--hardened/mechanic.fear-immunity
+  id: the-hardened-captain-charging-a-fear-causer-takes-no-charge-test
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: True, state.first.fear_hit_sixes: False, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A band comrade without the rule: the Reaver charged the same way is tested, 10 fails his Ld8 and
+# his 4 now needs a 6.
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/captain--hardened/mechanic.fear-immunity
+  id: a-reaver-without-the-rule-is-tested-and-a-failure-clamps-him-to-sixes
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elf-corsairs-mou
+      profile_id: reavers
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, attacks.0.hit_target: 6, attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant names the Captain only; selecting it on a Reaver is refused.
+- audit_id: rule/mordheim/dark-elf-corsairs-mou/captain--hardened/mechanic.fear-immunity
+  id: the-rule-is-refused-on-a-reaver
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elf-corsairs-mou
+      profile_id: reavers
+      main_weapon_id: weapon.sword
+      special_rule_ids: [captain--hardened]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to dark-elf-corsairs-mou/reavers"

@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (operators-band-rules batch, 2026-11-18) on the printed
+#   Strigany Truant with the band skill selected: the declared Bull Rush resolves one +1 To Hit attack
+#   that knocks the standing enemy down without a To Wound roll, an armour save stops the knock-down
+#   (the recorded reading of "if the warrior hits"), declining the declaration resolves the normal
+#   attack, the same Truant without the selection is offered no declaration, and the selection is
+#   refused on a Gypsy (a henchman outside the printed eligibility).  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (Channel Rats, Strigany Special Skills, Bull Rush, Mutiny in Marienburg p.181): "When he
+# charges, the Hero may attempt to knock down his opponent rather than making his normal attacks; roll to
+# hit once with a +1 to hit modifier, though no roll to wound is necessary; if the warrior hits with this
+# attack, the opposing model is knocked down."  The band row is a selectable warband_skill binding the
+# shared mechanic.bull-charge with eligibility [domnu, petru, tinker, truants].  Consumer:
+# modular/pools.py ~368-388 (decision <pool>.bull-charge on a first-round charger, one attack with
+# hit_modifier 1 on key <pool>.bull-charge.hit; an unparried, unsaved hit knocks a standing defender
+# down) and modular/attacks.py ~469-481 (the armour save replaces the wound step).  Model: the AUTHORED
+# Maneaters file (...397ae2b344e0); the recipient is the printed Truant (fixture WS3 S3 T3 W2 I5 A1, the
+# printed Ld6 stays; his Spry and Taunt are out of runtime scope) with an axe from the Strigany list,
+# selecting band--strigany-special-skills-bull-rush through special_rule_ids.  The opponent is the
+# hand-built mace fixture (WS3 S3 T3 W3 I2 A1 Ld7).
+# Semantic wrinkle (2026-11-18): the save that stops the knock-down is rolled against the charger's
+# weapon (the axe's armour penetration applies), so the save face uses heavy armour (5+, 6+ under the
+# axe); whether a body charge should carry the weapon's penetration is a reading the print does not settle.
+
+# The declared Bull Rush: one attack on its own key where the profile would roll its normal one; a 3
+# against Weapon Skill 3 hits only with the printed +1, and the unarmoured enemy is knocked down with no
+# To Wound roll.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+  id: a-declared-bull-rush-knocks-the-enemy-down-without-a-wound-roll
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: truants
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--strigany-special-skills-bull-rush]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.condition: KNOCKED_DOWN, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The recorded reading of "if the warrior hits": a saved hit leaves the defender standing.  Heavy armour
+# (5+) is a 6+ under the axe, and the declared six saves; the standing defender then swings and misses.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+  id: an-armour-save-stops-the-knock-down-and-the-defender-stays-standing
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+    - {key: round.0.first.bull-charge.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.saved: true, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Rather than making his normal attacks": declining the declaration resolves the profile's normal
+# attack on its ordinary key (a 3 now misses the 4+).
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+  id: declining-the-declaration-resolves-the-normal-attack
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The selectable control: the same Truant without the selection is offered no declaration at all (the
+# strict tape declares no decision) and his 3 misses on the ordinary key.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+  id: without-the-selection-no-bull-rush-is-offered
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: truants
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipients are the band's Heroes (eligibility domnu, petru, tinker, truants); a Gypsy
+# henchman is refused the selection.
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-bull-rush/mechanic.bull-charge
+  id: the-selection-is-refused-on-a-gypsy-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: gypsies
+      main_weapon_id: weapon.axe
+      special_rule_ids: [band--strigany-special-skills-bull-rush]
+    second:
+      <<: *opponent
+  expect_error: "special rule is not available to channel-rats-mim/gypsies"

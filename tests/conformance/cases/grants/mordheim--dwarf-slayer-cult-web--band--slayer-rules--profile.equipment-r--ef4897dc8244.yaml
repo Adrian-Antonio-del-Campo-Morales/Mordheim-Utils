@@ -1,0 +1,324 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the two items the held clause still records are dispositions, not
+#   applicable requirements.  (1) "nor learn magic" is a between-battles decision outside this
+#   corpus's duel-and-construction scope, the declared binding carries no token for it and the band's
+#   Slayer ranks bind no arcane contract, so there is nothing for a scenario to observe.  (2) whether
+#   a band-wide token set may also refuse the Rememberer is an open KB data question, not a missing
+#   scenario; it is left recorded below for the rules owner.  All three representable parts of the
+#   printed prohibition, and the admitted psychology clause, carry scenarios, so the file is AUTHORED.
+#   The PARTIAL[no-armour-no-toys] marker is kept as that record (the weapon.starsword precedent).
+# Correction 2026-11-18 (Ruling A1, the Rememberer may wear armour; print governs): item (2) above is
+#   resolved, not open.  The rule's `applies_to.profile_ids` already names the five Slayer ranks
+#   (giant-slayer, doomseeker, troll-slayers, stubbles, axe-hurlers) and the Rememberer's own rule
+#   prints "A Rememberer is not a Slayer, and the slayer rules don't apply." The shared band-forbid
+#   collection now honours that recipient set, so the token set no longer reaches him; one scenario
+#   below authors his admission (the armour of his own list), and every Slayer refusal is unchanged.
+# authoring_progress: the admitted deathwish--scope--deathwish-psychology clause carries 3 authored scenario(s) derived
+# (the file holds 13 under this audit_id; the other 10 are no-armour-no-toys refusals; checked 2026-11-16) from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: deathwish--scope--deathwish-psychology (scope: YES)
+# AUTHORED[deathwish--scope--deathwish-psychology]: the bearer giant-slayer is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   3 scenario(s) cover the clause: the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for rememberer, which does not carry the rule, and the failed test takes its attack away; the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+#
+# Clause: no-armour-no-toys (scope: YES)
+# PARTIAL[no-armour-no-toys]: three of the printed prohibition's four parts are authored below as
+#   construction refusals on the printed Slayer ranks the same rule names in its psychology-immunity
+#   binding (giant-slayer, doomseeker, troll-slayers): armour (armour.heavy-armour), a constant-save
+#   cloak (defence.wolf-pelt-cloak, the implemented item that carries that tag; the sea-dragon-cloak
+#   of the same tag vocabulary is refused by the shared stage's armour branch first, which is why it
+#   is not the cloak this file declares) and a non-thrown missile weapon (weapon.duelling-pistol).
+#   Each refusal is paired with the acceptance control for the same recipient built without the item.
+#   The 2026-10-10 closing note that claimed no diagnostic existed is superseded: those three tokens
+#   are exactly what the shared eligibility stage interprets for a bound profile
+#   (packages/python/roster-construction/mordheim_construction/_eligibility.js, boundEquipment).
+#   The printed sentence's fourth part - "nor learn magic" - stays pending: the declared binding
+#   carries no token for it, the band's Slayer ranks bind no arcane contract, and learning magic is a
+#   between-battles decision, so no scenario is authored for that half.
+#   Open question, recorded and not authored: the binding carries no `profile_ids`, so its token set
+#   is band-wide, while the printed band text excludes the Rememberer from the Slayer ranks - whether
+#   a band-wide set may refuse him is a data decision this file does not take.
+#   Correction 2026-11-18 (Ruling A1): the premise above was mistaken - the binding has no
+#   `profile_ids` parameter, but the rule's own `applies_to.profile_ids` names the five Slayer ranks
+#   and excludes the Rememberer, as the print does ("A Rememberer is not a Slayer, and the slayer
+#   rules don't apply"). The question is closed: the band-wide token set does not refuse him, and the
+#   scenario the-rememberer-carries-the-armour-of-his-own-list authors that admission.
+
+#
+# Clause: deathwish--scope--deathwish-all-alone (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: postgame (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# Provenance (2026-11-16): 3 scenario(s) moved here from rule/mordheim/dwarf-slayer-cult-web/axe-hurlers--born-marksmen/profile.equipment-restrictions, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-immune-warrior-takes-no-stupidity-test
+  covers: [deathwish--scope--deathwish-psychology]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: giant-slayer}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: a-band-mate-without-the-immunity-is-tested-for-stupidity
+  covers: [deathwish--scope--deathwish-psychology]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: rememberer}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  # The printed Leadership test fails on a total of eleven against the Rememberer's 8.
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 5}
+    - {key: round.0.second.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-immune-warrior-is-not-tested-for-fear
+  covers: [deathwish--scope--deathwish-psychology]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dwarf-slayer-cult-web, profile_id: giant-slayer}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# No Armour, No Toys! - the declared prohibition as a construction refusal, one refusal per printed
+# Slayer rank of the same band rule and one acceptance control. The fragment is the one the shared
+# eligibility stage reports for a bound profile ("<thing> is forbidden for <band>/<profile>"), and
+# the control build is the same recipient without the item, which must construct.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: giant-slayer-with-armour-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayer-cult-web/giant-slayer
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: giant-slayer-with-constant-save-cloak-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      defence_ids: [defence.wolf-pelt-cloak]
+  expect_error: '"constant-save-cloak" is forbidden for dwarf-slayer-cult-web/giant-slayer.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: giant-slayer-with-non-thrown-ranged-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+      main_weapon_id: weapon.duelling-pistol
+  expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/giant-slayer.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: giant-slayer-without-the-forbidden-kit-is-accepted-at-construction
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: doomseeker-with-armour-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: doomseeker
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayer-cult-web/doomseeker
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: doomseeker-with-constant-save-cloak-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: doomseeker
+      defence_ids: [defence.wolf-pelt-cloak]
+  expect_error: '"constant-save-cloak" is forbidden for dwarf-slayer-cult-web/doomseeker.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: doomseeker-with-non-thrown-ranged-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: doomseeker
+      main_weapon_id: weapon.duelling-pistol
+  expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/doomseeker.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: troll-slayers-with-armour-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayer-cult-web/troll-slayers
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: troll-slayers-with-constant-save-cloak-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      defence_ids: [defence.wolf-pelt-cloak]
+  expect_error: '"constant-save-cloak" is forbidden for dwarf-slayer-cult-web/troll-slayers.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: troll-slayers-with-non-thrown-ranged-is-refused
+  covers: [no-armour-no-toys]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      main_weapon_id: weapon.duelling-pistol
+  expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/troll-slayers.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: a-non-thrown-missile-weapon-is-refused-for-an-axe-hurler
+  # weapon.pistol is a missile weapon that is not thrown, so the refused input lies inside the printed
+  # subset.  The fragment is the shared category sentence this family's authored refusals exhibit.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.pistol
+  expect_error: '"non-thrown-ranged" is forbidden for dwarf-slayer-cult-web/axe-hurlers.'
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-printed-thrown-weapon-exception-is-admitted
+  # The printed exception: a thrown weapon is allowed, and the Axe Hurler's own list carries throwing_axe.
+  # The row is declared through the carried-item channel, the same channel the sibling kit cases use.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.mace
+      owned_item_ids: [throwing_axe]
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-same-axe-hurler-without-a-missile-weapon-constructs
+  # The acceptance control of the same family: the recipient with no missile weapon is admitted, so the
+  # refusal above is the prohibition and not a refusal of the profile itself.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: axe-hurlers
+      main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--slayer-rules/profile.equipment-restrictions
+  id: the-rememberer-carries-the-armour-of-his-own-list
+  covers: [no-armour-no-toys]
+  # Ruling A1 (2026-11-18): "A Rememberer is not a Slayer, and the slayer rules don't apply." The
+  # printed prohibition ("Slayers may never use armour of any kind") names the Slayers, and the
+  # Rememberer's own rememberer-equipment-list offers light_armour, helmet and shield. Declared
+  # through the carried-item channel, the kit constructs; the giant-slayer opponent starts out of
+  # action so no die is needed.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      main_weapon_id: weapon.mace
+      owned_item_ids: [light_armour, helmet, shield]
+    second:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: giant-slayer
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  expect_initial: {second.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}

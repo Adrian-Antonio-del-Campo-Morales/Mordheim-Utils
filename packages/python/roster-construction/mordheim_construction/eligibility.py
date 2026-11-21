@@ -69,7 +69,7 @@ def package_facts(package):
         "equipment_lists": [{key: row[key] for key in ("id", "items", "loadouts") if key in row}
                             for row in package.equipment_lists],
         "special_rules": [
-            {**{key: rule[key] for key in ("id", "kind", "eligibility", "eligible_condition_ids", "applies_to") if key in rule},
+            {**{key: rule[key] for key in ("id", "kind", "eligibility", "eligibility_admits_promoted", "eligibility_promoted_ids", "eligible_condition_ids", "applies_to") if key in rule},
              "runtime": rule.get("runtime") or {},
              "bindings": [
                 binding for kind in ("mechanic", "profile", "compiler")
@@ -319,16 +319,40 @@ def validate_special_rule(build, package, profile, rule, starting_skills, stage)
         "rule": {**rule, "bindings": list(bindings)},
         "native_virtue": package is not None and any(row.get("id") == rule.get("id") for row in package.special_rules),
         "starting_skills": list(starting_skills), "stage": stage,
+        **({"package": package_facts(package)} if package is not None and "promotion.hero" in build.variant_ids else {}),
     })
     if message is not None:
         raise ValueError(message)
 
 
+@lru_cache(maxsize=None)
+def _mechanic_item_tags(ruleset):
+    """Catalogue item tags keyed by the mechanic each item resolves to.
+
+    A printed item property (the Broadsword's "Difficult to use") is declared on
+    the item record, while a loadout names the mechanic; every item of the same
+    mechanic contributes its tags, so the shared rule reads the declared
+    property instead of a list of weapon ids.
+    """
+    result = {}
+    for row in load_items(ruleset):
+        mechanic_id = row.get("mechanic_id")
+        if mechanic_id and row.get("tags"):
+            result.setdefault(str(mechanic_id), set()).update(str(tag) for tag in row["tags"])
+    return {key: sorted(value) for key, value in result.items()}
+
+
+def _weapon_record(build, record, mechanic_id):
+    if record is None:
+        return None
+    return {**record, "item_tags": _mechanic_item_tags(build.ruleset).get(mechanic_id, [])}
+
+
 def validate_loadout(build, main_weapon_id, mechanics, contracts, selected_mechanics, stage):
     message = call("loadoutRestriction", {
         "build": build_facts(build, main_weapon_id),
-        "main_weapon": mechanics[main_weapon_id],
-        "off_weapon": mechanics.get(build.off_hand_id),
+        "main_weapon": _weapon_record(build, mechanics[main_weapon_id], main_weapon_id),
+        "off_weapon": _weapon_record(build, mechanics.get(build.off_hand_id), build.off_hand_id),
         "contracts": list(contracts), "selected_mechanics": list(selected_mechanics),
         "stage": stage,
     })

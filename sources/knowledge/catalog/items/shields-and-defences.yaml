@@ -6,6 +6,7 @@ items:
   name: Bone Helmet
   name_i18n:
     es: Yelmo de Hueso
+  effect_ref: helmet
   source_refs:
   - &id047
     manual: mordheimer.net
@@ -19,6 +20,7 @@ items:
   name: Bone Helmet Skink Priest Only
   name_i18n:
     es: Yelmo de Hueso (Solo Sacerdote Skink)
+  effect_ref: helmet
   source_refs:
   - &id001
     manual: mordheimer.net
@@ -184,6 +186,11 @@ items:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
   combat_status: implemented
   mechanic_id: defence.buckler
+  clauses:
+  - id: parry-one-hit-per-round
+    scope: 'YES'
+  - id: does-not-improve-armour
+    scope: 'YES'
 - id: cooking_pot_helmet
   kind: shield-or-defence
   name: Cooking Pot Helmet
@@ -554,6 +561,11 @@ items:
   mechanic_id: defence.sea-dragon-cloak
   tags:
   - constant-save-cloak
+  clauses:
+  - id: armour-choice-five-plus-in-close-combat
+    scope: 'YES'
+  - id: shooting-outside-the-duel
+    scope: 'NO'
 - id: shield
   kind: shield-or-defence
   name: Shield

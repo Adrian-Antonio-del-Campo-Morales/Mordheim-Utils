@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (construction set, 2026-11-18) on the grade-1b Bard, the
+#   corpus's hireling control: the printed kit compiled with omitted and with explicitly supplied
+#   ownership (the contract visible as the Bard's only construction tag, the printed light armour's save
+#   observed), and the refusals of a bought extra item, a sold kit piece and an active weapon outside the
+#   kit.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): this is the catalogue-wide construction clause whose consumer
+#   is the hireling kit matcher itself (compiler.py: a hireling compiled without the contract is refused
+#   "hireling profile is missing its fixed-equipment rule"), so removing the binding turns the admissions
+#   into refusals: the construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (rules.yaml, Fixed Equipment): "Extra equipment cannot normally be bought for a Hired
+# Sword and the Hired Sword's equipment cannot be sold by the warband."  The KB binds it to
+# compiler.hireling-fixed-equipment and the package builder attaches the rule to every Hired Sword
+# (combat_packages.py), so its consumer is the hireling kit matcher (`resolveHirelingKit`): supplied
+# ownership must equal one complete legal printed kit - neither more (nothing bought) nor less (nothing
+# sold) - and every active position must be a copy of that kit.  The recipient is the corpus's hireling
+# control, the grade-1b Bard (hirelings.hired-sword.1b / hireling.hired-sword.bard; printed kit sword,
+# dagger, light armour; its only other rule, Songster, is a mechanic binding, so the contract is the
+# Bard's sole compiler tag) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7 stays).
+# Admissions use the corpus's construction-only shape (no charge, the bearer out of action before the
+# first phase, so the duel requests no die) and observe the compiled build alone: construction_tags is
+# the sorted list of every compiler contract the profile receives, and the printed light armour's basic
+# save is 6.  Refusals use the kit-resolver fragment already asserted in
+# cases/mechanics/defence.wolf-pelt-cloak.yaml.  Supplied ownership travels through owned_item_ids as in
+# the Haunted Mien file (...priest-of-morr-miracle-worke--45c97d805c6e.yaml).
+
+# The printed kit with ownership omitted: the sword in hand and the light armour worn compile, the
+# contract is the Bard's only construction tag and the armour's 6+ is the compiled save.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: the-printed-kit-compiles-with-the-contract-as-the-only-tag
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment]
+    first.armour_save: 6
+
+# The same kit with ownership supplied explicitly as the complete printed kit is admitted too.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: supplied-ownership-equal-to-the-printed-kit-is-admitted
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      owned_item_ids: [sword, dagger, light_armour]
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.construction_tags: [compiler.hireling-fixed-equipment]
+    first.armour_save: 6
+
+# "Extra equipment cannot normally be bought": ownership listing an axe beside the printed kit is not
+# a legal printed kit and is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: a-bought-extra-item-in-the-supplied-ownership-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      owned_item_ids: [sword, dagger, light_armour, axe]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "the Hired Sword's equipment cannot be sold": ownership missing the printed light armour is not a
+# complete printed kit and is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: a-sold-kit-piece-missing-from-the-supplied-ownership-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword, dagger]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# An active weapon outside the printed kit with ownership omitted is refused as well: the kit is the
+# only legal inventory.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment/compiler.hireling-fixed-equipment
+  id: an-active-weapon-outside-the-printed-kit-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.axe
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

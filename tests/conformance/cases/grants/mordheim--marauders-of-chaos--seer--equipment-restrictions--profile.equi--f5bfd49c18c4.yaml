@@ -1,0 +1,55 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/seer--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# Discrimination note (2026-11-18): the rule-removal probe reports this identity non-discriminating.
+#   The profile's own prose `equipment_restrictions` line in profiles.yaml ("no armour") is read by
+#   the eligibility gate (packages/typescript/domain/eligibility/index.ts, the prose scan near the
+#   profile-restriction stage) and yields the same "armour is forbidden" sentence without the bound
+#   rule, so the KB encodes the ban twice; the duplicate is recorded in TODO.md (keep one source).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
+#
+# AUTHORED: (2026-11-18) 2 scenarios evidence the declared prohibition (forbids: armour; "the profile
+#   entry does not allow armour") as a construction refusal on the boundEquipment stage
+#   (packages/typescript/domain/eligibility/index.ts; the Python mirror _eligibility.js is generated):
+#   "armour is forbidden for marauders-of-chaos/seer".  The refused suit is the light armour the Seer's
+#   own Hero list offers (equipment-access.yaml: light_armour -> armour.light-armour), so the clause's
+#   token and not the list gate answers; the armourless Seer with a sword of the same list is accepted
+#   and compiles with no armour save (7 = none).
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/marauders-of-chaos/seer--equipment-restrictions/profile.equipment-restrictions
+  id: seer-with-light-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: seer
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+  expect_error: armour is forbidden for marauders-of-chaos/seer
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested).
+- audit_id: rule/mordheim/marauders-of-chaos/seer--equipment-restrictions/profile.equipment-restrictions
+  id: seer-without-armour-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: seer
+      main_weapon_id: weapon.sword
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

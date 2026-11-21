@@ -25,8 +25,8 @@ the same ids and the same slots:
 - the shared compiler's own Foreign/Native sets are the same four profiles.
 
 The gate only reads ``sources/knowledge`` and the shared compiler source.  The
-accepted semantic specifications this suite once quoted are retired; their e2e
-scenarios carry the same variant choices.
+accepted semantic specifications this suite once quoted are retired; their
+conformance scenarios carry the same variant choices.
 """
 from __future__ import annotations
 

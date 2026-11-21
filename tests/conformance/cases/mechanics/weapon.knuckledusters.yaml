@@ -1,0 +1,57 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.knuckledusters
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios prove the added attack through the ordered tape and the
+#   paired occupancy as a refusal. Pending semantic review.
+
+# --- Authored scenarios ---
+# weapon.knuckledusters - uses normal Strength; the pair grants one additional Attack.
+# Knuckle dusters use normal Strength; the pair grants one additional Attack. The ordered tape carries two attack dice for the bearer.
+
+- audit_id: mechanic/weapon.knuckledusters
+  id: knuckledusters-grants-one-additional-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.knuckledusters
+      characteristics: &atk-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &dfn-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# A pair occupies both hands. The printed two-handed occupancy is declared as a refusal.
+
+- audit_id: mechanic/weapon.knuckledusters
+  id: knuckledusters-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.knuckledusters
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

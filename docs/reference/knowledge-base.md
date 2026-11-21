@@ -10,7 +10,7 @@ Three ideas define the KB, and everything else follows from them:
    experience, gold, rolls and purchases of a concrete warband belong to the
    campaign state of the applications, not to the KB.
 2. **The KB carries no evidence of correctness.** Its structural contract is
-   checked by `check verify`; behavioural evidence lives in modular mechanics and E2E
+   checked by `check verify`; behavioural evidence lives in modular mechanics and conformance
    tests. Runtime does not depend on its own tests. Editorial text is reviewed against the written sources
    (mordheimer.net / The New Mordheimer), never against engine output.
 3. **Stable ids are the backbone.** Every rule, profile, item, mechanic and
@@ -75,7 +75,7 @@ validated against this schema — see `packages/python/knowledge/mordheim_knowle
 | `grant` | How is it granted? | `profile` / `band` / `selectable` / `none` |
 | `effects[].id` | Stable effect id (a shared mechanic id or `unimplemented.*`). | string |
 | `effects[].binding` | The executable link (`kind` + `id` + optional `parameters`). | binding or `null` |
-| `effects[].reason` | Required explanation when there is no binding. | string |
+| `effects[].reason` | Required when there is no binding: one of the `reason_codes` of this schema. | code |
 
 A rule with `grant: band` and `applies_to.band: true` may also restrict its
 recipients with `applies_to.profile_ids`. The grant identifies its band ownership;
@@ -101,9 +101,95 @@ Key invariants (abridged — the full list is in the schema file):
   `binding.kind`, `binding.id` and `binding.parameters`.
 - Equivalence is never inferred from rule names or prose.
 - `implemented: YES` only when **every** `YES` effect has an executable
-  binding; an unbound effect must explain why in `reason`.
+  binding; an unbound effect names why in `reason` (a reason code).
 - Rules **without** a `runtime` block are not classified yet and must not be
   treated as implemented.
+
+### Identities and clauses
+
+Every obligation the duel runtime must honour is an **identity**: a core combat
+rule (`core/<rule-id>`), a close-combat mechanic the runtime scope keeps
+(`mechanic/<mechanic-id>`), an implemented item (`item/<item-id>`) or a `YES`
+effect of a band rule, catalogue skill or hireling rule
+(`rule/<collection>/<owner>/<rule-id>/<effect-id>`; hireling rules are
+`rule/catalog/<dir>/...` with `<dir>` `hired-swords` or `dramatis-personae`).
+
+A catalogue skill whose record id, effect id and `mechanic` binding id are the
+one same id is the exception: it is where `mechanic/<id>` prints its text, not a
+second obligation, so it is counted on that mechanic and admitted nowhere else
+(`clauses.defines_its_mechanic`). Nothing routes through such a record either —
+`skill_ids` and starting skills execute the `execution.yaml` entry of that id
+directly — so no scenario could tell the record apart from its mechanic. The
+match is on the exact id and never on names or prose: a catalogue skill that
+binds a *different* mechanic (one printed rule delivered by another's operator)
+keeps its own identity.
+
+The printed prose is the
+rule; an identity is one undivided obligation unless its record declares
+**clauses**, which it does only when the printed text has several observable
+parts or deliberately excludes one:
+
+```yaml
+    effects:
+    - id: skill.regeneration
+      scope: 'YES'
+      binding: { kind: mechanic, id: skill.regeneration }
+      clauses:
+      - id: save
+        scope: 'YES'
+      - id: post-battle-injury
+        scope: 'NO'
+```
+
+A clause carries a stable `id` (unique within its record) and a `scope` —
+`YES` belongs to the duel runtime and counts towards coverage, `NO` keeps the
+exclusion of that part of the printed text explicit. Clauses carry no text and
+no evidence (principle 2): what a test observes is written next to the test.
+`mordheim_knowledge.clauses` reads the inventory; the loader and the editorial
+schemas validate the shape (a single `YES` clause is refused: the record itself
+is that obligation).
+
+The tests declare what they cover: a conformance scenario through `audit_id` and,
+for a split identity, `covers`; a deterministic test through
+`@pytest.mark.covers("<identity>", "<clause-id>", ...)`. The coverage tool
+joins the two sides:
+
+```powershell
+python tools/knowledge/clauses.py inventory             # identities by kind, with the clauses that split them
+python tools/knowledge/clauses.py coverage --pending    # admitted obligations nobody covers
+python tools/knowledge/clauses.py coverage --identity rule/mordheim/orc-mob/troll--regeneration/skill.regeneration
+python tools/knowledge/clauses.py check                 # unknown references; YES clauses under NO/LATER effects
+python tools/mordheim-utils.py check report rules       # rules-inventory.csv + clause-coverage.csv
+```
+
+Coverage counts declared references, not executed evidence: a named scenario
+or test must still run and pass. Renaming an effect id moves its identity, so
+the conformance scaffolds that name it must move too (`check` reports the dangling
+references).
+
+### Reason codes
+
+An unbound effect names why it has no binding with one of the `reason_codes`
+of `registry/runtime-schema.yaml` (`out-of-scope.magic`,
+`out-of-scope.campaign`, `deferred.psychology`, `pending-classification`, …).
+Each code carries the label the applications render, in both locales; the
+free text that once explained each case is archived in
+`docs/archive/reason-texts.csv`.
+
+The effect's `scope` follows its reason family: `out-of-scope.*`,
+`source-blocked`, `covered.elsewhere` and `pending-classification` are `NO`;
+`deferred.*` and `pending-implementation` are `LATER`. `pending-classification`
+is the intake code for an effect nobody has reviewed yet; since 2026-11-13 no
+effect carries it, and the strictness audit records that. `covered.elsewhere`
+marks an effect whose duel behaviour another bound effect, rule or supplied
+condition already delivers (an umbrella band rule restating its profile
+rules, or a placeholder kept because conformance scenarios still name it).
+A supplied condition is bound like `condition.netted`: the rule binds the
+condition with `grant: none` and keeps a separate unbound effect for the
+procedure that produces it (a pre-battle roll, a shooting-phase activation).
+A placeholder never restates a rule that another band binds: bind it the same
+way, or record why it differs (`tests/knowledge/test_runtime_classification.py`). A concrete unresolved dependency belongs in
+`TODO.md`, a ruling in `docs/decisions/design-rulings.md`.
 
 ## bands/ — the editorial warband data
 
@@ -122,7 +208,7 @@ A band directory is typically four files:
 the shared `defs.schema.json`) describing its fields, types and editorial
 conventions: the four files of a band package, the catalogue families
 (`items`, `skills`, `rules`, `mechanics`), the hireling catalogue
-(`hired-swords`, `dramatis-personae`, their `rules.yaml`, `traits.yaml`) and the
+(`hired-swords`, `dramatis-personae` and their `rules.yaml`) and the
 campaign catalogue (the thirteen documents of `catalog/campaign/`, including the
 typed campaign effects and the exploration procedure tree).
 `mordheim_knowledge.editorial_schemas` validates them all, the structural
@@ -173,11 +259,10 @@ The three classification states show up constantly in the real files:
 
 - **Implemented** — `troll--regeneration` above: bound to the shared mechanic
   `skill.regeneration`.
-- **Deferred** — e.g. Orc Boss `Leader` (any warrior within 6" uses his
-  Leadership): `scope: LATER`, `implemented: 'NO'`,
-  `reason: 'Deferred subsystem: psychology or mounts.'`
-- **Out of scope** — e.g. Orc Shaman `Wizard`: `scope: 'NO'` with a reason
-  such as campaign/shooting/movement context.
+- **Deferred** — e.g. a Leader whose radius needs the psychology subsystem:
+  `scope: LATER`, `implemented: 'NO'`, `reason: deferred.psychology`.
+- **Out of scope** — e.g. Orc Shaman `Wizard`: `scope: 'NO'` with
+  `reason: out-of-scope.magic`.
 
 ## catalog/ — shared cross-band data
 
@@ -194,7 +279,21 @@ Canonical item records, split by category: `weapons-close-combat.yaml`,
 
 Items use **snake_case ids** (`broadsword`, `crimson_shade`) and carry
 `kind`, i18n names, `source_refs`, a `combat_status`
-(`implemented`/…), and the executable link:
+(`implemented`/…), and the executable link.
+
+Every item publishes a description in both locales: its own `effect`, or an
+`effect_ref`. The `effect` is the printed entry of the item. An equipment-list
+row that only names another item ("Sword (Scimitar)", "Bronze Axe",
+"Staff/Club/Mace") declares `effect_ref: <item id>` instead of restating the
+text, the way band rules use `rule_ref`: the printed entry lives once, on the
+referenced item, which must carry its own `effect` (one level, no chains). The
+reference is prose only; the record keeps its own `mechanic_id`,
+`combat_status` and source. The loader refuses a record with both, and the web
+artefact projects the referenced text. Where the printed entry is not available,
+the `effect` states only what the equipment list records (list, cost, rarity,
+bearers) and carries a `# Derived description` comment until the entry is
+transcribed.
+An example record with its executable link:
 
 ```yaml
 - id: broadsword
@@ -218,17 +317,20 @@ Shared skills are the reference target of many band rules, e.g.
 | `core-combat.yaml` | Canonical combat rules as editorial text (combat order, two weapons, parry, critical hits, injury states). |
 | `resolution.yaml` | The numeric local contracts consumed by the engines: to-hit, to-wound, strength→armour modifier, injury table, critical-hit and parry rules. |
 | `conditions.yaml` | Conditions shared by rules. |
-| `special-rules.yaml` | Cross-band shared rules, promoted here only **after** an equivalence review; band rules reference them with `rule_ref` and keep their own runtime. |
+| `special-rules.yaml` | Cross-band shared rules: printed texts promoted here after an equivalence review, which admits identical wording, wording differing only in the recipient's name (neutralised as "this warrior") and wording whose differences do not change how the rule applies. A printed text that carries a restriction, magnitude or scope the shared text would drop stays on its band rule, even when its neighbours in the same group are shared. Band rules reference the shared text with `rule_ref` and keep their own runtime. A shared text is written once, in both locales. |
 | `racial-maximums.yaml` | The only source of racial characteristic maximums (`campaign.limit.racial-maximum.*`); warband rules reference them by id instead of embedding statlines. |
-| `implemented-canonical-families.yaml` | Tracker of the shared mechanic families that already have executable bindings; update it when bindings evolve. |
 
 ### mechanics/
 
 The engine-facing layer of the KB:
 
-- `close-combat.yaml` — weapon/mechanic descriptions under the `weapon.*`
-  namespace: hands, paired, `engine_option` (the option the engine
-  understands), source refs.
+- `close-combat.yaml` — the weapon, armour, defence, material, preparation,
+  poison and skill mechanics: hands, paired, `engine_option` (the option the
+  engine understands), source refs. A mechanic carries **no prose**: the rules,
+  skills and items bound to it are the printing records, and the web artefact
+  projects their text onto the mechanic. The few mechanics nothing prints
+  (`weapon.fist`, `material.normal`, `armour.no-armour`, …) carry a one-line
+  `note`.
 - `execution.yaml` — the **execution contract**: each mechanic id maps to a
   `handler` plus `parameters`, with `trigger` / `application` / `stacking`.
   Example: `skill.regeneration` → `handler: effect-set` with
@@ -266,7 +368,14 @@ concepts stay in the profile's `unresolved_references`; remove only references
 that resolve after adding the canonical catalogue/schema. Do not invent IDs.
 Campaign rolls, choices and rewards are runtime state, not KB facts. Dynamic
 roster/variant restrictions use `*.rule.campaign-eligibility` and canonical
-traits rather than application-maintained sets. Composite warriors, mounts or
+traits rather than application-maintained sets. Every fact lives once, on the
+profile: a hireling's combat identity is its `combat_traits` (species, elf kind,
+creature kind, lizardman, spellcaster; the same keys as a band profile, none for a
+composite entry), effects such as causing Fear come only from its printed rules,
+and the facts that are neither (alignment `evil`, calling `priest`) are its
+`hiring_traits`.
+`mordheim_knowledge.campaign.hireling_traits` derives the hiring facts from those
+three sources for the web generator. Composite warriors, mounts or
 selectable personas remain `status: out_of_scope` until a schema can represent
 them without flattening their rules.
 
@@ -431,82 +540,34 @@ shared rule while also restating its prose. Schema strictness finds loose or
 unused declarations. See
 [Repository tools](tools.md) for maintained tool ownership.
 
-## Clause register
+## Retired registers
 
-[The clause register CSV](../../sources/knowledge/verification/clause-contracts.csv) stores
-clause contracts, scope, consumers and evidence. Its 4,556 keys are
-`(id, clause_id)`, using current IDs; earlier IDs and pre-compaction data remain
-in Git (pre-compaction checkpoint `cee529cd`). `pending` omits defaults
-`work=none`, `review=reviewed`, `requires=[]`; `verification` retains inspection,
-executed or absent evidence separately. A closed row is not certification.
-The final JSON object `status` tracks NumPy and native independently: rows with
-`clause_scope=YES` require both `numpy` and `native`; all other scopes require `{}`.
-Each backend accepts `pending`, `in_progress`, `implemented`, `verified` or `blocked`.
-`implemented` means integrated awaiting parity; `verified` means applicable parity
-passed, not universal certification. Scope remains authoritative: changing scope
-requires an explicit matching status update, without inferred closure or reset.
-Reuse `consumer` for references to either engine, and `verification`/`notes` for
-engine-qualified evidence and context. Identify the engine in notes or the linked
-report; modular tests or a NumPy fallback do not establish native verification.
-[The source scope review](../../sources/knowledge/verification/source-scope-review.csv)
-feeds `verification/audit_export.py`; a source-text change invalidates an old
-review. Applications read exclusively from consolidated `sources/knowledge`.
+The clause contracts, their scope and the test references used to live in two
+CSV registers outside the editorial documents (`clause-contracts.csv`,
+`source-scope-review.csv`), with a derived tracker of binding families
+(`implemented-canonical-families.yaml`) and a staging registry of bindings
+(`registry/bindings.yaml`). On 2026-11-11 the clauses moved into the records
+above (keeping only ids and scope), the derived documents were deleted
+(bindings *are* the families), mechanics lost their copied prose, the
+free-text reasons became codes and every duplicated rule text became one
+shared rule. The CSVs, the deleted texts and the consolidation records are
+archived under [`docs/archive/`](../archive/README.md). Nothing reads the
+archive; the knowledge base is the only source.
 
-Access the clause register only through `python -X utf8 tools/knowledge/clause_registry.py`:
-
-```powershell
-python -X utf8 tools/knowledge/clause_registry.py query --id "ID_EXACTO" --clause-id "CLAUSULA"
-python -X utf8 tools/knowledge/clause_registry.py query --pending --consumer contexts.py --limit 5
-python -X utf8 tools/knowledge/clause_registry.py query --backend numpy --status pending --fields id,clause_id,status
-python -X utf8 tools/knowledge/clause_registry.py prepare "$env:TEMP/clause-changes.json" --out "$env:TEMP/clause-prepared.json"
-python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json"
-# Authorized writer only, after reviewing the preview:
-python -X utf8 tools/knowledge/clause_registry.py apply "$env:TEMP/clause-prepared.json" --write
-```
-
-`--id`/`--clause-id` are exact; `--source`/`--consumer` match fragments;
-`--work`, `--review`, `--pending`, `--fields` and `--limit` narrow queries.
-`--backend numpy|native` selects rows containing that backend; `--status` requires
-`--backend` and filters its state. Existing `--pending` retains its original meaning.
-To append `status` to the legacy schema, run `clause_registry.py migrate` for a
-preview, then `clause_registry.py migrate --write` explicitly. Migration uses the
-same lock, snapshot checks and external byte backup as apply, preserves all
-original cells and line endings, and initializes admitted rows to both `pending`.
-Repeating it preserves existing statuses. Packages prepared for the old schema
-are rejected; prepare them again after migration.
-Keep proposals/packages outside the repository. A proposal is a JSON array:
-
-```json
-[{"id":"ID_EXACTO","clause_id":"CLAUSULA","set":{"pending":{},"verification":["executed","path::test"]},"append_notes":"Explicit decision and evidence."}]
-```
-
-Structured cells take JSON objects/arrays, other cells take strings. Notes are
-append-only by default; `replace_note_references` permits explicit existing
-`completed.md` reference substitutions while preserving all other note text.
-Do not infer semantics or bulk-close rows from status flags.
-
-Before integration, preserve the complete current bytes outside the repository.
-`prepare` validates the candidate and records the snapshot hash and full before/
-after rows. `apply` previews by default; only the authorized writer uses
-`--write`. It preserves keys, protected source fields, unrelated cells and record
-line endings, creates a full temporary backup, acquires an exclusive `.csv.lock`
-and rechecks bytes immediately before replacement. Retain the backup until
-acceptance. Do not delete another writer's lock, alter packages to bypass checks,
-or force an obsolete snapshot: reload and prepare explicit decisions again.
-No direct CSV edits or alternative rewrite scripts. Failed conservation means
-no write; after damage, suspend writes and notify the coordinator, never rebuild
-from HEAD or old exports. The tool does not repair or certify earlier damage.
-Tool tests use synthetic CSVs: `python -m pytest tests/knowledge/test_clause_registry.py -q`;
-do not rerun them for rule-only changes.
+The archived consolidation record describes that day's merges as they were
+made. Where a later review found that a merge had dropped a restriction, a
+magnitude or a narrower eligibility, the knowledge base was corrected and the
+archive was left as the historical record: it is not a description of the
+current shared catalogue.
 
 ## Where is the evidence?
 
 Structural verification is the `check verify` entry point. Rule behaviour is
 checked by `tests/engines/modular/mechanics/`, and connected construction/combat
-by `tests/integration/e2e/`. Construction and KB contracts have their own suites.
+by the rules-conformance suite in `tests/conformance/`. Construction and KB contracts have their own suites.
 Expectations come from written sources and adopted rulings, not engine output.
 
-The semantic YAML test system is retired. Existing CSV evidence columns and
+The semantic YAML test system is retired. The archived register columns and
 frozen-corpus provenance remain historical records; exports do not manufacture
 passing evidence for the removed suite. See [Verification](verification.md).
 
@@ -547,9 +608,10 @@ that all bind the same mechanic id — reuse without duplication.
    sharing the same modular sample. A divergence is presumed to be a defect
    of the candidate — `check parity` only reads the oracle and never modifies it.
 7. **Evidence.** Source-derived modular mechanics tests check rule consequences;
-   E2E scenarios exercise actual granting/compilation and observable duel results.
-   Statistical scenarios compare optimized engines with the reference. The audit
-   export reports inventory and structural/planning status, not an automatically
+   Conformance scenarios exercise actual granting/compilation and observable duel results.
+   Statistical scenarios compare optimized engines with the reference. Both kinds
+   of test name the clauses they demonstrate (`covers`), and
+   `tools/knowledge/clauses.py` reports declared coverage, not an automatically
    passed semantic scenario suite.
 
 For items the same path holds with the extra indirection step: band
@@ -567,7 +629,7 @@ For items the same path holds with the extra indirection step: band
   name or copy prose and call it equivalent.
 - **Classify everything.** A rule without a `runtime` block is
   *unclassified*, not implemented. `implemented: YES` requires every `YES`
-  effect to have a binding; an unbound effect always needs a `reason`.
+  effect to have a binding; an unbound effect always needs a `reason` code.
 - **Prefer shared mechanics.** Bind to existing mechanics
   (`catalog/mechanics/execution.yaml`) or promote a cross-band rule into
   `catalog/rules/special-rules.yaml` only after an equivalence review.
@@ -592,7 +654,8 @@ After any KB change run the structural validation and the affected evidence:
 ```powershell
 python tools/mordheim-utils.py check verify   # structure, connections, runtime schema and editorial JSON Schemas
 python tools/mordheim-utils.py check parity   # vectorized/native certification against the oracle
-python tools/mordheim-utils.py check report rules   # per-rule status CSV in outputs/audit/
+python tools/mordheim-utils.py check report rules   # rule inventory + clause coverage CSVs in outputs/audit/
+python tools/knowledge/clauses.py check             # clause references and consistency
 ```
 
 See also [Modify the knowledge base](../guides/modify-knowledge-base.md),

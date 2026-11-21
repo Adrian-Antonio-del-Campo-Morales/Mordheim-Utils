@@ -28,8 +28,7 @@ rules:
     - id: unimplemented.restless-dead.liche.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
 - id: zombies--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -46,8 +45,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    May not carry weapons or wear armour and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -55,12 +52,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No puede llevar armas ni armadura y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-weapons-or-armour-unarmed
 - id: scarecrows--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -76,8 +71,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Carries no equipment and suffers no penalty for fighting unarmed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -85,12 +78,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      No lleva equipo y no sufre penalización por luchar sin armas.
   applies_to:
     profile_ids:
     - scarecrows
+  rule_ref: shared-rule.no-equipment-unarmed
 - id: liche--cause-fear
   name: Cause Fear
   effect: A Liche is a horrible abomination and causes fear.
@@ -141,6 +132,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
 - id: liche--no-pain
   runtime:
     scope: 'YES'
@@ -153,7 +149,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: A Liche treats a stunned result on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -161,11 +156,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Un Liche trata un resultado de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - liche
+  rule_ref: shared-rule.no-pain
 - id: liche--immune-to-poison
   runtime:
     scope: 'YES'
@@ -226,9 +220,7 @@ rules:
     - id: unimplemented.restless-dead.liche.eternal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
 - id: liche--feed-upon-magic
   name: Feed Upon Magic
   effect: >-
@@ -262,8 +254,7 @@ rules:
     - id: unimplemented.restless-dead.liche.feed-upon-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: liche--warrior-wizard
   name: Warrior Wizard
   effect: >-
@@ -293,11 +284,13 @@ rules:
       binding:
         kind: compiler
         id: compiler.warrior-wizard
+      clauses:
+      - id: whole--scope--armour-allowance
+        scope: 'YES'
+      - id: whole--scope--casting-allowance
+        scope: 'NO'
 - id: liche--advancement
   name: Advancement
-  effect: >-
-    If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their
-    available lists.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -305,10 +298,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Progresión
-  effect_i18n:
-    es: >-
-      Si un Liche obtiene una tirada de progreso de +1 Herida, puede en su lugar elegir una nueva
-      habilidad de sus listas disponibles.
   applies_to:
     profile_ids:
     - liche
@@ -320,8 +309,8 @@ rules:
     - id: unimplemented.restless-dead.liche.advancement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.advancement-wound-to-skill
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -342,8 +331,7 @@ rules:
     - id: unimplemented.restless-dead.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
   rule_ref: shared-rule.wizard
 - id: necromancer--apprentices
   name: Apprentices
@@ -369,15 +357,17 @@ rules:
     profile_ids:
     - necromancer
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.necromancer.apprentices
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.magic
+      clauses:
+      - id: apprentices
+        scope: 'NO'
 - id: necromancer--gofer
   name: Gofer
   effect: >-
@@ -407,8 +397,7 @@ rules:
     - id: unimplemented.restless-dead.necromancer.gofer
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: grave-guards--wight-blades
   name: Wight Blades
   effect: >-
@@ -499,7 +488,6 @@ rules:
     - grave-guards
 - id: grave-guards--immune-to-psychology
   name: Immune to Psychology
-  effect: Grave Guards are not affected by psychology and never leave combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -507,9 +495,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Guardianes de la Tumba no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - grave-guards
@@ -523,6 +508,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
+  rule_ref: shared-rule.immune-to-psychology
 - id: grave-guards--no-pain
   runtime:
     scope: 'YES'
@@ -535,7 +526,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Grave Guards treat a stunned result on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -543,16 +533,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: >-
-      Los Guardianes de la Tumba tratan un resultado de Aturdido en la tabla de heridas como
-      Derribado.
   applies_to:
     profile_ids:
     - grave-guards
+  rule_ref: shared-rule.no-pain
 - id: grave-guards--may-not-run
   name: May Not Run
-  effect: Grave Guards are slow undead creatures and may not run (but can charge normally).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -560,23 +546,22 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los Guardianes de la Tumba son criaturas muertas vivientes lentas y no pueden correr (pero
-      pueden cargar normalmente).
   applies_to:
     profile_ids:
     - grave-guards
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.grave-guards.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.movement
+      clauses:
+      - id: may-not-run
+        scope: 'NO'
+  rule_ref: shared-rule.may-not-run
 - id: grave-guards--no-deal
   name: No Deal
   effect: Grave Guards may not search for rare items.
@@ -600,8 +585,7 @@ rules:
     - id: unimplemented.restless-dead.grave-guards.no-deal
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
 - id: zombies--cause-fear
   name: Cause Fear
   source:
@@ -638,15 +622,17 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.zombies.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.movement
+      clauses:
+      - id: whole
+        scope: 'NO'
   rule_ref: shared-rule.may-not-run
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
@@ -670,6 +656,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:
@@ -739,12 +730,10 @@ rules:
     - id: unimplemented.restless-dead.zombies.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.brainless
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.never-gain-experience
 - id: skeletons--cause-fear
   name: Cause Fear
-  effect: Skeletons are horrible abominations and so cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -752,8 +741,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Esqueletos son abominaciones horribles y por tanto provocan miedo.
   applies_to:
     profile_ids:
     - skeletons
@@ -767,9 +754,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+  rule_ref: shared-rule.fear
 - id: skeletons--may-not-run
   name: May Not Run
-  effect: Skeletons are slow undead creatures and may not run (but may charge normally).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -777,26 +764,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los Esqueletos son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
-      normalmente).
   applies_to:
     profile_ids:
     - skeletons
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.skeletons.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.movement
+      clauses:
+      - id: may-not-run
+        scope: 'NO'
+  rule_ref: shared-rule.may-not-run
 - id: skeletons--immune-to-psychology
   name: Immune to Psychology
-  effect: Skeletons are not affected by psychology and never leaves combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -804,8 +789,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - skeletons
@@ -819,6 +802,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
+  rule_ref: shared-rule.immune-to-psychology
 - id: skeletons--immune-to-poison
   runtime:
     scope: 'YES'
@@ -858,7 +847,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Skeletons treat stunned results on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -866,14 +854,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Esqueletos tratan los resultados de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - skeletons
+  rule_ref: shared-rule.no-pain
 - id: skeletons--no-brain
   name: No Brain
-  effect: Skeletons never gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -881,8 +867,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: Los Esqueletos nunca ganan experiencia.
   applies_to:
     profile_ids:
     - skeletons
@@ -894,11 +878,10 @@ rules:
     - id: unimplemented.restless-dead.skeletons.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.never-gain-experience
 - id: wights--cause-fear
   name: Cause Fear
-  effect: Wights are horrible abominations and so cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -906,8 +889,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los Espectros son abominaciones horribles y por tanto provocan miedo.
   applies_to:
     profile_ids:
     - wights
@@ -921,9 +902,9 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+  rule_ref: shared-rule.fear
 - id: wights--may-not-run
   name: May Not Run
-  effect: Wights are slow undead creatures and may not run (but may charge normally).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -931,26 +912,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: >-
-      Los Espectros son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
-      normalmente).
   applies_to:
     profile_ids:
     - wights
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.wights.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.movement
+      clauses:
+      - id: may-not-run
+        scope: 'NO'
+  rule_ref: shared-rule.may-not-run
 - id: wights--immune-to-psychology
   name: Immune to Psychology
-  effect: Wights are not affected by psychology and never leaves combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -958,8 +937,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: Los Espectros no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - wights
@@ -973,6 +950,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
+  rule_ref: shared-rule.immune-to-psychology
 - id: wights--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1012,7 +995,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Wights treat stunned results on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1020,11 +1002,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los Espectros tratan los resultados de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - wights
+  rule_ref: shared-rule.no-pain
 - id: wights--experience
   name: Experience
   effect: >-
@@ -1054,9 +1035,7 @@ rules:
     - id: unimplemented.restless-dead.wights.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
 - id: scarecrows--cause-fear
   name: Cause Fear
   effect: >-
@@ -1110,6 +1089,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
 - id: scarecrows--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1124,7 +1108,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: The scarecrow is immune to all poisons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1132,11 +1115,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: El espantapájaros es inmune a todos los venenos.
   applies_to:
     profile_ids:
     - scarecrows
+  rule_ref: shared-rule.immune-to-poison
 - id: scarecrows--no-pain
   runtime:
     scope: 'YES'
@@ -1149,7 +1131,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The scarecrow treats all stunned results on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1157,16 +1138,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: >-
-      El espantapájaros trata todos los resultados de Aturdido en la tabla de heridas como
-      Derribado.
   applies_to:
     profile_ids:
     - scarecrows
+  rule_ref: shared-rule.no-pain
 - id: scarecrows--no-brain
   name: No Brain
-  effect: The scarecrow never gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1174,8 +1151,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
     es: Sin Cerebro
-  effect_i18n:
-    es: El espantapájaros nunca gana experiencia.
   applies_to:
     profile_ids:
     - scarecrows
@@ -1187,8 +1162,8 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.no-brain
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.campaign
+  rule_ref: shared-rule.no-brain
 - id: scarecrows--no-substance
   name: No Substance
   effect: >-
@@ -1221,8 +1196,7 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.no-substance
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.shooting
 - id: scarecrows--flammable
   runtime:
     scope: 'YES'
@@ -1322,15 +1296,17 @@ rules:
     profile_ids:
     - scarecrows
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.restless-dead.scarecrows.animated-construct
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: out-of-scope.construction
+      clauses:
+      - id: animated-construct
+        scope: 'NO'
 - id: band--bone-goliath-access
   name: Bone Goliath
   effect: >-
@@ -1359,8 +1335,7 @@ rules:
     - id: unimplemented.restless-dead.band.bone-goliath-access
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--scarecrow-controller-limit
   name: Scarecrow Controllers
   effect: >-
@@ -1388,8 +1363,7 @@ rules:
     - id: unimplemented.restless-dead.band.scarecrow-controller-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--restless-dead-maximum-characteristics
   name: Restless Dead Maximum Characteristics
   effect: >-
@@ -1423,9 +1397,7 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
 - id: band--restless-dead-special-skills-corpse-bomb
   kind: warband_skill
   name: Corpse Bomb
@@ -1465,9 +1437,7 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-corpse-bomb
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.non-duel
 - id: band--restless-dead-special-skills-deathspeaker
   kind: warband_skill
   name: Deathspeaker
@@ -1502,8 +1472,7 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-deathspeaker
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--restless-dead-special-skills-wraith-touch
   kind: warband_skill
   name: Wraith Touch
@@ -1533,6 +1502,7 @@ rules:
   eligibility:
   - liche
   - necromancer
+  eligibility_admits_promoted: true
   applies_to:
     band: true
   runtime:
@@ -1578,8 +1548,7 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-forbidden-rite
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--restless-dead-special-skills-summoner
   kind: warband_skill
   name: Summoner
@@ -1606,5 +1575,4 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-summoner
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: out-of-scope.construction

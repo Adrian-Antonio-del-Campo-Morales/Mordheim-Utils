@@ -1,0 +1,62 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the printed "uses only its claws, tentacles and other
+#   extremities and cannot use normal equipment" (forbids: equipment) as a construction refusal on the
+#   boundEquipment stage (packages/typescript/domain/eligibility/index.ts; the Python mirror
+#   _eligibility.js is generated): the token "equipment" refuses every selected item with '"equipment"
+#   is forbidden for marauders-of-chaos/spawn-of-chaos.' — one refusal for a held weapon and one for a
+#   worn suit, the two equipment categories a duel build can declare.  The profile declares no
+#   equipment list, so the clause's own token answers before any list gate.  The admission is the bare
+#   Spawn, which compiles with its natural attacks (the compiler resolves a profile with no equipment
+#   list and no weapon to weapon.natural-attacks); its printed T5 is the KB scalar observed.  The
+#   Spawn's random Movement and Attacks are rolled per round, and the control shape runs none.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--equipment-restrictions/profile.equipment-restrictions
+  id: spawn-of-chaos-with-a-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: spawn-of-chaos
+      main_weapon_id: weapon.sword
+  expect_error: '"equipment" is forbidden for marauders-of-chaos/spawn-of-chaos.'
+
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--equipment-restrictions/profile.equipment-restrictions
+  id: spawn-of-chaos-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: spawn-of-chaos
+      armour_id: armour.light-armour
+  expect_error: '"equipment" is forbidden for marauders-of-chaos/spawn-of-chaos.'
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested); the bare build fights with its natural attacks.
+- audit_id: rule/mordheim/marauders-of-chaos/spawn-of-chaos--equipment-restrictions/profile.equipment-restrictions
+  id: spawn-of-chaos-without-equipment-is-accepted-and-fights-with-natural-attacks
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: spawn-of-chaos
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.natural-attacks
+    first.characteristics.toughness: 5
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

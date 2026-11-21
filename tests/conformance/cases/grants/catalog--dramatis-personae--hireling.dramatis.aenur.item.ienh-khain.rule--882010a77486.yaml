@@ -1,0 +1,95 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.critical/weapon.ienh-khain
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, equipment-items batch
+#   2026-11-18): the real Aenur's wound roll of 5 with Ienh-Khain is a critical hit (the
+#   critical die 1 doubles the damage on an unarmoured three-wound opponent); the Bard
+#   control's 5 wounds without a critical; the sword is refused in the hand of a hireling
+#   outside Aenur's printed kit.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Bard's dagger grants its target a 6+ armour
+#   save, so the control's wound requests an armour die (declared failing, 1); Aenur's
+#   sword grants none and his opponent wears none, so his critical requests no armour die.
+#   The critical die 1 is the lowest band of the basic table (2 wounds, armour allowed,
+#   no injury modifier), so Aenur's Strike to Injure is never reached.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Rule (core.yaml, hireling.dramatis.aenur.item.ienh-khain.rule.critical, grant profile): "Ienh-Khain
+# causes a critical hit on a wound roll of 5-6" - binding weapon.ienh-khain (execution.yaml:
+# critical_threshold 5).  Hireling family model (README, Hireling recipients): the real Aenur through
+# the hireling route (hirelings.dramatis-personae.core) with the fixture facts (WS3 S3 T3 W2 I5 A1;
+# printed Ld8 stays) and his unique sword wielded by its mechanic id.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour) and silenced (attacks 0).  The duel is uncharged so
+# Expert Swordsman and Lightning Reflexes ask nothing.  The control is the grade-1b Bard with his
+# kit dagger: S3 against T3 wounds on 4+, so his 5 wounds but opens no critical table.
+
+# The sword's critical on a 5: the critical die 1 deals two wounds to the unarmoured opponent.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.critical/weapon.ienh-khain
+  id: the-real-aenurs-wound-roll-of-five-is-a-critical-with-ienh-khain
+  fighters:
+    first:
+      &ienh-critical-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.aenur
+      main_weapon_id: weapon.ienh-khain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &ienh-critical-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_fighters:
+    first.main_weapon.critical_threshold: 5
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, dagger): the same 5 wounds without a critical; the dagger's 6+ gift to the
+# target is rolled (1, fails) and a single wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.critical/weapon.ienh-khain
+  id: a-hireling-without-the-sword-wounds-on-five-without-a-critical
+  fighters:
+    first:
+      &ienh-critical-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *ienh-critical-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Ienh-Khain is Aenur's unique item: wielded by a hireling of another printed kit it is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.critical/weapon.ienh-khain
+  id: the-sword-is-refused-in-the-hand-of-another-hireling
+  fighters:
+    first:
+      <<: *ienh-critical-control
+      main_weapon_id: weapon.ienh-khain
+    second: *ienh-critical-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

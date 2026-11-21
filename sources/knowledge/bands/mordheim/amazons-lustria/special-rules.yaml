@@ -33,12 +33,8 @@ rules:
     - id: unimplemented.amazons-lustria.serpent-priestess.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
-  effect: >-
-    The Priestess is a Wizard and may use Amazon Rituals . She starts with one ritual chosen at
-    random from the list.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -46,13 +42,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
   name_i18n:
     es: Mago
-  effect_i18n:
-    es: >-
-      La Sacerdotisa es una hechicera y puede usar los Rituales de las Amazonas. Comienza con un
-      ritual elegido al azar de la lista.
   applies_to:
     profile_ids:
     - serpent-priestess
+  rule_ref: shared-rule.amazon-priestess-wizard
 - id: jaguar-warriors--one-with-the-jungle
   runtime:
     scope: 'NO'
@@ -62,8 +55,7 @@ rules:
     - id: unimplemented.amazons-lustria.jaguar-warriors.one-with-the-jungle
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: One with the Jungle
   effect: >-
     A Jaguar has lived her life in the deepest parts and can move through jungle terrain without
@@ -93,6 +85,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.amazon-isolationists
+      clauses:
+      - id: isolationists
+        scope: 'YES'
+      - id: sacrifice
+        scope: 'NO'
+      - id: norse-enmity
+        scope: 'NO'
+      - id: not-one-of-us
+        scope: 'NO'
   name: Special Rules
   effect: >-
     Isolationists: The Amazons are constantly battling against the predations of the Lizardmen and
@@ -136,17 +137,14 @@ rules:
     band: true
 - id: band--amazon-special-skills
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: 'YES'
-      binding:
-        kind: profile
-        id: profile.skill-access
-        parameters:
-          category: special
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Amazon Special Skills
   effect: >-
     Amazon Heroines may use the following skill table instead of any of the standard skill tables
@@ -205,8 +203,7 @@ rules:
     - id: unimplemented.amazons-lustria.band.amazon-special-skills-elixir-of-life
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Elixir of Life
   effect: >-
     After years of service among her tribe an Amazon is granted access to the waters that make the
@@ -303,8 +300,7 @@ rules:
     - id: unimplemented.amazons-lustria.band.amazon-special-skills-concealment
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: out-of-scope.movement
   name: Concealment
   effect: >-
     The Amazon is adept at blending in with her surroundings. When hiding in jungle terrain all

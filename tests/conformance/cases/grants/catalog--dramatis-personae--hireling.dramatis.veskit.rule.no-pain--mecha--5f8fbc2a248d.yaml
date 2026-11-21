@@ -1,0 +1,126 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-injury-and-immunity batch
+#   2026-11-18): Veskit ignores a Knocked Down and a Stunned Injury result, an Out of Action result
+#   still removes him, the plain-hireling control is Stunned by the same face, and the rule is refused
+#   outside its printed profile.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# AUTHORED: the printed rule ("Veskit ignores Knocked Down and Stunned injury results and remains until
+#   his last Wound is lost") is a profile grant of mechanic.veskit-no-pain, whose contract replaces any
+#   aggregated Injury condition other than Out of Action with Standing
+#   (packages/python/combat-engine/mordheim_combat/modular/attacks.py); the shared mechanics file
+#   (cases/mechanics/mechanic.veskit-no-pain.yaml) carries the hand-built faces including the
+#   zero-Wound continuation.
+#
+# Hireling family model (P0, 2026-11-17) in the Cairn Wraith No Pain shape.  The recipient is the
+# printed profile compiled through the hireling route (hirelings.dramatis-personae.core /
+# hireling.dramatis.veskit) with the fixture characteristics (WS3 S3 T3 I5 A1) and wounds 1 so the first
+# wound reaches the Injury table; it contributes no attack of its own (initial_state).  The attacker is
+# the stronger hand-built fixture (WS10 S8 I10, mace): 3+ to hit, 2+ to wound with no critical face,
+# and a Strength that makes Veskit's Fighting Claws parry ineligible (an attacker of twice the bearer's
+# Strength cannot be parried) and lifts his printed 3+ Metallic Body save past 6 (Strength 8 is -5), so
+# neither a parry nor an armour die is requested.  Veskit's other printed rules add no die here: he is
+# immune to psychology, nobody charges, and his integrated claws only act when he strikes.  The control
+# is the grade-1b Bard (dagger: no parry; kit armour is owned, not worn), compiled through the same
+# route with the same fixture; the refusal selects the printed rule on the Bard.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+  id: veskit-ignores-a-knocked-down-result-and-stays-standing
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.veskit
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+  id: veskit-ignores-a-stunned-result-and-stays-standing
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Out of Action face is not ignored: his last Wound is lost and he is removed.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+  id: an-out-of-action-result-still-removes-veskit
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control (Bard) takes the same face of three and is Stunned.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+  id: a-hireling-without-the-rule-is-stunned-by-the-same-result
+  fighters:
+    first: *strong-attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Veskit's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.no-pain/mechanic.veskit-no-pain
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *strong-attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.veskit.rule.no-pain]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

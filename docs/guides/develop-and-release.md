@@ -22,8 +22,8 @@ python tools/mordheim-utils.py tests modular mechanics -k leadership -q
 ```
 
 Engine tests consume versioned snapshots under `tests/engines/fixtures/`;
-ordinary execution needs no regeneration. The original E2E corpus is under
-`tests/integration/e2e/`, and source-backed construction/KB/integration
+ordinary execution needs no regeneration. The conformance corpus is under
+`tests/conformance/`, and source-backed construction/KB/conformance
 checks retain compiler access. See [fixture maintenance](../reference/verification.md#engine-test-fixtures)
 and [test tree and selection](../reference/tools.md#selections).
 `tests modular` and `tests vectorized` are broad selections, not default
@@ -70,7 +70,7 @@ project filters.
 | Test move or import/path update | `python -u -m pytest tests/engines/shared/contracts/test_kernel_plan.py --collect-only -q` (substitute the affected file) |
 | One engine adapter / frozen-input connection | Run the explicit NumPy or native node below |
 | Compiler behavior | Select affected files in `tests/construction/`; do not regenerate fixtures just to make changed outputs pass |
-| E2E scenario | Select the scenario's collected node ID in `tests/integration/e2e/`; use `--collect-only` on its runner when the ID is unknown |
+| Conformance scenario | Select the scenario's collected node ID in `tests/conformance/`; use `--collect-only` on its runner when the ID is unknown |
 | Launcher behavior | Select existing checks in `tests/tooling/launcher/` |
 | TypeScript domain change | Workspace typecheck and the affected Vitest file |
 
@@ -116,8 +116,8 @@ Runs the knowledge generator/check, the campaign-file, architecture and
 knowledge checks (including the `tests/knowledge/web` artefact audits),
 shared-eligibility transport, the eligibility bundle freshness check, the
 TypeScript typecheck/tests and the web typecheck/lint/tests/build plus the
-post-build bundle guard. It does not run the modular E2E battery or its
-non-regression control, which CI runs as separate steps. Add `tests kb e2e -q`
+post-build bundle guard. It does not run the rules-conformance suite or its
+non-regression control, which CI runs as separate steps. Add `tests conformance -q`
 when the change touches KB, compiler or engine integration. Those browser
 artefact checks read generated knowledge data and can be expensive; select the
 affected files while editing and reserve this gate for integration.
@@ -129,37 +129,39 @@ candidates. What each layer can and cannot prove is
 [Verification](../reference/verification.md).
 
 ```powershell
-python tools/mordheim-utils.py check verify --require-complete
+python tools/mordheim-utils.py check verify
 python tools/mordheim-utils.py check parity --require-complete
 python tools/mordheim-utils.py check coverage
 ```
 
-`parity --level statistical` adds the standard six-sigma sample;
-`parity --level deep --pair-set fast|full` runs the curated archetype matrix,
-with `--truncations` for round-horizon checks. These take minutes to hours and
-belong to engine changes and releases, never to the per-change loop.
+`check parity` alone runs the exact obligation checks. `check parity --scenarios
+small` adds the standard six-sigma sample, `--scenarios normal|big` the curated
+archetype matrix and `--rounds 2,4,8,15` the round-horizon checks; `check samples`
+reuses stored oracle samples instead of re-running the oracle. These take minutes
+to hours and belong to engine changes and releases, never to the per-change loop.
 
 Generated reports live under ignored `outputs/` — never hand-edit them:
 
-- `audit/` — per-rule inventory (`check report rules`).
-- `test-report/` — technical and optional statistical CSVs (`check report tests`).
-- `parity/` — JSON/Markdown parity certificates.
+- `audit/` — per-rule inventory and clause coverage (`check report rules`).
+- `test-report/` — technical test CSVs (`check report tests`).
+- `parity/` — JSON/Markdown parity reports (`check parity --output`).
+- `parity-store/` — stored engine samples and their comparisons (`check samples`).
 - `benchmarks/` — benchmark results.
 
 ## Performance work
 
-Benchmark changes against a saved baseline. The default `-n 100` is a smoke
-size; choose a real sample per engine (the modular oracle runs a few hundred
+Benchmark changes against a saved baseline. The default `--simulations 100` is a
+smoke size; choose a real sample per engine (the modular oracle runs a few hundred
 duels per second, the optimized engines tens to hundreds of thousands):
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-before.json
-python tools/mordheim-utils.py performance benchmark -n 100000 --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
-python tools/mordheim-utils.py performance benchmark -n 2000 --backend modular --save-baseline outputs/benchmarks/modular-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100k --backend numpy --output outputs/benchmarks/numpy-before.json
+python tools/mordheim-utils.py performance benchmark --simulations 100k --backend numpy --baseline outputs/benchmarks/numpy-before.json --require-improvement --output outputs/benchmarks/numpy-after.json
+python tools/mordheim-utils.py performance benchmark --simulations 2000 --backend modular --output outputs/benchmarks/modular-before.json
 ```
 
-Both runs must use the same measurement design (simulations, batch size, seed,
-warmups, repeats, `--processes` and backends); a baseline unit missing from the
+A baseline is a saved `--output <file>.json`. Both runs must use the same measurement design (`--scenarios`, `--simulations`,
+`--batch-size`, `--seed`, `--warmups`, `--repeats`, `--workers` and `--backend`); a baseline unit missing from the
 current run fails the gate. The gate covers all three engines, so modular
 optimization work uses the same save/compare workflow. A baseline from another
 machine, engine or revision prints a provenance warning and is still compared,
@@ -174,11 +176,11 @@ To find where the time goes before optimizing, profile a single-configuration
 sequential run:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --backend modular --scenario basic stateful -n 2000 --profile
+python tools/mordheim-utils.py performance benchmark --backend modular --scenarios basic stateful --simulations 2000 --profile
 ```
 
 It prints each backend's top functions by cumulative time and writes
-per-backend `.pstats` files under `outputs/benchmarks/` for `pstats`/
+per-backend `.pstats` files beside `--output` (default `outputs/benchmarks/`) for `pstats`/
 `snakeviz`. Profiled timings include cProfile overhead and cannot feed a
 baseline gate. For multicore modular samples, the parity tools pool the
 unchanged scalar oracle through `mordheim_combat.modular.parallel` (bit-for-bit
@@ -190,7 +192,7 @@ To plan a large campaign (many scenarios, thousands of duels each), measure
 how each engine should split the work before running it:
 
 ```powershell
-python tools/mordheim-utils.py performance benchmark --tts --pair-set full --backend modular numpy native -n 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
+python tools/mordheim-utils.py performance benchmark --scenarios big --backend modular numpy native --simulations 5000 --strategies "sequential,processes=12,parallel=12,parallel=12:48" --output outputs/benchmarks/tts-plan.json
 ```
 
 The study runs the whole workload under every applicable strategy per engine
@@ -207,13 +209,14 @@ Calibrate after hardware, engine or combat-rule changes:
 
 ```powershell
 python tools/mordheim-utils.py performance calibrate
-python tools/mordheim-utils.py performance calibrate --pairs mini
+python tools/mordheim-utils.py performance calibrate --scenarios small
 python tools/mordheim-utils.py performance calibrate --reset         # drop the profile
 ```
 
-Benchmark, parity and calibration share the unified precompiled scenario
-catalogue. Missing frozen scenarios fail instead of compiling replacements.
-The separate build-based parity battery still compiles its declared inputs.
+Benchmark, parity, calibration and the stored samples share one `--scenarios`
+vocabulary: the precompiled levels and scenarios, `deliveries` and `battery`.
+Missing frozen scenarios fail instead of compiling replacements; battery cases
+compile their declared builds.
 
 The command installs `calibration.json` beside the local preferences. Use
 `--no-install` for a read-only study, `--output PATH` for the full evidence and
@@ -251,7 +254,7 @@ and MiniRacer's native library; installing Node on the target machine is unneces
 ## Release checklist
 
 - [ ] Fast relevant tests pass.
-- [ ] Structural `check verify` passes; the authorized mechanics, construction and E2E checks have recorded results.
+- [ ] Structural `check verify` passes; the authorized mechanics, construction and conformance checks have recorded results.
 - [ ] TypeScript/web checks pass when applicable.
 - [ ] Contract fixtures and generated knowledge artefacts validate when applicable.
 - [ ] Shared eligibility bundle matches its sources and both consumer suites pass when its rules change.

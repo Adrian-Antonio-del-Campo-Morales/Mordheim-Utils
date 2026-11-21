@@ -1,0 +1,55 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault
+# authoring_status: AUTHORED
+# authoring_progress: 1 authored scenario.  The earlier PARTIAL note predates the
+#   expect_fighters observation channel: CompiledFighter.construction_tags IS observable (the
+#   authored sibling mordheim--gunnery-school-of-nuln--marksmen--quick-reload--compiler.quick--
+#   201a2ed1f844.yaml already asserts first.construction_tags including
+#   compiler.proud-to-a-fault on the Marksman), so the band-wide admission is authored on a
+#   plain band profile.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Discrimination note (2026-11-18): per the 2026-11-18 ruling (docs/decisions/design-rulings.md,
+#   Conformance triage decisions, second batch), the printed category ban ("may never use
+#   non-black-powder ranged weapons") is a band-wide category whose own lists never offer the
+#   banned category: every ranged item on the band's own lists
+#   (sources/knowledge/bands/mordheim/gunnery-school-of-nuln/equipment-access.yaml) is a
+#   black-powder weapon, so a bow is already refused by the equipment-list gate without this
+#   rule and the rule has no reachable refusal of its own.  The compiled construction tag plus
+#   that gate is the whole observable; the printed Hired-Sword/Dramatis-Personae exemption is
+#   unreachable because hirelings compile through their own route and never read a band's
+#   lists.
+#
+# AUTHORED: 1 scenario asserts the admission face: the plain Senior Student (a profile with no
+#   rules of its own) compiles with the band grant's construction tag, which is the compiled
+#   contract the band rule delivers (grant: band, binding compiler.proud-to-a-fault).
+
+# --- Authored scenario ---
+# Derived from the printed band rule and the recorded ruling; no engine output was consulted.
+# The build shape copies the authored quick-reload sibling: both pools are silenced so the
+# compiled snapshot is the only observation, and the Senior Student's whole sorted tag list is
+# the single band-wide tag.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault
+  id: the-senior-student-compiles-with-the-proud-to-a-fault-construction-tag
+  fighters:
+    first:
+      collection: mordheim
+      band_id: gunnery-school-of-nuln
+      profile_id: senior-student
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.construction_tags: [compiler.proud-to-a-fault]
+  expect_final: {rounds_executed: 1}

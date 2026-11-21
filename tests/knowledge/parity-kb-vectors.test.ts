@@ -145,6 +145,7 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
     expect(Object.keys(prose).sort()).toEqual([
       "conditions",
       "core-combat",
+      "delegating-rules",
       "localized-labels",
       "profile-special-rules",
       "racial-maximums",

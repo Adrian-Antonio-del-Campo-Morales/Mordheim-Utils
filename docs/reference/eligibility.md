@@ -153,8 +153,10 @@ intrinsic duel clauses are refused before compilation; name-only entries stay
 in the source catalogue but are not offered as editable stat profiles.
 
 See the [source clarifications](../decisions/design-rulings.md#f074-source-clarifications)
-for accepted recipient interpretations; current contracts and evidence remain
-in the [clause register](../../sources/knowledge/verification/clause-contracts.csv).
+for accepted recipient interpretations; the current contracts are the
+`clauses` declared on the rules themselves (see
+[Identities and clauses](knowledge-base.md#identities-and-clauses)) and their coverage comes from
+`python tools/knowledge/clauses.py coverage`.
 
 `EquipmentLimits.exempt_profile_ids` exempts a profile only from `required_tag`;
 `max_missile_weapons` still applies. For Outlaws, the Cleric may omit the bow

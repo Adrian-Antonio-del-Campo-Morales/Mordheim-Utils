@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/order-of-the-mare-web/companion-filly--equipment-restrictions/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/order-of-the-mare-web/special-rules.yaml
+#
+# AUTHORED: (2026-11-18) 3 scenarios evidence the printed "May never take any equipment, except for the
+#   covering it already carries" (forbids: equipment) as a construction refusal on the boundEquipment
+#   stage (packages/typescript/domain/eligibility/index.ts; the Python mirror _eligibility.js is
+#   generated): the token "equipment" refuses every selected item with '"equipment" is forbidden for
+#   order-of-the-mare-web/companion-filly.' — one refusal for a held weapon and one for a worn suit.
+#   The profile declares no equipment list, so the clause's own token answers before any list gate.
+#   The admission is the bare Filly: it compiles with its natural attacks ("fights with its hooves";
+#   the compiler resolves a profile with no equipment list and no weapon to weapon.natural-attacks) and
+#   keeps the covering, which the KB carries as the profile's own combat trait (profiles.yaml
+#   combat_traits natural_armour_save 5), not as removable gear — so the printed exception is the
+#   innate 5+ observed on the compiled fighter rather than an item the clause must admit.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/order-of-the-mare-web/companion-filly--equipment-restrictions/profile.equipment-restrictions
+  id: companion-filly-with-a-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: companion-filly
+      main_weapon_id: weapon.sword
+  expect_error: '"equipment" is forbidden for order-of-the-mare-web/companion-filly.'
+
+- audit_id: rule/mordheim/order-of-the-mare-web/companion-filly--equipment-restrictions/profile.equipment-restrictions
+  id: companion-filly-with-armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: companion-filly
+      armour_id: armour.light-armour
+  expect_error: '"equipment" is forbidden for order-of-the-mare-web/companion-filly.'
+
+# Construction is the observation (control shape: no charge, bearer out of action before the first
+# phase, no die requested); the bare build fights with its hooves and keeps its innate covering.
+- audit_id: rule/mordheim/order-of-the-mare-web/companion-filly--equipment-restrictions/profile.equipment-restrictions
+  id: companion-filly-without-equipment-is-accepted-with-hooves-and-its-covering
+  fighters:
+    first:
+      collection: mordheim
+      band_id: order-of-the-mare-web
+      profile_id: companion-filly
+    second: {}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.natural-attacks
+    first.natural_armour_save: 5
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

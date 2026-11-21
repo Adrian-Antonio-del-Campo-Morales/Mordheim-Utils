@@ -1,0 +1,105 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/condition.poetry-inspired
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (supplied-condition batch, 2026-11-18): the Turjuk
+#   Askar supplied with the Poet's inspiration fights the initial player turn at +1 Weapon Skill with
+#   one extra Attack and is back to its supplied values in the next round; the same Askar without the
+#   inspiration swings once at its own Weapon Skill.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-18, reviewed): not a duplication, so the KB is kept and no
+#   single-source change applies.  This is the documented supplied-condition pattern
+#   (docs/reference/knowledge-base.md, Reason codes): the band rule scholar--field-of-scholarship binds
+#   condition.poetry-inspired with `grant: none` only to name the printed rule that produces the
+#   condition; it is never a compile route.  The condition's one operator is its row in
+#   sources/knowledge/catalog/rules/conditions.yaml, reached only through the supplied condition_ids
+#   entry these scenarios declare, so the scenarios test it through its condition id, as intended.
+#   Removing the band binding cannot change a build; removing the catalogue row refuses the build.  The
+#   only place the band rule could become observable is the recipient gate, which compiler.py hard-codes
+#   (compile_fighter's supplied-condition checks on band/profile/kind) instead of reading this rule's
+#   applies_to; that is a compiler choice, not a KB duplicate.  For this condition compiler.py carries
+#   no recipient gate at all, so no refusal is authorable here (recorded wrinkle: the printed "friendly
+#   model within 6" of the poet" is not gated).
+# Record: sources/knowledge/bands/mordheim/turjuk-rel/special-rules.yaml
+# Rule text (shared-rule.field-of-scholarship, Relics of the Crusades pt 2 p4): "Poetry: ... for one
+#   turn during a scenario the poet grants any friendly model within 6" +1 WS and +1 A."  Condition
+#   row (condition.poetry-inspired): "The supplied friendly recipient within 6 inches of its Poet
+#   receives +1 Weapon Skill and +1 Attack for this initial player turn only.  Prior victory is not
+#   required for this separate inspiration."
+# AUTHORED: the recipient is a printed warrior of the band (the Askar, a Hero) carrying the corpus
+#   fixture characteristics, with the band's own Scholar supplied as the nearby Poet of the recipient's
+#   side at the printed six inches (a provider record in the Rememberer file's grammar; the duel reads
+#   the supplied condition, not the record).  Consumers: modular/state.py (+1 Weapon Skill at
+#   initialization, the `poetry-inspiration-active` resource) and modular/rounds.py (+1 Attack while
+#   round_index is 0; the Weapon Skill point is taken back from round 1).  Hit arithmetic: WS4 against
+#   WS3 hits on 3+, WS3 against WS3 on 4+.  The Askar keeps its default kit blade, so a hit is declared
+#   with a failed wound (a dagger grants its target a 6+ save, which a failed wound never reaches); the
+#   opponent's pool is silenced so the strict tape is itself the attack-count assertion.
+
+# --- Authored scenarios ---
+
+# The inspiration on the band's own warrior: in round 0 the Askar fights at Weapon Skill 4 (its 3
+# hits on 3+) and swings twice; in round 1 it is back to Weapon Skill 3 (the same 3 misses) and swings
+# once.
+- audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/condition.poetry-inspired
+  id: the-askar-inspired-by-the-poet-gains-a-weapon-skill-and-an-attack-for-the-initial-turn
+  fighters:
+    first:
+      collection: mordheim
+      band_id: turjuk-rel
+      profile_id: askar
+      condition_ids: [condition.poetry-inspired]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context:
+    charging: []
+    active_participant: first
+    nearby:
+      - participant_id: poet
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: turjuk-rel, profile_id: scholar}
+    distances:
+      - [first, poet, 6]
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    # Both hits of the inspired Askar roll before his wound (README tape order).
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {state.first.weapon_skill: 4, attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: false, attacks.1.hit: false}
+    1: {state.first.weapon_skill: 3, attacks.0.hit: false, attacks.0.hit_target: 4}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: the same Askar without the supplied inspiration fights at its own Weapon Skill 3 (the
+# same 3 misses) and swings once, so both differences above belong to the condition.
+- audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/condition.poetry-inspired
+  id: without-the-inspiration-the-askar-swings-once-at-its-own-weapon-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: turjuk-rel
+      profile_id: askar
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {state.first.weapon_skill: 3, attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

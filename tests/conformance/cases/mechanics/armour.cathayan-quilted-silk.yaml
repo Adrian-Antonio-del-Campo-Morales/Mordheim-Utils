@@ -1,0 +1,99 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.cathayan-quilted-silk
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios,
+#   including the overlay's correct defence_ids placement. REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the +1 save on a body
+#   armour bearer, its threshold boundary, and the overlay's required
+#   `defence_ids` placement (refused when submitted as a body `armour_id`).
+#   The register note "the compiler rejects it as a body armour id while
+#   subtracting its point from the composed save" is a vocabulary fact, not a
+#   semantic authority: the normative +1 is encoded through the supported
+#   `defence_ids` overlay field, not excluded. Pending semantic review.
+# RUNNER-GAP: the declared `expect_error` contract is documented by corpus.py,
+#   test_cases.py and README but not yet implemented by `runner.check_case`,
+#   so the placement-refusal scenario cannot execute until that is wired.
+
+# --- Authored scenarios ---
+# mechanic/armour.cathayan-quilted-silk — +1 armour save as an overlay.
+#
+# Expectations come from the printed rule and the accepted clause
+# `plus-one-to-armour-saves` of
+# the knowledge-base clause contracts (sources/knowledge), never from engine output:
+# the quilted silk adds +1 to the armour save against any attack and combines
+# with any body armour.  The supported representation is an overlay in
+# `defence_ids` (the compiler refuses it as a body `armour_id`), so a light
+# armour bearer saves on 5 instead of 6.  An unmodified Strength 3 attacker
+# applies no save modifier, so the boundary is exactly that improved target.
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own armour face and expectation.
+
+- audit_id: mechanic/armour.cathayan-quilted-silk
+  id: quilted-silk-adds-one-to-a-body-armour-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      defence_ids: [armour.cathayan-quilted-silk]
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the improved target: a four fails against the 5+ the overlay
+# produces, so the +1 is a real point of save and not an unconditional success.
+
+- audit_id: mechanic/armour.cathayan-quilted-silk
+  id: quilted-silk-does-not-save-one-below
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      defence_ids: [armour.cathayan-quilted-silk]
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The overlay belongs in the defence list: submitted as a body armour the build
+# must be refused, and the declared expect_error contract requires the refusal
+# to name the authored reason.
+
+- audit_id: mechanic/armour.cathayan-quilted-silk
+  id: quilted-silk-is-refused-as-a-body-armour
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.cathayan-quilted-silk
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "Cathayan quilted silk is an armour overlay and belongs in defence_ids"

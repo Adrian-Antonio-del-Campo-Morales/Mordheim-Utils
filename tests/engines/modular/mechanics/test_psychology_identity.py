@@ -114,6 +114,7 @@ def graver(**options):
 
 # --- Instinctual Violence: both admitted halves ----------------------------
 
+@pytest.mark.covers("rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers")
 def test_the_selected_skill_grants_the_undead_charger_exemption_and_one_strike(precompiled):
     selected = precompiled().first
     assert "mechanic.fear-immunity-undead-chargers" in selected.global_effects.tags
@@ -123,6 +124,7 @@ def test_the_selected_skill_grants_the_undead_charger_exemption_and_one_strike(p
     assert selected.global_effects.priority == 0
 
 
+@pytest.mark.covers("rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_the_fear_exemption_needs_an_undead_charger():
     bearer = graver(special_rule_ids=(SKILL,))
@@ -172,6 +174,7 @@ def scheduled(first, second, rolls, decisions=()):
     return result
 
 
+@pytest.mark.covers("rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_only_the_nominated_attack_strikes_first():
     # Fixture: the foe's charge already takes the Strike First tier and a higher
@@ -207,6 +210,7 @@ def test_declining_nomination_keeps_the_prepared_secondary_majority_once(precomp
     assert len(result.attacks) == 4
 
 
+@pytest.mark.covers("rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers")
 def test_the_nominated_attack_leaves_the_ordinary_pool_without_duplicating_it(precompiled):
     """The nominated slot leaves the pool; the remaining allocation is kept.
 
@@ -312,6 +316,7 @@ def _allocation_versus_resolved(monkeypatch, unit, *, majority, nomination, char
     return Counter(seen), Counter(weapon_tag(weapon) for weapon in allocation)
 
 
+@pytest.mark.covers("rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/mechanic.fear-immunity-undead-chargers")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_the_nominated_attack_and_the_remainder_share_the_pools_own_allocation(monkeypatch, precompiled):
     """One allocation governs the choice, the named strike and the remainder.
@@ -375,6 +380,7 @@ def test_fanatical_auto_pass_follows_the_supplied_promotion_only():
 BRANCHNYMPH = ("fen-guard-mim", "branchnymph")
 
 
+@pytest.mark.covers("rule/mordheim/fen-guard-mim/branchnymph--instinctual/mechanic.causes-fear", "cause-fear--scope--fear-of-fire-rider", "cause-fear--scope--immunity-and-fear")
 def test_the_psychology_immune_bearer_still_takes_the_fear_of_fire_rider(precompiled):
     """"Note that Fear of Fire still applies" limits the immunity it is printed next to."""
     # ``precompiled(0)`` is the ordinary duel pair, ``precompiled(1)`` the same
@@ -437,6 +443,8 @@ def slaver(profile="slave-merchant"):
     return canonical(SLAVERS, profile)
 
 
+@pytest.mark.covers("rule/mordheim/pit-fighters/band--free-the-slaves/mechanic.hatred-slavers", "hate-slavers")
+@pytest.mark.covers("rule/trollheim/chaos-streets-pit-fighters/band--free-the-slaves/mechanic.hatred-slavers", "hate-slavers")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_free_the_slaves_targets_the_opponents_own_slaver_identity():
     fighter = pit_fighter()

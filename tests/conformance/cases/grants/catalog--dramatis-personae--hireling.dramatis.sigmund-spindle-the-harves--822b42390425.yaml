@@ -1,0 +1,101 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened/trait.frenzy
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, see below): doubled attacks and no Fear test; the control
+#   strikes once and is tested; the refusal.  The knocked-down end of Frenzy is left to the band-rule
+#   siblings (it needs the recipient wounded through its printed kit).
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed hireling profile, compiled
+# through the hireling route (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its
+# printed rule is granted by the profile itself, so the build selects nothing.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed,
+# while its printed Leadership stays in place; an omitted main weapon is the printed kit's own.
+# The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads
+# (causes_fear, or the hated kind).  The control is a plain hireling without any psychology rule - the
+# grade-1b Bard - compiled through the same route with the same fixture, so the request that the rule
+# removes (or the reroll it grants) is shown present without it.  The refusal selects the printed rule
+# on that control through special_rule_ids: a profile-granted rule is not available elsewhere.
+# Dice: every attack is declared as a natural 1 unless the strike is the observable, so no wound, save
+# or injury die is requested; a 2D6 Fear test of 5+4 fails Ld7 and 3+3 passes it.
+
+# Frenzy doubles the Attacks (one supplied attack strikes twice) and a frenzied warrior never tests for Fear,
+# so the Fear-causer's charge prompts no Leadership dice.  Both blows hit on 4+ and the declared 6 wounds
+# declared 5 wounds T3 at any Strength the printed weapon can give (and is no critical).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened/trait.frenzy
+  id: the-frenzied-sigmund-spindle-strikes-twice-with-one-attack-and-takes-no-fear-test
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    # Lightning Reflexes: the recipient strikes before the charger.
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: True, state.first.fear_hit_sixes: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) is tested (9 fails Ld7) and strikes once.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened/trait.frenzy
+  id: a-hireling-without-frenzy-strikes-once-and-is-tested
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: False, state.first.fear_hit_sixes: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened/trait.frenzy
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

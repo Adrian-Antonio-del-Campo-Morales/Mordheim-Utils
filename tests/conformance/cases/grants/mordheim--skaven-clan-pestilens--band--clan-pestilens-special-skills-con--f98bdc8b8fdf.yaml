@@ -1,0 +1,207 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+# authoring_status: AUTHORED
+# authoring_progress: the two admitted clauses carry 6 authored scenarios derived from the printed rule
+# and the recorded contract: the reaction after a close-combat injury that takes this hero out of action
+# (the attacker's Toughness test failing on the printed always-fails six, and the same test passing),
+# and the printed Rotten Body prerequisite as its accepted pairing, because the refusal face had to be
+# withdrawn: the shared stage's own sentence exists (`loadoutRestriction` in `_eligibility.js` returns
+# "Contagious requires Rotten Body" for a build declaring Contagious without Rotten Body); the
+# withdrawal rested on this origin's row being deferred (scope LATER / implemented NO / binding null),
+# but the row now records scope YES / implemented YES and binds trait.contagious {"value": true}
+# (checked 2026-11-16), so that deferral note is withdrawn; the refusal face is reachable again and is
+# asserted on the real Plague Monk (see the addendum below).  The register's note that this origin's runtime binding is
+# missing is likewise superseded by that record; the canonical trait.contagious branch lives in the aftermath seam, so the reaction scenarios supply the printed
+# individual state as an explicit fact (the reuse the register instructs) and the tape is the canonical
+# reaction's.  Real-recipient addendum (2026-11-16): 3 more scenarios build the printed Plague Monks
+# hero and select the band rows: Contagious + Rotten Body wounds the attacker on the six, Rotten Body
+# alone takes no test, and Contagious alone is refused with "Contagious requires Rotten Body" - so the
+# refusal face IS reachable on the real recipient and is now asserted (6 scenarios in total).
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: contagious-reaction (scope: YES)
+# AUTHORED[contagious-reaction]: 2 fixture scenarios (plus 2 real Plague Monk scenarios, see the
+# addendum above) take the printed reaction onto the real attack route: the
+# bearer is a fixture that supplies the printed Contagious state, the attacker's swing wounds it and the
+# injury die takes it Out of Action, and the attacker then faces the printed Toughness test - the always
+# failing six inflicts the printed automatic wound, and a one passes and leaves the attacker untouched.
+# The bearer contributes no attacks, so the swing that triggers the reaction is the whole tape.  REVIEWED
+# still requires manual semantic review.
+#
+# Clause: contagious-rotten-body-prerequisite (scope: YES)
+# AUTHORED[contagious-rotten-body-prerequisite]: 2026-11-16 - the refusal face is now asserted on the
+# real Plague Monk (the-real-plague-monk-selecting-contagious-without-rotten-body-is-refused); the
+# withdrawal history below concerns the earlier fixture route only.  1 scenario covers the printed prerequisite as the
+# construction consequence it is recorded as: the selection carrying both printed rows is accepted and
+# runs.  The refusal face is recorded as withheld, not asserted: the sentence the shared module emits is
+# "Contagious requires Rotten Body" (`loadoutRestriction` in `_eligibility.js`, reached from
+# compiler.py:317).  The withdrawal was recorded while this origin's own row was deferred - runtime scope
+# LATER, implemented NO, binding null - and a declaration resolving to it was refused at compiler.py:170 ("special rule is outside the executable duel runtime: <id>:
+# <reason>") before the prerequisites stage; the row now binds trait.contagious with implemented YES
+# (checked 2026-11-16), so that deferral is withdrawn, but the withdrawn tape is not re-derived here and
+# at the time could only have asserted that runtime status instead of the printed prerequisite.  The sentence is still
+# produced today only when the id is resolved through `free_rules`, where the other collection defines
+# the same id with implemented YES: that is another origin's runtime, so it is not evidence for this
+# clause.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The bearer is
+# a hand-built fixture whose physical characteristics are fixture facts and whose printed Contagious state
+# is supplied as an explicit fact, which is the reuse the register instructs for the canonical aftermath
+# reaction; the attacker is a hand-built fixture too, and the wounded bearer contributes no attacks of its
+# own.  The injury face of 5 is the printed Out of Action band, the toughness test's six always fails, and
+# no natural six is declared on any wound roll so no critical die enters the tape.
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-always-failing-six-wounds-the-attacker
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {contagious: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.contagious, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: a-passed-toughness-test-leaves-the-attacker-untouched
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {contagious: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.contagious, value: 1}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The refusal tape that stood here - `contagious-without-rotten-body-is-refused`, declaring the
+# Contagious row alone and expecting the fragment "Contagious requires Rotten Body" - was WITHDRAWN
+# under the non-reachable-diagnostic rule while this origin's row was deferred (the declaration was then
+# refused at compiler.py:170 before the stage that carries that sentence).  The row is no longer
+# deferred; the refusal is re-asserted on the real recipient at the end of this file.  The requirement is recorded in the
+# clause marker above, not asserted here, and the accepted pairing below is unchanged.
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-same-selection-with-rotten-body-is-accepted
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious, band--clan-pestilens-special-skills-rotten-body]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+
+# Real recipient (2026-11-16): the printed Plague Monks hero (mordheim/skaven-clan-pestilens/
+# plague-monks; special-skill access, no profile rules of its own) selects Contagious with its printed
+# prerequisite Rotten Body.  The fixture attacker takes it Out of Action with the close-combat injury,
+# so the attacker takes the printed Toughness test and the always-failing six wounds it.  Wounds 1 is
+# the profile's printed maximum; the club is on the printed hero list and is never swung (no attacks).
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-real-plague-monk-out-of-action-wounds-its-attacker-on-a-six
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious, band--clan-pestilens-special-skills-rotten-body]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 5}
+  - {key: round.0.first.attack.0.injury.0, value: 5}
+  - {key: round.0.first.attack.0.contagious, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# Control: the same Plague Monk with Rotten Body alone - no Toughness test is taken and the attacker
+# keeps both Wounds.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-real-plague-monk-without-contagious-leaves-its-attacker-untested
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 5}
+  - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed "Requires Rotten Body" refusal, now reachable on the real recipient: the band's own row
+# binds trait.contagious (implemented YES), so a Plague Monk selecting Contagious alone reaches the
+# prerequisite stage.  This supersedes the withdrawal recorded above for the fixture route.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-real-plague-monk-selecting-contagious-without-rotten-body-is-refused
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious]
+  expect_error: "Contagious requires Rotten Body"

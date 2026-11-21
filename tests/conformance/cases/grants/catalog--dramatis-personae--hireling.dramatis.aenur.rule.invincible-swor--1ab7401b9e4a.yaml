@@ -1,0 +1,104 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.rule.invincible-swordsman/mechanic.invincible-swordsman
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the real Aenur hits on a 2 (target 2); his 1 still misses; the Bard control's
+#   identical 2 misses at the ordinary 4+; the rule is refused on a hireling outside its printed
+#   profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Rule (core.yaml, hireling.dramatis.aenur.rule.invincible-swordsman, grant profile): "Aenur hits
+# opponents on 2+ in hand-to-hand combat" - binding mechanic.invincible-swordsman (model
+# tests/conformance/cases/mechanics/mechanic.invincible-swordsman.yaml; consumer
+# modular/contexts.py prepare_hit_context fixed_target 2, phases.py resolve_hit).  Hireling family
+# model (README, Hireling recipients): the real Aenur through the hireling route
+# (hirelings.dramatis-personae.core / hireling.dramatis.aenur) with the fixture facts (WS3 S3 T3 W2
+# I5 A1; printed Ld8 stays) and his unique sword Ienh-Khain wielded by its mechanic id (his
+# authored Ienh-Khain files).  The duel is uncharged so Expert Swordsman and Lightning Reflexes ask
+# nothing; Step Aside is never reached against the opponent's declared natural-1 miss; every wound
+# die of his is a declared natural 1 so Ienh-Khain's +1 Strength, Mighty Blow and Strike to Injure
+# add no request.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour).  The
+# control is the grade-1b Bard with his kit dagger (WS3 against WS3 hits on 4+); the refusal selects
+# the printed rule on the Bard (the compiler's band-only fragment, another package).
+
+# The printed 2+: Aenur's 2 hits (target 2); the wound die 1 fails.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.rule.invincible-swordsman/mechanic.invincible-swordsman
+  id: the-real-aenur-hits-on-two
+  fighters:
+    first:
+      &aenur-invincible
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.aenur
+      main_weapon_id: weapon.ienh-khain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &aenur-invincible-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 2, attacks.0.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: Aenur's 1 still misses.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.rule.invincible-swordsman/mechanic.invincible-swordsman
+  id: a-one-still-misses-for-aenur
+  fighters:
+    first: *aenur-invincible
+    second: *aenur-invincible-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the grade-1b Bard's identical 2 misses at the ordinary 4+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.rule.invincible-swordsman/mechanic.invincible-swordsman
+  id: a-hireling-without-the-rule-misses-on-two
+  fighters:
+    first:
+      &aenur-invincible-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *aenur-invincible-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Aenur's profile; selecting it on a hireling of another package is
+# refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.rule.invincible-swordsman/mechanic.invincible-swordsman
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *aenur-invincible-control
+      special_rule_ids: [hireling.dramatis.aenur.rule.invincible-swordsman]
+    second: *aenur-invincible-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

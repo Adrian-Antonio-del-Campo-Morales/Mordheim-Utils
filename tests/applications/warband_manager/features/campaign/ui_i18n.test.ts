@@ -160,11 +160,13 @@ describe("UI strict locale resolution", () => {
   });
 
   it("resolves legacy labels only at the contextual compatibility boundary", () => {
-    const ref = reader.legacyAbilityRef("No Armour", "dwarf-troll-slayers", "dwarf-treasure-hunters");
+    // "No Armour" and "Slayer Skills" became shared rules, so a band-local
+    // label published by two bands under one rule id is used here.
+    const ref = reader.legacyAbilityRef("Addict", "fanatics", "night-goblins-kaz");
     expect(ref).toBeDefined();
-    expect(reader.resolveKbText(ref!, "name", "es")).toMatchObject({ ok: true, text: "Sin Armadura" });
-    expect(reader.legacyAbilityRef("No Armour", "dwarf-troll-slayers")).toBeUndefined();
-    expect(knowledgeName(reader, "skill", "No Armour", "es")).toBe("Información no disponible");
+    expect(reader.resolveKbText(ref!, "name", "es")).toMatchObject({ ok: true, text: "Adicto" });
+    expect(reader.legacyAbilityRef("Addict", "fanatics")).toBeUndefined();
+    expect(knowledgeName(reader, "skill", "Addict", "es")).toBe("Información no disponible");
   });
 
   it("resolves the published serious-injury result names in both locales", () => {

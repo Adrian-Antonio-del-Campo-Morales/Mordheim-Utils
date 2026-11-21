@@ -1,0 +1,162 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios (hireling family model, see below): the real Drenok's
+#   first reduction to zero Wounds asks the continuation 4+ in place of the Injury die
+#   (4 stands fighting at zero, 3 is Out of Action); the next player turn asks a fresh
+#   4+ and the 3 takes him Out; the Bard control rolls the ordinary Injury die; the
+#   refusal.  The recipient's fixture Wounds are 1 so the first wound crosses to zero.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# AUTHORED: the scenarios of the hireling family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17; equipment batch 2026-11-18).  The recipient is
+# the printed hireling profile compiled through the hireling route (band_id
+# hirelings.dramatis-personae.1b, profile_id hireling.dramatis.drenok-johansen-wielder-
+# of-the-great-axe); the printed rule is granted by the profile itself, so the build
+# selects nothing.  He wields his unique axe by its mechanic id and does NOT wear the
+# hide here, so no armour die interrupts the tape.  Physical characteristics are the
+# fixture facts with Wounds 1 (WS3 S3 T3 W1 I5 A1) so the first wound reaches zero;
+# the printed Ld8 stays.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace)
+# and charges him.  The control is the grade-1b Bard with his kit dagger and the same
+# one-Wound fixture.
+#
+# Design ruling 2026-10-15 ("Drenok's Berserker is not the Slayer skill"): a first
+# reduction to zero Wounds requires 4+ to stand fighting this turn, a fresh roll
+# every subsequent player turn while still at zero, failure means Out of Action; no
+# Wound is restored and no Injury die is rolled.  The consumer asks the first-crossing
+# die as `round.0.first.attack.0.drenok-berserker` (modular/attacks.py) and the
+# renewal as `round.<i>.second.drenok-berserker` at the start of a later round
+# (modular/rounds.py).
+#
+# Companion printed rules, declared by name: Fearsome makes the charger test for Fear
+# (3+3 passes Ld7); Step Aside asks its 5+ special save once the wound is through
+# (`.special.ward`, declared as a failing 4); Strongman and Combat Master request
+# nothing here.
+
+# The first crossing to zero: Fear passed, hit, wound, Step Aside fails, and the
+# continuation die 4 keeps Drenok standing and fighting at zero Wounds; his own attack
+# is still requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+  id: drenok-reduced-to-zero-wounds-stands-fighting-on-four
+  fighters:
+    first:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+      main_weapon_id: weapon.icefang-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Fearsome: the charger's Fear test, passed.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # Step Aside: the 5+ special save, failed.
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the 3 fails the continuation test and Drenok is Out of Action with
+# no Injury die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+  id: a-three-on-the-first-crossing-takes-drenok-out
+  fighters:
+    first: *opponent
+    second: *recipient
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The next player turn asks a fresh 4+ while he still fights at zero: the 3 takes him
+# Out of Action before any attack of that turn.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+  id: a-failed-renewal-on-the-next-turn-takes-drenok-out
+  fighters:
+    first: *opponent
+    second: *recipient
+  duel_context: *opponent-charges
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.first.attack.0.drenok-berserker, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.drenok-berserker, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {termination_reason: second_out}
+
+# The control (Bard, one-Wound fixture) takes the same wound: no Fear test, no special
+# save and no continuation die are asked; the ordinary Injury die 1 leaves him Knocked
+# Down.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+  id: a-hireling-without-berserker-rolls-the-ordinary-injury-die
+  fighters:
+    first: *opponent
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another
+# hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker/mechanic.drenok-berserker
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

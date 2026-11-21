@@ -1,0 +1,111 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-backstabber/skill.backstabber
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the band's printed
+#   Assassin selecting Backstabber hits on a 3 in the first round of a supplied unseen charge, the same
+#   Assassin without the selection misses that 3, the selected Assassin's Injury roll is at +1, and a
+#   henchman the printed table excludes is refused the selection.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/silent-brotherhood-sc/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, band--skill-backstabber, warband_skill, grant selectable,
+# applies_to band): "The Assassin may charge an opponent he cannot see ... If he does this, he
+# surprises his opponent and receives a +1 to hit him with all attacks and any rolls on the injury
+# chart are at +1.  This bonus lasts for the first round of combat only".  The row binds
+# skill.backstabber (consumers: modular/contexts.py ~526-528 and modular/attacks.py ~804-809, gated on
+# first_round, charging, skill.backstabber and the supplied condition.unseen-charge).  Recipient: the
+# band's printed Assassins hero (profiles.yaml id assassins, skill_access combat/speed/special) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1), a list sword, the selection through special_rule_ids and
+# the supplied fact through condition_ids.  A band-wide warband skill with no eligibility list is
+# admitted only to a profile with the `special` access (eligibility/index.ts specialRuleRestriction),
+# so the band's henchmen (brotherhood-agents, skill_access []) are refused with the band/profile
+# fragment.  Opponent: hand-built (WS3 S3 T3 I2 A1 Ld7, mace; W3 short of the injury roll, W1 reaching
+# it), whose blow is a natural 1.  WS3 against WS3 hits on 4+ (the 3 is the boundary); S3 wounds T3 on
+# 4+; the chart's 4 (Stunned) is the +1 boundary (5, Out of Action).
+
+# The selected Assassin's unseen charge: the 3 hits.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-backstabber/skill.backstabber
+  id: the-assassin-with-backstabber-hits-on-a-three-in-the-first-round-of-his-unseen-charge
+  fighters:
+    first: &sb-assassin
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: assassins
+      special_rule_ids: [band--skill-backstabber]
+      condition_ids: [condition.unseen-charge]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The selectable control: the same Assassin with the same supplied fact but no selection misses the 3.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-backstabber/skill.backstabber
+  id: the-same-assassin-without-the-selection-misses-the-three
+  fighters:
+    first:
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: assassins
+      condition_ids: [condition.unseen-charge]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Injury half on the printed recipient: a declared 4 becomes 5, Out of Action.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-backstabber/skill.backstabber
+  id: the-selected-assassins-injury-roll-is-at-plus-one
+  fighters:
+    first: *sb-assassin
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed recipients are the band's Heroes with the special access; a henchman is refused.
+- audit_id: rule/mordheim/silent-brotherhood-sc/band--skill-backstabber/skill.backstabber
+  id: a-henchman-of-the-band-is-refused-the-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: silent-brotherhood-sc
+      profile_id: brotherhood-agents
+      special_rule_ids: [band--skill-backstabber]
+      main_weapon_id: weapon.sword
+    second: *opponent
+  expect_error: "special rule is not available to silent-brotherhood-sc/brotherhood-agents: band--skill-backstabber"

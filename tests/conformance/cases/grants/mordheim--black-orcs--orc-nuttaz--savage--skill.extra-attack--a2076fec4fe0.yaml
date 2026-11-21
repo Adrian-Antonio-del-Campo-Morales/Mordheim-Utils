@@ -1,0 +1,67 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/skill.extra-attack
+# authoring_status: AUTHORED
+# authoring_progress: the admitted extra-attack clause carries two authored scenarios derived from
+# the printed stanza and the recorded contract: the printed Nuttaz resolves one attack more than its
+# profile characteristic, and a bearer without the printed rule keeps its single attack.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed "fight with an extra attack whilst in combat": the
+# printed Orc Nuttaz profile (A1) resolves two attack entries, while a fixture with the same printed
+# Attack characteristic and no such rule resolves one - the strictly ordered die tape would reject a
+# second attack entry there, so the addition is evidenced by the declared tape.  Both attacks miss on
+# their declared die, so no wound or injury step follows and the attacks' own entries carry the
+# evidence.  Bearer is the printed Orc Nuttaz, which receives the term from its own profile rule
+# (orc-nuttaz--savage) rather than from a separate selection.  The printed riders "does not appear on
+# their profile" and "does not count towards the racial maximum" are structural properties of the
+# pool term and are not separately observable in a duel.  REVIEWED still requires manual semantic
+# review.
+
+# --- Authored scenarios ---
+# Derived from the printed stanza and the printed profile; no engine output was consulted.
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/skill.extra-attack
+  id: the-printed-nuttaz-fights-with-two-attack-entries
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.axe
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/skill.extra-attack
+  id: a-bearer-without-the-printed-rule-keeps-one-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

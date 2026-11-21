@@ -1,0 +1,104 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.festooned-with-pistols
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (equipment-items batch, 2026-11-18) pin the printed clause on a
+#   hand-built bearer: after the opening round's shot the spent pistol stays in hand as a club
+#   (the second-round strike wounds at the bearer's own Strength 3 on a 4), the club carries the
+#   cudgel's Concussion (an injury of 2 is Stunned), and the control without the mechanic loses the
+#   spent pistol and fights with fists (the identical 4 is one face short of the fist's Strength 2
+#   target).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the retained pistol-club, its Concussion and the fists control.
+
+# --- Authored scenarios ---
+# mechanic/mechanic.festooned-with-pistols - Dwarf Slayer Pirate (Fanatic Online 45, mordheimer
+# hired swords 2a): hung with so many pistols that a fired pistol is not lost; in the rounds after
+# the opening shot the spent pistol counts as a club in close combat.  The recorded contract reads
+# the bearer's tag wherever a spent pistol would be discarded (equipment.py pistol_as_club): the
+# club profile replaces the pistol - Strength as the user with Concussion - and the pistol's fixed
+# Strength 4 and penetration leave with the shot.
+#
+# Expectations come from the printed clause and the canonical pistol and club entries, never from
+# engine output.  The pistol fires once in the first round of close combat (mechanics/
+# weapon.pistol.yaml); the bearer charges and the opening shot is a declared miss, so the second
+# round is the observable.  In the second round the bearer's Initiative 5 strikes first: WS3 against
+# WS3 hits on 4+; the club's Strength 3 wounds Toughness 3 on 4+ where a fist's Strength 2 needs
+# 5+; the club's Concussion turns an Injury roll of 2 into Stunned.
+
+# The spent pistol stays in hand as a club: the second-round 4 wounds at the bearer's own Strength.
+- audit_id: mechanic/mechanic.festooned-with-pistols
+  id: the-spent-pistol-stays-in-hand-as-a-club
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      skill_ids: [mechanic.festooned-with-pistols]
+      characteristics: &fp-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &fp-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &fp-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The retained club carries Concussion: the second-round Injury roll of 2 is Stunned.
+- audit_id: mechanic/mechanic.festooned-with-pistols
+  id: the-retained-pistol-club-carries-concussion
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      skill_ids: [mechanic.festooned-with-pistols]
+      characteristics: *fp-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *fp-charging-first
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    1: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: without the mechanic the spent pistol is gone and the bearer fights with fists, so
+# the identical second-round 4 is one face short of the fist's Strength 2 target.
+- audit_id: mechanic/mechanic.festooned-with-pistols
+  id: without-the-rule-the-spent-pistol-is-discarded-and-fists-do-not-wound-on-four
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      characteristics: *fp-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fp-defender
+  duel_context: *fp-charging-first
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    1: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

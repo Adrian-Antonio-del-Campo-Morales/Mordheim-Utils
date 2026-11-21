@@ -75,6 +75,7 @@ def duel(owner, victim, dice, *, state=None):
 
 
 
+@pytest.mark.covers("rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-seduction/mechanic.lahmian-seduction")
 def test_khemrian_seduction_reaches_the_legal_selected_recipient_and_round(precompiled):
     compiled = precompiled()
     plain, selected = compiled.first, compiled.second

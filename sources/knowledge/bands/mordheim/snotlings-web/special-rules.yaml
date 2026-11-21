@@ -15,9 +15,7 @@ rules:
     - id: unimplemented.snotlings-web.band.dodgy
       scope: 'NO'
       binding: null
-      reason: >-
-        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
-        combat save, injury chart or exemption is implemented above.
+      reason: out-of-scope.shooting
   name: Dodgy
   effect: >-
     Due to their small and dodgy nature, All Snotlings have a 6+ dodge/step aside save in the same
@@ -54,9 +52,7 @@ rules:
     - id: unimplemented.snotlings-web.band.small-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.shooting
   name: Small Target
   effect: >-
     All Snotlings are at minus one (-1) to be hit from ranged attacks because they are so diminutive
@@ -136,12 +132,15 @@ rules:
         id: trait.injury-profile
         parameters:
           value: 1
+      clauses:
+      - id: injury-ladder
+        scope: 'YES'
+      - id: henchman-death-and-hero-rolls
+        scope: 'NO'
     - id: unimplemented.snotlings-web.band.not-so-tough-gits
       scope: 'NO'
       binding: null
-      reason: >-
-        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
-        combat save, injury chart or exemption is implemented above.
+      reason: out-of-scope.campaign
   name: Not-So-Tough Gits
   effect: >-
     When you roll on the injury table for Snotlings, a roll of a 1 is knocked down 2-3 means stunned
@@ -163,24 +162,19 @@ rules:
       tirar dos veces en la tabla de heridas graves de héroes.
   applies_to:
     band: true
-    profile_ids:
-    - bigsnotz
-    - scouts
-    - shaman
-    - shoota-teams
-    - runts
 - id: band--weakness-in-numbers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.weakness-in-numbers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: warband rating, income and trading are campaign mechanics outside the
-        duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Weakness in Numbers
   effect: >-
     Snotlings aren't looked upon as being much in the way of a powerful and imposing enemy. As such,
@@ -211,15 +205,17 @@ rules:
     band: true
 - id: band--scavengers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.scavengers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: exploration dice are post-duel/campaign resolution mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Scavengers!
   effect: >-
     Swarms of Snotlings forage around the Orcish Settlement where they live, stealing and scavenging
@@ -247,15 +243,17 @@ rules:
     band: true
 - id: band--that-gits-got-talent
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.that-gits-got-talent
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: promotion skills are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: that-gits-got-talent
+        scope: 'NO'
   name: That (Git)'s Got Talent!
   effect: >-
     When a Snotling henchman gets the 'That Lad's Got Talent!' advance, they automatically learn the
@@ -276,15 +274,17 @@ rules:
     band: true
 - id: band--too-unruly
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.too-unruly
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.construction
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Too Unruly
   effect: >-
     Snotlings may never use any Hired Swords or Dramatis Personae, with the exception of Snotling
@@ -304,15 +304,17 @@ rules:
     band: true
 - id: band--characteristic-increase
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.characteristic-increase
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Characteristic Increase
   effect: >-
     Characteristics for the Bullied Goblin and the Snotling warriors may not be increased beyond the
@@ -378,9 +380,7 @@ rules:
     - id: unimplemented.snotlings-web.bullied-goblin.not-a-snotling
       scope: 'NO'
       binding: null
-      reason: >-
-        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
-        combat save, injury chart or exemption is implemented above.
+      reason: out-of-scope.campaign
   name: Not a Snotling
   effect: >-
     The Bullied Goblin is NOT a Snotling, and does not use the rules for "Dodgy", "Small", and "Not
@@ -403,16 +403,17 @@ rules:
     - bullied-goblin
 - id: bullied-goblin--mob-rule
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shared.mob-rule
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Leadership bonuses from nearby Snotlings are psychology mechanics
-        outside the duel scope.
+      reason: out-of-scope.group
+      clauses:
+      - id: mob-rule
+        scope: 'NO'
   name: Mob Rule
   effect: >-
     The Hero is easily goaded on by his fellow Snotlings, and swells with courage in large groups.
@@ -440,15 +441,17 @@ rules:
     - shaman
 - id: bullied-goblin--the-rigors-of-leadership
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shared.the-rigors-of-leadership
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: The Rigors of Leadership
   effect: >-
     Snotlings are incredibly bright when it comes to having spur of the moment ideas - Pump Wagons,
@@ -488,9 +491,7 @@ rules:
     - id: unimplemented.snotlings-web.scouts.scout
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Scout
   effect: >-
     Each Snotling Scout has this modified Infiltration skill representing their diminutive size and
@@ -527,9 +528,7 @@ rules:
     - id: unimplemented.snotlings-web.scouts.hes-no-threat
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: He's No Threat!
   effect: >-
     Single Snotlings, especially small ones like Scouts, are not given much respect for their threat
@@ -560,9 +559,7 @@ rules:
     - id: unimplemented.snotlings-web.shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Snotling Waaagh! Magic; the spell list is preserved in
-        catalog/campaign/magic.yaml).
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Shaman starts with one spell from the Snotling Magic List.
   source:
@@ -586,9 +583,7 @@ rules:
     - id: unimplemented.snotlings-web.shaman.eadache
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.magic
   name: '''Eadache!'
   effect: >-
     After each time that a Shaman attempts to cast a spell, successful or not, roll 1D6: on a roll
@@ -619,17 +614,15 @@ rules:
     implemented: 'NO'
     grant: profile
     effects:
+    # Reconciled 2026-11-19 (was LATER / deferred.other): no work is pending. The printed "count as
+    # one model" is delivered by the profile's own single characteristic block in profiles.yaml, so
+    # the effect is covered.elsewhere. Its placeholder scenarios were retired on 2026-11-19 (they
+    # asserted only the printed characteristic block; no admitted identity held them).
     - id: profile.single-model-projection
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed profile is already the duel's one participant with one injury and
-        resource state; the duel has no multi-model unit, so this clause is that projection
-        and not a deferred subsystem. No extra per-Snotling attacks are added.
+      reason: covered.elsewhere
   name: Teamwork
-  effect: >-
-    While a Shoota Team technically consists of 2 or more snotlings, for all intents and purposes,
-    they count as one model.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -637,13 +630,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
   name_i18n:
     es: Trabajo en Equipo
-  effect_i18n:
-    es: >-
-      Aunque un Equipo de Tiro técnicamente consiste en 2 o más snotlings, a todos los efectos
-      prácticos cuentan como un solo modelo.
   applies_to:
     profile_ids:
     - shoota-teams
+  rule_ref: shared-rule.snotling-teamwork
 - id: shoota-teams--cumbersome
   runtime:
     scope: 'NO'
@@ -653,9 +643,7 @@ rules:
     - id: unimplemented.snotlings-web.shoota-teams.cumbersome
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Cumbersome
   effect: >-
     Any Shoota Team possessing a Missile weapon (other than Pebble or a Slingshot) can never run
@@ -683,9 +671,7 @@ rules:
     - id: unimplemented.snotlings-web.shoota-teams.recoil
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.shooting
   name: Recoil
   effect: >-
     When they fire a missile weapon other than a Pebble or Slingshot, Shoota Teams are immediately
@@ -721,17 +707,15 @@ rules:
     implemented: 'NO'
     grant: profile
     effects:
+    # Reconciled 2026-11-19 (was LATER / deferred.other): no work is pending. The printed "count as
+    # one model" is delivered by the profile's own single characteristic block in profiles.yaml, so
+    # the effect is covered.elsewhere. Its placeholder scenarios were retired on 2026-11-19 (they
+    # asserted only the printed characteristic block; no admitted identity held them).
     - id: profile.single-model-projection
       scope: 'NO'
       binding: null
-      reason: >-
-        The printed profile is already the duel's one participant with one injury and
-        resource state; the duel has no multi-model unit, so this clause is that projection
-        and not a deferred subsystem. No extra per-Snotling attacks are added.
+      reason: covered.elsewhere
   name: Teamwork
-  effect: >-
-    While a Snotling Mob technically consists of LOTS of snotlings, for all intents and purposes,
-    they count as one model.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -739,13 +723,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
   name_i18n:
     es: Trabajo en Equipo
-  effect_i18n:
-    es: >-
-      Aunque un Mob Snotling técnicamente consiste de MUCHOS snotlings, a todos los efectos
-      prácticos cuenta como un solo modelo.
   applies_to:
     profile_ids:
     - snotling-mobs
+  rule_ref: shared-rule.snotling-teamwork
 - id: snotling-mobs--not-so-small-surprisingly-tough
   runtime:
     scope: 'YES'
@@ -762,9 +743,7 @@ rules:
     - id: unimplemented.snotlings-web.snotling-mobs.not-so-small-surprisingly-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
-        combat save, injury chart or exemption is implemented above.
+      reason: out-of-scope.shooting
   name: Not So Small, Surprisingly Tough
   effect: >-
     A Snotling Mob does NOT get the normal Snotling rule of "Small" -therefore, any missile shots at
@@ -791,15 +770,17 @@ rules:
     - snotling-mobs
 - id: snotling-mobs--mass-stupidity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.snotling-mobs.mass-stupidity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: promotion rolls are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Mass Stupidity
   effect: >-
     A Mob can never gain 'That Lad's Got Talent'. If TLGT is rolled, Re-roll the dice until they
@@ -820,15 +801,17 @@ rules:
     - snotling-mobs
 - id: snotling-mobs--mob-mentality
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.snotling-mobs.mob-mentality
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology (Fear) is not covered by the current engine scope.
+      reason: out-of-scope.group
+      clauses:
+      - id: mob-mentality
+        scope: 'NO'
   name: Mob Mentality
   effect: >-
     Snotlings are infamous for becoming totally immune to being afraid of everything when they gang
@@ -863,7 +846,8 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
           max_active_one_handed_weapons: 1
   name: Teeny Hands
   effect: >-
@@ -893,15 +877,17 @@ rules:
     - runts
 - id: runts--smallest-of-the-small
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.smallest-of-the-small
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: to-hit modifiers and injury rolls are outside the current engine scope.
+      reason: out-of-scope.shooting
+      clauses:
+      - id: ranged-and-death
+        scope: 'NO'
   name: Smallest of the Small
   effect: >-
     Due to their incredibly small size, opponents are at an additional -1 to hit them at range with
@@ -925,15 +911,17 @@ rules:
     - runts
 - id: runts--experience
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.experience
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Experience
   effect: >-
     Runts can earn experience as normal. However, Each Enemy Hero or Henchmen Group that knocks a
@@ -958,16 +946,17 @@ rules:
     - runts
 - id: runts--swarm-size
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.runts.swarm-size
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: henchmen group composition is a roster-construction mechanic outside the
-        duel scope.
+      reason: out-of-scope.construction
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Swarm Size
   effect: >-
     Runts are brought in henchmen groups of 1+. There is no limit to how many Runts can be included
@@ -988,16 +977,17 @@ rules:
     - runts
 - id: wheelo--movement
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.wheelo.movement
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: random 1D6/2D6 movement with pivot, straight-line restriction and
-        terrain-collision stops are outside the current engine scope.
+      reason: out-of-scope.movement
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Movement
   effect: >-
     A Wheelo's movement is entirely dependent upon the efforts of the Snotling crew to give it
@@ -1094,8 +1084,7 @@ rules:
     - id: unimplemented.snotlings-web.wheelo.impact-hits-and-multiple-charges
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the 1v1 duel: simultaneously charging two or more independent opponents.
+      reason: out-of-scope.group
   name: Impact Hits and Multiple Charges
   effect: >-
     If the Wheelo charged two models simultaneously, they each suffer 1D3-1 Impact Hits, to a
@@ -1119,15 +1108,14 @@ rules:
     - wheelo
 - id: wheelo--combat
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.wheelo-impact
-      scope: 'YES'
-      binding:
-        kind: mechanic
-        id: mechanic.wheelo-impact
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Combat
   effect: >-
     The statline above represents the stats of the Wheelo's Crew members, who pull out built-in
@@ -1172,12 +1160,15 @@ rules:
         id: trait.injury-profile
         parameters:
           value: 0
+      clauses:
+      - id: normal-table
+        scope: 'YES'
+      - id: destroyed-chart
+        scope: 'NO'
     - id: unimplemented.snotlings-web.wheelo.tough-machine
       scope: 'NO'
       binding: null
-      reason: >-
-        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
-        combat save, injury chart or exemption is implemented above.
+      reason: out-of-scope.campaign
   name: Tough Machine
   effect: >-
     The Snotling Special Rules of "Not So Tough Gits", "Small", and "Dodgy" do not apply to Wheelos.
@@ -1207,16 +1198,17 @@ rules:
     - wheelo
 - id: wheelo--upgrades
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.wheelo.upgrades
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: advancement rolls and skill selections are post-duel/campaign
-        progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: advancement-table
+        scope: 'NO'
   name: Upgrades
   effect: >-
     Wheelos count as henchmen, but whenever they earn an advancement, they instead roll on the
@@ -1252,16 +1244,17 @@ rules:
     - wheelo
 - id: bullied-goblin--stampede
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.special.stampede
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: ally attack forfeiting for Strength bonuses is outside the current
-        engine scope.
+      reason: out-of-scope.group
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Stampede
   effect: >-
     When the hero with Stampede charges an opposing warrior, keep track of any other Snotlings that
@@ -1311,6 +1304,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.achilles-heel
+      clauses:
+      - id: criticals-and-charge--scope--criticals-on-six
+        scope: 'YES'
+      - id: criticals-and-charge--scope--stampede-armour-denial
+        scope: 'NO'
   name: Achilles' Heel
   effect: >-
     Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's
@@ -1344,9 +1342,7 @@ rules:
     - id: unimplemented.snotlings-web.special.worm
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Worm
   effect: >-
     (Scout and Promoted Runts Only) The Snotling is a master of fitting through small spaces and
@@ -1423,6 +1419,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.frustratingly-tiny
+      clauses:
+      - id: minus-one-to-hit
+        scope: 'YES'
+      - id: hidden-detection
+        scope: 'NO'
   name: Frustratingly Tiny
   effect: >-
     (Snotlings Only) Your Snotling is a master of using his tiny size to his advantage. In
@@ -1449,15 +1450,17 @@ rules:
     - shaman
 - id: bullied-goblin--mob-master
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.special.mob-master
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity auras are not covered by the current engine scope.
+      reason: out-of-scope.group
+      clauses:
+      - id: mob-master
+        scope: 'NO'
   name: Mob Master
   effect: >-
     The Hero is a Master at controlling and leading the Snotlings around him as a Mob. So long as
@@ -1497,12 +1500,15 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.wheelo-skill-modifications
+      clauses:
+      - id: whole--scope--weapons-training-and-mighty-blow
+        scope: 'YES'
+      - id: whole--scope--sprint
+        scope: 'NO'
     - id: wheelo-sprint-movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Sprint movement is outside an established 1v1 melee duel; Weapons Training acquisition is
-        supplied as an already legal fitting.
+      reason: out-of-scope.movement
   name: Special Skill Modifications
   effect: >-
     Weapons Training: as Wheelos do not carry weapons as such (any blades etc. on the Wheelo itself
@@ -1560,7 +1566,7 @@ rules:
     section: New Equipment / Pointy Stick
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
   name_i18n:
-    es: "Palo Puntiagudo"
+    es: Palo Puntiagudo
   effect_i18n:
     es: >-
       Primero gratis/2 gc, Común. Es la daga de los Snotlings: las listas de equipo imprimen sus

@@ -1,0 +1,166 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.thinglash
+# authoring_status: AUTHORED
+# authoring_progress: 6 scenarios (equipment-items batch, 2026-11-18) pin the printed Strength
+#   +1 at its wound boundary (a 3 wounds Toughness 3, the same 3 fails with a mace), the +1
+#   enemy armour save (a Strength 2 bearer's Strength 3 lash grants an unarmoured target a 6+),
+#   "cannot be parried" (a sword defender is offered no parry die, where the mace control's
+#   hit is parried) and the Whipcrack bonus attack when the bearer charges.  The printed
+#   Infuriate (nearby Giant Rats, Rat Ogres and Things hate the enemy) is a multi-model
+#   aura outside the one-against-one duel and is not authored.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 6 scenarios cover the +1 Strength boundary with its mace control, the granted
+#   6+ save, the no-parry rule with its control, and the charging Whipcrack bonus.
+
+# --- Authored scenarios ---
+# mechanic/weapon.thinglash - Clan Pristekk (broheim, Sealed City p.4): Strength as user
+# +1; +1 enemy armour save (a wounded enemy gains +1 to his save, or a 6+ if he has none);
+# Whipcrack (+1 Attack when the wielder charges; +1 Attack striking first against the
+# charger when charged); cannot be parried; Infuriate (outside the duel).  The record
+# carries strength_bonus 1, target_armour_bonus 1 and cannot_be_parried, and lists the
+# lash among the Whipcrack weapons (phases.py WHIPCRACK_WEAPON_TAGS).
+#
+# Expectations come from the printed entry, never from engine output.  Strength 3 +1 = 4
+# wounds Toughness 3 on a 3+, so the wound die 3 is the boundary; at Strength 4 the lash's
+# +1 save and the Strength 4 save penalty cancel against an unarmoured target (7 + 1 - 1 =
+# no save), so the granted 6+ is shown on a Strength 2 bearer whose lash strikes at 3.
+# The uncharged duels resolve in Initiative order (the bearer's 5 before the opponent's 2);
+# the charging duel adds the Whipcrack die to the bearer's pool.
+
+# The printed +1 Strength at its boundary: the 3 reaches the Strength 4 target against
+# Toughness 3 (no save die: the +1 save and the Strength 4 penalty cancel on no armour).
+- audit_id: mechanic/weapon.thinglash
+  id: thinglash-wounds-at-strength-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.thinglash
+      characteristics: &tl-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &tl-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &tl-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mace control: the identical 3 is one face below the unboosted Strength 3 target.
+- audit_id: mechanic/weapon.thinglash
+  id: the-same-wound-die-fails-with-a-mace
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tl-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tl-defender
+  duel_context: *tl-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed +1 enemy save: a Strength 2 bearer lashes at Strength 3 (no save penalty),
+# so the unarmoured target is granted the printed 6+ and the die 6 saves.
+- audit_id: mechanic/weapon.thinglash
+  id: thinglash-grants-an-unarmoured-enemy-a-six-plus-save
+  fighters:
+    first:
+      main_weapon_id: weapon.thinglash
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tl-defender
+  duel_context: *tl-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Cannot be parried: the sword-armed defender is offered no parry die against the lash's
+# hit, which wounds at Strength 4 with no save.  The strict tape proves the absence.
+- audit_id: mechanic/weapon.thinglash
+  id: thinglash-cannot-be-parried
+  fighters:
+    first:
+      main_weapon_id: weapon.thinglash
+      characteristics: *tl-attacker
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *tl-defender
+  duel_context: *tl-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same sword defender parries the mace bearer's identical hit with a 5.
+- audit_id: mechanic/weapon.thinglash
+  id: the-same-sword-parries-a-mace-in-the-same-setup
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tl-attacker
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *tl-defender
+  duel_context: *tl-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Whipcrack: the charging bearer resolves one base attack and one bonus attack; the
+# ordered tape fixes the count (both declared misses).
+- audit_id: mechanic/weapon.thinglash
+  id: whipcrack-grants-one-bonus-attack-when-charging
+  fighters:
+    first:
+      main_weapon_id: weapon.thinglash
+      characteristics: *tl-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tl-defender
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

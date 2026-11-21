@@ -1,0 +1,150 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): the
+#   printed Penthesilea's first-round miss against a Norse opponent is re-rolled; the same against a Lizardmen
+#   opponent; the same miss stands against an opponent outside the printed enemies; the Bard control gets no
+#   re-roll against the same Norse opponent; the refusal.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the KB record reads "Uses source Amazon rules"; the binding is the
+#   shared Amazon Isolationists operator (modular/contexts.py:241-245 and :319: a first-round Hatred re-roll
+#   against an opponent whose compiled identity carries a Lizardmen or Norse band tag), so the opponents are
+#   compiled band profiles (norse-explorers-lustria / bondsmen, lizardmen / skink-braves) with fixture
+#   characteristics and the engine's own default hand, as the shared mechanic file does; the hiring,
+#   alignment and campaign faces of "the Amazon rules" are outside the duel.  Her other printed rules add
+#   their own requests: Mesmerising Dance asks the opponent's Leadership test each round (declared passed with
+#   1+1), except against a Lizardman, whom the operator exempts (rounds.py:865-867), so the skink scenario has
+#   no dance dice; Savage Fury adds an attack only on her charge, so no charge is declared and Hatred reads
+#   the first round of an engagement; Man-Hater reads species.human + sex.male, which no opponent here
+#   declares.  Her kit's Starsword (S+1, ignores armour) is the default hand, so S4 wounds T3 on a 3+ and no
+#   save die follows; her Starblade, Amulet and Skins stay owned.  The Norse opponent's canonical tag contains
+#   "norse" and the skink's band tag starts with "band.lizardmen", the two facts the operator reads.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Penthesilea compiled
+# through the hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.penthesilea-mark-of-the-serpent),
+# her printed rule granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld8
+# stays); the omitted main weapon is her kit's Starsword.  The printed enemies are compiled band profiles
+# (fixture WS3 S3 T3 W3 I2 A1, printed Leadership, the band's default hand); the plain opponent is
+# hand-built (Ld7, mace).  Dice: the opponent's Dance test 1+1 passes any Leadership; a natural 2 misses
+# WS3-vs-WS3 (4+), the Hatred re-roll of 4 hits, S4 wounds T3 on a 4 with no save; every opposing swing is a
+# declared natural 1.  The control is the grade-1b Bard (no Dance, no Hatred); the refusal selects the
+# printed rule on the Bard.
+
+# Against a Norse opponent the first-round miss is re-rolled, hits and wounds (armour ignored by the Starsword).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+  id: a-first-round-miss-by-penthesilea-is-rerolled-against-a-norse-opponent
+  fighters:
+    first:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &norse
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: bondsmen
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Mesmerising Dance: the opponent's own Leadership test, passed (1+1).
+    - {key: round.0.second.mesmerising-dance.0, value: 1}
+    - {key: round.0.second.mesmerising-dance.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A Lizardmen opponent is the other printed enemy; the Dance exempts a Lizardman, so no Dance dice.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+  id: a-first-round-miss-by-penthesilea-is-rerolled-against-a-lizardmen-opponent
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# An opponent outside the printed enemies: the Dance is tested, the miss stands and no re-roll is requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+  id: the-same-miss-stands-against-an-opponent-outside-the-printed-enemies
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 1}
+    - {key: round.0.second.mesmerising-dance.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard) against the same Norse opponent: no Dance, and the miss is not offered a re-roll.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+  id: a-hireling-without-the-rule-receives-no-reroll-against-the-same-norse-opponent
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *norse
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon/mechanic.amazon-isolationists
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

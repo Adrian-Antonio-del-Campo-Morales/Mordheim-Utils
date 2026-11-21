@@ -1,0 +1,91 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.righteous-charge
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: both declared clauses of this identity are `scope: NO` (deferred.mounts), so neither
+#   is an applicable requirement here; an excluded clause is a disposition, not a gap.  What is
+#   declarable without the mounts schema - the compiler's refusal of a supplied Righteous Charge
+#   activation on an unmounted recipient, and the unchanged duel of the bearer on foot - is authored
+#   below.  The mounted +1/Fear/immunity and the 4" aura return with the mounts schema.
+# authoring_progress: 2 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   compiler's refusal of a supplied Righteous Charge activation on a recipient that is not mounted, and
+#   the bearer on foot charging with no +1 to hit and no Fear imposed.  Both declared clauses of this
+#   identity are outside the admitted scope (see PARTIAL), so the duel effect itself is not evidenced.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until the suite
+#   runs.
+# AUTHORED: 2 scenarios cover everything declarable for this identity in the admitted scope: the
+#   construction refusal "Righteous Charge requires a mounted recipient", and the bearer charging on
+#   foot with no +1 to Hit and no Fear imposed.  REVIEWED still requires manual semantic review.
+# Disposition (formerly the PARTIAL marker, retired 2026-11-18; kept as the record
+#   of the term that has no reachable recipient):
+#   the identity's two clauses are both `scope: NO` - `whole` ("When the mounted Knight charges
+#   ... +1 to Hit, cause fear and are immune to all Psychology for the first round of combat") and
+#   `friendly-aura` ("all friendly charging mounted warriors ... within 4 inches") - because the rule
+#   acts only on a mounted charger and mounts are deferred (`deferred.mounts`; the Ride rule of the
+#   same profile is scope LATER for that reason).  The compiler refuses the only activation path on
+#   foot: "Righteous Charge requires a mounted recipient" (packages/python/roster-construction/
+#   mordheim_construction/compiler.py, read on the supplied `righteous_charge_active` trait), and the
+#   round operator (rounds.py: `fighter.mounted and ... has_tag(effect, "condition.righteous-charge")`
+#   adds `condition.righteous-charge-active`, `mechanic.causes-fear`, `mechanic.psychology-immunity`;
+#   contexts.py prepare_hit_context: +1 for `condition.righteous-charge-active`) never fires without a
+#   mounted build.  The scenarios below evidence that construction gate and the unchanged duel on foot;
+#   the mounted +1/Fear/immunity and the 2"/4" aura wait for the mounts schema.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating.
+#   Both printed clauses are deferred.mounts (the recipient must be mounted), so only the unmounted
+#   refusal and the inert foot face are declarable; removing the entry changes neither. PARTIAL.
+#   Recorded in TODO.md.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# Clause: friendly-aura (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: whole (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# --- Authored scenarios ---
+# Printed source (Knights of the Bitter Moors, Mutiny in Marienburg p.4, Questing Knight / Righteous
+# Charge): see the PARTIAL note.  Family model: the bearer is hand-built with the mechanic injected (WS3
+# S3 T3 W2 I5 A1, mace) against a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace).  The activation is
+# the supplied campaign fact `righteous_charge_active` (the charge the Knight leads with another model
+# within 2"), which the compiler accepts only on a mounted build.  On foot WS3 against WS3 hits on 4+
+# and the opponent, charged by a fighter that does not cause Fear, takes no Fear test.
+
+# The supplied activation on a bearer that is not mounted is refused by name.
+- audit_id: mechanic/mechanic.righteous-charge
+  id: a-supplied-righteous-charge-on-an-unmounted-bearer-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.righteous-charge]
+      trait_overrides: {righteous_charge_active: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "Righteous Charge requires a mounted recipient"
+
+# The bearer charging on foot: no activation, so the plain 4+ to hit and no Fear test for the opponent.
+- audit_id: mechanic/mechanic.righteous-charge
+  id: the-bearer-charging-on-foot-hits-on-four-and-imposes-no-fear
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.righteous-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit_target: 4, attacks.0.hit: false, state.second.fear_hit_sixes: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

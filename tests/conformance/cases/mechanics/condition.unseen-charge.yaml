@@ -1,0 +1,90 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.unseen-charge
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the supplied
+#   unseen-charge fact feeds Backstabber's +1 to hit on the charge, the fact alone grants nothing,
+#   and the fact without a charge grants nothing.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.unseen-charge): "The bearer
+#   charges a reachable opponent it cannot see; supplied individual fact, without map or visibility
+#   simulation."  The row binds the mechanic condition.unseen-charge (execution.yaml: the tag alone),
+#   so the fact carries no effect of its own: it is read by Backstabber's two halves
+#   (packages/python/combat-engine/mordheim_combat/modular/contexts.py ~526-528, the +1 to hit, and
+#   modular/attacks.py ~804-809, the +1 Injury), both gated on first_round and charging.  The
+#   compiler gates no recipient for this condition (compiler.py's supplied-condition checks name
+#   other conditions only), so a hand-built fighter may carry it through condition_ids.
+#
+# --- Authored scenarios ---
+# Fixture: the bearer is hand-built (WS3 S3 T3 W2 I5 A1, mace) and charges a hand-built opponent
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace).  WS3 against WS3 hits on 4+, so a declared 3 is the boundary of the
+# +1 to hit; S3 against T3 wounds on 4+; W3 keeps the wound short of an injury roll.  The opponent's
+# own blow is a natural 1 in every tape.
+
+# The supplied fact plus Backstabber on the charge: the 3 hits (the printed +1 to hit).
+- audit_id: mechanic/condition.unseen-charge
+  id: the-supplied-unseen-charge-feeds-backstabber-plus-one-to-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.backstabber]
+      condition_ids: [condition.unseen-charge]
+      characteristics: &unseen-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: &unseen-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The fact alone (no Backstabber) grants nothing: the same 3 misses on the ordinary 4+.
+- audit_id: mechanic/condition.unseen-charge
+  id: the-fact-alone-grants-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.unseen-charge]
+      characteristics: *unseen-bearer
+    second: *unseen-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The fact without a charge grants nothing even with Backstabber: nobody charges, the higher
+# Initiative strikes first on the ordinary 4+ and the 3 misses.
+- audit_id: mechanic/condition.unseen-charge
+  id: an-unseen-charge-fact-without-the-charge-grants-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.backstabber]
+      condition_ids: [condition.unseen-charge]
+      characteristics: *unseen-bearer
+    second: *unseen-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

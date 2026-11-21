@@ -200,7 +200,10 @@ SPECIAL_RULE_EFFECTS = {
     "band--blood-dragon-power-red-fury": {"effects": {"attacks_bonus": 1}},
     "band--blood-dragon-power-infallible": {"effects": {"charge_reroll_hits": True}},
     "band--blood-dragon-power-strength-of-steel": {"effects": {"charge_strength_bonus": 1}},
-    "band--lahmia-power-lost-innocence": {"effects": {"priority": 10}},
+    # Chaos in the Streets p.183 prints "including when standing up": the exemption from
+    # the stood-up penalty belongs to this rule, not to Always Strikes First in general.
+    "band--lahmia-power-lost-innocence": {"effects": {"priority": 10,
+        "tags": ("rule.strike-first-when-standing-up",)}},
     "band--strigoi-power-monstrosity": {"stats": {"wounds": 1}},
     "band--strigoi-power-infinite-hatred": {"effects": {"reroll_hits": True}},
     # Optional profile rules are selected through FighterBuild.special_rule_ids.
@@ -209,9 +212,6 @@ SPECIAL_RULE_EFFECTS = {
     # Bear Hug's source binding retains the historic special-rule namespace;
     # PROFILE_RULE_EFFECTS is what grants it automatically to the Bear.
     "trained-bear--bear-hug": {"effects": {"bear_hug": True}},
-    # The Necrotect selects an unconditional first-round repetition, not the
-    # ordinary Psychology rule called Hatred.
-    "necrotect--hatred": {"effects": {"tags": ("mechanic.first-round-hit-reroll",)}},
     "band--mutations-extra-arm": {},
     "band--mutations-great-claw": {},
     "band--beastmen-special-skills-horned-one": {},
@@ -227,6 +227,10 @@ SPECIAL_RULE_EFFECTS = {
 
 
 PROFILE_RULE_EFFECTS = {
+    # The Necrotect's printed Hatred is an unconditional first-round repetition,
+    # not the ordinary Psychology rule called Hatred (which its Undead immunity
+    # would cancel). It is the profile's own printed ability, granted automatically.
+    "necrotect--hatred": {"effects": {"tags": ("mechanic.first-round-hit-reroll",)}},
     # Cold Steel (Necrarchs Banshee): the printed clause reads the identity of
     # the incoming attack -- a steel or iron weapon can harm the bearer at -1 to
     # hit, a blessed or magical one hits normally, and the body identities its
@@ -235,7 +239,6 @@ PROFILE_RULE_EFFECTS = {
     # resolve it on the attack's own weapon and properties, never on a visible
     # weapon name.  Missile references stay outside the duel.
     "banshee--cold-steel": {"effects": {"tags": ("defence.cold-steel",)}},
-    "fanatics--frantic": {"effects": {"priority": 10}},
     "centigors--trample": {},
     # Spiked Tail adds one repeated natural tail attack at the bearer's
     # Strength +1; the extra attack itself is assembled in ``compile_fighter``

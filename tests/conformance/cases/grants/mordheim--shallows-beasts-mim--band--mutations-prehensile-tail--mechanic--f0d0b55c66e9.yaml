@@ -1,0 +1,124 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): the band's
+#   Buccaneer selecting the printed mutation compiles a bare tail attack and swings it; the same Hero
+#   equips a dagger in the tail hand, which is projected as one additional attack entry carrying the
+#   dagger's own identity; a henchman of the band is refused the mutation; the same Hero reaching for
+#   the tail hand without the mutation is refused by the construction gate.  REVIEWED still requires
+#   manual semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the bare-tail admission, the equipped tail, the henchman refusal and the extra-hand-without-
+#   the-rule refusal are declared below; REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the print's "choosing an equipped prehensile tail excludes every other
+#   tail attack for that hand-to-hand phase" needs a second tail on the same Hero; the Aquatic Mutants
+#   ceiling ("a single mutation", compiler.aquatic-mutants) refuses a second `band--mutations-*`
+#   selection, so no legal Shallows Beasts build reaches that clause.  The compiler encodes it (an
+#   equipped tail drops other tail attacks) but it stays unevidenced here.  "Unable-to-use-weapons
+#   restriction persists" concerns animals of the campaign mutation table, none of which is a Shallows
+#   Beasts Hero.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed text (special-rules.yaml, Prehensile Tail; Mutiny in Marienburg p.160): "Unless it already
+# possesses a tail, gains one tail attack; may equip one single-handed weapon or shield/buckler in that
+# tail."  The record is a `mutation` with `grant: selectable`, `applies_to.profile_types: [hero]` and the
+# binding `mechanic.prehensile-tail`; the Aquatic Mutants band rule lists it among the gifts "any Hero
+# may start the campaign with".  The compiler appends one extra attack tagged `weapon.natural-attacks` +
+# `rule.prehensile-tail` for a bare tail, or the declared extra-hand weapon's own effect for an equipped
+# tail; the eligibility gate (additionalEquipmentRestriction) admits the extra hand only through this
+# mutation, Extra Arm or Tail Fighting, and the recipients gate refuses the selection to the henchmen
+# with `special rule is not available to <band>/<profile>: <rule>`.
+# Fixture facts: the Buccaneer is supplied the corpus characteristics (WS3 S3 T3 W2 I5 A1) and carries a
+# club from the Heroes' list (the dagger of the tail hand is on the same list); the opponent is the
+# standard hand-built fixture and is silenced, so the tape holds exactly the Hero's attack dice, every one
+# declared as a natural miss (1).  The Buccaneer's Swashbuckler rule is unimplemented and adds no die.
+
+# A Hero selecting the mutation with an empty tail hand swings the bare tail as a natural attack.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail
+  id: a-hero-selecting-the-mutation-swings-the-bare-tail-as-a-natural-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--mutations-prehensile-tail]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: &opponent-silent {second: {attacks: 0}}
+  duel_context: &hero-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.prehensile-tail]
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Hero equips a dagger in the tail: the compiled fighter carries the tail weapon as its own
+# attack entry with the dagger's identity and the dagger's printed +1 to the target's armour save, and
+# the bare natural tail is replaced rather than added.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail
+  id: a-hero-equipping-a-dagger-in-the-tail-swings-it-as-an-additional-attack
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      extra_hand_id: weapon.dagger
+      special_rule_ids: [band--mutations-prehensile-tail]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  initial_state: *opponent-silent
+  duel_context: *hero-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.dagger]
+    first.extra_attacks.0.target_armour_bonus: 1
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      main_weapon_id: weapon.club
+      special_rule_ids: [band--mutations-prehensile-tail]
+    second: *opponent
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-prehensile-tail"
+
+# The construction consequence read the other way: the same Hero declaring the tail hand without the
+# mutation is refused by the construction gate, so the tail hand exists only through this selection
+# (or the Extra Arm / Tail Fighting rules of other bands).
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail
+  id: the-same-hero-without-the-mutation-is-refused-the-tail-hand
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+      extra_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  expect_error: an extra hand requires Extra Arm, Tail Fighting, or Prehensile Tail

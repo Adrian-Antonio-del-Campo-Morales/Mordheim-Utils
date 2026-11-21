@@ -1,0 +1,120 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.oracle
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios: a missed hit rolled again with the resource spent and
+#   the next own roll carrying no second offer, the accepted second result standing even when
+#   worse, a declined offer recurring at the next own roll with nothing spent, and a failed wound
+#   rolled again after the hit offer was declined.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# mechanic/mechanic.oracle - authored from the printed Oracle Mark of Myrmidia (Liber Malefic p6):
+# the Priestess "may re-roll any one dice roll she makes during a battle".  The choice belongs to
+# the roller, so each of her own rolls carries the declaration until the single resource is spent
+# (the `one-roll-reroll` entry of resources_spent; the Augur Mark of Morr prints the same personal
+# re-roll and shares that once-per-battle key); declining spends nothing and the second result of
+# an accepted re-roll stands.  The bearer is hand-built with the mechanic injected through
+# skill_ids (an effect-set, passive, fighter entry - the skill.luck injection route); the real
+# War-Priestess recipient is evidenced in her rule file.  Both sides WS3/S3/T3/W2 with maces:
+# hits and wounds face 4+.
+- audit_id: mechanic/mechanic.oracle
+  id: a-missed-hit-is-rolled-again-and-the-resource-is-spent
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.oracle]
+      characteristics: &oracle-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &oracle-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &oracle-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    # The wound die carries no declaration: the once-per-battle resource is already spent.
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [one-roll-reroll]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# An accepted re-roll replaces the roll: the worse second result stands and the hit is lost.
+- audit_id: mechanic/mechanic.oracle
+  id: the-accepted-second-result-stands-even-when-worse
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.oracle]
+      characteristics: *oracle-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *oracle-opponent
+  duel_context: *oracle-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 2, state.first.resources_spent: [one-roll-reroll]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining spends nothing: the offer recurs at her next own roll and the resource stays whole.
+- audit_id: mechanic/mechanic.oracle
+  id: a-declined-offer-recurs-at-the-next-roll-and-spends-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.oracle]
+      characteristics: *oracle-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *oracle-opponent
+  duel_context: *oracle-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: false}
+    - {key: round.0.first.attack.0.wound.one-roll-reroll, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# "Any one dice roll she makes": a failed wound may be the chosen roll after the hit was declined.
+- audit_id: mechanic/mechanic.oracle
+  id: a-failed-wound-is-rolled-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.oracle]
+      characteristics: *oracle-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *oracle-opponent
+  duel_context: *oracle-context
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: false}
+    - {key: round.0.first.attack.0.wound.one-roll-reroll, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.0.wound.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1, state.first.resources_spent: [one-roll-reroll]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

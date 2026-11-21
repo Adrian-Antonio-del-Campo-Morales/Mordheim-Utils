@@ -1,0 +1,206 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+# authoring_status: AUTHORED
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Skaven of Clan
+# Moulder profile itself (packmaster) and select band--clan-moulder-special-skills-black-hunger
+# through special_rule_ids, so the KB grant of this identity is exercised rather than only the
+# shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+# AUTHORED: Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/skaven-of-
+#   clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-
+#   web.special.clan-moulder-special-skills, whose KB effect is now unbound (covered.elsewhere: each
+#   listed skill is its own bound identity); the duel behaviour they exercise is this identity's.
+#   Inputs, dice and expectations are unchanged by the move; each scenario's own comments carry its
+#   derivation and may still name the placeholder record they were authored against.  The invocation
+#   grants one extra attack, and the end-of-turn backlash wound ignores the worn armour.  REVIEWED still
+#   requires manual semantic review.
+# Provenance (2026-11-16): 2 scenario(s) moved here from rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/profile.skill-access, whose binding is now covered.elsewhere (de-duplication of construction encodings); bodies unchanged, covers labels dropped.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-end-of-turn-backlash-ignores-the-worn-armour
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Black Hunger's +1 Attack turns the pinned pool into one attack, declared as a miss.
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# --- Authored scenarios: the printed list access ---
+# Derived from the printed row, this band's own profiles.yaml (the hero and henchman ranks with their declared
+# skill_access categories) and the shared skill-availability fragment; no engine output was consulted.  Both
+# tapes declare zero attacks, so the observation is the access itself and not a member's own duel consequence
+# (Black Hunger's attack and backlash halves are the separate admitted clauses already evidenced above).
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-invocation-grants-one-extra-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the same duel as the-end-of-turn-backlash-ignores-the-worn-armour,
+# but the bearer is built as the printed Skaven of Clan Moulder Packmaster profile
+# (mordheim/skaven-of-clan-moulder-web/packmaster), with the band rule selected through
+# special_rule_ids [band--clan-moulder-special-skills-black-hunger] instead of injecting
+# mechanic.black-hunger into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-end-of-turn-backlash-ignores-the-worn-armour-as-the-real-packmaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--clan-moulder-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {attacks: 0}
+    second: {attacks: 0}
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 1}
+  - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+  - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Real recipient (2026-11-16): the same duel as the-invocation-grants-one-extra-attack, but the
+# bearer is built as the printed Skaven of Clan Moulder Packmaster profile
+# (mordheim/skaven-of-clan-moulder-web/packmaster), with the band rule selected through
+# special_rule_ids [band--clan-moulder-special-skills-black-hunger] instead of injecting
+# mechanic.black-hunger into a hand-built fighter; the explicit characteristics keep that scenario's
+# dice model.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-invocation-grants-one-extra-attack-as-the-real-packmaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [band--clan-moulder-special-skills-black-hunger]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.first.attack.0.hit, value: 4}
+  - {key: round.0.first.attack.1.hit, value: 4}
+  - {key: round.0.first.attack.0.wound, value: 4}
+  - {key: round.0.first.attack.1.wound, value: 4}
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+  - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-printed-list-is-not-available-to-a-henchman
+  # The closure of the same printed sentence, which names Clan Moulder HEROES: a henchman of the band, whose own
+  # profiles.yaml skill_access is empty, cannot take a member of the list.  The fragment is the shared
+  # skill-availability sentence this corpus already uses for the identical closure.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: clanrats
+      skill_ids: [mechanic.black-hunger]
+  expect_error: "skills are not available to skaven-of-clan-moulder-web/clanrats: ['mechanic.black-hunger']"
+
+# --- Authored scenarios: the printed Hypnotic Musk charge gate ---
+# Derived from the printed member row and the accepted charge-gate reading the corridor confirmed
+# against the current KB and executor contract (the 2026-10-14 snapshot predated it): the member
+# band--clan-moulder-special-skills-hypnotic-musk is selectable / implemented YES with the live
+# mechanic.hypnotic-musk binding, its printed sentence is exactly the animal charge gate ("Any
+# animal or beast from an opposing warband wishing to charge him must pass a Leadership test...;
+# mounts are immune"), and the resolve_fear path now names that gate (musking warrior, animal
+# charging opponent, not mounted, not Goading-driven).  The tapes supply the same shared operator
+# through the fighter's grant list, exactly as the Black Hunger tapes above supply theirs; no
+# engine output was consulted.
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-black-hunger/mechanic.black-hunger
+  id: the-printed-list-member-is-admitted-to-a-clan-moulder-hero
+  # The printed permission is the required behaviour: a Clan Moulder hero may take a skill from the printed list
+  # instead of the standard tables, so the build must compile and the engagement must start.  The printed list
+  # member is this band's own warband-skill row, and a warband skill is selected through special_rule_ids
+  # (the channel the compiler reads for `kind: warband_skill` and whose mechanic binding it materialises);
+  # skill_ids only admits catalogue skill.* ids from the recipient's own declared lists, so it could only ever
+  # report the id as unavailable rather than exercise the printed access.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      special_rule_ids: [band--clan-moulder-special-skills-black-hunger]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  # The admitted member is the whole evidence: the selection materialises Black Hunger, so its printed +1
+  # Attack turns the pinned pool into this one (missing) attack, and its printed end-of-turn D3 Strength 3
+  # hits are declared on the sides-3 key.  The single hit misses on the wound face (Strength 3 against
+  # Toughness 3), so no injury die belongs to this tape; both pools and both Wound totals stay as supplied.
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 1}
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

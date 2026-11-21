@@ -105,6 +105,13 @@ def test_black_orc_younguns_keep_legal_gear_and_recipient_exceptions():
     assert "weapon.double-handed-weapon" in access("orc-boyz")
     assert "weapon.double-handed-weapon" in access("orc-nuttaz")
     assert "crossbow" in access("orc-shootaz")
+    # Orc Boyz print "May not use Crossbows; they are restricted to Shootaz" (covered.elsewhere by the
+    # equipment lists; moved here 2026-11-19 from the retired conformance placeholder).
+    assert "crossbow" not in access("orc-boyz")
+    with pytest.raises(ValueError, match='"crossbow" is not on any equipment list of black-orcs/orc-boyz'):
+        compile_fighter(build("black-orcs", "orc-boyz", owned_item_ids=("crossbow",)))
+    assert compile_fighter(build("black-orcs", "orc-shootaz", main_weapon_id="weapon.dagger",
+                                 owned_item_ids=("crossbow",)))
     assert compile_fighter(build("black-orcs", "younguns", main_weapon_id="weapon.axe"))
     with pytest.raises(ValueError, match="not available"):
         compile_fighter(build("black-orcs", "younguns",
@@ -148,3 +155,18 @@ def test_the_high_elf_drugs_and_poisons_clause_keeps_the_rest():
                                   main_material_id=material))
     assert compile_fighter(build("lustria-high-elves", "loremaster",
                                  main_material_id="material.normal"))
+
+
+def test_thieves_guild_bagh_nakh_at_creation_is_the_hashashiyyins_only():
+    # "May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin
+    # Assassin may do so. Other warband members must acquire it through Trading." The Enforcer and
+    # Ruffian rules are covered.elsewhere by the list entry's recipient; the Trading path is not
+    # modelled (TODO.md, "Bagh Nakh through Trading"). Moved here 2026-11-19 from the retired
+    # conformance placeholders.
+    for profile_id in ("guild-enforcer", "guild-ruffian"):
+        with pytest.raises(ValueError, match=(
+                f"equipment is not available to khemri-thieves-guild/{profile_id}: \\['weapon.bagh-nakh'\\]")):
+            compile_fighter(build("khemri-thieves-guild", profile_id, main_weapon_id="weapon.bagh-nakh"))
+        assert compile_fighter(build("khemri-thieves-guild", profile_id))
+    assert compile_fighter(build("khemri-thieves-guild", "guild-hashashiyyin",
+                                 main_weapon_id="weapon.bagh-nakh"))

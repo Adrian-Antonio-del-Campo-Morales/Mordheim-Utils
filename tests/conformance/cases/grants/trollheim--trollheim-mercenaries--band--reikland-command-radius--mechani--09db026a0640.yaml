@@ -1,0 +1,146 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/trollheim-mercenaries/special-rules.yaml
+# Note: Scenarios moved here on 2026-11-16 from the placeholder identity rule/trollheim/trollheim-
+#   mercenaries/band--reikland-command-radius/unimplemented.trollheim-mercenaries.band.reikland-command-
+#   radius, whose KB effect is now unbound (covered.elsewhere: the 12" command radius is this leader-
+#   twelve binding); the duel behaviour they exercise is this identity's.  Inputs, dice and expectations
+#   are unchanged by the move; each scenario's own comments carry its derivation and may still name the
+#   placeholder record they were authored against.  Two scenarios are negatives: a Mercenary Captain
+#   beyond 12" supplies nothing, and a fighter without the leader rule supplies nothing.
+# AUTHORED: (2026-11-16) the positive face is added - a Warrior 10" from the Captain, outside the
+#   normal 6" but within the printed 12" ("may use their Captain's Leadership while within 12" instead
+#   of the normal 6""), is offered and uses the Captain's Leadership 8 for its Fear test and passes.
+
+# --- Authored scenarios ---
+
+# The supplied leader is a nearby participant of the borrower's own side and band: the Trollheim
+# Mercenary Captain, the profile the band grant restricts the twelve-inch radius to.
+# Past the printed twelve inches no use is offered at all, which the strict decision tape itself
+# proves.
+- audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-captain-beyond-twelve-inches-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: trollheim-mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 13.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed radius belongs to the Captain profile, not to every fighter of the band: a same-band
+# participant that does not print the Leader rule is no provider, so no use is offered.
+- audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-fighter-without-the-leader-rule-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: trollheim-mercenaries
+          profile_id: youngbloods
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed widening itself: at 10" - beyond the normal 6", within the printed 12" - the Warrior
+# (fixture Leadership 3) is offered the Captain's Leadership 8 and uses it.  Its Fear test of 4+4 = 8
+# fails against its own 3 and passes against the Captain's 8, so the charge leaves it free to hit
+# normally (no sixes required).  Both blows are natural ones, misses.
+- audit_id: rule/trollheim/trollheim-mercenaries/band--reikland-command-radius/mechanic.leader-twelve
+  id: a-captain-at-ten-inches-lends-his-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 8, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: trollheim-mercenaries
+          profile_id: mercenary-captain
+          characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 8}
+    distances:
+      - [second, leader, 10.0]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

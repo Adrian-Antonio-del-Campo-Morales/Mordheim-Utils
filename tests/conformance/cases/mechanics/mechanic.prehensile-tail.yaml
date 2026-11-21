@@ -1,0 +1,95 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.prehensile-tail
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a hand-built
+#   fighter carrying the shared mechanic compiles a bare tail attack (one additional natural attack entry
+#   tagged rule.prehensile-tail) and swings it in the duel; the same fighter without the mechanic swings
+#   once; the mechanic alone does not open the extra hand, which the construction gate reserves for the
+#   band mutation selections.  REVIEWED still requires manual semantic review; execution_status stays
+#   UNEXECUTED until the suite runs.
+# AUTHORED: the bare-tail admission, the control and the extra-hand refusal are declared below; REVIEWED
+#   still requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the printed tail also "may equip one single-handed weapon or shield/
+#   buckler", but the extra hand is admitted by the eligibility gate only through a selected
+#   `band--mutations-extra-arm`, `band--skaven-special-skills-tail-fighting` or
+#   `band--mutations-prehensile-tail` (packages/python/roster-construction/mordheim_construction/
+#   _eligibility.js, additionalEquipmentRestriction), never through the mechanic tag.  The equipped tail
+#   is therefore evidenced on the band identity that selects the mutation
+#   (rule/mordheim/shallows-beasts-mim/band--mutations-prehensile-tail/mechanic.prehensile-tail); here
+#   the hand-built fighter reaching for the hand is refused.  The campaign-mutation reroll "choosing an
+#   equipped tail excludes every other tail attack for the phase" needs a second tail (Scorpion or
+#   Spiked Tail) on the same fighter and is outside this undivided identity's single-tail scenarios.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (Mutiny in Marienburg p.160, Corrupted Characters / Prehensile Tail, carried by the
+# Shallows Beasts record): "Unless it already possesses a tail, gains one tail attack; may equip one
+# single-handed weapon or shield/buckler in that tail."  The mechanic's execution entry is an effect-set
+# carrying the tag `mechanic.prehensile-tail`; the compiler (compiler.py, the `mechanic.prehensile-tail`
+# branch before validate_additional_equipment) appends one extra attack tagged
+# `weapon.natural-attacks` + `rule.prehensile-tail` when no other tail attack exists and no extra hand is
+# declared.  The bearer is hand-built with the fixture (WS3 S3 T3 W2 I5 A1, mace) and the mechanic
+# injected through skill_ids; the opponent is the standard hand-built fixture and is silenced, so the
+# tape holds exactly the bearer's attack dice, every one declared as a natural miss (1).
+
+# With the mechanic the compiled fighter carries the bare tail as its own attack entry and the duel
+# requests a second hit die for it.
+- audit_id: mechanic/mechanic.prehensile-tail
+  id: the-bare-tail-is-compiled-as-an-additional-natural-attack-and-swings
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.prehensile-tail]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: &opponent-silent {second: {attacks: 0}}
+  duel_context: &bearer-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.prehensile-tail]
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same fighter without the mechanic swings once; the strict tape holds no second hit
+# die, so an undeclared tail attack would fail the scenario.
+- audit_id: mechanic/mechanic.prehensile-tail
+  id: the-same-fighter-without-the-mechanic-swings-once
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  initial_state: *opponent-silent
+  duel_context: *bearer-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mechanic tag alone does not open the extra hand: the construction gate admits a tail hand only
+# through the band mutation selections (see the semantic wrinkle above).
+- audit_id: mechanic/mechanic.prehensile-tail
+  id: the-mechanic-alone-does-not-open-the-tail-hand
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      extra_hand_id: weapon.dagger
+      skill_ids: [mechanic.prehensile-tail]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  expect_error: an extra hand requires Extra Arm, Tail Fighting, or Prehensile Tail

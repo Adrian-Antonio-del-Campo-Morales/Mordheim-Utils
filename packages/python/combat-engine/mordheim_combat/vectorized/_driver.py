@@ -7,19 +7,17 @@ from dataclasses import dataclass, replace
 from mordheim_core.context import prepare_duel_context
 from mordheim_core.dice import DecisionPolicy
 from mordheim_core.models import CompiledFighter, DuelContext, DuelRequest, DuelResult, EffectSet, SimulationCancelled
-# The Wound ceiling is the validated modular contract, never a second formula:
-# ``vectorized/_state.py`` seeds ``CombatState.wounds`` from this very function,
-# so the per-round clamp below has to spend the same one.
-from mordheim_combat.modular.state import maximum_wounds
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorAttackObservation, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, allocate_attack_weapons, attack_count, effective_initiative, opposed_attack_count, priority, round_weapon_attack_count
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, _resolve_weapon_once, resolve_attacks
 from mordheim_combat.vectorized._alchemy import alchemy_resources, resolve_alchemist
+from mordheim_combat.vectorized._compaction import RowCompactor
 from mordheim_combat.vectorized._equipment import equipment_for_rows, phase_equipment, staff_power
 from mordheim_combat.vectorized._leadership import apply_command_conditions, apply_death_fighting, expire_raise_our_insignia, leadership_resources, patch_death_fighting, resolve_local_leadership, sea_shanty_losses
 from mordheim_combat.vectorized._psychology import psychology_resources, resolve_fear, resolve_feral_instinct, resolve_lunatics, resolve_mark_of_shornaal, resolve_mesmerising_dance, resolve_stupidity
 from mordheim_combat.vectorized._recovery import revenant_recovery
-from mordheim_combat.vectorized._state import charge_allowed, initialize_fighter, refresh_random_characteristics, require_characteristics, validate_duel_start
+from mordheim_combat.vectorized._row_equipment import RowEquipment, clamp_maximum_wounds, equipment_groups
+from mordheim_combat.vectorized._state import any_true_objects, charge_allowed, initialize_fighter, refresh_random_characteristics, require_characteristics, validate_duel_start
 from mordheim_combat import phases
 from mordheim_combat.phases import unarmed_attack_cap_applies
 
@@ -121,8 +119,8 @@ def _diverging_rows(state: CombatState) -> np.ndarray:
             | state.transformed
             | state.equipment_cast_off
             | state.hillman_wolf
-            | state.mutations.astype(bool)
-            | state.effective_fighter.astype(bool))
+            | any_true_objects(state.mutations)
+            | any_true_objects(state.effective_fighter))
 
 
 def _carry_declarations(projected: CompiledFighter, phase: CompiledFighter,
@@ -179,10 +177,10 @@ def _carry_declarations(projected: CompiledFighter, phase: CompiledFighter,
     return replace(projected, global_effects=effect)
 
 
-def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
+def _row_equipment(fighter, replacement, state: CombatState, *,
                    first_round: bool,
                    phase_fighter: CompiledFighter | None = None,
-                   ) -> dict[int, CompiledFighter]:
+                   ) -> RowEquipment:
     """Project one fighter's equipment per simulation row.
 
     ``fighter`` is the pristine compiled fighter ``equipment_for_rows``
@@ -210,10 +208,10 @@ def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
     fresh-Inquisitor-brand re-projection below already does.
     """
     if replacement is not (fighter if phase_fighter is None else phase_fighter):
-        return {row: replacement for row in range(count)}
+        return RowEquipment(replacement)
     diverging = np.flatnonzero(_diverging_rows(state))
     if diverging.size == 0:
-        return {row: replacement for row in range(count)}
+        return RowEquipment(replacement)
     projected = equipment_for_rows(
         fighter, state, diverging, first_round=first_round,
     )
@@ -221,10 +219,10 @@ def _row_equipment(fighter, replacement, state: CombatState, count: int, *,
         base = phase_equipment(fighter, first_round=first_round)
         projected = {row: _carry_declarations(value, phase_fighter, base)
                      for row, value in projected.items()}
-    return {row: projected.get(row, replacement) for row in range(count)}
+    return RowEquipment(replacement, projected)
 
 
-def _clamp_maximum_wounds(state: CombatState, equipment: dict[int, CompiledFighter],
+def _clamp_maximum_wounds(state: CombatState, equipment: RowEquipment,
                           rows: np.ndarray) -> None:
     """Port of ``modular/rounds.py:511``'s post-projection Wound clamp.
 
@@ -234,32 +232,13 @@ def _clamp_maximum_wounds(state: CombatState, equipment: dict[int, CompiledFight
     ``vectorized._state`` seeds the column with -- read off each row's own
     projection, because that is the only place the loss shows up.
     """
-    limits: dict[int, int] = {}
-    for value in rows:
-        row = int(value)
-        projected = equipment[row]
-        limit = limits.get(id(projected))
-        if limit is None:
-            limit = limits[id(projected)] = maximum_wounds(projected)
-        if state.wounds[row] > limit:
-            state.wounds[row] = limit
+    clamp_maximum_wounds(state.wounds, equipment, rows)
 
 
-def _equipment_groups(rows: np.ndarray, attacker_equipment: dict[int, CompiledFighter],
-                      defender_equipment: dict[int, CompiledFighter]):
+def _equipment_groups(rows: np.ndarray, attacker_equipment: RowEquipment,
+                      defender_equipment: RowEquipment):
     """Split rows by the equipment pair their simulation projects."""
-    if rows.size == 0:
-        return []
-    grouped: dict[tuple[int, int], list[int]] = {}
-    for value in rows:
-        row = int(value)
-        key = (id(attacker_equipment[row]), id(defender_equipment[row]))
-        grouped.setdefault(key, []).append(row)
-    return [
-        (attacker_equipment[values[0]], defender_equipment[values[0]],
-         np.asarray(values, dtype=np.int64))
-        for values in grouped.values()
-    ]
+    return equipment_groups(rows, attacker_equipment, defender_equipment)
 
 
 def _resolve_attacks_by_equipment(
@@ -716,7 +695,10 @@ def _tentacle_forfeit(attacker: CompiledFighter, defended: EffectSet,
     hand_forfeits = np.full(attacks.size, -1, dtype=np.int16)
     whip_forfeits = np.zeros(attacks.size, dtype=bool)
     extra_forfeits = np.full(attacks.size, -1, dtype=np.int16)
-    if rows.size == 0:
+    # Without a grappling defender no row is ever eligible (see ``eligible``
+    # below), and nothing before that test draws dice or changes state.
+    if (rows.size == 0 or not has(defended, "rule.tentacle-grapple")
+            or defended.incoming_attacks_modifier >= 0):
         return hand_forfeits, whip_forfeits, extra_forfeits
     extras = _pool_extra_weapons(attacker, charging, rows)
     whip = np.asarray(whip_rows, dtype=bool)
@@ -961,16 +943,19 @@ def _apply_djinn_power(fighter: CompiledFighter, power: np.ndarray,
     or ``None`` when there is nothing left to do.
     """
     selected = np.asarray(active, dtype=bool)
-    if not selected.any():
+    # No declared power anywhere (every fighter without the Djinn) is the
+    # uniform "0" case below; min == max decides uniformity without a sort.
+    if not selected.any() or not power.any():
         return fighter, None
-    values = np.unique(power[selected])
-    if values.size == 1:
-        value = int(values[0])
+    declared = power[selected]
+    low, high = declared.min(), declared.max()
+    if low == high:
+        value = int(low)
         return (fighter, None) if value == 0 else (_with_djinn_power(fighter, value), None)
     return fighter, selected & (power != 0)
 
 
-def _patch_djinn_power(equipment: dict[int, CompiledFighter], power: np.ndarray,
+def _patch_djinn_power(equipment: RowEquipment, power: np.ndarray,
                        rows: np.ndarray | None) -> None:
     """Apply a split Djinn declaration row by row.  ``None`` is a no-op."""
     if rows is None:
@@ -1067,16 +1052,19 @@ def _rousing_sermon(fighter: CompiledFighter, state: CombatState,
     +1 Attack for that one phase.
     """
     granted = np.zeros(state.wounds.size, dtype=bool)
-    if rows.size == 0 or not has(fighter.global_effects, "mechanic.rousing-sermon"):
+    once = has(fighter.global_effects, "mechanic.rousing-sermon")
+    # skill.inspiring-sermon (Chaos in the Streets) may be declared on every own turn.
+    if rows.size == 0 or not (once or has(fighter.global_effects, "skill.inspiring-sermon")):
         return granted
     eligible = rows[np.isin(state.condition[rows], (STANDING, KNOCKED_DOWN))
                     & ~lost_turn[rows]
                     & ~state.grappled[rows] & ~state.grappling[rows]
                     & ~state.netted[rows]
-                    & ~ledger.rousing_sermon_used[rows]]
+                    & ~(ledger.rousing_sermon_used[rows] & once)]
     if eligible.size == 0 or not _choose(decisions, key, fighter):
         return granted
-    ledger.rousing_sermon_used[eligible] = True
+    if once:
+        ledger.rousing_sermon_used[eligible] = True
     granted[eligible] = True
     return granted
 
@@ -1292,7 +1280,7 @@ def _righteous_charge_pairs(
     return tuple(groups)
 
 
-def _patch_righteous_charge(equipment: dict[int, CompiledFighter],
+def _patch_righteous_charge(equipment: RowEquipment,
                             rows: np.ndarray | None) -> None:
     """Apply a split Righteous Charge grant row by row.  ``None`` is a no-op."""
     if rows is None:
@@ -1474,10 +1462,19 @@ def _select_shadow_dance(fighter: CompiledFighter, ledger: _RoundLedger, side: s
     return replace(fighter, global_effects=effect)
 
 
-def _tagged_rows(fighter: CompiledFighter, mask: np.ndarray,
+def _tagged_rows(fighter: CompiledFighter, rows: np.ndarray,
                  tags: tuple[str, ...]) -> CompiledFighter:
-    """A copy carrying ``tags``; callers use it only for the masked rows."""
-    if not mask.any():
+    """A copy carrying ``tags``; callers use it only for ``rows``.
+
+    Every caller selects row *indices*, so the empty selection is the one with
+    no elements.  The predicate used to be ``not rows.any()``, which also
+    returned the untagged fighter when the only selected row was row 0: that
+    duel then kept a fighter without ``mechanic.stupidity``, the Psychology
+    gate found nothing to test, and the Stupidity the Centigor's drunken 1 and
+    the Bitten madness print was skipped for it.  A single-duel sample always
+    sits at row 0, so it never took either test.
+    """
+    if np.asarray(rows).size == 0:
         return fighter
     return replace(fighter, global_effects=replace(
         fighter.global_effects, tags=(*fighter.global_effects.tags, *tags)))
@@ -1614,6 +1611,37 @@ def _resource_observation(state: CombatState) -> tuple[tuple[str, np.ndarray], .
         ("giggle-juice", state.giggle_juice_used.copy()),
     )
 
+
+def _tie_break(ties: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """One coin flip per tied row; a row that is not tied draws nothing.
+
+    Sizing the draw by the tied rows is what makes the round loop independent
+    of the rows a batch still carries: a decided duel is never tied (it is
+    masked out of every tie above), so dropping it cannot move the stream.
+    """
+    won = np.zeros(ties.shape, dtype=bool)
+    count = int(np.count_nonzero(ties))
+    if count:
+        won[ties] = rng.random(count) < .5
+    return won
+
+
+def _record_outcomes(compactor: RowCompactor, state1: CombatState,
+                     state2: CombatState, rounds: np.ndarray | None,
+                     observe: bool) -> None:
+    """Save the outcome of the rows the batch is about to drop."""
+    compactor.record("condition1", state1.condition)
+    compactor.record("condition2", state2.condition)
+    if not observe:
+        return
+    compactor.record("wounds1", state1.wounds)
+    compactor.record("wounds2", state2.wounds)
+    if rounds is not None:
+        compactor.record("rounds", rounds)
+    for side, state in (("1", state1), ("2", state2)):
+        for key, values in _resource_observation(state):
+            compactor.record(f"resource{side}.{key}", values)
+
 def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count: int,
                          rng: np.random.Generator, maximum_rounds: int,
                          decisions: DecisionPolicy | None = None,
@@ -1681,10 +1709,24 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
     # ``first_round_index`` lets single-round semantic replay start at a later
     # round, exactly as the modular ``resolve_round`` accepts a ``DuelState``
     # with a nonzero ``round_index``; production batches keep the default 0.
+    # Decided duels are dropped at a round boundary once they are the
+    # majority of the batch.  Single-round semantic replay keeps every row,
+    # because its observation records address rows by index.
+    compactor = RowCompactor(
+        count, enabled=observations is None and first_round_index == 0)
     for round_index in range(first_round_index, maximum_rounds):
         unresolved = (state1.condition != OUT) & (state2.condition != OUT) & engaged
         if not unresolved.any():
             break
+        if compactor.should_compact(unresolved):
+            _record_outcomes(compactor, state1, state2, rounds, observe)
+            (unresolved, engaged, first_charges, second_charges,
+             initial_first_turn, charm_auto_hit, rounds) = compactor.compact(
+                unresolved,
+                [unresolved, engaged, first_charges, second_charges,
+                 initial_first_turn, charm_auto_hit, rounds,
+                 state1, state2, leadership, psychology, alchemy, ledger])[:7]
+            count = compactor.width
         state1.hit_this_phase[:] = False
         state2.hit_this_phase[:] = False
         if round_index:
@@ -1753,22 +1795,25 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         # round, never behind a whole-pool vomit/wraith replacement.
         # Cutting free drops the fighter to Knocked Down before own-turn
         # recovery stands it; ``freed`` still gates the Djinn declaration.
-        netted1 = (state1.netted & first_player_turn
-                   & np.isin(state1.condition, (STANDING, KNOCKED_DOWN)))
-        netted2 = (state2.netted & ~first_player_turn
-                   & np.isin(state2.condition, (STANDING, KNOCKED_DOWN)))
+        # Every recovery below is gated on ``unresolved``: once a duel is
+        # decided the oracle stops resolving it, so its survivor must keep the
+        # condition it ended on instead of standing up in later rounds.
+        netted1 = (unresolved & state1.netted & first_player_turn
+                   & ((state1.condition == STANDING) | (state1.condition == KNOCKED_DOWN)))
+        netted2 = (unresolved & state2.netted & ~first_player_turn
+                   & ((state2.condition == STANDING) | (state2.condition == KNOCKED_DOWN)))
         state1.netted[netted1] = False
         state2.netted[netted2] = False
         state1.condition[netted1] = KNOCKED_DOWN
         state2.condition[netted2] = KNOCKED_DOWN
-        stunned1 = (state1.condition == STUNNED) & first_player_turn
-        stunned2 = (state2.condition == STUNNED) & ~first_player_turn
-        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn
-        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn
+        stunned1 = unresolved & (state1.condition == STUNNED) & first_player_turn
+        stunned2 = unresolved & (state2.condition == STUNNED) & ~first_player_turn
+        stood1 = unresolved & (state1.condition == KNOCKED_DOWN) & first_player_turn
+        stood2 = unresolved & (state2.condition == KNOCKED_DOWN) & ~first_player_turn
         state1.condition[stunned1] = KNOCKED_DOWN; state2.condition[stunned2] = KNOCKED_DOWN
         state1.condition[stood1 & ~stunned1] = STANDING; state2.condition[stood2 & ~stunned2] = STANDING
-        paralyzed1 = (state1.condition == PARALYZED) & first_player_turn
-        paralyzed2 = (state2.condition == PARALYZED) & ~first_player_turn
+        paralyzed1 = unresolved & (state1.condition == PARALYZED) & first_player_turn
+        paralyzed2 = unresolved & (state2.condition == PARALYZED) & ~first_player_turn
         paralyzed_rows1=np.flatnonzero(paralyzed1)
         paralyzed_rows2=np.flatnonzero(paralyzed2)
         if paralyzed_rows1.size:
@@ -1800,7 +1845,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 (state2, state1, second, first)):
             # The printed escape test repeats at the start of every close-combat
             # phase, not only on one player's turn.
-            held = engaged & holder_state.grappling & victim_state.grappled
+            # ``unresolved`` rather than ``engaged``: a hold whose victim is
+            # already out of action belongs to a finished duel, which no
+            # longer tests its escape.
+            held = unresolved & holder_state.grappling & victim_state.grappled
             if not held.any():
                 continue
             held_rows = np.flatnonzero(held)
@@ -2249,10 +2297,10 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if has(attack_second.main_weapon, 'effect.serpent-staff-power'):
             state2.parry_remaining[:] = 0
         equipment1 = _row_equipment(
-            original_first, attack_first, state1, count, first_round=first_round,
+            original_first, attack_first, state1, first_round=first_round,
             phase_fighter=first)
         equipment2 = _row_equipment(
-            original_second, attack_second, state2, count, first_round=first_round,
+            original_second, attack_second, state2, first_round=first_round,
             phase_fighter=second)
         # Equipment that is gone takes its numeric bonuses with it, so a Wound
         # an item folded into the profile cannot exceed the surviving maximum
@@ -2601,7 +2649,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                                  charged2[group], stood2[group])
             i1[group] = effective_initiative(a_f, state1)[group]
             i2[group] = effective_initiative(d_f, state2)[group]
-        first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=(p1==p2)&(i1==i2)
+        # A decided duel has priority and Initiative 0 on both sides, so it
+        # would read as a tie; ``unresolved`` keeps it out of the draw.
+        first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=unresolved&(p1==p2)&(i1==i2)
         first_acts[ties]=rng.random(int(ties.sum()))<.5
         # Acting order per row: the fighter that won priority acts first, then
         # the opponent replies; whipcrack events keep their own Strike First
@@ -2656,12 +2706,25 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         whip1_ties = whip1_rows & (whip1_scores == raw2)
         whip2_ties = whip2_rows & (whip2_scores == raw1)
         if whip1_ties.any():
-            whip1_scores = whip1_scores + (whip1_ties & (rng.random(count) < .5))
+            whip1_scores = whip1_scores + _tie_break(whip1_ties, rng)
         if whip2_ties.any():
-            whip2_scores = whip2_scores + (whip2_ties & (rng.random(count) < .5))
-        event_scores = np.stack((
-            p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts),
-            p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts),
+            whip2_scores = whip2_scores + _tie_break(whip2_ties, rng)
+        pool1_score = (p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts)).astype(np.int32)
+        pool2_score = (p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts)).astype(np.int32)
+        bonus_events = (whip1_rows, whip2_rows, shifty1, shifty2,
+                        strike1_rows, strike2_rows, stomp1_rows, stomp2_rows)
+        if not any(np.any(mask) for mask in bonus_events):
+            # Only the two pools are scheduled (the common duel): the stable
+            # descending order of two scores puts pool 0 first on a tie, so one
+            # comparison reproduces the sorted order without the 10-row stack.
+            first_pool_first = pool1_score >= pool2_score
+            event_order = np.stack((np.where(first_pool_first, 0, 1),
+                                    np.where(first_pool_first, 1, 0)))
+        else:
+            event_order = None
+        event_scores = None if event_order is not None else np.stack((
+            pool1_score,
+            pool2_score,
             whip1_scores,
             whip2_scores,
             np.where(shifty1, np.maximum(1, sp1.astype(np.int32)) * 100 + i1
@@ -2673,7 +2736,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             np.where(stomp1_rows, p1.astype(np.int32) * 100 + i1, -10000),
             np.where(stomp2_rows, p2.astype(np.int32) * 100 + i2, -10000),
         )).astype(np.int32)
-        event_order = np.argsort(-event_scores, axis=0, kind="stable")
+        # Only events some row actually schedules take part in the order.  An
+        # absent event holds the -10000 placeholder on every row, so it sorts
+        # after every scheduled entry (all of which score above it) and its
+        # rows are never selected: dropping it keeps each scheduled entry's
+        # position and the processing order, and skips the empty iterations.
+        if event_order is None:
+            present = np.flatnonzero((event_scores != -10000).any(axis=1))
+            event_order = present[np.argsort(-event_scores[present], axis=0, kind="stable")]
         whip1_fighter = (
             replace(attack_first, main_weapon=whip1, off_hand=None,
                     off_hand_attacks=False, extra_attacks=())
@@ -2719,15 +2789,14 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                 eagle = replace(attacker, main_weapon=weapon, off_hand=None,
                                 off_hand_attacks=False, extra_attacks=())
                 _resolve_attacks_by_equipment(
-                    {row: eagle for row in range(count)}, other, rows,
+                    RowEquipment(eagle), other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.eagle.{bird_index}',
                     observations=observations, single_bonus=True)
         attacked_this_round1 = np.zeros(count, dtype=bool)
         attacked_this_round2 = np.zeros(count, dtype=bool)
-        for event_index in range(10):
-            event = event_order[event_index]
+        for event in event_order:
             rows_first = np.flatnonzero(
                 unresolved & allocated1 & (state1.condition == STANDING)
                 & (event == 0) & ((ordinary_attacks1 > 0)
@@ -2789,7 +2858,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_whip1.size:
                 attacked_this_round1[rows_whip1] = True
                 _resolve_attacks_by_equipment(
-                    {row: whip1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(whip1_fighter), equipment2,
                     rows_whip1, np.ones(count,dtype=np.int16), charge1, state1,
                     state2, rng, first_round, decisions,
                     f'round.{round_index}.first.whipcrack',
@@ -2800,7 +2869,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_whip2.size:
                 attacked_this_round2[rows_whip2] = True
                 _resolve_attacks_by_equipment(
-                    {row: whip2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(whip2_fighter), equipment1,
                     rows_whip2, np.ones(count,dtype=np.int16), charge2, state2,
                     state1, rng, first_round, decisions,
                     f'round.{round_index}.second.whipcrack',
@@ -2811,7 +2880,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_shifty1.size:
                 attacked_this_round1[rows_shifty1] = True
                 _resolve_attacks_by_equipment(
-                    {row: shifty1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(shifty1_fighter), equipment2,
                     rows_shifty1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.shifty',
@@ -2822,7 +2891,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_shifty2.size:
                 attacked_this_round2[rows_shifty2] = True
                 _resolve_attacks_by_equipment(
-                    {row: shifty2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(shifty2_fighter), equipment1,
                     rows_shifty2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.shifty',
@@ -2833,21 +2902,21 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_strike1.size:
                 attacked_this_round1[rows_strike1] = True
                 _resolve_attacks_by_equipment(
-                    {row: strike1[1] for row in range(count)}, equipment2,
+                    RowEquipment(strike1[1]), equipment2,
                     rows_strike1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.strike-first', observations=observations)
             if rows_strike2.size:
                 attacked_this_round2[rows_strike2] = True
                 _resolve_attacks_by_equipment(
-                    {row: strike2[1] for row in range(count)}, equipment1,
+                    RowEquipment(strike2[1]), equipment1,
                     rows_strike2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.strike-first', observations=observations)
             if rows_stomp1.size:
                 attacked_this_round1[rows_stomp1] = True
                 _resolve_attacks_by_equipment(
-                    {row: stomp1_fighter for row in range(count)}, equipment2,
+                    RowEquipment(stomp1_fighter), equipment2,
                     rows_stomp1, np.ones(count, dtype=np.int16), charge1,
                     state1, state2, rng, first_round, decisions,
                     f'round.{round_index}.first.stomp',
@@ -2855,7 +2924,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if rows_stomp2.size:
                 attacked_this_round2[rows_stomp2] = True
                 _resolve_attacks_by_equipment(
-                    {row: stomp2_fighter for row in range(count)}, equipment1,
+                    RowEquipment(stomp2_fighter), equipment1,
                     rows_stomp2, np.ones(count, dtype=np.int16), charge2,
                     state2, state1, rng, first_round, decisions,
                     f'round.{round_index}.second.stomp',
@@ -2888,7 +2957,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                                main_weapon_without_poison=None,
                                off_hand_without_poison=None)
                 _resolve_attacks_by_equipment(
-                    {row: bite for row in range(count)}, other, rows,
+                    RowEquipment(bite), other, rows,
                     np.ones(count, dtype=np.int16), charge, a_state, d_state,
                     rng, first_round, decisions,
                     f'round.{round_index}.{label}.last-bite.{bite_index}',
@@ -2950,21 +3019,31 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _black_hunger_backlash(second,state2,np.flatnonzero(hunger2),rng,observations)
         state1.weapon_skill[combat_charge_rows[0]] -= 1
         state2.weapon_skill[combat_charge_rows[1]] -= 1
-    a=int(np.count_nonzero((state2.condition==OUT)&(state1.condition!=OUT)))
-    b=int(np.count_nonzero((state1.condition==OUT)&(state2.condition!=OUT)))
+    # The rows still present hold their own outcome; the dropped ones hold
+    # theirs in the compactor's buffers.  Both are reported at sample width.
+    condition1 = compactor.full("condition1", state1.condition)
+    condition2 = compactor.full("condition2", state2.condition)
+    count = compactor.full_count
+    a=int(np.count_nonzero((condition2==OUT)&(condition1!=OUT)))
+    b=int(np.count_nonzero((condition1==OUT)&(condition2!=OUT)))
     if observe:
         winner = np.zeros(count, dtype=np.int8)
-        winner[(state2.condition == OUT) & (state1.condition != OUT)] = 1
-        winner[(state1.condition == OUT) & (state2.condition != OUT)] = -1
+        winner[(condition2 == OUT) & (condition1 != OUT)] = 1
+        winner[(condition1 == OUT) & (condition2 != OUT)] = -1
         return VectorBatchObservation(
             winner=winner,
-            rounds=rounds if rounds is not None else np.zeros(count, dtype=np.int64),
-            first_wounds=state1.wounds.copy(),
-            second_wounds=state2.wounds.copy(),
-            first_condition=state1.condition.copy(),
-            second_condition=state2.condition.copy(),
-            first_resources=_resource_observation(state1),
-            second_resources=_resource_observation(state2),
+            rounds=(compactor.full("rounds", rounds).copy() if rounds is not None
+                    else np.zeros(count, dtype=np.int64)),
+            first_wounds=compactor.full("wounds1", state1.wounds).copy(),
+            second_wounds=compactor.full("wounds2", state2.wounds).copy(),
+            first_condition=condition1.copy(),
+            second_condition=condition2.copy(),
+            first_resources=tuple(
+                (key, compactor.full(f"resource1.{key}", values).copy())
+                for key, values in _resource_observation(state1)),
+            second_resources=tuple(
+                (key, compactor.full(f"resource2.{key}", values).copy())
+                for key, values in _resource_observation(state2)),
         )
     return a,b,count-a-b
 
@@ -3080,16 +3159,108 @@ def batch_segment(first: CompiledFighter, second: CompiledFighter,
 _run_batch_segment = batch_segment
 
 
-def simulate_duel_parallel(request: DuelRequest, *,
-                           workers: int | None = None) -> DuelResult:
-    """Bit-for-bit parallel equivalent of the NumPy driver.
+# Parallel work units decoupled from the batch size.
+# ``batch_segment`` can only hand whole batches to workers, so a sample of one
+# or two batches (the default NumPy batch is 100,000 duels) could use at most
+# one or two processes.  ``parallel_plan`` keeps whole batches whenever there
+# are at least as many batches as workers -- then the pooled totals are the
+# sequential ones bit for bit -- and otherwise splits every batch into equal
+# parts, each simulated on its own independent stream.  A split sample is a
+# different but statistically equivalent sample of the same duel: it depends
+# only on (seed, simulations, batch size, workers), never on scheduling, so a
+# rerun with the same arguments reproduces it exactly.
 
-    The sample is partitioned along whole batches (each batch has its own
-    stream derived from the seed), so any worker split reproduces the
-    sequential ``simulate_duel(backend="numpy")`` totals exactly.  Processes
-    are required because the NumPy hot loops hold the GIL.  ``workers``
-    defaults to the machine's core count and is capped at the number of
-    batches; ``cancel_event`` is honoured between completed segments.
+#: Narrowest part ``parallel_plan`` cuts a batch into.  Per-core throughput
+#: falls steeply with batch width (at 12,500 duels a core runs 0.37-0.71 of
+#: its 100,000-duel rate on the 43 precompiled scenarios), so narrower parts
+#: would spend more than an extra worker returns.
+PARALLEL_MIN_PART = 12_500
+
+#: Domain separator of the split streams: no split part can reproduce a
+#: canonical batch stream (``default_rng(seed)`` / ``_batch_seed``).
+_SPLIT_STREAM_TAG = 0x53504C4954  # "SPLIT"
+
+
+@dataclass(frozen=True, slots=True)
+class ParallelUnit:
+    """One process-pool work unit: a whole batch or one part of a batch.
+
+    ``parts == 1`` is the canonical batch ``batch_index`` (its usual stream);
+    otherwise this is part ``part`` of that batch cut into ``parts`` pieces.
+    """
+
+    batch_index: int
+    parts: int
+    part: int
+    count: int
+
+
+def parallel_plan(simulations: int, batch_size: int,
+                  workers: int) -> tuple[ParallelUnit, ...]:
+    """Work units for ``workers`` processes, at most ``workers`` of them when split.
+
+    With at least as many batches as workers every unit is a whole batch.
+    Otherwise each batch is cut into ``workers // batches`` equal parts, never
+    narrower than ``PARALLEL_MIN_PART``; a batch too small to cut stays whole.
+    """
+    if workers < 1:
+        raise ValueError("workers must be positive")
+    sizes = batch_plan(simulations, batch_size)
+    split = workers // len(sizes) if 0 < len(sizes) < workers else 1
+    units = []
+    for index, size in enumerate(sizes):
+        parts = max(1, min(split, size // PARALLEL_MIN_PART))
+        base, extra = divmod(size, parts)
+        units.extend(ParallelUnit(index, parts, part, base + (part < extra))
+                     for part in range(parts))
+    return tuple(units)
+
+
+def _unit_rng(seed: int, unit: ParallelUnit) -> np.random.Generator:
+    """The unit's stream: the canonical batch stream, or an independent split one."""
+    if unit.parts == 1:
+        return np.random.default_rng(
+            seed if unit.batch_index == 0 else _batch_seed(seed, unit.batch_index))
+    return np.random.default_rng(np.random.SeedSequence((
+        int(seed) & 0xFFFFFFFFFFFFFFFF, unit.batch_index, unit.parts, unit.part,
+        _SPLIT_STREAM_TAG,
+    )))
+
+
+def run_parallel_units(first: CompiledFighter, second: CompiledFighter,
+                       units: tuple[ParallelUnit, ...], seed: int, maximum_rounds: int,
+                       decisions: DecisionPolicy | None,
+                       context: DuelContext | None = None) -> tuple[int, int, int]:
+    """Process-pool entry point: simulate ``units`` and return their summed totals."""
+    first_wins = second_wins = unresolved = 0
+    for unit in units:
+        x, y, z = simulate_batch(first, second, unit.count, _unit_rng(seed, unit),
+                                 maximum_rounds, decisions, context=context)
+        first_wins += x
+        second_wins += y
+        unresolved += z
+    return first_wins, second_wins, unresolved
+
+
+def simulate_duel_parallel(request: DuelRequest, *,
+                           workers: int | None = None,
+                           executor=None) -> DuelResult:
+    """Run one NumPy sample over a process pool, splitting batches when needed.
+
+    The work follows ``parallel_plan``: with at least as many batches as
+    workers it is the sequential batch plan, split along whole batches, so
+    the totals equal ``simulate_duel(backend="numpy")`` bit for bit.  With
+    fewer batches than workers each batch is cut into independent parts so
+    every worker has work; the totals are then a statistically equivalent
+    sample, reproducible for the same seed, simulations, batch size and
+    ``workers``.  Processes are required because the NumPy hot loops hold the
+    GIL.  ``workers`` defaults to the machine's core count (or to the
+    ``executor``'s size); ``cancel_event`` is honoured between completed units.
+
+    ``executor`` is an optional caller-owned ``ProcessPoolExecutor`` reused
+    across calls: starting a pool costs about as much as a cheap 100k-duel
+    sample, so callers running many samples should share one.  It is never
+    shut down here.
     """
     from concurrent.futures import ProcessPoolExecutor
     from concurrent.futures import as_completed
@@ -3097,27 +3268,34 @@ def simulate_duel_parallel(request: DuelRequest, *,
 
     from mordheim_combat.kernel import require_optimized_support
     require_optimized_support(request.first, request.second, backend="numpy")
-    sizes = _batch_sizes(request.simulations, request.batch_size)
-    total = len(sizes)
-    available = workers if workers is not None else os.cpu_count() or 1
-    workers_used = max(1, min(available, total))
-    base, extra = divmod(total, workers_used)
-    segments = []
+    if workers is not None:
+        available = workers
+    elif executor is not None:
+        available = getattr(executor, "_max_workers", None) or os.cpu_count() or 1
+    else:
+        available = os.cpu_count() or 1
+    units = parallel_plan(request.simulations, request.batch_size, max(1, available))
+    workers_used = max(1, min(available, len(units)))
+    # Contiguous groups of units, as even as possible: whole batches keep the
+    # historical segmentation; split parts are one unit per worker.
+    base, extra = divmod(len(units), workers_used)
+    groups = []
     start = 0
     for index in range(workers_used):
         count = base + (1 if index < extra else 0)
-        segments.append((start, start + count))
+        groups.append(units[start:start + count])
         start += count
     first_wins = second_wins = unresolved = 0
-    with ProcessPoolExecutor(max_workers=workers_used) as pool:
+    owned = executor is None
+    pool = ProcessPoolExecutor(max_workers=workers_used) if owned else executor
+    try:
         futures = [
             pool.submit(
-                _run_batch_segment, request.first, request.second,
-                start, stop, request.simulations, request.batch_size,
+                run_parallel_units, request.first, request.second, group,
                 request.seed, request.maximum_rounds,
                 request.decision_policy, request.context,
             )
-            for start, stop in segments
+            for group in groups
         ]
         try:
             for future in as_completed(futures):
@@ -3130,6 +3308,9 @@ def simulate_duel_parallel(request: DuelRequest, *,
         finally:
             for future in futures:
                 future.cancel()
+    finally:
+        if owned:
+            pool.shutdown(wait=True, cancel_futures=True)
     return DuelResult(first_wins, second_wins, unresolved, request.simulations)
 
 def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:

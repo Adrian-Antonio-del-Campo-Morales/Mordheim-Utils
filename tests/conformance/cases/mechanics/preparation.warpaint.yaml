@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/preparation.warpaint
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios pin the printed 6+ invulnerable save on a hand-built
+#   wearer (equipment-items batch 2026-11-18): the ward die 6 saves the wound, the 5
+#   is one face short, and a bare control without the paint is offered no special
+#   save at all; the compiled ward_save is observed alongside.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the 6+ ward boundary pair on a hand-built wearer
+#   and the unpainted control.
+# Semantic wrinkle (2026-11-18, recorded): "One use only" is a campaign
+#   consequence (the paint is spent after the battle it is worn in); within the
+#   duel the save is available for every wound, which the execution entry
+#   (ward_save 6, trigger duel_start, stacking once) reflects.  The Savage
+#   Orc/Savage Goblin purchase restriction is construction and is not evidenced
+#   on a hand-built wearer.
+
+# --- Authored scenarios ---
+# mechanic/preparation.warpaint - Karak Azgal p.59: "While wearing the warpaint,
+# the Orc believes that Mork protects him and he gains a 6+ invulnerable save."
+# An invulnerable save is a ward: it is rolled after the armour step on the
+# .special.ward key and no Strength modifier touches it.  The paint is worn
+# through preparation_ids (the channel the authored drug files use).
+#
+# Expectations come from the printed text, never from engine output.  With no
+# armour the ward is the only save, so the ward die 6 is the boundary.
+
+# The printed save on its own face.
+- audit_id: mechanic/preparation.warpaint
+  id: warpaint-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &wp-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.warpaint]
+      characteristics: &wp-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &wp-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.global_effects.ward_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/preparation.warpaint
+  id: one-face-below-the-warpaint-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wp-attacker
+    second:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.warpaint]
+      characteristics: *wp-defender
+  duel_context: *wp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The unpainted control: the same wound lands with no special save requested at
+# all - the strict tape holds no ward die and the absence is the assertion.
+- audit_id: mechanic/preparation.warpaint
+  id: without-the-warpaint-no-special-save-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wp-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wp-defender
+  duel_context: *wp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

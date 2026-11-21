@@ -1,0 +1,107 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.nominated-strike-first
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): the hand-built
+#   bearer's nominated attack resolves before a faster opponent while his remaining attack keeps the
+#   ordinary Initiative order, declining every offer leaves the ordinary order, and a fighter without
+#   the mechanic is offered no nomination.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grave-robbers-sylv special-rules.yaml, Instinctual Violence, the KB's one binder):
+# "Additionally, he may nominate one of his attacks to Strike First."  Consumer: modular/rounds.py
+# ~1527-1575: the bearer is offered each allocated attack in allocation order through the decision
+# `round.<i>.<side>.strike-first.attack.<position>`; the first accepted one is taken out of the
+# ordinary pool and resolved as its own strike-first event (priority tier 1, the corpus's canonical
+# Always-Strikes-First tier, key `round.<i>.<side>.strike-first.attack.0.hit`), while the remainder
+# of the pool keeps its printed priority and is re-indexed from 0.  Fixture: hand-built bearer (WS3
+# S3 T3 W2 I2 A2, mace, skill_ids [mechanic.nominated-strike-first]) against a hand-built opponent
+# (WS3 S3 T3 W3 I5 A1 Ld7, mace); nobody charges, so the opponent's higher Initiative acts first in
+# the ordinary order.  Every attack die is a natural 1, a miss, so the resolved order of the rolls is
+# the whole evidence (expect_events).
+
+# The nominated attack strikes first; the remaining attack still follows the faster opponent.
+- audit_id: mechanic/mechanic.nominated-strike-first
+  id: the-nominated-attack-strikes-first-and-the-rest-keep-the-ordinary-order
+  fighters:
+    first: &nsf-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.nominated-strike-first]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+    second: &nsf-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: true}
+  rolls:
+    - {key: round.0.first.strike-first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: true}
+    - {kind: roll, key: round.0.first.strike-first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# "may nominate": declining both offers leaves the ordinary order, the faster opponent first and then
+# both of the bearer's attacks.
+- audit_id: mechanic/mechanic.nominated-strike-first
+  id: declining-every-offer-leaves-the-ordinary-order
+  fighters:
+    first: *nsf-bearer
+    second: *nsf-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.strike-first.attack.0, value: false}
+    - {key: round.0.first.strike-first.attack.1, value: false}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.strike-first.attack.0, value: false}
+    - {kind: decision, key: round.0.first.strike-first.attack.1, value: false}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+
+# The non-bearer control: no nomination is offered (the strict decision tape holds none) and the
+# ordinary order stands.
+- audit_id: mechanic/mechanic.nominated-strike-first
+  id: without-the-mechanic-no-nomination-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+    second: *nsf-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}

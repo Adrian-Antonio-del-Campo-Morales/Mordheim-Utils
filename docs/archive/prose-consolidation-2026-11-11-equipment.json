@@ -1,0 +1,210 @@
+{
+ "date": "2026-11-11",
+ "scope": "equipment-restriction prose consolidation (TODO: Remaining consolidation work). Band rules named *--equipment-restrictions whose whole text is the prohibition the binding encodes (recipient name aside) now reference a shared text. Texts carrying a reason, an equipment list or extra mechanics keep their own prose. No runtime binding, profiles.yaml line or clause identity was changed; the refusal harness (offers plus carried-kit validation, 968 checks over every profile of the 18 affected bands) is identical before and after.",
+ "new_shared_rules": {
+  "shared-rule.no-missiles-or-armour": {
+   "name": "No Missile Weapons or Armour",
+   "effect": "May not use any missile weapons or armour."
+  },
+  "shared-rule.no-equipment-but-bones": {
+   "name": "No Equipment but Bones",
+   "effect": "This warrior never carries any equipment, apart from a few bones used as primitive weapons."
+  },
+  "shared-rule.no-equipment-unarmed": {
+   "name": "No Equipment",
+   "effect": "This warrior carries no equipment and suffers no penalty for fighting unarmed."
+  },
+  "shared-rule.no-weapons-unarmed": {
+   "name": "No Weapons",
+   "effect": "This warrior may never use weapons and suffers no penalty for fighting unarmed."
+  }
+ },
+ "renamed_shared_rules": {
+  "shared-rule.wulfen-no-equipment": "shared-rule.no-weapons-or-armour-unarmed"
+ },
+ "members_repointed": {
+  "shared-rule.no-weapons-or-armour": [
+   "carnival-of-chaos/plague-cart--equipment-restrictions",
+   "cursed-cavalcade/fighting-ape--equipment-restrictions",
+   "forest-goblins-lus/gigantic-spider--equipment-restrictions",
+   "night-goblins-mic/cave-squigs--equipment-restrictions",
+   "night-goblins-mic/troll--equipment-restrictions",
+   "skaven-of-clan-skryre-rel/giant-rats--equipment-restrictions",
+   "slavers-rel/hounds--equipment-restrictions"
+  ],
+  "shared-rule.no-weapons-or-armour-unarmed": [
+   "khemri-cursed-of-karak-zorn/shadowed--equipment-restrictions",
+   "marauders-of-chaos/warhounds-of-chaos--equipment-restrictions",
+   "restless-dead/zombies--equipment-restrictions",
+   "undead/zombies--equipment-restrictions"
+  ],
+  "shared-rule.no-missile-weapons": [
+   "strigoi-kaz/skeletons--equipment-restrictions"
+  ],
+  "shared-rule.no-missiles-or-armour": [
+   "clan-angrund-kep/dwarf-troll-slayers--equipment-restrictions",
+   "dwarf-slayers-kaz/giant-slayer--equipment-restrictions",
+   "dwarf-slayers-kaz/slayers--equipment-restrictions",
+   "dwarf-slayers-kaz/troll-slayers--equipment-restrictions"
+  ],
+  "shared-rule.no-equipment-but-bones": [
+   "strigoi-kaz/charnel-guard--equipment-restrictions",
+   "strigoi-kaz/ghouls--equipment-restrictions",
+   "survivors-of-strigos-sylv/ghouls--equipment-restrictions"
+  ],
+  "shared-rule.no-equipment-unarmed": [
+   "necrarchs-the-soul-stealers-lotd1/zombie--equipment-restrictions",
+   "restless-dead/scarecrows--equipment-restrictions"
+  ],
+  "shared-rule.no-weapons-unarmed": [
+   "fen-guard-mim/treekin--equipment-restrictions",
+   "necrarchs-the-soul-stealers-lotd1/abomination--equipment-restrictions"
+  ]
+ },
+ "original_member_texts": {
+  "carnival-of-chaos/plague-cart--equipment-restrictions": {
+   "effect": "The Plague Cart and its Guardian cannot use weapons or wear armour.",
+   "effect_i18n": {
+    "es": "El Carro de la Peste y su Guardián no pueden usar armas ni llevar armadura."
+   }
+  },
+  "cursed-cavalcade/fighting-ape--equipment-restrictions": {
+   "effect": "A Fighting Ape never uses weapons or armour and does not need them to fight effectively.",
+   "effect_i18n": {
+    "es": "Un Simio Combatiente nunca usa armas ni armaduras y no las necesita para luchar con eficacia."
+   }
+  },
+  "forest-goblins-lus/gigantic-spider--equipment-restrictions": {
+   "effect": "A Gigantic Spider never uses weapons or armour.",
+   "effect_i18n": {
+    "es": "Una Araña Gigantesca nunca usa armas ni armadura."
+   }
+  },
+  "night-goblins-mic/cave-squigs--equipment-restrictions": {
+   "effect": "Cave Squigs never use or need weapons or armour.",
+   "effect_i18n": {
+    "es": "Los Squigs de Cueva nunca usan ni necesitan armas ni armadura."
+   }
+  },
+  "night-goblins-mic/troll--equipment-restrictions": {
+   "effect": "Trolls can never be given weapons or armour.",
+   "effect_i18n": {
+    "es": "A los Trolls nunca se les pueden dar armas ni armadura."
+   }
+  },
+  "skaven-of-clan-skryre-rel/giant-rats--equipment-restrictions": {
+   "effect": "None. Giant Rats never use any armour or weapons.",
+   "effect_i18n": {
+    "es": "Ninguno. Las Ratas Gigantes nunca usan armadura ni armas."
+   }
+  },
+  "slavers-rel/hounds--equipment-restrictions": {
+   "effect": "Hounds never use any armour or weapons.",
+   "effect_i18n": {
+    "es": "Los Sabuesos nunca usan armadura ni armas."
+   }
+  },
+  "restless-dead/zombies--equipment-restrictions": {
+   "effect": "May not carry weapons or wear armour and suffers no penalty for fighting unarmed.",
+   "effect_i18n": {
+    "es": "No puede llevar armas ni armadura y no sufre penalización por luchar sin armas."
+   }
+  },
+  "undead/zombies--equipment-restrictions": {
+   "effect": "Zombies may not carry weapons or wear armour and suffer no penalty for fighting without equipment.",
+   "effect_i18n": {
+    "es": "Los Zombis no pueden llevar armas ni armadura y no sufren penalización por luchar sin equipo."
+   }
+  },
+  "khemri-cursed-of-karak-zorn/shadowed--equipment-restrictions": {
+   "effect": "Shadowed may not use weapons or armour and suffer no penalty for fighting without equipment.",
+   "effect_i18n": {
+    "es": "Los Sombreados no pueden usar armas ni armaduras y no sufren penalización por luchar sin equipo."
+   }
+  },
+  "marauders-of-chaos/warhounds-of-chaos--equipment-restrictions": {
+   "effect": "Warhounds do not use weapons or armour and fight without the normal unarmed penalties.",
+   "effect_i18n": {
+    "es": "Los Sabuesos de Guerra no usan armas ni armaduras y luchan sin las penalizaciones normales por luchar desarmados."
+   }
+  },
+  "strigoi-kaz/skeletons--equipment-restrictions": {
+   "effect": "Skeletons may not use missile weapons.",
+   "effect_i18n": {
+    "es": "Los Esqueletos no pueden usar armas de proyectil."
+   }
+  },
+  "dwarf-slayers-kaz/giant-slayer--equipment-restrictions": {
+   "effect": "May not use any missile weapons or armour.",
+   "effect_i18n": {
+    "es": "No puede usar armas de proyectil ni armadura de ningún tipo."
+   }
+  },
+  "dwarf-slayers-kaz/slayers--equipment-restrictions": {
+   "effect": "May not use any missile weapons or armour.",
+   "effect_i18n": {
+    "es": "No puede usar armas de proyectil ni armadura de ningún tipo."
+   }
+  },
+  "dwarf-slayers-kaz/troll-slayers--equipment-restrictions": {
+   "effect": "May not use any missile weapons or armour.",
+   "effect_i18n": {
+    "es": "No puede usar armas de proyectil ni armadura de ningún tipo."
+   }
+  },
+  "clan-angrund-kep/dwarf-troll-slayers--equipment-restrictions": {
+   "effect": "Slayers may never carry or use missile weapons or any form of armour.",
+   "effect_i18n": {
+    "es": "Los Matatrolles nunca pueden llevar ni usar armas a distancia ni ninguna forma de armadura."
+   }
+  },
+  "strigoi-kaz/charnel-guard--equipment-restrictions": {
+   "effect": "Charnel Guard never carry any equipment, apart from a few bones which they use as primitive weapons.",
+   "effect_i18n": {
+    "es": "La Guardia Osario nunca lleva equipo alguno, aparte de unos pocos huesos que usa como armas primitivas."
+   }
+  },
+  "strigoi-kaz/ghouls--equipment-restrictions": {
+   "effect": "Ghouls never carry any equipment, apart from a few bones, which they use as primitive weapons.",
+   "effect_i18n": {
+    "es": "Los Necrófagos nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas primitivas."
+   }
+  },
+  "survivors-of-strigos-sylv/ghouls--equipment-restrictions": {
+   "effect": "Ghouls never carry any equipment, apart from a few bones which they use as primitive weapons.",
+   "effect_i18n": {
+    "es": "Los Carroñeros nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas primitivas."
+   }
+  },
+  "necrarchs-the-soul-stealers-lotd1/zombie--equipment-restrictions": {
+   "effect": "Zombies never carry any equipment, and do not suffer any penalties for this.",
+   "effect_i18n": {
+    "es": "Los Zombis nunca llevan equipo alguno y no sufren penalización por ello."
+   }
+  },
+  "restless-dead/scarecrows--equipment-restrictions": {
+   "effect": "Carries no equipment and suffers no penalty for fighting unarmed.",
+   "effect_i18n": {
+    "es": "No lleva equipo y no sufre penalización por luchar sin armas."
+   }
+  },
+  "fen-guard-mim/treekin--equipment-restrictions": {
+   "effect": "Treekin cannot use weapons and fight unarmed without penalty.",
+   "effect_i18n": {
+    "es": "Los Hombres Árbol no pueden usar armas y luchan sin armas y sin penalización."
+   }
+  },
+  "necrarchs-the-soul-stealers-lotd1/abomination--equipment-restrictions": {
+   "effect": "Abominations do not employ weapons, and suffer no penalties for doing so.",
+   "effect_i18n": {
+    "es": "Las Abominaciones no emplean armas y no sufren penalización por ello."
+   }
+  }
+ },
+ "equivalence_notes": {
+  "shared-rule.no-weapons-or-armour": "The shared text adds 'or needs', which carnival-of-chaos/plague-cart, forest-goblins-lus/gigantic-spider, night-goblins-mic/troll, skaven-of-clan-skryre-rel/giant-rats and slavers-rel/hounds do not print; it adds no restriction. giant-rats also printed a scraped list header ('None.' / 'Ninguno.') before the prohibition sentence, dropped like the other scraped labels.",
+  "shared-rule.no-missiles-or-armour": "clan-angrund-kep prints 'Slayers may never carry or use missile weapons or any form of armour.'; the shared text is the Karak Azgal wording of the same prohibition. The binding also forbids the constant-save cloak, which no member text names.",
+  "shared-rule.no-weapons-or-armour-unarmed": "Members phrase the exemption as 'fighting unarmed', 'fighting without equipment' or 'without the normal unarmed penalties'; same application.",
+  "kept_local": "Texts with a reason or extra content keep their own prose: mazzalupo-web/black-sheep and dark-elf-corsairs-mou/corsairs (printed list lines), maneaters/sabretusks, norse-explorers-btb/wolves, trollheim-undead/dire-wolves, dark-elves/cold-one-beasthounds, chaos-streets-greenskins cave-squigs and troll, crooked-moon-kep/troll (club clauses), protectorate-of-sigmar-lotd3/hound ('Jaws and Brutality.'), undead/ghouls ('intrinsic attacks'), khemri-cursed-of-karak-zorn/cannibal-dwarfs ('count as Clubs'), underworld-alliance-mim/sewer-squigs (Movement rule), high-elves-lus/sword-wardens ('Honorable warriors'), halflings-mic/piggies, necrarchs-mou/abomination, strigoi-kaz/vampire, survivors-of-strigos-sylv/strigoi-vampire, masters-of-horror-sylv/wolfman, necrarchs-mou/banshee, ogre-hunting-party-web/ogre-hunter, and every rule that names an equipment list or item-specific restriction."
+ }
+}

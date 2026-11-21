@@ -17,6 +17,7 @@ from mordheim_knowledge.loader import load_simulation_mappings
 from mordheim_knowledge.loader import load_skills
 from mordheim_knowledge.campaign import load_warband_groups
 from mordheim_knowledge.i18n import display_effect
+from mordheim_knowledge.loader import reason_label
 from mordheim_knowledge.i18n import display_name
 
 
@@ -259,11 +260,14 @@ class CombatCatalogue:
         runtime = skill.get("runtime") or {}
         if runtime.get("scope") == "YES" and runtime.get("implemented") == "YES":
             return None
+        excluded = self._excluded_mechanic_reasons.get(str(skill["id"]))
+        if excluded:
+            return excluded  # the runtime-scope exclusion explains the specific mechanic
         for effect in runtime.get("effects") or ():
             reason = str(effect.get("reason") or "").strip()
             if reason:
-                return reason
-        return self._excluded_mechanic_reasons.get(str(skill["id"])) or (
+                return reason_label(reason)
+        return (
             "No executable duel mechanic." if str(skill["id"]) not in self._skill_mechanics else None)
 
     def _catalogue_skill_is_available(self, skill: dict) -> bool:
@@ -302,7 +306,7 @@ class CombatCatalogue:
         for effect in runtime.get("effects") or ():
             reason = str(effect.get("reason") or "").strip()
             if reason:
-                return reason
+                return reason_label(reason)
         if runtime.get("implemented") != "YES":
             return "Not implemented for duel simulations."
         return "Outside the current duel simulation scope."

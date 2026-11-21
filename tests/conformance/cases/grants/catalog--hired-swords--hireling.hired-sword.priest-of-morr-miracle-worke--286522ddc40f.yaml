@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/mechanic.augur-one-roll-reroll
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, see below): the selected Mark's
+#   once-per-battle re-roll turning his missed hit into a hit (and no second offer at his wound
+#   die), a declined offer letting the miss stand with nothing spent, and the same Priest without
+#   the selection rolling with no offer at all.  The off-package refusal of skill.augur is already
+#   evidenced in the sibling mechanic.psychology-immunity file (...cf5e6ae1ffca) and the
+#   Augur/Haunted Mien mutual exclusion in the sibling mechanic.haunted-mien file
+#   (...45c97d805c6e); neither is duplicated here.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Priest of Morr compiled
+# through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.priest-of-morr-miracle-workers) with the fixture facts (WS3 S3 T3 W2 I5 A1;
+# the printed Ld8 stays), selecting the Augur Mark through special_rule_ids as the sibling
+# psychology-immunity file does.  Printed Augur: the Priest "may re-roll any one dice roll he makes
+# during a battle" - each of his own rolls carries the declaration until the single
+# `one-roll-reroll` resource is spent, and the second result stands - "but suffers -1 Strength
+# permanently" (the Mark's profile.characteristics sibling binding): his kit dagger therefore
+# strikes at S2 and wounds T3 on 5+, while the unselected control wounds on 4+.  The printed kit's
+# first close-combat weapon (the dagger) is the default and grants its target the printed 6+ save.
+# The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and its blows are declared natural
+# misses, so the psychology-immunity sibling binding and Morr's Servant (reading an Undead
+# opponent that never exists here) add no request.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/mechanic.augur-one-roll-reroll
+  id: the-augurs-missed-hit-is-rolled-again-and-the-resource-is-spent
+  fighters:
+    first:
+      &augur-recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur]
+    second:
+      &augur-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    # The wound die carries no declaration (the resource is spent); the Mark's -1 Strength makes
+    # the dagger S2, so wounding T3 needs the declared 5.
+    - {key: round.0.first.attack.0.wound, value: 5}
+    # The printed dagger grants its target a 6+ save; the declared 3 fails it.
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2, state.first.resources_spent: [one-roll-reroll]}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining the offer lets the miss stand and spends nothing.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/mechanic.augur-one-roll-reroll
+  id: the-declined-reroll-lets-the-miss-stand-and-spends-nothing
+  fighters:
+    first: *augur-recipient
+    second: *augur-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.one-roll-reroll, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control is the same profile without the selection: his rolls carry no offer at all, and his
+# unreduced S3 dagger wounds T3 on the ordinary 4.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur/mechanic.augur-one-roll-reroll
+  id: the-same-priest-without-the-mark-rolls-with-no-offer
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priest-of-morr-miracle-workers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *augur-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    # The printed dagger grants its target a 6+ save; the declared 1 fails it.
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2, state.first.resources_spent: []}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

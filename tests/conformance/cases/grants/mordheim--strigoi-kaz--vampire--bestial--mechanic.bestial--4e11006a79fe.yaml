@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
+# authoring_status: AUTHORED
+# authoring_progress: the admitted bestial clause carries two authored scenarios derived from the
+# printed rule and the printed profile; the bearer is the printed Vampire profile that prints the
+# ward.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios evidence the printed 6+ ward save taken after the wound: the
+# declared six negates the wound and leaves the bearer untouched, and the same attack with a five
+# is not saved and costs one wound.  The bearer is the printed strigoi-kaz Vampire profile that
+# prints the rule; the attacker's Weapon Skill, Strength, Toughness and Initiative are hand-built
+# fixture facts, not profile values, and the bearer declares no attack so the tape holds only the
+# attacker's hit, wound and special-save dice.  Hit 4 hits against an equal Weapon Skill and wound
+# 4 wounds at equal Strength and Toughness, so the only difference between the two scenarios is the
+# declared special-save face.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The
+# special save is taken after the wound and before the damage, so a saved attack leaves the
+# bearer at its starting wound total.
+- audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
+  id: the-declared-six-negates-the-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: mordheim, band_id: strigoi-kaz, profile_id: vampire}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 6+ is not enough: the same attack costs one wound.
+- audit_id: rule/mordheim/strigoi-kaz/vampire--bestial/mechanic.bestial
+  id: one-face-below-the-printed-save-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: mordheim, band_id: strigoi-kaz, profile_id: vampire}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

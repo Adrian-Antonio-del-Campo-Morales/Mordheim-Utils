@@ -1,0 +1,84 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/street-dogs--natural-weapons/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (Natural Weapons family model, B12 2026-11-18): the weaponless
+#   recipient compiles to weapon.natural-attacks, and the declared tokens (weapons and armour) are each
+#   evidenced as a construction refusal with the shared stage's own fragment.  REVIEWED still requires
+#   manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: all printed clauses of this binding are represented (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/chaos-streets-mordheim-inhabitants/special-rules.yaml
+
+# Natural Weapons family model (B12, 2026-11-18).  The KB binds profile.equipment-restrictions with forbids
+#   [weapons, armour] (the Strigoi adds 'equipment'); the sibling effect profile.natural-attacks is
+#   covered.elsewhere because the compiler resolves a weaponless profile whose binding forbids 'weapons' to
+#   weapon.natural-attacks (compiler.py: `weaponless`, a profile with no equipment lists and the default
+#   dagger).  ADMISSION: the recipient built with no equipment compiles and its main weapon is the natural
+#   attack, asserted on the compiled snapshot (expect_fighters first.main_weapon.tags.0: weapon.natural-
+#   attacks) in the corpus's construction-only shape (no charge, bearer out before the first phase, no die
+#   requested).  REFUSALS: a held weapon is refused by the shared eligibility stage's boundEquipment token
+#   loop (equipmentIssue, `"${token}" is forbidden for ${band}/${profile}.`) and armour by the same stage's
+#   armour check (`armour is forbidden for ${who}`), which runs before the token loop
+#   (packages/typescript/domain/eligibility/index.ts).  The weapon is weapon.sword, not weapon.dagger: an
+#   explicit dagger is indistinguishable from the build's default and is resolved to natural attacks instead
+#   of refused (implicitWeapon stage), so a dagger could not evidence the ban.
+
+# Removal-probe expectation (2026-11-18): this is a construction rule, so the refusals are its own effect
+#   and a construction-only verdict is expected (README, Rule-removal probe).  The admission is also
+#   sensitive: without the binding the compiler no longer reads `weaponless`, so the default dagger would
+#   stand and first.main_weapon.tags.0 would not be weapon.natural-attacks.
+
+# --- Authored scenarios ---
+# Derived from the KB record, the profile row and the eligibility gate's message templates; no engine output
+#   was consulted.
+
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/street-dogs--natural-weapons/profile.equipment-restrictions
+  id: street-dogs-with-a-weapon-is-refused
+  # A held weapon: Street Dogs never use weapons, so the sword in the main hand is refused by the 'weapons'
+  # token.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: street-dogs
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for chaos-streets-mordheim-inhabitants/street-dogs.'
+
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/street-dogs--natural-weapons/profile.equipment-restrictions
+  id: street-dogs-with-armour-is-refused
+  # Worn armour: the 'armour' token is decided by the bound-equipment stage's armour check (unquoted
+  # fragment).
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: street-dogs
+      armour_id: armour.heavy-armour
+  expect_error: 'armour is forbidden for chaos-streets-mordheim-inhabitants/street-dogs'
+
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/street-dogs--natural-weapons/profile.equipment-restrictions
+  id: street-dogs-without-equipment-fights-with-natural-attacks
+  # The admission: Street Dogs with nothing declared compile and fight with the natural attack; construction
+  # is the observation.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: street-dogs
+    second:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: street-dogs
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.main_weapon.tags.0: weapon.natural-attacks
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

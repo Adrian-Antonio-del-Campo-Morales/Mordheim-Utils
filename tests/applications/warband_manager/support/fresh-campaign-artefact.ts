@@ -1,13 +1,10 @@
 /**
  * Test support: the produced campaign artefact.
  *
- * The versioned artefact under `outputs/web-public/knowledge` predates the
- * campaign contract and publishes neither the supplement bands nor the campaign tables (creation
- * decisions, lifecycle/succession/advance-access clauses, mutation grants,
- * structured market restrictions). The Web product flows therefore read
- * the **freshly generated** artefact in `build/generated/knowledge-web`, which is
- * produced (never edited) by `tools/knowledge/generate_knowledge_web.py` and
- * is not committed.
+ * The Web product flows read the generated artefact in
+ * `outputs/web-public/knowledge`, which is produced (never edited) by
+ * `tools/knowledge/generate_knowledge_web.py` — the same path CI generates
+ * into before running this suite.
  *
  * The generator splits the published artefact: `knowledge-web.json` is
  * now the initial document and the campaign catalogue (equipment + campaign
@@ -23,7 +20,7 @@ import { resolve } from "node:path";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { readArtefactDocument } from "../../../knowledge/support/kb-artefact";
 
-const GENERATED = "build/generated/knowledge-web";
+const GENERATED = "outputs/web-public/knowledge";
 
 /** Absolute path of the fresh campaign artefact, or `null` when it is absent. */
 export function freshArtefactPath(): string | null {
@@ -32,7 +29,7 @@ export function freshArtefactPath(): string | null {
 }
 
 export const MISSING_ARTEFACT_NOTE =
-  "The freshly generated campaign artefact (build/generated/knowledge-web) is absent: campaign flows are covered by their suites and re-run after regenerating.";
+  "The generated campaign artefact (outputs/web-public/knowledge) is absent: campaign flows are covered by their suites and re-run after regenerating.";
 
 /**
  * Merged rows of the fresh artefact exactly as the app loads them (initial rows

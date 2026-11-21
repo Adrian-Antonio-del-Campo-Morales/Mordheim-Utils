@@ -1,0 +1,143 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the real Heinrich with his kit whip re-rolls a missed hit die into a hit on the
+#   declared choice; the second result stands even when worse; with his kit sword in hand the
+#   same profile is offered no whip re-roll; the Bard control cannot wield the whip (kit refusal);
+#   the rule is refused on a hireling outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): Heinrich's printed Luck (skill.luck) is offered on every
+#   own die while unspent, before the Whip Master offer (modular/contexts.py dice wrapper), so each
+#   of his hit and wound dice declares a declined `.luck` decision to keep the tape Whip Master's;
+#   the Whip Master re-roll die carries `.reroll` and is offered no Luck.  His earlier Luck and
+#   Snake Fear files chose the kit sword to bypass this very rule; here the whip is named.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1b.yaml, hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master, grant profile):
+# "May reroll each hit roll using the whip once, accepting the second result even if worse" -
+# binding mechanic.whip-master (model: tests/conformance/cases/mechanics/mechanic.whip-master.yaml;
+# consumer modular/attacks.py, decision `round.<i>.<side>.attack.<n>.whip-master`, die
+# `...hit.reroll`).  Hireling family model (README, Hireling recipients): the real Heinrich through
+# the hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.heinrich-altdorf-schmidt)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld8 stays) and his kit's first close-combat
+# weapon, the Town Cryer 14 whip (weapon.whip-tc14), named in hand.  The whip's own disarm decision
+# (`...whip-disarm.main`) is declared declined.  His Lightning Reflexes, Step Aside and Dodge ask
+# nothing in an uncharged duel against a declared natural-1 miss; Snake Fear needs a snake.  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour).  Dice: WS3 against WS3 hits
+# on 4+; the whip strikes at Strength 2 (5+ against T3) and grants the unarmoured opponent a 6+,
+# declared failing on a 1.  The control is the grade-1b Bard; the refusal selects the printed rule
+# on the Bard (the compiler's band-only fragment, another package).
+
+# Heinrich's miss of 2 (Luck declined) is re-rolled on the declared Whip Master choice; the 4 hits,
+# the whip wound of 5 (Luck declined) lands through the failed 6+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+  id: heinrichs-missed-whip-roll-is-rerolled-into-a-hit
+  fighters:
+    first:
+      &heinrich-whip
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.heinrich-altdorf-schmidt
+      main_weapon_id: weapon.whip-tc14
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &heinrich-whip-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    # Heinrich's printed Luck offers a re-roll of his own hit die; declined.
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+    # Luck is offered again on his wound die; declined.
+    - {key: round.0.first.attack.0.wound.luck, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_roll: 4, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The second result stands even when worse: Heinrich's hit of 4 is re-rolled into a 1 and misses;
+# no wound die follows and the re-rolled die is offered nothing further.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+  id: the-second-result-stands-for-heinrich-even-when-worse
+  fighters:
+    first: *heinrich-whip
+    second: *heinrich-whip-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_roll: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Using the whip": with his kit sword in hand the same profile is offered no Whip Master decision
+# (only Luck, declined), so the miss of 2 stands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+  id: heinrich-with-his-kit-sword-is-offered-no-whip-reroll
+  fighters:
+    first:
+      <<: *heinrich-whip
+      main_weapon_id: weapon.sword
+    second: *heinrich-whip-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.hit.luck, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Town Cryer 14 whip is outside the Bard's printed kit, so the kit resolver
+# refuses the build before any re-roll could be asked.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+  id: a-hireling-outside-the-kit-cannot-wield-the-whip
+  fighters:
+    first:
+      &heinrich-whip-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.whip-tc14
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *heinrich-whip-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The printed grant belongs to Heinrich's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master/mechanic.whip-master
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *heinrich-whip-control
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master]
+    second: *heinrich-whip-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

@@ -81,9 +81,7 @@ PENDING = (
     ("clockworkers-sc", "master-of-clocks", "band--skill-gift-of-sentience"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-discipline"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-the-impetuous"),
-    ("lizardmen-lus", "saurus-totem-warriors", "band--lizardmen-special-skills-saurus-only-toughened-hide"),
     ("silent-brotherhood-sc", "silent-master", "band--skill-hit-and-run"),
-    ("silent-brotherhood-sc", "silent-master", "band--skill-backstabber"),
     ("skaven-of-clan-pestilens-lus", "plague-priest", "band--skill-cloud-of-flies"),
     ("skaven-of-clan-pristekk-sc", "chieftain", "band--skill-thing-handler"),
     ("underworld-alliance-mim", "goblin-bully", "band--skill-wyrdstone-addict"),
@@ -216,15 +214,17 @@ def test_thirst_for_vengeance_adds_its_declared_charge_attack():
     assert selected.global_effects.charge_attacks_bonus == 1
 
 
-def test_unshakeable_faith_is_executable_but_the_warband_skill_channel_omits_it():
-    # Recorded discrepancy: the rule's runtime is implemented, but it publishes
-    # no recipient and the Warrior Priest declares no 'special' skill access, so
-    # the canonical route refuses it through the concrete recipient gate.  The
-    # refusal names the rule instead of being a generic exception.
+def test_unshakeable_faith_reaches_the_warrior_priest_and_refuses_the_others():
+    # Ruling 2026-11-18 (design-rulings.md, "Unshakeable Faith is the Warrior
+    # Priest's special skill"): the band row publishes `eligibility:
+    # [warrior-priest]`, so the Warrior Priest receives the immunity and every
+    # other profile of the band is refused the rule by name.
+    selected = compile_fighter(build("protectorate-of-sigmar-lotd3", "warrior-priest",
+        special_rule_ids=("band--special-skill-unshakeable-faith",)))
+    assert "mechanic.fear-immunity" in selected.global_effects.tags
     with pytest.raises(ValueError, match=(
-            "special rule is not available to "
-            "protectorate-of-sigmar-lotd3/warrior-priest: band--special-skill-unshakeable-faith")):
-        compile_fighter(build("protectorate-of-sigmar-lotd3", "warrior-priest",
+            "special rule is not available to protectorate-of-sigmar-lotd3/templar")):
+        compile_fighter(build("protectorate-of-sigmar-lotd3", "templar",
             special_rule_ids=("band--special-skill-unshakeable-faith",)))
 
 
@@ -254,9 +254,11 @@ def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant()
         "clan-angrund-kep", "dwarf-noble",
         special_rule_ids=("band--dwarf-special-skills-master-of-blades",),
     ))
-    # One canonical rule, two registered origins/bindings and the reviewed dwarf parry
-    # variant; no mechanics from the other Dwarf special skills leak in.
-    assert {"skill.unbeatable-warrior", "skill.sword-master", "rule.dwarf-axe-parry-reroll"} <= set(fighter.global_effects.tags)
+    # One canonical rule, two bindings: Unbeatable Warrior and the Dwarf's own two-axe
+    # reroll mechanic (ruling 2026-11-18: the Vampire's Sword Master is not bound here);
+    # no mechanics from the other Dwarf special skills leak in.
+    assert {"skill.unbeatable-warrior", "rule.dwarf-axe-parry-reroll"} <= set(fighter.global_effects.tags)
+    assert "skill.sword-master" not in fighter.global_effects.tags
 
 
 def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_automatic_grants():

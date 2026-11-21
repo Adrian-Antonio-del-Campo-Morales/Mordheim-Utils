@@ -1,0 +1,94 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.strength/weapon.ienh-khain
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, equipment-items batch
+#   2026-11-18): the real Aenur wielding Ienh-Khain wounds T3 on the wound die 2 (his
+#   compiled Strength 3 +1 Mighty Blow +1 sword = 5, a 2+; without the sword's point it
+#   would be a 3+), the Bard control's 2 fails, and the sword is refused in the hand of a
+#   hireling outside Aenur's printed kit.  The parry and critical clauses are evidenced in
+#   their sibling files; the mechanics file covers the three on a hand-built bearer.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): Aenur's printed Mighty Blow adds its own +1
+#   Strength in his global effects, so the compiled blow is S5; the wound die 2 isolates
+#   the sword's point (S4 needs 3+).  His Invincible Swordsman hits on 2+, so the declared
+#   hit die 4 hits under either target and the hit target is not asserted.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Rule (core.yaml, hireling.dramatis.aenur.item.ienh-khain.rule.strength, grant profile): "Ienh-Khain
+# adds +1 Strength" - binding weapon.ienh-khain (execution.yaml: strength_bonus 1).  Hireling family
+# model (README, Hireling recipients): the real Aenur through the hireling route
+# (hirelings.dramatis-personae.core) with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld8 stays)
+# and his unique sword wielded by its mechanic id (main_weapon_id: weapon.ienh-khain).  The opponent
+# is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour) and silenced (attacks 0) so every die is
+# Aenur's.  The duel is uncharged so Expert Swordsman (charging re-roll) and Lightning Reflexes
+# (when charged) ask nothing; Strike to Injure only shifts an injury total the three-wound opponent
+# never reaches.  The control is the grade-1b Bard with his kit dagger (S3 against T3 needs 4+).
+
+# The sword's point of Strength: Aenur's S5 wounds T3 on the 2.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.strength/weapon.ienh-khain
+  id: the-real-aenur-wounds-on-a-two-with-ienh-khain
+  fighters:
+    first:
+      &ienh-strength-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.aenur
+      main_weapon_id: weapon.ienh-khain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &ienh-strength-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 1
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, dagger, S3): the same wound die 2 is two faces short of the 4+.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.strength/weapon.ienh-khain
+  id: a-hireling-without-the-sword-fails-the-same-wound-die
+  fighters:
+    first:
+      &ienh-strength-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *ienh-strength-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Ienh-Khain is Aenur's unique item: wielded by a hireling of another printed kit it is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aenur.item.ienh-khain.rule.strength/weapon.ienh-khain
+  id: the-sword-is-refused-in-the-hand-of-another-hireling
+  fighters:
+    first:
+      <<: *ienh-strength-control
+      main_weapon_id: weapon.ienh-khain
+    second: *ienh-strength-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

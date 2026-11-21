@@ -1,0 +1,208 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.instinctive-warrior
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (status corrected 2026-11-18). The printed effect - the bearer
+#   parries with his double-handed weapon under the normal Parry rules, as with one sword - is
+#   evidenced on a hand-built bearer: the double-handed parry, no grant to a one-handed weapon, no
+#   parry without the skill, and the ordinary single parry roll (a failed parry is not re-rolled).
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# AUTHORED: 4 scenarios cover the double-handed parry, its one-handed and unskilled controls and
+#   the ordinary no-re-roll parry form.
+
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.instinctive-warrior/skill.instinctive-warrior (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.instinctive-warrior
+  id: the-double-handed-weapon-parries
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.instinctive-warrior
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 5
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      attacks.0.wounded: false
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.instinctive-warrior/skill.instinctive-warrior (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.instinctive-warrior
+  id: a-one-handed-weapon-gets-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.instinctive-warrior
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+      state.second.parries_remaining: 0
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.instinctive-warrior/skill.instinctive-warrior (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.instinctive-warrior
+  id: the-unskilled-two-handed-weapon-does-not-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.instinctive-warrior/skill.instinctive-warrior (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.instinctive-warrior
+  id: the-parry-keeps-the-ordinary-form-without-a-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.instinctive-warrior
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 3
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

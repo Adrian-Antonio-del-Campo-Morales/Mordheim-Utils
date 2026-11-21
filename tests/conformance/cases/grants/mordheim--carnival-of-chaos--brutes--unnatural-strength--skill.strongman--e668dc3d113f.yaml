@@ -1,0 +1,79 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/brutes--unnatural-strength/skill.strongman
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the printed profile: the Brutes start the game with Strongman, so a bearer with a
+# two-handed weapon stands in the ordinary order instead of striking last, while the identical
+# hand-built wielder without the skill waits behind a lower Initiative opponent.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios read the printed grant on the real resolution order.  The bearer is
+# the printed Brutes profile that binds the rule and carries a two-handed weapon (whose ordinary
+# price is the strikes-last penalty), with the physical characteristics supplied as fixture facts;
+# the declared tape shows the bearer's own To Hit die resolved before the lower-Initiative mace, so
+# the order is the ordinary Initiative order rather than the weapon penalty.  The control repeats the
+# identical duel with a hand-built wielder of the same characteristics and weapon but without the
+# skill, where the strike-last penalty sends the mace first.  Both dice miss, which keeps the round
+# about the order rather than about damage.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The
+# bearer's Weapon Skill 3, Initiative 5 and single attack are hand-built fixture facts, and both
+# attacks miss so the tape holds exactly two hit dice.  expect_events fixes the sequence, which is
+# the observable: StrictDice rejects an undeclared roll, so a bearer that struck last would consume
+# the dice in the opposite order and fail.
+- audit_id: rule/mordheim/carnival-of-chaos/brutes--unnatural-strength/skill.strongman
+  id: the-strongman-brute-stands-in-the-ordinary-order-with-a-two-handed-weapon
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: brutes
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The control: the same duel with a hand-built wielder of the same characteristics and weapon but
+# without the skill, where the printed strikes-last penalty gives the mace the opening attack.
+- audit_id: rule/mordheim/carnival-of-chaos/brutes--unnatural-strength/skill.strongman
+  id: without-the-skill-the-two-handed-wielder-strikes-last
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

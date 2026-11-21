@@ -1,0 +1,367 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.elven-agility
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 5 scenarios show the 6+ special save holding on its own face
+#   and failing one below it, the printed improvement to 4+ when the warrior also has
+#   Step Aside (the close-combat skill of the two; held on 4, failed on 3) and a
+#   non-bearer control offered no save at all (added 2026-11-16).  Printed: "The warrior
+#   avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside,
+#   the corresponding save improves to 4+" (catalog/skills/warband.yaml); Step Aside
+#   alone is a 5+ save, so a 4 that is saved can only come from the combination.
+
+# --- Authored scenarios ---
+
+- audit_id: mechanic/skill.elven-agility
+  id: the-special-save-holds-on-6
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.elven-agility
+  id: one-face-below-the-save-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# With Step Aside as well, the close-combat save improves to 4+ (one save, not two): a 4
+# is avoided, which neither Elven Agility alone (6+) nor Step Aside alone (5+) allows.
+- audit_id: mechanic/skill.elven-agility
+  id: with-step-aside-the-save-improves-to-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility, skill.step-aside]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The improved save stops at 4+: a 3 still wounds.
+- audit_id: mechanic/skill.elven-agility
+  id: with-step-aside-one-face-below-four-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility, skill.step-aside]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Non-bearer control: the same defender without the skill is offered no special save,
+# so the strict tape carries no ward die and the wound goes through.
+- audit_id: mechanic/skill.elven-agility
+  id: a-warrior-without-the-skill-has-no-special-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.elven-agility/skill.elven-agility (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.elven-agility
+  id: the-avoidance-holds-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      skill_ids:
+      - skill.elven-agility
+      main_weapon_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 2
+  - key: round.0.first.attack.0.special.ward
+    value: 6
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.saved: true
+      attacks.0.damage: 0
+      state.second.wounds: 3
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.elven-agility/skill.elven-agility (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.elven-agility
+  id: one-face-below-the-avoidance-is-not-enough
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      skill_ids:
+      - skill.elven-agility
+      main_weapon_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 2
+  - key: round.0.first.attack.0.special.ward
+    value: 5
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.saved: false
+      attacks.0.damage: 1
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.elven-agility/skill.elven-agility (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.elven-agility
+  id: step-aside-raises-the-same-save-to-four
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      skill_ids:
+      - skill.elven-agility
+      - skill.step-aside
+      main_weapon_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 2
+  - key: round.0.first.attack.0.special.ward
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.saved: true
+      attacks.0.damage: 0
+      state.second.wounds: 3
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.elven-agility/skill.elven-agility (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.elven-agility
+  id: three-is-still-below-the-combined-save
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      skill_ids:
+      - skill.elven-agility
+      - skill.step-aside
+      main_weapon_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 2
+  - key: round.0.first.attack.0.special.ward
+    value: 3
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.saved: false
+      attacks.0.damage: 1
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.elven-agility/skill.elven-agility (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.elven-agility
+  id: without-the-rule-no-save-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 10
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    second:
+      main_weapon_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging: []
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 2
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.saved: false
+      attacks.0.damage: 1
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

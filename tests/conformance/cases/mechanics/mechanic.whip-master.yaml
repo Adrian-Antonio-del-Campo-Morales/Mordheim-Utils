@@ -1,0 +1,153 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.whip-master
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios (survival-saves-and-rerolls batch, 2026-11-18): a missed whip hit
+#   roll is re-rolled into a hit on the declared choice; the second result stands even when worse
+#   (and is offered no further re-roll); a declined offer leaves the miss; the re-roll belongs to
+#   the whip alone (a sword bearer with the mechanic is offered nothing); a whip bearer without the
+#   mechanic is offered nothing.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 5 scenarios cover the accepted re-roll on both faces (miss to hit, hit to miss with no
+#   second offer), the declined offer, the whip-only scope and the control without the mechanic.
+
+# --- Authored scenarios ---
+# mechanic/mechanic.whip-master - Town Cryer 14 (Mule Skinner) and Town Cryer 21 (Heinrich
+# 'Altdorf' Schmidt): "May reroll each hit roll using the whip once, accepting the second result
+# even if worse."  The record is kind profile, so a hand-built fighter injects it through skill_ids
+# (the mechanic.estalian-technique precedent) and wields the Town Cryer 14 whip
+# (weapon.whip-tc14).  Consumer: packages/python/combat-engine/mordheim_combat/modular/attacks.py
+# (after the whip's melee hit die, whether it hit or missed, the bearer is asked
+# `round.<i>.<side>.attack.<n>.whip-master`; an accepted choice rolls `...hit.reroll` and the
+# second result stands, marked rerolled so no further re-roll is offered).  The whip's own disarm
+# decision (`...whip-disarm.main`) is declared declined in every whip scenario so the tape is the
+# re-roll's alone.
+#
+# Expectations come from the printed sentence, never from engine output.  Fixtures: a WS3 S3 T3 W2
+# I5 A1 bearer against a WS3 S3 T3 W2 I2 A1 mace opponent, uncharged (the bearer strikes first).
+# WS3 against WS3 hits on 4+; the whip strikes at Strength 2 (5+ against T3) and grants the
+# unarmoured opponent a 6+ save, declared failing on a 1.
+
+# The miss of 2 is re-rolled on the declared choice and the 4 hits; the whip wound follows.
+- audit_id: mechanic/mechanic.whip-master
+  id: a-missed-whip-roll-is-rerolled-into-a-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      skill_ids: [mechanic.whip-master]
+      characteristics: &wm-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &wm-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &wm-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_roll: 4, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The second result stands even when worse: the hit of 4 is re-rolled into a 1 and misses, and
+# the strict tape declares no further offer on the re-rolled die.
+- audit_id: mechanic/mechanic.whip-master
+  id: the-second-result-stands-even-when-worse
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      skill_ids: [mechanic.whip-master]
+      characteristics: *wm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wm-opponent
+  duel_context: *wm-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_roll: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The re-roll is the bearer's option: declined, the miss of 2 stands and no second die is rolled.
+- audit_id: mechanic/mechanic.whip-master
+  id: a-declined-reroll-leaves-the-miss
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      skill_ids: [mechanic.whip-master]
+      characteristics: *wm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wm-opponent
+  duel_context: *wm-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_roll: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Using the whip": the same bearer with a sword is offered no re-roll (and no disarm), so the miss
+# of 2 stands with no decision declared.
+- audit_id: mechanic/mechanic.whip-master
+  id: the-reroll-belongs-to-the-whip-alone
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      skill_ids: [mechanic.whip-master]
+      characteristics: *wm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wm-opponent
+  duel_context: *wm-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a whip bearer without the mechanic is offered no re-roll decision at all.
+- audit_id: mechanic/mechanic.whip-master
+  id: a-whip-bearer-without-the-mechanic-is-offered-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.whip-tc14
+      characteristics: *wm-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *wm-opponent
+  duel_context: *wm-uncharged
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

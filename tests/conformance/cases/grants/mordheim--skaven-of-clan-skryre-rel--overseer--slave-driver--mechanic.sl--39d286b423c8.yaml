@@ -1,0 +1,226 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+# authoring_status: AUTHORED
+# authoring_progress: the admitted slave-driver clause carries 5 authored scenarios covering both printed
+# halves of the sentence: the supplied Overseer's Leadership adopted at the printed 3 inches, the same
+# borrower declining it, a supplied Overseer beyond the printed 3 inches, and the printed scourge widening -
+# the same fixture at five inches with the supplied provider carrying the canonical supplied trait key
+# scourge_armed (contracts.py TRAIT_TYPES declares it; compiler.py projects condition.scourge-armed for it),
+# which passes, beside its own same-distance control without that key, which fails.  The earlier blocker is
+# withdrawn: the supplied route for the printed state exists, so what is missing is the widened radius the
+# printed 3"/6" parameter would carry.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 5 scenarios carry both printed halves onto the real route.  The borrower is charged
+# by a fear-causing fixture and its own Leadership test is the visible consequence, so a supplied same-band
+# Overseer three inches away lends the value that passes the declared 3+3 = 6, the same borrower declining the
+# optional use tests with its own Leadership 3 and fails, a supplied Overseer four inches away offers nothing at
+# all, and the printed scourge widening is the same fixture at five inches with the supplied provider carrying
+# the canonical supplied trait key scourge_armed - which passes - beside its own control at the same five
+# inches without that key, which fails.  Every borrower declares the printed recipient fact through
+# trait_overrides: {slave: true}, the canonical supplied key beside the printed "They may use his leadership if
+# they are within 3 inches" gate, so no tape rests on an unnamed identity.  What these tapes detect is the
+# recorded defect: the source row already binds mechanic.slave-driver (special-rules.yaml,
+# runtime.effects[0].binding.kind/mechanic), so the register's "No binding on this record" is stale, and the
+# printed 3"/6" parameter is not read by the borrowing consumer (a range upgrade is not another aura and no
+# second provider is simulated here).  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The supplied
+# Overseer is a nearby participant of the borrower's own side and band and is the band's printed
+# overseer profile; the borrower is a hand-built fixture whose Leadership 3 is a fixture fact, so the
+# borrowed value is the only thing that can pass the doubled dice.  The printed "strikes fear into his
+# slaves" is read as the Leadership test the borrower faces when it is charged.
+
+- audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+  id: a-supplied-overseer-at-three-inches-lends-his-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: skaven-of-clan-skryre-rel
+          profile_id: overseer
+    distances:
+      - [second, overseer, 3]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.overseer, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+  id: declining-the-supplied-overseer-keeps-the-borrowers-own-leadership
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: skaven-of-clan-skryre-rel
+          profile_id: overseer
+    distances:
+      - [second, overseer, 3]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.overseer, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+  id: an-overseer-beyond-the-printed-three-inches-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: skaven-of-clan-skryre-rel
+          profile_id: overseer
+    distances:
+      - [second, overseer, 4]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed scourge widening.  The supplied provider is the band's printed overseer carrying the canonical
+# supplied trait key of the printed "armed with a scourge" state (contracts.py TRAIT_TYPES declares
+# scourge_armed and compiler.py projects condition.scourge-armed for it), so the distance declared here is
+# inside the printed six inches and outside the printed three.  A consumer that keeps the single three-inch
+# radius offers nothing and fails this tape.
+- audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+  id: a-scourge-armed-overseer-lends-his-leadership-at-five-inches
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: skaven-of-clan-skryre-rel
+          profile_id: overseer
+          trait_overrides: {scourge_armed: true}
+    distances:
+      - [second, overseer, 5]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.overseer, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the same five inches with a provider that is not scourge-armed: the unwidened printed three
+# inches do not reach, so the identical dice fail against the borrower's own Leadership and no use is offered
+# at all, which the strict tape proves.
+- audit_id: rule/mordheim/skaven-of-clan-skryre-rel/overseer--slave-driver/mechanic.slave-driver
+  id: the-same-five-inches-without-a-scourge-supplies-nothing
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {slave: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 3}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: overseer
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: skaven-of-clan-skryre-rel
+          profile_id: overseer
+    distances:
+      - [second, overseer, 5]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

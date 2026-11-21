@@ -1,0 +1,162 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.deathwish
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (operators-band-rules batch, 2026-11-18): the skill on a
+#   hand-built fighter - charged by a fear-causer he is asked no Fear die and hits on his ordinary 4+,
+#   he charges a fear-causer with no charge test, a supplied Frenzy flag is suppressed from initialisation,
+#   a Hatred reroll is suppressed, the same fighter without the skill is tested and a failure clamps him to
+#   sixes, and the selection is refused on a Troll Slayer henchman.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18, operators-band-rules batch): no real Slayer recipient is declared.
+#   The Dwarf Slayer Cult's band--slayer-rules already grants mechanic.psychology-immunity to every
+#   Slayer profile (giant-slayer, doomseeker, troll-slayers, stubbles, axe-hurlers), so the printed
+#   Slayer skill Deathwish ("the hero is completely immune to all psychology and never needs to test if
+#   fighting alone") adds nothing on its only printed recipients: a scenario selecting it on the Giant
+#   Slayer would survive the skill's removal.  The duplication (band rule vs. skill table member) is a
+#   printed-source check for TODO.md's "Printed-source checks before de-duplicating"; the hand-built
+#   fixtures below isolate the skill's own effect.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (Dwarf Slayer Cult, Slayer Special Skills, bands/mordheim/dwarf-slayer-cult-web/
+# special-rules.yaml band--slayer-special-skills): "Deathwish - the hero is completely immune to all
+# psychology and never needs to test if fighting alone."  The execution entry carries the shared tag
+# mechanic.psychology-immunity (catalog/mechanics/execution.yaml ~1362); consumers: modular/psychology.py
+# needs_test() (no Fear test for an immune fighter), state.py ~338-345 (a supplied frenzy flag is not
+# held by an immune fighter) and contexts.py ~262 (psychology_allowed excludes Hatred).  The "fighting
+# alone" face is the excluded group effect and owes no scenario.  Model: the AUTHORED Slayer Pirates
+# Deathwish file (...45826dfac1b8); here the skill is injected through skill_ids on the hand-built
+# fixture (WS3 S3 T3 W2 I5 A1 Ld7, axe).  The fear-causer is the mace fixture (WS3 S3 T3 W3 I2 A1 Ld7)
+# declaring causes_fear, silenced with attacks 0 (it carries a mace) so the bearer's hit target is the
+# observable; S3 wounds T3 on 4+.
+
+# A fear-causer charges the bearer: no Fear die is asked and his 4 hits on the ordinary 4+ and wounds.
+- audit_id: mechanic/skill.deathwish
+  id: the-bearer-charged-by-a-fear-causer-is-not-tested
+  fighters:
+    first:
+      &bearer
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.deathwish]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &fear_causer
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The bearer charging a fear-causer takes no charge test either: the charge lands.
+- audit_id: mechanic/skill.deathwish
+  id: the-bearer-charging-a-fear-causer-takes-no-charge-test
+  fighters:
+    first:
+      <<: *bearer
+    second:
+      <<: *fear_causer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first_charged: true, state.first.fear_hit_sixes: false, attacks.0.hit_target: 4, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Immune to all psychology" includes Frenzy: a supplied frenzy flag is suppressed from initialisation,
+# so the bearer strikes his single attack rather than a doubled pair.
+- audit_id: mechanic/skill.deathwish
+  id: the-skill-suppresses-a-supplied-frenzy-flag
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.deathwish]
+      trait_overrides: {frenzy: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.frenzy: false}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Hatred is Psychology: the immune bearer carrying Hatred is offered no first-round reroll (the strict
+# tape holds no reroll die) and his 2 misses.
+- audit_id: mechanic/skill.deathwish
+  id: the-skill-suppresses-the-hatred-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.deathwish, skill.hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same fighter without the skill is tested when charged; 6+4 fails his Leadership 7
+# and his 4 now needs a 6.
+- audit_id: mechanic/skill.deathwish
+  id: without-the-skill-the-charged-fighter-is-tested-and-a-failure-clamps-him-to-sixes
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      <<: *fear_causer
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 6}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: true, attacks.0.hit_target: 6, attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Slayer table is a Hero table ("Slayers Only" Hero skill list): a Troll Slayer henchman is refused
+# the skill.
+- audit_id: mechanic/skill.deathwish
+  id: the-skill-is-refused-on-a-troll-slayer-henchman
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: troll-slayers
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.deathwish]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "skills are not available to dwarf-slayer-cult-web/troll-slayers: ['skill.deathwish']"

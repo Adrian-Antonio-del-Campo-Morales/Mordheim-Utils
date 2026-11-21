@@ -1,0 +1,96 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-stats
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): the
+#   Hillman selecting Wolf Form projects the wolf line over the fixture (M7 WS4 S4 T4 W3 I7 A2 Ld6), the
+#   same Hillman without the selection keeps the man line (M4 WS3 S3 T3 W2 I5 A1 Ld8), and the form is
+#   refused on a hireling outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Semantic wrinkle (2026-11-18): the print gives the wolf as an absolute line (M7 WS4 BS0 S4 T4 W2 I5
+#   A2(3) Ld6) while the KB binds it as deltas over the man line (+3M +1WS +1S +1T +1W +2I +1A -2Ld),
+#   so over the corpus fixture (WS3 S3 T3 W2 I5 A1; the printed M4 and Ld8 fill the unsupplied
+#   characteristics) the compiled values are fixture-plus-delta, not the printed absolutes: W3 and I7
+#   here where the print reads W2 and I5.  BS is outside the duel.  The "(3)" of the printed Attacks
+#   is the bonus Bite the sibling wolf-form-discarded-kit binding supplies inside the duel; the +1
+#   Attack here is the second ordinary claw attack.  Thin Flesh (-1 T in hand-to-hand) is a duel
+#   mechanic and leaves the compiled Toughness untouched.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2a.yaml, Wolf Form): "Wolf profile M7 WS4 BS0 S4 T4 W2 I5 A2(3) Ld6" against the
+# man line "M4 WS3 BS4 S3 T3 W1 I3 A1 Ld8".  The form is a selectable special-skill option of the Cursed
+# Hillman (hirelings.hired-sword.2a / hireling.hired-sword.cursed-hillman), chosen with special_rule_ids;
+# its profile.characteristics binding (profile_ids restricted to the Hillman) is applied by the selected
+# branch of packages/python/roster-construction/mordheim_construction/compiler.py.  The compiled
+# characteristics are observed through expect_fighters; the shape is construction-only (no charge, the
+# bearer out of action before the first phase), so Lycanthrope's wound trigger and every die stay
+# unreached.  The man-form default weapon is the kit's axe; it is left omitted.
+
+# Wolf Form selected: every bonus of the printed wolf line lands on the compiled characteristics.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-stats
+  id: the-hillman-in-wolf-form-carries-the-wolf-line-over-the-fixture
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &construction-only {charging: [], active_participant: first}
+  initial_state: &bearer-out {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.movement: 7
+    first.characteristics.weapon_skill: 4
+    first.characteristics.strength: 4
+    first.characteristics.toughness: 4
+    first.characteristics.wounds: 3
+    first.characteristics.initiative: 7
+    first.characteristics.attacks: 2
+    first.characteristics.leadership: 6
+
+# The control: the same Hillman without the selection keeps the man line (fixture plus printed M4 and Ld8).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-stats
+  id: the-same-hillman-in-man-form-keeps-the-man-line
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.cursed-hillman
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *construction-only
+  initial_state: *bearer-out
+  expect_fighters:
+    first.characteristics.movement: 4
+    first.characteristics.weapon_skill: 3
+    first.characteristics.strength: 3
+    first.characteristics.toughness: 3
+    first.characteristics.wounds: 2
+    first.characteristics.initiative: 5
+    first.characteristics.attacks: 1
+    first.characteristics.leadership: 8
+
+# Wolf Form is printed for the Cursed Hillman alone; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.cursed-hillman.rule.wolf-form/wolf-form-stats
+  id: the-form-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.cursed-hillman.rule.wolf-form]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

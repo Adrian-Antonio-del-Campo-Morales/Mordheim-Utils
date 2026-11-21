@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, equipment-items batch,
+#   2026-11-18): the Chaos Centaur's start-of-turn D6 of 1 forces a Stupidity test whose failure
+#   cancels its charge and leaves it without attacks; a 6 is Frenzy for the turn (the sword pool
+#   doubles beside the trample); a 3 is the no-effect band (one sword attack and the trample); the
+#   plain-hireling control rolls no Drunken die; the rule is refused outside the Centaur's package.
+#   REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1c.yaml, hireling.hired-sword.chaos-centaur.rule.drunken, grant profile): "At each own
+# turn start roll D6: 1 test Stupidity this turn; 2-5 no effect; 6 Frenzy this turn.  While subject
+# to Stupidity or Frenzy ignore other psychology" - binding mechanic.centigor-drunken (model
+# mechanics/mechanic.centigor-drunken.yaml).  Hireling family model (README, Hireling recipients):
+# the real Chaos Centaur through the hireling route (hirelings.hired-sword.1c /
+# hireling.hired-sword.chaos-centaur) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld7
+# stays) and the kit's sword choice named in hand.  The Centaur charges, so it is the active player
+# and the D6 is requested at the start of its own turn as round.0.first.drunken; on a 1 the
+# Stupidity test follows as round.0.first.stupidity.{0,1} (2D6 against Ld7: 6+6 fails).  Its other
+# printed rule, Trample, adds one natural attack to every pool it strikes with.  The opponent is
+# hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace); its declared hit is a miss, so the sword's parry is
+# never offered.  The control is the grade-1b Bard with his kit dagger.  Dice: all hits of a side
+# precede its wounds; every declared attack is a miss, so no wound die is requested.
+
+# A 1 forces the Stupidity test; 6+6 fails Leadership 7, the voluntary charge cannot establish
+# contact and the Centaur makes no attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-one-forces-the-stupidity-test-on-the-chaos-centaur
+  fighters:
+    first: &centaur
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.chaos-centaur
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: &centaur-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 1}
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first.frenzy: false, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# A 6 is Frenzy for the turn: the sword pool doubles (two sword dice) and the trample still
+# follows, three hit dice in all; no Stupidity test is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-six-grants-the-chaos-centaur-frenzy-for-the-turn
+  fighters:
+    first: *centaur
+    second: *opponent
+  duel_context: *centaur-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    # Trample (the Centaur's other printed rule): the natural attack beside the doubled pool.
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.drunken, sides: 6, value: 6}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.2.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The 2-5 band does nothing: one sword attack and the trample, no Frenzy, no Stupidity test.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+  id: a-drunken-three-leaves-the-chaos-centaur-unchanged
+  fighters:
+    first: *centaur
+    second: *opponent
+  duel_context: *centaur-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.drunken, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    # Trample: the natural attack beside the printed single attack.
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.drunken, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The control (Bard, kit dagger) charging in the same setup rolls no Drunken die: the tape opens
+# with its attack.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+  id: a-hireling-without-the-rule-rolls-no-drunken-die
+  fighters:
+    first: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *centaur-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.stupidity_failed: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The printed grant belongs to the Centaur's profile; selecting it on a hireling of another package
+# is refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.chaos-centaur.rule.drunken/mechanic.centigor-drunken
+  id: the-rule-is-refused-on-a-hireling-outside-the-centaurs-package
+  fighters:
+    first:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.chaos-centaur.rule.drunken]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

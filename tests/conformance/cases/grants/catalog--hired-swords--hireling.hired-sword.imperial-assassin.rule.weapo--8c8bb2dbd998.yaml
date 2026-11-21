@@ -1,0 +1,86 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/no-blackpowder
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (construction-skills-and-profile batch, 2026-11-18): a
+#   pistol in the Assassin's main hand is refused, a duelling pistol in his off hand beside the printed
+#   sword is refused, and a found axe (the sibling weapon-access admission) constructs carrying the
+#   blackpowder bar among his contracts.  REVIEWED still requires manual semantic review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the bar is a construction rule (no die), so the probe's
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe); the admission's
+#   construction_tags list is expected to fail without the binding (the tag disappears).
+# Semantic wrinkle (2026-11-18): the sibling weapon-access binding of the same rule
+#   (compiler.weapon-knowledge, authored at ...6cfd1937f29e) is what lets a pistol past the hireling kit
+#   matcher (any weapon.* id is admitted by the training), so the blackpowder refusal is reached at the
+#   categoryProhibitions stage with this binding's own sentence ("blackpowder weapons are forbidden for
+#   <band>/<profile>", BLACKPOWDER_WEAPONS = [weapon.pistol, weapon.duelling-pistol]) instead of the kit
+#   matcher's.  Every Assassin build declares his Poisoner choice (main_poison_id poison.black-lotus),
+#   which the compiler checks before the kit; the profile publishes no poison-application facts, so the
+#   coating on a pistol raises no earlier sentence.  The printed crossbow pistol of his kit is not a
+#   blackpowder weapon and is untouched by the bar.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1a.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Weapons Master): "Although he knows how to use them, an Assassin will
+# never use a blackpowder weapon as such devices are far too conspicuous for someone in his profession."
+# The binding is compiler.no-blackpowder-weapons, refused by the shared categoryProhibitions stage
+# (packages/typescript/domain/eligibility/index.ts) when a hand holds a BLACKPOWDER_WEAPONS id.  The
+# recipient is the printed Imperial Assassin (hirelings.hired-sword.1a /
+# hireling.hired-sword.imperial-assassin) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8
+# stays).  The admission mirrors the sibling file's found axe: the construction-only shape (no charge,
+# the bearer out of action before the first phase) and the sorted construction_tags of his four
+# contracts (Poisoner, the catalogue-wide fixed-equipment clause, this bar and the training).
+
+# A pistol in the main hand: refused by the bar.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/no-blackpowder
+  id: a-pistol-in-the-assassins-main-hand-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.pistol
+      main_poison_id: poison.black-lotus
+  expect_error: "blackpowder weapons are forbidden for hirelings.hired-sword.1a/hireling.hired-sword.imperial-assassin"
+
+# A duelling pistol in the off hand beside the printed sword: the bar reads every hand.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/no-blackpowder
+  id: a-duelling-pistol-in-the-assassins-off-hand-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.duelling-pistol
+      main_poison_id: poison.black-lotus
+  expect_error: "blackpowder weapons are forbidden for hirelings.hired-sword.1a/hireling.hired-sword.imperial-assassin"
+
+# A found axe (no blackpowder): admitted, with the bar among the compiled contracts.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.imperial-assassin.rule.weapons-master/no-blackpowder
+  id: a-found-axe-is-admitted-with-the-blackpowder-bar-on-the-compiled-build
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1a
+      profile_id: hireling.hired-sword.imperial-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.axe
+      main_poison_id: poison.black-lotus
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.construction_tags: [compiler.assassin-poisoner, compiler.hireling-fixed-equipment, compiler.no-blackpowder-weapons, compiler.weapon-knowledge]

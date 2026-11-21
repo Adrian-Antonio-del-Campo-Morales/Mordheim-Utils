@@ -1,0 +1,98 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.ye-give-way-victorious
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (2026-11-18): the supplied victory turns the Fallen Noble's
+#   4+ into a 3+ in melee and raises the fixture's Strength 3 to 4, the control without the condition
+#   misses on the same 3 and keeps Strength 3, and a recipient outside the printed Fallen Noble is
+#   refused with the compiler's own sentence.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.ye-give-way-victorious):
+#   "A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1
+#   Strength until the end of the game, non-cumulative. Supplied prior result; no challenge or group
+#   combat is simulated."  The Strength half rides the row's sibling effect
+#   (profile.characteristics, bonuses: {strength: 1}); the hit half is read on the bearer's own
+#   melee attacks (packages/python/combat-engine/mordheim_combat/modular/contexts.py).
+# AUTHORED: the condition is a supplied prior result declared through condition_ids; the printed
+#   recipient is the Fallen Noble himself, so the compiler's supplied-condition gate
+#   (packages/python/roster-construction/mordheim_construction/compiler.py, compile_fighter) only
+#   admits band mazzalupo-web / profile fallen-noble, and the bearer below is the band's real
+#   profile carrying fixture characteristics.  Non-cumulative: the condition is a presence fact read
+#   once per attack and once per compile; no authored model declares the same condition twice, so
+#   cumulativity is not declarable from this corpus, and the boundary pair (a 3 hits with it, the
+#   same 3 misses without it; Strength 4 against 3) bounds both halves at exactly one.
+
+# --- Authored scenarios ---
+# Fixture arithmetic: WS3 against WS3 hits on 4+, so the printed +1 makes a 3 hit; the fixture's
+# Strength 3 reads back as 4, and that Strength reaches the wound roll (S4 against T3 wounds on 3+,
+# where S3 would have needed a 4).  The opponent is a hand-built fixture whose own swing is a
+# scripted miss, and W2 on both sides keeps every blow short of an injury roll.
+
+# The victory boundary: the supplied condition turns the Fallen Noble's 4+ into a 3+, his compiled
+# Strength is the fixture's 3 plus the printed 1, and that Strength wounds Toughness 3 on the 3.
+- audit_id: mechanic/condition.ye-give-way-victorious
+  id: the-victorious-fallen-noble-hits-on-a-three-and-reads-strength-four
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: fallen-noble
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-victorious]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical Fallen Noble without the supplied victory misses on the same 3 and his
+# Strength stays the fixture's 3, so both grants above are attributable to the condition.
+- audit_id: mechanic/condition.ye-give-way-victorious
+  id: without-the-supplied-victory-the-same-three-misses-and-strength-stays-three
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: fallen-noble
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.strength: 3}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed recipient is the Fallen Noble who won his challenge: a Hero outside that profile is
+# refused the supplied victory by the compiler's own supplied-condition gate.
+- audit_id: mechanic/condition.ye-give-way-victorious
+  id: a-recipient-outside-the-fallen-noble-profile-is-refused
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.ye-give-way-victorious]
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "Ye Give Way victory requires a Fallen Noble recipient"

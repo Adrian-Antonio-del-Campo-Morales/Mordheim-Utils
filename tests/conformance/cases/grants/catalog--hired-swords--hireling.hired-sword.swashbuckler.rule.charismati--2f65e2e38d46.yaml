@@ -1,0 +1,135 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, hatred-frenzy-and-charge-rages batch,
+#   2026-11-18): a woman charging the printed Swashbuckler fails the Leadership gate (the charge is
+#   lost), the same gate passed (the charge proceeds), a man charging him owes no gate, the Bard control
+#   charged by the same woman with no gate, and the refusal outside the printed profile.  REVIEWED still
+#   requires manual semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the Swashbuckler's profile prints no sex in its combat_traits; the
+#   printed text of the rule he "uses" (Channel Rats Fugitives: "Heartless seducers oozing machismo. A
+#   romantic rogue to the last, any model from the opposite sex ... must make a Leadership test if they
+#   wish to charge") describes a man, so the scenarios supply `trait_overrides: {sex: male}` on the real
+#   profile as a stated fact; the engine refuses the setup when either duelist's sex is missing, so the
+#   fact is never assumed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Swashbuckler compiled through
+# the hireling route (hirelings.hired-sword.2a / hireling.hired-sword.swashbuckler) with the fixture
+# facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and his kit dagger in hand (the kit's rapier would
+# add a parry request to any hit he takes; the duelling pistol would fire in close combat; the light
+# armour stays owned, not worn).  His printed Charismatic is granted by the profile itself, so the build
+# selects nothing; Acrobatic and Nimble are out of scope.  The charging opponent is hand-built (WS3 S3
+# T3 W3 I2 A1 Ld7, mace) and declares its sex.  The gate is a 2D6 Leadership test keyed
+# `round.0.first.charismatic-charge.{0,1}` taken before contact: 5+4 fails Ld7 and the voluntary charge
+# is cancelled (no combat dice, the duel ends disengaged); 3+3 passes and the charge resolves as
+# ordinary close combat with natural-1 strikes.  The control is the grade-1b Bard compiled through the
+# same route with the same stated sex; the refusal selects the printed rule on that control.
+
+# A woman charges the Swashbuckler and fails the gate: the charge is lost before any blow.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+  id: a-woman-charging-the-swashbuckler-who-fails-the-leadership-gate-cannot-close
+  fighters:
+    first:
+      &woman-charger
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: female}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &swashbuckler
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.swashbuckler
+      main_weapon_id: weapon.dagger
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.charismatic-charge.0, value: 5}
+    - {key: round.0.first.charismatic-charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The same gate passed: the charge proceeds into ordinary close combat.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+  id: a-woman-charging-the-swashbuckler-who-passes-the-leadership-gate-closes-and-fights
+  fighters:
+    first:
+      <<: *woman-charger
+    second:
+      <<: *swashbuckler
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.charismatic-charge.0, value: 3}
+    - {key: round.0.first.charismatic-charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A man charging the Swashbuckler is not of the opposite sex: no gate die exists.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+  id: a-man-charging-the-swashbuckler-owes-no-gate
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      <<: *swashbuckler
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, stated male) is charged by the same woman: no gate is requested of her.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+  id: a-woman-charging-a-hireling-without-the-rule-owes-no-gate
+  fighters:
+    first:
+      <<: *woman-charger
+    second:
+      &swashbuckler-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.swashbuckler.rule.charismatic/mechanic.opposite-sex-charge-test
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *woman-charger
+    second:
+      <<: *swashbuckler-control
+      special_rule_ids: [hireling.hired-sword.swashbuckler.rule.charismatic]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

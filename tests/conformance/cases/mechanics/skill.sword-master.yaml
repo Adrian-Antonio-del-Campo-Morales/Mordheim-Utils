@@ -1,0 +1,481 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.sword-master
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: PARTIAL -> AUTHORED.  Ruling of 2026-11-18 (split the Sword Master
+#   binding): the shared skill.sword-master is equality plus one failed-parry reroll, which is all that
+#   its printed recipients share (the Blood Dragon Vampire and the Bretonnian Knight's Feat; the Dwarf
+#   Master of Blades no longer binds it).  The clause match-parry-and-parry-a-six was split into
+#   match-parry (YES) and parry-a-six (NO); the natural-six face is carried by the Blood Dragon's own
+#   mechanic.blood-dragon-sword-master, so the gap that held this file at PARTIAL is gone and the D1-A
+#   remit (dec-d1-sword-master-parry-gate) is superseded.
+# authoring_progress: the reroll clause carries authored scenarios for the recovered parry, the failed
+# reroll that is not rolled again, the plain parry offered no reroll, and the one-attempt cap with two
+# parrying weapons; the equality clause carries an equal die that blocks and its boundary without the
+# skill.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: match-parry (scope: YES)
+# AUTHORED[match-parry]: 4 scenarios: an equal parry die blocks an attack that a plain parry would let
+#   through (with a buckler and with a single sword), and the same equal die fails without the skill.
+#
+# Clause: one-reroll-only (scope: YES)
+# AUTHORED[one-reroll-only]: 3 scenarios cover a failed parry recovered by the single reroll, the same failure with a reroll that also fails and no second reroll die in the tape, and the plain parry without the skill, which is offered no reroll at all.
+#
+# Clause: parry-a-six (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#   The printed "may therefore parry a roll of 6" is carried by mechanic.blood-dragon-sword-master
+#   (tests/conformance/cases/mechanics/mechanic.blood-dragon-sword-master.yaml), not by this skill:
+#   a skill.sword-master bearer without that mechanic cannot parry a natural six.
+
+# --- Authored scenarios ---
+# mechanic/skill.sword-master — every expectation below comes from the printed
+# rule (the Vampire only needs to equal the opponent's roll; it may re-roll one
+# failed parry but not the re-roll, and may not parry more than one attack) and
+# the recorded contract, never from engine output.  The defender parries with a
+# buckler so the parry window exists; equality and the single reroll are then
+# read off the declared tape.
+- audit_id: mechanic/skill.sword-master
+  id: an-equal-parry-die-blocks-the-attack
+  covers: [match-parry]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary of the printed equality: the same die against the same parry
+# window without the skill does not block, so the attack is resolved.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-an-equal-parry-die-does-not-block
+  covers: [match-parry]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed single reroll recovers a failed attempt: the first parry die is
+# below the hit and the reroll meets the printed equality, so the hit is blocked.
+- audit_id: mechanic/skill.sword-master
+  id: the-single-reroll-recovers-a-failed-parry
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed refusal to re-roll the re-roll: the recovery die also fails and no
+# further parry die appears in the tape, so the wound is resolved.
+- audit_id: mechanic/skill.sword-master
+  id: a-failed-reroll-is-not-rolled-again
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: a plain parry that fails is offered no recovery die at all.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-a-failed-parry-is-not-rerolled
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.sword-master
+  id: two-parrying-weapons-still-give-one-attempt
+  covers:
+  - one-reroll-only
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 2
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.sword-master
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.1.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 5
+  - key: round.0.first.attack.1.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 1
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      attacks.1.parried: false
+      attacks.1.damage: 1
+      state.second.parries_remaining: 0
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from an-equal-parry-die-blocks-the-attack: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.sword-master
+  id: an-equal-parry-die-blocks-the-attack-when-the-defender-does-not-strike-back
+  covers:
+  - match-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.sword-master
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      state.second.parries_remaining: 0
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from without-the-skill-an-equal-parry-die-does-not-block: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-an-equal-parry-die-does-not-block-when-the-defender-does-not-strike-back
+  covers:
+  - match-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.parry
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.parries_remaining: 0
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from the-single-reroll-recovers-a-failed-parry: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.sword-master
+  id: the-single-reroll-recovers-a-failed-parry-when-the-defender-does-not-strike-back
+  covers:
+  - one-reroll-only
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.sword-master
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 5
+  - key: round.0.first.attack.0.parry
+    value: 4
+  - key: round.0.first.attack.0.parry.reroll
+    value: 5
+  expect_rounds:
+    0:
+      attacks.0.parried: true
+      state.second.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from a-failed-reroll-is-not-rolled-again: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.sword-master
+  id: a-failed-reroll-is-not-rolled-again-when-the-defender-does-not-strike-back
+  covers:
+  - one-reroll-only
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.sword-master
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 5
+  - key: round.0.first.attack.0.parry
+    value: 4
+  - key: round.0.first.attack.0.parry.reroll
+    value: 1
+  - key: round.0.first.attack.0.wound
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sword-master/skill.sword-master (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).  Renamed from without-the-skill-a-failed-parry-is-not-rerolled: this file already holds a
+# scenario of that name with different inputs.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-a-failed-parry-is-not-rerolled-when-the-defender-does-not-strike-back
+  covers:
+  - one-reroll-only
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.sword
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  initial_state:
+    second:
+      attacks: 0
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 5
+  - key: round.0.first.attack.0.parry
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.parried: false
+      attacks.0.damage: 1
+      state.second.wounds: 1
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

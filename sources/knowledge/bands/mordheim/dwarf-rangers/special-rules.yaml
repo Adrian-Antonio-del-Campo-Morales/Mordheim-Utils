@@ -13,9 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Dwarf Runesmith may use his Leadership instead of
-    their own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -23,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Herrumorco enano pueden usar su Liderazgo en lugar
-      del suyo propio.
   applies_to:
     profile_ids:
     - runesmith
+  rule_ref: shared-rule.leader
 - id: runesmith--inscribe-runes
   runtime:
     scope: 'NO'
@@ -39,9 +33,7 @@ rules:
     - id: unimplemented.dwarf-rangers.runesmith.inscribe-runes
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.construction
   name: Inscribe Runes
   effect: >-
     A Runesmith knows one minor rune (see list at the end of this warband list ), determined
@@ -78,8 +70,7 @@ rules:
     - id: unimplemented.dwarf-rangers.apprentice-runesmith.extra-set-of-hands
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Extra Set of Hands
   effect: >-
     An Apprentice Runesmith helps his master fashion runic items, doing all the boring grunge-work
@@ -112,6 +103,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: all-alone
+        scope: 'NO'
   name: Deathwish
   source:
     manual: mordheimer.net
@@ -164,15 +160,17 @@ rules:
     - dwarf-longbeards
 - id: band--dont-trust-em
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-rangers.band.dont-trust-em
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: out-of-scope.group
+      clauses:
+      - id: dont-trust-em
+        scope: 'NO'
   name: Don’t Trust ‘Em
   effect: >-
     In multiplayer games, Dwarf Rangers may ally with other Dwarf warbands, but models from the two
@@ -239,7 +237,7 @@ rules:
     es: Cabeza Dura
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
+  rule_ref: shared-rule.dwarf-hard-head
 - id: band--armour
   runtime:
     scope: 'NO'
@@ -249,9 +247,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.armour
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.movement
   name: Armour
   source:
     manual: mordheimer.net
@@ -262,7 +258,7 @@ rules:
     es: Armadura
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
+  rule_ref: shared-rule.dwarf-armour
 - id: band--hate-orcs-and-goblins
   runtime:
     scope: 'YES'
@@ -294,8 +290,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.construction
   name: Grudgebearers
   source:
     manual: mordheimer.net
@@ -316,8 +311,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Incomparable Miners
   source:
     manual: mordheimer.net
@@ -401,9 +395,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.dwarf-special-skills-extra-tough
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: out-of-scope.campaign
   name: Extra Tough
   source:
     manual: mordheimer.net
@@ -425,8 +417,7 @@ rules:
     - id: unimplemented.dwarf-rangers.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Resource Hunter
   source:
     manual: mordheimer.net
@@ -497,9 +488,6 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his attacks on the turn in which he charges. He will suffer a –1 to hit
-    penalty on that turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -507,14 +495,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Carga Feroz
-  effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus ataques en el turno en que carga. Sufrirá una penalización de
-      -1 para impactar en ese turno.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
     band: true
+  rule_ref: shared-rule.ferocious-charge
 - id: band--slayer-special-skills-monster-slayer
   eligibility:
   - dwarf-troll-slayers
@@ -530,9 +515,6 @@ rules:
         kind: mechanic
         id: skill.monster-slayer
   name: Monster Slayer
-  effect: >-
-    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
-    strength (with weapon modifiers) would mean that a lower roll than this is needed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -540,13 +522,9 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Matamostro
-  effect_i18n:
-    es: >-
-      El Matatrolles siempre hiere a cualquier oponente con un resultado de 4+, sin importar la
-      Resistencia, a menos que su propia Fuerza (con los modificadores del arma) signifique que se
-      necesita un resultado menor.
   applies_to:
     band: true
+  rule_ref: shared-rule.monster-slayer
 - id: band--slayer-special-skills-berserker
   eligibility:
   - dwarf-troll-slayers
@@ -562,7 +540,6 @@ rules:
         kind: mechanic
         id: skill.berserker
   name: Berserker
-  effect: The Slayer may add +1 to his to hit rolls during the turn in which he charges.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -570,14 +547,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Berserker
-  effect_i18n:
-    es: El Matatrolles puede añadir +1 a sus tiradas para impactar durante el turno en que carga.
   applies_to:
     band: true
+  rule_ref: shared-rule.berserker
 - id: dwarf-troll-slayers--no-armour
   name: No Armour
-  effect: >-
-    Dwarf Troll Slayers may never wear any form of armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -585,9 +559,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Sin Armadura
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -602,11 +573,11 @@ rules:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: armour
+          forbids:
+          - armour
+  rule_ref: shared-rule.no-armour
 - id: dwarf-troll-slayers--no-missile-weapons
   name: No Missile Weapons
-  effect: >-
-    Troll Slayers may never use missile weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -614,9 +585,6 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Sin Armas de Proyectil
-  effect_i18n:
-    es: >-
-      Los Matatrolles Enanos jamás pueden usar armas de proyectil.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -630,3 +598,4 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+  rule_ref: shared-rule.no-missile-weapons

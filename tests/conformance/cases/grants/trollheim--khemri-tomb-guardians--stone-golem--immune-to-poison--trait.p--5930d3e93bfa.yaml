@@ -1,0 +1,56 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--immune-to-poison/trait.poison-immune
+# authoring_status: AUTHORED
+# authoring_progress: the admitted immune-to-poison clause carries one authored scenario derived
+# from the printed rule and the printed profile.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 1 scenario shows the printed poison immunity against the one duel-time
+# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
+# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
+# bearer's recorded initiative_penalty stays 0.  The bearer is the khemri-tomb-guardians/stone-golem profile
+# that prints the rule, and the tape declares the bearer's own printed defence failing,
+# so the wound is then taken as any wound would be.
+# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
+# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
+# so no second scenario is required.
+
+# The printed profile prints a 4+ natural armour save, so the tape declares that armour face failing before the wound is taken.
+# REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule for this bearer and the admitted clause; no engine
+# output was consulted.  Nightshade is the one admitted poison whose consequence is a
+# state change on the warrior it wounds, so it is the rider the immunity must suppress:
+# the coated mace wounds the bearer as any mace would, and the poisoned-wound
+# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
+# Initiative 10 are hand-built fixture facts, not profile values, and its higher
+# Initiative with no charge declared lets it strike first, so the bearer declares no
+# attack of its own and the tape holds only the attacker's hit and wound dice.
+- audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--immune-to-poison/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

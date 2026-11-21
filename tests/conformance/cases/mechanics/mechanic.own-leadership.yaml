@@ -1,0 +1,117 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.own-leadership
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (supplied-leader family model, 2026-11-18): the bearer
+#   (the printed Hobgoblin Scout, the mechanic's one canonical carrier) beside a valid supplied
+#   same-package leader is offered no borrow decision at all, while the same supplied leader
+#   offers the decision to a package comrade without the flag.  Injection route note: this
+#   mechanic cannot be injected - a hand-built fighter carries no band.* tag, so the supplied-
+#   leader block never offers it a provider (modular/leadership.py, the band-tag gate in
+#   _supplied_provider), and skill_ids on a real profile is refused by the skill-availability gate
+#   ("skills are not available to <band>/<profile>", the clan-moulder refusal precedent in this
+#   corpus), so the real carrier profile is used.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the supplied-leader family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# The canonical print (Border Town Burning, Hobgoblin Scout / Loner): "The Scout may never use the
+# warband leader's Leadership for any tests."  Consumer: modular/leadership.py, where the tag
+# mechanic.own-leadership on the tested fighter excludes the whole supplied-leader borrow block,
+# so no leader decision is ever offered.  The supplied warband leader is a same-package comrade
+# (the grade-1c Ninja, printed Ld8, whose own rules are all outside the duel) carrying the
+# supplied chosen-leader fact condition.current-warband-leader, the hireling-package comrade
+# pattern of the authored knight-of-the-white-wolf pride file.  The borrower is charged by a
+# hand-built fear-causer, so the test under evidence is the charged Fear test: 4+4 = 8 fails the
+# Scout's own printed Ld6 (and would pass the supplied Ld8), and the printed consequence of the
+# standing failure is explicit in state.second.fear_hit_sixes.  Every declared attack die is a
+# natural 1, a miss; the Scout's omitted main weapon is his kit dagger.
+
+# The bearer: no borrow decision is offered at all beside a valid supplied leader - the strict
+# decision tape itself proves it - so the failed test stands on his own Leadership.
+- audit_id: mechanic/mechanic.own-leadership
+  id: the-flag-excludes-the-bearer-from-the-supplied-leader-borrow
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: &ownld-fear-causer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      # The printed carrier of mechanic.own-leadership (Loner, grant: profile); his
+      # printed Leadership 6 stays under the fixture facts.
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.hobgoblin-scout
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: &ownld-leader
+          # A same-package comrade supplied as the chosen warband leader; the
+          # condition compiles the ordinary six-inch leader supply and his
+          # printed Leadership 8 is the value the flag forbids borrowing.
+          collection: mordheim
+          band_id: hirelings.hired-sword.1c
+          profile_id: hireling.hired-sword.ninja
+          condition_ids: [condition.current-warband-leader]
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast without the flag: the same supplied leader at the same distance offers the borrow
+# decision to a package comrade without Loner (the grade-1c Grave Robber, printed Ld6), and the
+# same dice pass with the borrowed Ld8.
+- audit_id: mechanic/mechanic.own-leadership
+  id: without-the-flag-the-same-supplied-leader-is-offered
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *ownld-fear-causer
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.grave-robber
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter: *ownld-leader
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

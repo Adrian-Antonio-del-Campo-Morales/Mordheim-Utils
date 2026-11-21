@@ -1,0 +1,136 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+# authoring_status: AUTHORED
+# authoring_progress: the admitted psychology-immunity clause carries 2 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Note (2026-11-16): this band rule is the single source of its effect for every Undead profile of the
+#   band. Each profile's printed 'Undead' rule ("follows all the rules for the Undead") now defers to
+#   the band rules (covered.elsewhere) instead of re-granting them through mechanic.undead, and the
+#   scenarios that exercised this effect on each profile were moved here (ids suffixed with the profile;
+#   exact duplicates dropped).
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# De-duplication note (2026-11-16): the duplicate KB source recorded here earlier has been removed, so
+#   this rule is now the single source and its scenarios fail when its binding is removed (rule-removal
+#   probe).  Earlier note, kept for history: every profile this band rule reaches (skeleton-warriors, nehekharan-vultures, necromantic-abomination) also carries its own <profile>--undead rule in sources/knowledge/bands/trollheim/khemri-necromancers/special-rules.ya...
+#
+# AUTHORED: the bearer skeleton-warriors is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   2 scenario(s) cover the clause: the Stupid bearer resolves no Stupidity test at all: its declared Lead test never happens, so the tape holds only its own attack; the same Stupid state does request the two-dice test for necromancer, which does not carry the rule, and the failed test takes its attack away.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: the-immune-warrior-takes-no-stupidity-test
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: a-band-mate-without-the-immunity-is-tested-for-stupidity
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromancer}
+  initial_state: {first: {attacks: 0}, second: {resources_spent: [disability.6]}}
+  duel_context: {charging: [], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 6}
+    - {key: round.0.second.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 1, state.second.stupidity_failed: true, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: the-immune-bearer-is-not-tested-when-it-charges-a-fear-causer--necromantic-abomination
+  fighters:
+    first: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: a-non-immune-warrior-is-tested-in-the-same-setup--necromantic-abomination
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 5}
+    - {key: round.0.first.fear.charge.1, value: 4}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: the-immune-bearer-is-not-tested-when-it-charges-a-fear-causer--nehekharan-vultures
+  fighters:
+    first: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--immune-to-psychology/mechanic.psychology-immunity
+  id: the-immune-bearer-is-not-tested-when-it-charges-a-fear-causer--skeleton-warriors
+  fighters:
+    first: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

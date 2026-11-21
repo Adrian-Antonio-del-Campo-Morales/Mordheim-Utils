@@ -2,6 +2,7 @@ import ts from "typescript";
 import { relative } from "node:path";
 
 const rawFields = /^(?:id|\w+_id|tags?|names?|name_i18n|description|effect|text|label|result|notes?|message|profile_name|applied_label|roll_history)$/;
+const userFields = /^(?:name|campaign_name|warband_name|notes?|reason)$/;
 const brand = /__(?:@)?(?:uiTextBrand|formattedTextBrand|enumTextBrand|resolvedTextBrand|catalogueTextBrand)\b/;
 // These nodes reshape the type of a value, never its runtime content. Tracing
 // them is required (a cast must not launder raw text) but charging them the work
@@ -65,7 +66,10 @@ export function createPresentationFlowAudit(program, root, { maxSteps = 250, max
     const safe = (type) => type.isUnion() ? type.types.every(safe) : checker.getPropertiesOfType(type).some((prop) => brand.test(prop.name));
     return safe(checker.getTypeAtLocation(node));
   };
-  return (start) => {
+  // `userAuthored`: the sink is an editable control. The warrior's or
+  // campaign's own name and the user's notes are what the user typed; seeding
+  // the control with them is the edit itself, not system text.
+  return (start, { userAuthored = false } = {}) => {
     const origins = new Map();
     let budget = maxSteps, truncated = false;
     const incomplete = [];
@@ -102,7 +106,7 @@ export function createPresentationFlowAudit(program, root, { maxSteps = 250, max
           if (ts.isBindingElement(declaration)) {
             const owner = declaration.parent.parent;
             const field = declaration.propertyName?.getText() ?? declaration.name.getText();
-            if (rawFields.test(field) && ts.isObjectBindingPattern(declaration.parent)) origins.set(JSON.stringify(location(declaration)), { ...location(declaration), path: step });
+            if (rawFields.test(field) && !(userAuthored && userFields.test(field)) && ts.isObjectBindingPattern(declaration.parent)) origins.set(JSON.stringify(location(declaration)), { ...location(declaration), path: step });
             if (ts.isVariableDeclaration(owner)) walk(owner.initializer, bindings, next, step);
           }
         }
@@ -111,7 +115,7 @@ export function createPresentationFlowAudit(program, root, { maxSteps = 250, max
       if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) {
         const field = ts.isPropertyAccessExpression(node) ? node.name.text : node.argumentExpression && ts.isStringLiteral(node.argumentExpression) ? node.argumentExpression.text : "";
         const type = checker.getTypeAtLocation(node);
-        if (rawFields.test(field) && !(type.flags & (ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike))) origins.set(JSON.stringify(location(node)), { ...location(node), path: step });
+        if (rawFields.test(field) && !(userAuthored && userFields.test(field)) && !(type.flags & (ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike))) origins.set(JSON.stringify(location(node)), { ...location(node), path: step });
         for (const value of writes.get(symbol(node)) ?? []) walk(value, bindings, next, step);
         const owner = node.expression;
         for (const entry of collectionWrites.get(ownerSymbol(owner)) ?? []) if (entry.field === null || entry.field === field) walk(entry.value, bindings, next, step);
@@ -121,6 +125,19 @@ export function createPresentationFlowAudit(program, root, { maxSteps = 250, max
         return;
       }
       if (ts.isCallExpression(node)) {
+        // Comparator/predicate arguments select or order values; they never
+        // carry text to the sink. Reading `a.name` inside a sort comparator or
+        // `row.id === wanted` inside a find predicate is not a rendered origin,
+        // so only the receiver chain is traced. A rendered raw field is still
+        // reported at its own read site when the sink's slice reaches it.
+        if (ts.isPropertyAccessExpression(node.expression)
+            && ["sort", "toSorted", "filter", "find", "findIndex", "findLast", "findLastIndex", "some", "every", "includes", "indexOf", "lastIndexOf", "has", "startsWith", "endsWith"].includes(node.expression.name.text)) {
+          walk(node.expression.expression, bindings, next, step);
+          return;
+        }
+        // `localeCompare` yields a number; neither its receiver nor its
+        // argument is rendered through it.
+        if (ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === "localeCompare") return;
         if (ts.isIdentifier(node.expression)) for (const declaration of symbol(node.expression)?.declarations ?? []) {
           const bound = ts.isVariableDeclaration(declaration) && declaration.initializer;
           if (bound && ts.isCallExpression(bound) && ts.isPropertyAccessExpression(bound.expression) && bound.expression.name.text === "bind") {
@@ -157,6 +174,18 @@ export function createPresentationFlowAudit(program, root, { maxSteps = 250, max
       if (ts.isConditionalExpression(node)) { walk(node.whenTrue, bindings, next, step); walk(node.whenFalse, bindings, next, step); return; }
       if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) { walk(node.body, bindings, next, step); return; }
       if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node) || ts.isJsxFragment(node)) return;
+      // An object literal carries its property *values*; a computed key
+      // (`{ ...targets, [id]: value }`) addresses the slot and is never part
+      // of the value read back from it.
+      if (ts.isObjectLiteralExpression(node)) {
+        for (const member of node.properties) {
+          if (ts.isPropertyAssignment(member)) walk(member.initializer, bindings, next, step);
+          else if (ts.isShorthandPropertyAssignment(member)) walk(member.name, bindings, next, step);
+          else if (ts.isSpreadAssignment(member)) walk(member.expression, bindings, next, step);
+          else ts.forEachChild(member, (child) => walk(child, bindings, next, step));
+        }
+        return;
+      }
       ts.forEachChild(node, (child) => walk(child, bindings, next, step));
     };
     walk(start);

@@ -1,0 +1,121 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# authoring_status: AUTHORED
+# Status corrected 2026-11-18: the blocker ("this revision records no executable armour id") is stale.
+#   armour.chaos-armour is an executable catalogue id (sources/knowledge/catalog/mechanics/
+#   close-combat.yaml, base_save 4) already worn through armour_id in
+#   tests/conformance/cases/mechanics/armour.chaos-armour.yaml, and the bound stage emits the
+#   contract-specific refusal for a compiler.chaos-engineer build whose equipment contains "chaos"
+#   before the generic availability check.  The withheld negative half is therefore authored below and
+#   the clause is promoted.
+# authoring_progress: the admitted armour-restriction clause now carries both halves: the positive
+# scenario (the selectable band skill compiles for its printed recipient and the duel runs) and the
+# printed ban itself (a Sorcerer with the skill wearing armour.chaos-armour is refused by the
+# skill's own diagnostic, while the same build without the skill is refused by the band list instead,
+# so the ban - not the list - explains the first refusal).
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Discrimination note (2026-11-16, reviewed): not a duplication of one printed fact, so the KB is kept
+#   and no single-source change applies.  The skill's only in-scope effect is "may never wear the Chaos
+#   Armours".  armour.chaos-armour (sources/knowledge/catalog/mechanics/close-combat.yaml) is on no
+#   Black Dwarfs equipment list (sources/knowledge/bands/mordheim/black-dwarfs/equipment-access.yaml
+#   lists only the out-of-scope mechanical_suit / engine_of_chaos), so construction refuses it for every
+#   profile with or without the skill ("equipment is not available to black-dwarfs/bull-centaur:
+#   ['armour.chaos-armour']").  That omission is a separate printed fact, the list's contents, not a
+#   restatement of the ban.  Marking the ban covered.elsewhere would leave this selectable skill with no
+#   bound effect at all.  The compiled tag compiler.chaos-engineer has no duel consumer.  The prose
+#   below saying "this revision records no executable armour id" is out of date: the id exists, but no
+#   recipient may carry it.
+#
+# Clause: whole--scope--armour-restriction (scope: YES)
+# AUTHORED[whole--scope--armour-restriction]: both halves are authored (negative half added
+#   2026-11-18).  The printed selection is observable: the band rule
+#   band--chaos-dwarf-special-skills-chaos-engineer is a selectable warband skill whose binding is
+#   compiler.chaos-engineer, so a Knight of the band that selects it compiles and the duel runs, and
+#   the accepted construction test asserts the compiled tag itself
+#   (tests/python/construction/test_selectable_bindings.py::
+#   test_chaos_engineer_is_an_explicit_positive_only_duel_contract, whose own note records that
+#   "Chaos Armour and rarity rolls are outside the 1v1 catalogue" and that there is "no legal
+#   in-scope forbidden item from which to manufacture a meaningful negative duel fixture").  The
+#   refusal half is now authored: the contract-specific "Chaos armour is forbidden for <who>" answers
+#   for a compiler.chaos-engineer build whose equipment contains "chaos", and armour.chaos-armour is
+#   an executable armour id (close-combat.yaml, base_save 4) that the duel fixtures already wear.
+#   The control without the skill falls through to the band list's own refusal instead, which is the
+#   separate printed fact named in the Discrimination note, so the pair attributes the first refusal
+#   to the printed ban.  The excluded campaign clauses are retained as context.
+#
+# Clause: search-and-rarity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# Clause: whole--scope--rarity-and-gift (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# admitted half is the selection of the band's own special skill, which the recorded binding turns
+# into the compiler contract.
+
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+  id: the-selected-chaos-engineer-skill-compiles-and-the-duel-runs
+  covers:
+  - whole--scope--armour-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      special_rule_ids:
+      - band--chaos-dwarf-special-skills-chaos-engineer
+    second:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# The printed ban "may never wear the Chaos Armours" (negative half, 2026-11-18).  The same Sorcerer
+# that selects the skill above is given armour.chaos-armour, the catalogue's executable Chaos Armour
+# id, and the construction is refused by the skill's own contract diagnostic.
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+  id: a-chaos-engineer-may-never-wear-the-chaos-armours
+  covers:
+  - whole--scope--armour-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      special_rule_ids:
+      - band--chaos-dwarf-special-skills-chaos-engineer
+      armour_id: armour.chaos-armour
+  expect_error: "Chaos armour is forbidden for black-dwarfs/sorcerer"
+
+# The contrast: without the skill the very same armour is refused by a different printed fact, the
+# band's equipment list, which is why the diagnostic above is attributable to the ban and not to the
+# list.
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+  id: without-the-skill-the-same-armour-is-refused-by-the-band-list
+  covers:
+  - whole--scope--armour-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      armour_id: armour.chaos-armour
+  expect_error: "equipment is not available to black-dwarfs/sorcerer: ['armour.chaos-armour']"

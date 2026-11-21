@@ -489,9 +489,11 @@ def _parry_flags(me: CompiledFighter) -> dict:
     sword_and_buckler = bool(
         sword and (has(g, "defence.buckler") or bool(off and has(off, "defence.buckler")))
     )
+    # Mirrors modular/contexts.py::_parry_context.
+    dwarf_axe_variant = has(g, "rule.dwarf-axe-parry-reroll")
     sword_master_reroll = bool(
-        has(g, "skill.sword-master")
-        and (not has(g, "rule.dwarf-axe-parry-reroll") or dwarf_axes)
+        (has(g, "skill.sword-master") and not dwarf_axe_variant)
+        or (dwarf_axe_variant and dwarf_axes)
     )
     return {
         "parry": parry,
@@ -705,7 +707,9 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
             and has(foe.global_effects, "species.skink")
         ),
         "lightning_reflexes": has(g, "skill.lightning-reflexes"),
-        "always_strikes_first": has(g, "skill.always-strikes-first"),
+        # Read only by the stood-up check, so it carries the printed standing-up
+        # exemption (Lahmia Lost Innocence), not Always Strikes First in general.
+        "always_strikes_first": has(g, "rule.strike-first-when-standing-up"),
         "strongman": bool(g.strongman and (main.two_handed or has(main, "weapon.broadsword")) and main.priority < 0),
         "long_boat_hook": has(main, "weapon.long-boat-hook"),
         "trident": has(main, "weapon.trident"),

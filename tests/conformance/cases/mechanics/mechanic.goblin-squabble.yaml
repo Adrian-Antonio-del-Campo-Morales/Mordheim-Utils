@@ -1,0 +1,126 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.goblin-squabble
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (psy-tests-and-enemy-effects batch, 2026-11-18): the
+#   D6 at the start of the bearer's own turn, a 1 squabbles (no attack that turn, the enemy still
+#   strikes), a 2 is the boundary and the goblin fights normally, the die belongs to the bearer's
+#   own turn only (none in the enemy's turn, one in the next), and the same build without the
+#   mechanic is asked no animosity die.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# Clause: animosity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: the identity's admitted effect is the bearer's individual duel consequence of the
+#   printed Animosity (shared-rule.night-goblin-animosity: "At the beginning of each Night Goblin
+#   turn roll a D6. On a roll of 1 they start to squabble and will do nothing else for the rest of
+#   the turn"); the excluded `animosity` clause is the warband-level group behaviour and owes no
+#   scenario here.  Consumer: modular/rounds.py (ANIMOSITY_SOURCES, the own-turn
+#   `round.<i>.<side>.animosity` roll; `animosity_failed` withholds the bearer's attacks for that
+#   round at rounds.py ~1277/1340/1449).  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Hand-built fixtures: the bearer injects the shared mechanic through skill_ids and declares the
+# goblin species (WS3 S3 T3 W2 I5 A1 Ld7); the opponent is the hand-built mace fixture
+# (WS3 S3 T3 W3 I2 A1 Ld7).  The D6 is asked at the start of the bearer's own turn, before any
+# attack; a 1 squabbles and the strict tape then holds no attack die of his, while the enemy's own
+# natural 1 is still requested.  WS3 against WS3 hits on 4+, S3 against T3 wounds on 4+, and an
+# unarmoured mace fixture rolls no save, so a 4/4 pair is exactly one wound.
+
+# A 1 at the start of the goblin's turn: he squabbles, his attack is never requested and the
+# opponent's own strike still happens.
+- audit_id: mechanic/mechanic.goblin-squabble
+  id: a-one-at-the-start-of-the-goblins-turn-makes-him-squabble
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.goblin-squabble]
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: True, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary: a 2 is not a squabble, so the goblin's charge lands normally.
+- audit_id: mechanic/mechanic.goblin-squabble
+  id: a-two-is-the-boundary-and-the-goblin-fights-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.goblin-squabble]
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: False, attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The D6 belongs to the goblin's own turn: charged in the enemy's turn he rolls nothing, and the
+# die is asked at the start of his own turn in the next round, where the 1 squabbles.
+- audit_id: mechanic/mechanic.goblin-squabble
+  id: the-die-is-rolled-only-at-the-start-of-the-goblins-own-turn
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.goblin-squabble]
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.animosity, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: False, state.first.wounds: 2, state.second.wounds: 3}
+    1: {state.first.animosity_failed: True, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The same goblin without the mechanic: no animosity die is asked and the charge lands.
+- audit_id: mechanic/mechanic.goblin-squabble
+  id: without-the-rule-no-animosity-die-is-requested
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: goblin}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.animosity_failed: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

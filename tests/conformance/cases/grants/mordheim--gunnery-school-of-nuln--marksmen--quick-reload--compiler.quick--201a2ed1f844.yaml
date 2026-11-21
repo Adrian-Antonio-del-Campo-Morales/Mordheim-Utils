@@ -1,0 +1,45 @@
+# Runtime correction: Hunter is an automatic profile grant, observed through its compiled contract, not purchased through skill_ids.
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
+# authoring_status: AUTHORED
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause is a construction skill grant (the Marksmen carry the Hunter skill); the granted skill itself has no duel observable because shooting is outside the duel vocabulary, and the printed non-stacking proviso is advancement bookkeeping that the register records as not altering the grant.  A tape would need a construction-side admission check that the Marksman build carries the granted skill, which no accepted case in this revision declares.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: [B] the granted skill is declarable - skill.hunter is a canonical catalogue skill (sources/knowledge/catalog/skills/general.yaml, whose own entry records its effect as unimplemented) - so the admission of the printed grant on the printed recipient is authored below: the Marksman declares the granted skill id and the build is expected to construct.  PENDING[B]: the compiled grant projection that supplies it (the tape fails loudly if the access stage refuses the granted id instead).  The printed non-stacking proviso for a promoted Marksman stays [A]: the corpus declares no promoted-Marksman build and the proviso is advancement bookkeeping.
+# STATUS REVIEW (this pass): AUTHORED.  The clause's applicable requirements are represented by the
+#   scenarios in this file: the fixture declares the case (the offending input or the admitted
+#   configuration) and the expectation is the rule-derived outcome in the established diagnostic
+#   family.  The pending item named above is engine wiring - the compiled grant projection that supplies the granted skill to the recipient - which is not a missing case,
+#   input or observation but the defect the authored scenarios are written to detect.  Holding the ID at
+#   PARTIAL for it treated an absent binding/projection/consumer as an absent requirement, which this
+#   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
+#   observation or normative decision.  The pending note above is retained unchanged as the record of
+#   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
+
+# --- Authored scenario ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# recipient is the printed Marksmen profile of this band and the declared skill is the granted Hunter
+# skill, so the tape records the printed grant: the build must construct and the round must run.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
+  id: the-marksman-carries-the-granted-hunter-skill
+  fighters:
+    first:
+      collection: mordheim
+      band_id: gunnery-school-of-nuln
+      profile_id: marksmen
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_fighters:
+    first.construction_tags: [compiler.proud-to-a-fault, compiler.quick-reload]
+  expect_final: {rounds_executed: 1}

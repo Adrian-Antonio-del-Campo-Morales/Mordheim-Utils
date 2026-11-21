@@ -43,7 +43,7 @@ parallel efficiency instead of the shared conservative fit.
 Coverage and budget (defaults on the reference machine, ~8-10 minutes):
 native sweeps run the full 43-scenario catalogue at 1M samples/fighter; NumPy sweeps
 run the normal catalogue level at a quarter/half of the sizes, because its
-duels cost ~3-5x more. ``--pairs mini`` trades coverage for a ~2 minute run.
+duels cost ~3-5x more. ``--scenarios small`` trades coverage for a ~2 minute run.
 Every candidate is scored by the geometric mean of its per-pair ratio to the
 best candidate, so all duel types weigh the same regardless of absolute cost;
 a candidate within 2% of the best never displaces the reference value, so run
@@ -78,8 +78,6 @@ from mordheim_combat_lab.application.settings import (
     simulate_battery,
     split_battery,
 )
-from mordheim_combat_lab.cli.scenarios import deep_test_scenarios
-from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
 
 #: Batch candidates for the sequential sweep (the engines disagree: native
 #: collapses with large batches, numpy with small ones). The numpy sample size
@@ -125,13 +123,25 @@ def _geomean(values) -> float:
     return statistics.geometric_mean(values)
 
 
-def _pairs(pair_set: str):
-    """Compiled (first, second, maximum_rounds, id) rows for one pair set."""
-    return [
-        (*compile_benchmark_fighters(scenario),
-         scenario.maximum_rounds or 50, scenario.id)
-        for scenario in deep_test_scenarios(pair_set)
-    ]
+def _pairs(scenarios):
+    """``(first, second, maximum_rounds, id, context)`` rows for ``--scenarios``
+    values; a selected case the engines cannot run is printed and skipped."""
+    from mordheim_combat_lab.cli.benchmarking import benchmark_cases
+
+    cases, rejected = benchmark_cases(scenarios, default="big")
+    for key, reason in rejected:
+        print(f"NOT RUN: {key}: {reason}", file=sys.stderr)
+    return [(case.first, case.second, case.maximum_rounds or 50, case.id, case.context)
+            for case in cases]
+
+
+def numpy_sweep_scenarios(scenarios: tuple[str, ...]) -> tuple[str, ...]:
+    """The NumPy sweep's selection: ``big`` is narrowed to ``normal``.
+
+    A NumPy duel costs ~3-5x a native one, so sweeping every scenario would
+    blow the time budget; any other selection is swept as given.
+    """
+    return ("normal",) if tuple(scenarios) == ("big",) else tuple(scenarios)
 
 
 def _scores(table: dict) -> dict:
@@ -164,10 +174,11 @@ def _winner(scores: dict, reference):
 
 def _sequential_walls(pairs, backend, samples, batch, seed):
     walls = []
-    for first, second, rounds, _identifier in pairs:
+    for first, second, rounds, _identifier, *context in pairs:
         settings = DuelExecutionSettings(samples, seed, batch, rounds)
         started = time.perf_counter()
-        simulate_duel(settings.request(first, second), backend=backend)
+        simulate_duel(settings.request(first, second, context=(context or [None])[0]),
+                      backend=backend)
         walls.append(time.perf_counter() - started)
     return walls
 
@@ -179,11 +190,12 @@ def _pooled_walls(pairs, backend, samples, batch, workers, seed):
     walls = []
     try:
         warm_executor(executor, segments)
-        for first, second, rounds, _identifier in pairs:
+        for first, second, rounds, _identifier, *context in pairs:
             settings = DuelExecutionSettings(samples, seed, batch, rounds)
             started = time.perf_counter()
             simulate_battery(first, second, settings, workers=workers,
-                             pool=executor, backend=backend)
+                             pool=executor, backend=backend,
+                             context=(context or [None])[0])
             walls.append(time.perf_counter() - started)
     finally:
         executor.shutdown()
@@ -269,7 +281,7 @@ def _sweep(label, pairs, candidates, measure, log) -> dict:
     return table
 
 
-def run_calibration(pair_set: str = "full", *, seed: int = 7,
+def run_calibration(scenarios=("big",), *, seed: int = 7,
                     sequential_samples: int = SEQUENTIAL_SAMPLES,
                     pooled_samples: int = POOLED_SAMPLES,
                     sequential_batches=None,
@@ -279,7 +291,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
 
     The keyword overrides exist for tests (small sizes) and future re-tuning;
     the CLI maps its arguments to the defaults above.  ``pair_source`` supplies
-    the prepared ``(first, second, maximum_rounds, id)`` rows of a pair set;
+    the prepared ``(first, second, maximum_rounds, id)`` rows of a selection;
     the default compiles the scenario definitions, while the tests pass the
     frozen precompiled corpus so a sweep never reads the knowledge base.
 
@@ -291,8 +303,9 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
     provenance = measurement_provenance(CALIBRATION_ENGINES)
     backends = set(available_backends())
     native_available = "native" in backends
-    numpy_set = "mini" if pair_set == "mini" else "fast"
-    sets = {"native": pair_set, "numpy": numpy_set if native_available else pair_set}
+    scenarios = tuple(scenarios)
+    sets = {"native": scenarios,
+            "numpy": numpy_sweep_scenarios(scenarios) if native_available else scenarios}
     pairs = {}
     excluded_pairs = {}
     for backend, name in sets.items():
@@ -307,7 +320,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
             else:
                 pairs[backend].append(pair)
         if not pairs[backend]:
-            raise ValueError(f"pair set {name!r} has no optimized-compatible calibration duels")
+            raise ValueError(f"scenarios {' '.join(name)!r} have no optimized-compatible calibration duels")
     candidates = {
         "sequential_batch": sequential_batches or SEQUENTIAL_BATCH_CANDIDATES,
         "workers": worker_candidates or WORKER_CANDIDATES,
@@ -409,7 +422,7 @@ def run_calibration(pair_set: str = "full", *, seed: int = 7,
         },
         "provenance": provenance,
         "method": {
-            "pair_sets": sets,
+            "scenarios": {backend: list(names) for backend, names in sets.items()},
             "excluded_pairs": {backend: excluded_pairs[backend] for backend in order},
             "pair_ids": {backend: [row[3] for row in pairs[backend]] for backend in order},
             "samples": samples,
@@ -460,9 +473,18 @@ def calibration_command(args) -> int:
         removed = clear_calibration()
         print("calibration profile removed" if removed else "no calibration profile installed")
         return 0
+    scenarios = tuple(args.scenarios or ("big",))
+    try:
+        from mordheim_combat_lab.cli.scenarios import load_checkout_module
+
+        load_checkout_module("tools.verification.parity_catalog").select(scenarios)
+    except ValueError as error:
+        print(f"Calibration configuration error: {error}", file=sys.stderr)
+        return 2
     payload = run_calibration(
-        args.pairs, seed=args.seed, sequential_samples=args.sample_size,
-        pooled_samples=args.pool_sample_size)
+        scenarios, seed=args.seed,
+        sequential_samples=args.simulations,
+        pooled_samples=2 * args.simulations)
     print_summary(payload)
     path = None
     if getattr(args, "no_install", False):

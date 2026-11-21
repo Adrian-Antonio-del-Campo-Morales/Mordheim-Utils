@@ -1,0 +1,135 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the real Mule Skinner with his kit whip re-rolls a missed hit die into a hit on
+#   the declared choice; the second result stands even when worse; with his kit dagger in hand he
+#   is offered no whip re-roll; the Bard control cannot wield the whip (kit refusal); the rule is
+#   refused on a hireling outside its printed profile.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Mule Skinner's printed Animal Handler requires exactly
+#   one Animal Handling skill selected (his authored animal-handler file), so every build selects
+#   Falconer; its content is outside the duel (LATER) and the compiler records the selection without
+#   executing it, so it adds no request to these tapes.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1b.yaml, hireling.hired-sword.mule-skinner.rule.whip-master, grant profile): "May
+# reroll each hit roll using the whip once, accepting the second result even if worse" - binding
+# mechanic.whip-master (model: tests/conformance/cases/mechanics/mechanic.whip-master.yaml; consumer
+# modular/attacks.py, decision `round.<i>.<side>.attack.<n>.whip-master`, die `...hit.reroll`).
+# Hireling family model (README, Hireling recipients): the real Mule Skinner through the hireling
+# route (hirelings.hired-sword.1b / hireling.hired-sword.mule-skinner) with the fixture facts (WS3
+# S3 T3 W2 I5 A1; printed Ld7 stays), the Falconer Animal Handling skill selected, and his kit's
+# first close-combat weapon, the Town Cryer 14 whip (weapon.whip-tc14), named in hand.  The whip's
+# own disarm decision (`...whip-disarm.main`) is declared declined.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour).  Dice: WS3 against WS3 hits on 4+; the whip strikes
+# at Strength 2 (5+ against T3) and grants the unarmoured opponent a 6+, declared failing on a 1.
+# The control is the grade-1b Bard, a hireling of the same package; the refusal selects the printed
+# rule on the Bard (the eligibility gate's fragment shares the band prefix).
+
+# The miss of 2 is re-rolled on the declared choice; the 4 hits and the whip wound of 5 lands
+# through the failed 6+.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+  id: the-mule-skinners-missed-whip-roll-is-rerolled-into-a-hit
+  fighters:
+    first:
+      &mule-skinner-whip
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.mule-skinner
+      special_rule_ids: [hireling.hired-sword.mule-skinner.skill.animal-handling-falconer]
+      main_weapon_id: weapon.whip-tc14
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &mule-skinner-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_roll: 4, attacks.0.damage: 1, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The second result stands even when worse: the hit of 4 is re-rolled into a 1 and misses, with
+# no further offer on the re-rolled die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+  id: the-second-result-stands-for-the-mule-skinner-even-when-worse
+  fighters:
+    first: *mule-skinner-whip
+    second: *mule-skinner-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.whip-disarm.main, value: false}
+    - {key: round.0.first.attack.0.whip-master, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_roll: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Using the whip": with his kit dagger in hand the same profile is offered no Whip Master
+# decision, so the miss of 2 stands with no decision declared.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+  id: the-mule-skinner-with-his-kit-dagger-is-offered-no-whip-reroll
+  fighters:
+    first:
+      <<: *mule-skinner-whip
+      main_weapon_id: weapon.dagger
+    second: *mule-skinner-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Town Cryer 14 whip is outside the Bard's printed kit, so the kit resolver
+# refuses the build before any re-roll could be asked.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+  id: a-hireling-outside-the-kit-cannot-wield-the-whip
+  fighters:
+    first:
+      &mule-skinner-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.whip-tc14
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *mule-skinner-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The printed grant belongs to the Mule Skinner's profile; selecting it on the Bard of the same
+# package is refused by the eligibility gate (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.mule-skinner.rule.whip-master/mechanic.whip-master
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *mule-skinner-control
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [hireling.hired-sword.mule-skinner.rule.whip-master]
+    second: *mule-skinner-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

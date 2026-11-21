@@ -1,0 +1,86 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.ravening-onslaught
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the further attack granted by one natural hit six, the chain of a further six generating a further attack again, and the same natural six without the rule, whose tape carries one attack die fewer.
+
+# --- Authored scenarios ---
+# A natural hit six re-queues the same weapon, so the pool asks for a second attack die
+# inside the same collective preparation.  The declared second die misses, which keeps
+# the tape to the two hit rolls of the bearer's pool plus its To Wound roll for the
+# successful first attack, and the extra attack exists as an outcome of its own.
+- audit_id: mechanic/mechanic.ravening-onslaught
+  id: a-natural-hit-six-grants-a-further-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ravening-onslaught]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.natural_hit_six: true, attacks.0.hit: true, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The chain: the granted attack rolls its own natural six, so a third attack is
+# appended in turn and the pool asks for three hit dice.  The third misses, and the two
+# successful attacks each take their own To Wound die, both of which fail.
+- audit_id: mechanic/mechanic.ravening-onslaught
+  id: a-further-six-generates-a-further-attack-again
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.ravening-onslaught]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 6}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.natural_hit_six: true, attacks.1.natural_hit_six: true, attacks.2.hit: false, attacks.3.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same natural six without the rule grants nothing: the bearer's pool asks for one
+# hit die only, and the tape's second attack die belongs to the defender's answer.
+- audit_id: mechanic/mechanic.ravening-onslaught
+  id: without-the-rule-a-natural-six-grants-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.natural_hit_six: true, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.needle-and-thread
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-conditions batch, 2026-11-18): the bearer's
+#   stunning melee blow sews the opponent's mouth (the lasting `mouth_sewn` state), a knock-down from
+#   the same blow sews nothing, and the same stun without the mechanic sews nothing.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml (mechanic.needle-and-thread, Crow
+#   Master / Needle and Thread).  Printed text (catalog/hirelings/dramatis-personae/grade-1b.yaml):
+#   "if Simius stuns an opponent in Hand-to-Hand combat and has no other enemies standing in
+#   base-to-base contact, he sews up the mouth of his enemy. Leaders cannot then use their leader
+#   ability and spell casters cannot cast spells for the remainder of the battle."
+# AUTHORED: the 3 scenarios below cover the stun producer, the knock-down boundary and the control;
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the consumer (modular/attacks.py:876-879) sets the lasting
+#   FighterState field `mouth_sewn` on the defender when a melee attack leaves it STUNNED and the
+#   attacker carries the tag; the "no other enemies in base-to-base contact" clause is trivially met by
+#   the one-against-one duel and is not a separate input.  The sewn mouth's consequences are read
+#   elsewhere: the leader half through the supplied condition.mouth-sewn on a nearby provider
+#   (mechanics/condition.mouth-sewn.yaml), the spell half is out-of-scope.magic.  The state field set
+#   here is therefore observational.  The mechanic is injected through skill_ids on a hand-built
+#   bearer, the goblin-squabble injection precedent (mechanics/mechanic.goblin-squabble.yaml); the real
+#   Crow Master's grant lives in its rule file (grants/...crow--12960486e165.yaml).
+#
+# --- Authored scenarios ---
+# Fixtures: the bearer is hand-built (WS3 S3 T3 W2 I5 A1 Ld7, mace) with the mechanic injected; the
+# opponent is hand-built (WS3 S3 T3 W1 I2 A1 Ld7, mace, no armour, no helmet).  WS3 against WS3 hits
+# on 4+, S3 against T3 wounds on 4+, no armour die exists, and the single wound empties W1 so the
+# injury die is rolled: a 3 is Stunned on the printed chart (and under the mace's concussion), a 1 is
+# Knocked Down on both.  The bearer strikes first (I5 over I2), and a stunned or knocked-down opponent
+# makes no attack of its own, so no opponent die is declared.
+
+# The producer: the stunning melee blow sews the opponent's mouth.
+- audit_id: mechanic/mechanic.needle-and-thread
+  id: a-stunning-melee-blow-sews-the-opponents-mouth
+  fighters:
+    first:
+      skill_ids: [mechanic.needle-and-thread]
+      main_weapon_id: weapon.mace
+      characteristics: &nt-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &nt-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_initial: {second.mouth_sewn: false}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.second.condition: STUNNED, state.second.mouth_sewn: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary: the print says "stuns"; a knock-down from the same blow sews nothing.
+- audit_id: mechanic/mechanic.needle-and-thread
+  id: a-knock-down-does-not-sew-the-mouth
+  fighters:
+    first:
+      skill_ids: [mechanic.needle-and-thread]
+      main_weapon_id: weapon.mace
+      characteristics: *nt-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *nt-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, state.second.mouth_sewn: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical stun without the mechanic leaves the mouth unsewn, so the sewn state
+# above is attributable to the mechanic and not to the stun itself.
+- audit_id: mechanic/mechanic.needle-and-thread
+  id: the-same-stun-without-the-mechanic-sews-nothing
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *nt-bearer
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *nt-opponent
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.mouth_sewn: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

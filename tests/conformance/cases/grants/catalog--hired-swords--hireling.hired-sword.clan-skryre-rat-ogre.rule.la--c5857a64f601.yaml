@@ -1,0 +1,101 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.large/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model): the printed Large grant exposes
+#   size.large to a charging Slay Large Creature bearer, the Bard control is not wounded by the same
+#   roll, and the refusal outside the profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), Large variant.  The recipient is the printed Clan Skryre Rat
+# Ogre, compiled through the hireling route since the 2026-11-18 kit triage (its printed "Jaws and
+# claws!" line is the innate weapon.natural-attacks and its part-mechanical body's 4+ save is the innate
+# profile grant defence.bio-armour; see design-rulings.md).  Its physical characteristics are supplied as
+# fixture facts (WS3 S3 T3 W2 I5 A1) so every die threshold is fixed; the printed Ld10 stays.  The
+# printed Large grant ("Counts as a large target.") binds condition.large-target, whose execution entry
+# tags the bearer [size.large].  The observer is a hand-built charger carrying the printed Slay Large
+# Creature bonus through skill_ids ("+1S when charging a Large sized creature", grade-2a Halfling
+# Knight) - the same kind:profile route as cases/mechanics/mechanic.shallya-strictures.yaml.
+# Arithmetic: S3 wounds T3 on 4+, the +1S of the charge against a Large target (S4 vs T3) on 3+, so the
+# declared wound roll of 3 separates recipient and control.  The Rat Ogre causes fear, so the charger
+# (Ld7) declares the 2D6 charge test; 3+3 passes.  His innate 4+ bio-armour save requests an armour die
+# once he is wounded: the declared 1 fails under any legally modified target, so the scenario asserts no
+# save threshold.  The recipient's own blows are silenced (attacks: 0); the Bard control (grade-1b, no
+# Large rule, dagger kit) causes no fear, wears no armour and is simply not wounded by the same 3.
+
+# The Slay Large Creature charger wounds the Large Rat Ogre on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.large/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-rat-ogre-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # The Rat Ogre causes fear: the charger's 2D6 charge test of 3+3 passes Ld7.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    # The innate bio-armour (printed 4+ save) requests its die; the declared 1 fails any modified target.
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard is not Large, so the same charge carries no bonus and the same 3 does not wound
+# (S3 vs T3 needs 4+).  He causes no fear and wears no armour, so no other die is requested.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.large/condition.large-target
+  id: a-hireling-without-the-large-grant-is-not-wounded-by-the-same-3
+  fighters:
+    first:
+      <<: *charger
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.clan-skryre-rat-ogre.rule.large/condition.large-target
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.clan-skryre-rat-ogre.rule.large]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

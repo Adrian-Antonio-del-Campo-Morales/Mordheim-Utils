@@ -43,7 +43,7 @@ rules:
       Sujeto a la regla especial Rencor de la banda. Al inicio del turno del jugador orco, tira 1D6
       por este secuaz orco si no está en combate cuerpo a cuerpo; con un 1, tira en la tabla de
       resultados de Rencor.
-- id: shared-rule.armour-2
+- id: shared-rule.dwarf-armour
   name: Armour
   name_i18n:
     es: Armadura
@@ -111,15 +111,6 @@ rules:
       Los Wulfen son bestias voraces y por tanto inmunes a la psicología. Además, a pesar de ser muy
       venerados por sus parientes bárbaros, los Wulfen son demasiado feroces e indomables para
       convertirse en el líder de la banda.
-- id: shared-rule.brainless
-  name: No Brain
-  name_i18n:
-    es: Sin Cerebro
-  effect: >-
-    Zombies never gain experience.
-  effect_i18n:
-    es: >-
-      Los Zombis nunca ganan Experiencia.
 - id: shared-rule.burn-the-witch
   name: Burn the Witch!
   name_i18n:
@@ -139,7 +130,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.burn-the-witch
-- id: shared-rule.cause-fear-2
+- id: shared-rule.cause-fear-undead
   name: Cause Fear
   name_i18n:
     es: Causan Miedo
@@ -192,15 +183,6 @@ rules:
     es: >-
       Solo el Jefe puede tener esta habilidad. La banda puede repetir cualquier chequeo de huida
       fallido mientras el Jefe no esté Fuera de combate.
-- id: shared-rule.dead
-  name: Unliving
-  name_i18n:
-    es: Sin Vida
-  effect: >-
-    Dire Wolves never gain Experience.
-  effect_i18n:
-    es: >-
-      Los Lobos dire nunca ganan Experiencia.
 - id: shared-rule.deathwish
   name: Deathwish
   name_i18n:
@@ -271,15 +253,6 @@ rules:
       Cuando un enemigo carga contra un Perseguidor, este puede intentar evadir. Con un chequeo de
       Iniciativa con éxito, la carga cuenta como fallida y se aplican las reglas normales de carga
       fallida.
-- id: shared-rule.experience
-  name: Experience
-  name_i18n:
-    es: Experiencia
-  effect: >-
-    The Rat Ogre never gains Experience.
-  effect_i18n:
-    es: >-
-      El Ogro rata nunca gana Experiencia.
 - id: shared-rule.extra-tough
   name: Extra Tough
   name_i18n:
@@ -299,9 +272,11 @@ rules:
   name: Fear
   name_i18n:
     es: Miedo
-  effect: This warrior causes Fear.
+  effect: >-
+    This warrior causes Fear.
   effect_i18n:
-    es: Este guerrero causa Miedo.
+    es: >-
+      Este guerrero causa Miedo.
 - id: shared-rule.free-the-slaves
   name: Free the Slaves!
   name_i18n:
@@ -347,15 +322,13 @@ rules:
   name_i18n:
     es: Entereza
   effect: >-
-    Dwarfs are hardy individuals and this Hero is hardy even for a Dwarf! When rolling on the Injury
-    table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as out of
-    action.
+    This Hero is exceptionally hardy. When rolling on the Injury table for this Hero, a roll of 1-3
+    is treated as knocked down, 4-5 as stunned, and 6 as out of action.
   effect_i18n:
     es: >-
-      ¡Los enanos son individuos duros y este Héroe lo es incluso para un enano! Al tirar en la
-      tabla de Heridas para este Héroe, un resultado de 1-3 se trata como Derribado, 4-5 como
-      Aturdido y 6 como Fuera de combate.
-- id: shared-rule.hard-head-2
+      Este Héroe es excepcionalmente duro. Al tirar en la tabla de Heridas para este Héroe, un
+      resultado de 1-3 se trata como Derribado, 4-5 como Aturdido y 6 como Fuera de combate.
+- id: shared-rule.dwarf-hard-head
   name: Hard Head
   name_i18n:
     es: Cabeza Dura
@@ -369,12 +342,12 @@ rules:
   name_i18n:
     es: Difíciles de Matar
   effect: >-
-    Dwarfs are taken out of action only on a 6 on the Injury chart; 1–2 is Knocked Down and 3–5 is
-    Stunned.
+    This warrior is tough and resilient and is taken Out of Action only on a roll of 6 on the Injury
+    chart; treat a roll of 1-2 as Knocked Down and 3-5 as Stunned.
   effect_i18n:
     es: >-
-      Los enanos se retiran del combate solo con un 6 en la tabla de Heridas; 1–2 es Derribado y 3–5
-      es Aturdido.
+      Este guerrero es duro y resistente y solo queda Fuera de combate con un resultado de 6 en la
+      tabla de Heridas; trata un resultado de 1-2 como Derribado y 3-5 como Aturdido.
 - id: shared-rule.hate-orcs-and-goblins
   name: Hate Orcs and Goblins
   name_i18n:
@@ -391,7 +364,7 @@ rules:
   effect: This warrior is immune to Poison.
   effect_i18n:
     es: Este guerrero es inmune al Veneno.
-- id: shared-rule.immune-to-poison-3
+- id: shared-rule.immune-to-poison-undead
   name: Immune to Poison
   name_i18n:
     es: Inmune al Veneno
@@ -399,7 +372,7 @@ rules:
     Warriors with the Undead special rule are unaffected by poison.
   effect_i18n:
     es: >-
-      Los guerreros con la regla especial Muerto viviente no se ven afectados por el veneno.
+      Los guerreros con la regla especial No muerto no se ven afectados por el veneno.
 - id: shared-rule.immune-to-psychology
   name: Immune to Psychology
   name_i18n:
@@ -409,7 +382,7 @@ rules:
   effect_i18n:
     es: >-
       Este guerrero es inmune a la Psicología y nunca abandona el combate a causa de la Psicología.
-- id: shared-rule.immune-to-psychology-4
+- id: shared-rule.immune-to-psychology-undead
   name: Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
@@ -454,12 +427,12 @@ rules:
   name_i18n:
     es: Viviente
   effect: >-
-    Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not
-    need water.
+    This warrior is a living creature and is affected by Psychology normally, but it does not need
+    water.
   effect_i18n:
     es: >-
-      Los Escorpiones de tumba son criaturas vivientes y se ven afectados por la Psicología con
-      normalidad, pero no necesitan agua.
+      Este guerrero es una criatura viviente y se ve afectado por la Psicología con normalidad, pero
+      no necesita agua.
 - id: shared-rule.marienburg-enormous-wealth
   name: Marienburg — Enormous Wealth
   name_i18n:
@@ -487,7 +460,7 @@ rules:
   effect: This warrior may not run, but may charge normally.
   effect_i18n:
     es: Este guerrero no puede correr, pero puede cargar con normalidad.
-- id: shared-rule.may-not-run-2
+- id: shared-rule.may-not-run-undead
   name: May Not Run
   name_i18n:
     es: No Pueden Correr
@@ -551,21 +524,21 @@ rules:
   name_i18n:
     es: Armas Naturales
   effect: >-
-    The Wulfen fights with teeth and claws, may never use weapons or armour, and suffers no penalty
+    This warrior fights with teeth and claws, may never use weapons or armour, and suffers no penalty
     for fighting unarmed.
   effect_i18n:
     es: >-
-      El Wulfen lucha con dientes y garras, jamás puede usar armas ni armadura y no sufre
+      Este guerrero lucha con dientes y garras, jamás puede usar armas ni armadura y no sufre
       penalización por luchar sin armas.
 - id: shared-rule.never-gain-experience
   name: Never Gain Experience
   name_i18n:
     es: Nunca Ganan Experiencia
   effect: >-
-    Swabbies never gain Experience.
+    This warrior never gains Experience.
   effect_i18n:
     es: >-
-      Los Fregones nunca ganan Experiencia.
+      Este guerrero nunca gana Experiencia.
 - id: shared-rule.no-pain
   name: No Pain
   name_i18n:
@@ -573,7 +546,7 @@ rules:
   effect: This warrior treats any Stunned result on the Injury chart as Knocked Down.
   effect_i18n:
     es: Este guerrero trata cualquier resultado de Aturdido en la tabla de Heridas como Derribado.
-- id: shared-rule.no-pain-4
+- id: shared-rule.no-pain-undead
   name: No Pain
   name_i18n:
     es: Sin Dolor
@@ -581,7 +554,7 @@ rules:
     All warriors with the Undead special rule treat a Stunned result as Knocked Down.
   effect_i18n:
     es: >-
-      Todos los guerreros con la regla especial Muerto viviente tratan un resultado de Aturdido como
+      Todos los guerreros con la regla especial No muerto tratan un resultado de Aturdido como
       Derribado.
 - id: shared-rule.pack-leader
   name: Pack Leader
@@ -627,11 +600,11 @@ rules:
   name_i18n:
     es: Cazador de Recursos
   effect: >-
-    This Dwarf is especially good at locating valuable resources. When rolling on the Exploration
+    This warrior is especially good at locating valuable resources. When rolling on the Exploration
     chart at the end of a game, the Hero may modify one dice roll by +1/-1.
   effect_i18n:
     es: >-
-      Este enano es especialmente bueno localizando recursos valiosos. Al tirar en la tabla de
+      Este guerrero es especialmente bueno localizando recursos valiosos. Al tirar en la tabla de
       Exploración al final de una partida, el Héroe puede modificar una tirada de dado en +1/-1.
 - id: shared-rule.seafaring
   name: Seafaring
@@ -705,12 +678,8 @@ rules:
     - id: shared-rule.stupidity.proximity-producer
       scope: 'NO'
       binding: null
-      reason: >-
-        The six-inch proximity to the designated Skaven Hero is supplied by the caller: either the
-        admitted condition.stupidity-exempt fact, or the duel context's nearby participant and
-        distance facts that psychology.resolve_stupidity measures. The duel still neither
-        simulates the surrounding group nor supplies a table position of its own.
-- id: shared-rule.stupidity-2
+      reason: out-of-scope.group
+- id: shared-rule.troll-stupidity
   name: Stupidity
   name_i18n:
     es: Estupidez
@@ -737,10 +706,10 @@ rules:
   name_i18n:
     es: No Muerto
   effect: >-
-    Skeletons are undead and follow all rules for the Undead.
+    This warrior is undead and follows all the rules for the Undead.
   effect_i18n:
     es: >-
-      Los Esqueletos son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
+      Este guerrero es un muerto viviente y sigue todas las reglas de los Muertos Vivientes.
 - id: shared-rule.vomit-attack
   name: Vomit Attack
   name_i18n:
@@ -787,3 +756,1944 @@ rules:
     es: >-
       El Nigromante es un Mago y comienza conociendo uno de los dos hechizos Nigrománticos del
       Liche. La propia lista de hechizos no está modelada aquí.
+- id: shared-rule.black-hunger
+  name: Black Hunger
+  name_i18n:
+    es: Hambre Negra
+  effect: >-
+    At the start of his turn, this Hero may invoke Black Hunger. For that turn he gains +1 Attack
+    and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save at the
+    end of the turn.
+  effect_i18n:
+    es: >-
+      Al comienzo de su turno, este Héroe puede invocar el Hambre Negra. Durante ese turno gana +1
+      Ataque y +D3 pulgadas a su Movimiento total, y al final del turno sufre D3 impactos de Fuerza
+      3 sin tirada de salvación por armadura.
+- id: shared-rule.fey-quickness
+  name: Fey Quickness
+  name_i18n:
+    es: Celeridad Feérica
+  effect: >-
+    Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
+    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge, this
+    will increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step
+    Aside avoids melee attacks on a 4+ and missile attacks on a 6.
+  effect_i18n:
+    es: >-
+      Pocos pueden esperar igualar la inhumana rapidez y agilidad de un Elfo. Un Elfo con Celeridad
+      Feérica puede evitar ataques cuerpo a cuerpo o de proyectiles con una tirada de 6. Si el Elfo
+      también tiene Echarse a un lado o Esquivar, esto aumenta a 4+ en el área correspondiente. Por
+      ejemplo, un Elfo con Celeridad Feérica y Echarse a un lado evita ataques cuerpo a cuerpo con
+      un 4+ y ataques de proyectiles con un 6.
+- id: shared-rule.infiltration
+  name: Infiltration
+  name_i18n:
+    es: Infiltración
+  effect: >-
+    A warrior with this skill is always placed on the battlefield after the opposing warband and can
+    be placed anywhere on the table as long as it is out of sight of the opposing warband and more
+    than 12" away from any enemy model. If both players have models which infiltrate, roll a D6 for
+    each, and the lowest roll sets up first.
+  effect_i18n:
+    es: >-
+      Un guerrero con esta habilidad siempre se sitúa en el campo de batalla después de la banda
+      rival y puede colocarse en cualquier punto de la mesa mientras esté fuera de la línea de
+      visión de la banda rival y a más de 12" de cualquier miniatura enemiga. Si ambos jugadores
+      tienen miniaturas que se infiltran, tira 1D6 por cada una, y la tirada más baja se despliega
+      primero.
+- id: shared-rule.master-of-blades
+  name: Master of Blades
+  name_i18n:
+    es: Maestro de las Hojas
+  effect: >-
+    This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against
+    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries
+    successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats
+    the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he
+    is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice
+    against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes
+    (as detailed above) he can reroll any failed parries.
+  effect_i18n:
+    es: >-
+      Las habilidades marciales de este Enano superan a las de un guerrero normal; ha luchado sin un
+      rasguño contra hordas de Orcos y Goblins. Al usar un arma que tenga la regla especial Parada,
+      este héroe para con éxito si iguala o supera la tirada más alta «para impactar» de su
+      oponente, no solo si la supera. Además, si este guerrero usa dos armas que tienen la regla
+      especial Parada, puede parar dos ataques (si sus dos dados igualan o superan los dos dados de
+      Ataque más altos contra él) en lugar del máximo normal de uno. Ten en cuenta que si este Enano
+      lleva dos hachas Enanas (como se detalla arriba) puede repetir cualquier parada fallida.
+- id: shared-rule.excellent-sight
+  name: Excellent Sight
+  name_i18n:
+    es: Vista Excepcional
+  effect: >-
+    Elves have eyesight unmatched by mere humans. The Elves of the warband can spot Hidden enemies
+    from twice as far away as other warriors (i.e. twice their Initiative in inches).
+  effect_i18n:
+    es: >-
+      Los Elfos tienen una vista sin igual entre los humanos. Los Elfos de la banda pueden detectar
+      enemigos Ocultos al doble de distancia que otros guerreros (es decir, el doble de su
+      Iniciativa en pulgadas).
+- id: shared-rule.foul-odour
+  name: Foul Odour
+  name_i18n:
+    es: Hedor
+  effect: >-
+    This warrior is a prodigious drinker and none too hygienic! He rises head and shoulders above
+    the rest. After a lifetime of drinking, liquor has little effect on him any more... not that
+    this stops him from consuming massive quantities! His unwashed clothes and sweat reek of alcohol
+    and all living enemies (not Undead or Possessed) are at -1 to hit him in close combat. In
+    addition, the warrior cannot carry any open flames (torch, lantern, etc.) and fire attacks made
+    against him are resolved at +1 Strength as his beer-soaked clothing burns readily.
+  effect_i18n:
+    es: >-
+      ¡Este guerrero es un bebedor prodigioso y nada higiénico! Sobresale por encima del resto. Tras
+      toda una vida de bebida, el licor apenas le afecta ya... ¡lo que no le impide consumir
+      cantidades masivas! Su ropa sin lavar y su sudor huelen a alcohol y todos los enemigos vivos
+      (no Muertos Vivientes ni Poseídos) sufren -1 para impactarlo en combate cuerpo a cuerpo.
+      Además, el guerrero no puede portar llamas abiertas (antorcha, farol, etc.) y los ataques de
+      fuego contra él se resuelven con +1 de Fuerza, ya que sus ropas empapadas de cerveza arden con
+      facilidad.
+- id: shared-rule.jungle-born
+  name: Jungle Born
+  name_i18n:
+    es: Nacidos de la Selva
+  effect: >-
+    Skinks move through jungle terrain without penalty.
+  effect_i18n:
+    es: >-
+      Los Skinks se mueven por terreno de selva sin penalización.
+- id: shared-rule.kindred-hatred
+  name: Kindred Hatred
+  name_i18n:
+    es: Odio Ancestral
+  effect: >-
+    Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
+  effect_i18n:
+    es: >-
+      Los Elfos Oscuros Odian a todos los guerreros Altos Elfos, incluidas las Espadas a Sueldo
+      Altos Elfos.
+- id: shared-rule.knights-feats
+  name: Knights Feats
+  name_i18n:
+    es: Hazañas de Caballería
+  effect: >-
+    The Hero may choose from the Knight's Feats skill list in addition to his ordinary skills. 1 -
+    Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the
+    character can use this skill only on horseback; may not be combined with combat charge; if the
+    character's first opponent(s) suffer an unsaved wound, the character may continue his charge;
+    opponents are not allowed to strike back; the charge may then be continued another 4", and any
+    enemy within 2" of that charge line can be charged; if the character does charge another enemy
+    he counts as charging in the next combat round. 3 - Sword master: when using a sword the
+    character may parry, with reroll at equal or higher. 4 - Armour specialist: when using Heavy
+    armour and shield the subject ignores the standard movement penalty and his armour save cannot
+    be modified beyond 5+ due to strength; this does not work on horseback.
+  effect_i18n:
+    es: >-
+      El Héroe puede elegir de la lista de habilidades Hazañas de Caballería además de sus
+      habilidades ordinarias. 1 - Carga de combate: el personaje gana +1 ataque y +1 HA cuando
+      carga. 2 - Lancero: el personaje solo puede usar esta habilidad a caballo; no puede combinarse
+      con carga de combate; si el primer oponente u oponentes del personaje sufren una herida no
+      salvada, el personaje puede continuar su carga; los oponentes no pueden devolver los golpes;
+      la carga puede continuarse otros 4", y cualquier enemigo a 2" o menos de esa línea de carga
+      puede ser cargado; si el personaje carga contra otro enemigo, cuenta como cargando en la
+      siguiente ronda de combate. 3 - Maestro de la espada: al usar una espada el personaje puede
+      parar, repitiendo la tirada con igual o mayor. 4 - Especialista en armaduras: al usar armadura
+      pesada y escudo, el sujeto ignora la penalización estándar de movimiento y su salvación por
+      armadura no puede modificarse por debajo de 5+ por fuerza; esto no funciona a caballo.
+- id: shared-rule.skink-infiltration
+  name: Infiltration (Skinks)
+  name_i18n:
+    es: Infiltración (Skinks)
+  effect: >-
+    The Skink is a great hunter and is an expert at sneaking up on his prey unnoticed. The Hero may
+    set up anywhere on the table but no closer than 12" to an enemy and he must start the game in
+    hiding.
+  effect_i18n:
+    es: >-
+      El Skink es un gran cazador y un experto en acercarse a su presa sin ser notado. El Héroe
+      puede desplegarse en cualquier punto de la mesa, pero no a menos de 12" de un enemigo, y debe
+      comenzar la partida oculto.
+- id: shared-rule.skaven-rulebook-inheritance
+  name: Rulebook Inheritance
+  name_i18n:
+    es: Herencia del Libro de Reglas
+  effect: >-
+    This warband may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use any
+    of the Skaven Special Skills in the rulebook except for the Art of Silent Death. The Skaven
+    weapons travel in the declared Skaven Hero and Henchmen equipment lists; the admitted special
+    skills are published as the four member rules Black Hunger, Tail Fighting, Wall Runner and
+    Infiltration, each naming the Heroes it reaches, while the Art of Silent Death stays refused.
+  effect_i18n:
+    es: >-
+      Esta banda puede usar las armas Skaven tal y como se detallan en el libro de reglas. Los
+      Héroes Skaven pueden usar cualquiera de las Habilidades Especiales Skaven del libro de reglas,
+      excepto el Arte de la Muerte Silenciosa. Las armas Skaven viajan en las listas de equipo
+      declaradas de Héroes y Secuaces Skaven; las habilidades especiales admitidas se publican como
+      las cuatro reglas miembro Hambre Negra, Combate con la Cola, Corredor de Muros e Infiltración,
+      cada una nombrando a los Héroes a los que alcanza, mientras que el Arte de la Muerte
+      Silenciosa queda rechazado.
+- id: shared-rule.swamp-striders
+  name: Swamp Striders
+  name_i18n:
+    es: Zancudos del Pantano
+  effect: >-
+    This warrior can move through any swamp and marshland terrain without penalty.
+  effect_i18n:
+    es: >-
+      Este guerrero puede moverse por cualquier terreno de ciénaga y pantano sin penalización.
+- id: shared-rule.dragon-monk-art-of-silent-death
+  name: Art of Silent Death (Dragon Monks)
+  name_i18n:
+    es: Arte de la Muerte Silenciosa (Monjes Dragón)
+  effect: >-
+    Dragon Monks have become masters of the Cathayan art of open-hand fighting. In hand-to-hand
+    combat, if fighting unarmed, they will cause a critical hit on a roll 'to wound' of 5-6 instead
+    of a 6. If the Dragon Monk wields a quarterstaff, only the unarmed attacks will cause a critical
+    hit on 5+.
+  effect_i18n:
+    es: >-
+      Los Monjes Dragón se han convertido en maestros del arte cathayano de la lucha a mano abierta.
+      En combate cuerpo a cuerpo, si luchan desarmados, causan un impacto crítico con una tirada
+      para herir de 5-6 en lugar de un 6. Si el Monje Dragón empuña un bastón, solo los ataques
+      desarmados causarán un impacto crítico con 5+.
+- id: shared-rule.unarmed-fighting
+  name: Unarmed Fighting
+  name_i18n:
+    es: Combate sin Armas
+  effect: >-
+    This warrior suffers no penalties for fighting unarmed and receives +1 Attack when doing so.
+  effect_i18n:
+    es: >-
+      Este guerrero no sufre penalización por luchar sin armas y recibe +1 Ataque al hacerlo.
+- id: shared-rule.death-oath
+  name: Death Oath
+  name_i18n:
+    es: Juramento de Muerte
+  effect: >-
+    This warrior is completely immune to Psychology and does not need to take tests for fighting
+    alone.
+  effect_i18n:
+    es: >-
+      Este guerrero es completamente inmune a la Psicología y no necesita hacer chequeos por luchar
+      solo.
+- id: shared-rule.sniper
+  name: Sniper
+  name_i18n:
+    es: Francotirador
+  effect: >-
+    Due to their years of training this warrior can shoot while keeping almost invisible. This
+    allows the character to shoot while hiding. After the shot roll a D6; on a 5+ no one noticed
+    where the arrow came from.
+  effect_i18n:
+    es: >-
+      Debido a sus años de entrenamiento, este guerrero puede disparar manteniéndose casi invisible.
+      Esto permite al personaje disparar mientras está oculto. Tras el disparo tira un D6; con un 5+
+      nadie advirtió de dónde vino la flecha.
+- id: shared-rule.turjuk-riding-skills
+  name: Ride Horse, Ride Arabian Steed and Horse Archer
+  name_i18n:
+    es: Montar Caballo, Montar Corcel Árabe y Arquero a Caballo
+  effect: >-
+    This warrior has the following skills: Ride Horse, Ride Arabian Steed and Horse Archer.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene las habilidades de Montar Caballo, Montar Corcel Árabe y Arquero a
+      Caballo.
+- id: shared-rule.not-orcs
+  name: Not Orcs
+  name_i18n:
+    es: No Son Orcos
+  effect: >-
+    For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action
+    counts as half a model.
+  effect_i18n:
+    es: >-
+      Para el cálculo de bajas de los chequeos de huida, cada Guerrero Goblin o Squig de Cueva
+      puesto Fuera de combate cuenta como medio modelo.
+- id: shared-rule.daemonic-aura
+  name: Daemonic Aura
+  name_i18n:
+    es: Aura Demoníaca
+  effect: >-
+    Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is
+    modified by the Strength of the attack as normal and is completely negated by magic weapons and
+    spells. This warrior's attacks are also considered magical.
+  effect_i18n:
+    es: >-
+      Debido a la naturaleza mágica e intangible de los Demonios, tienen una salvación de armadura
+      especial de 5+. Esta se modifica por la Fuerza del ataque con normalidad y queda completamente
+      anulada por armas y hechizos mágicos. Los ataques de este guerrero también se consideran
+      mágicos.
+- id: shared-rule.chapel-guard-knight
+  name: Knight
+  name_i18n:
+    es: Caballero
+  effect: >-
+    The following rules from above apply to this warrior: Chivalry, Lord's Boon and Virtue of
+    Purity.
+  effect_i18n:
+    es: >-
+      A este guerrero se le aplican las siguientes reglas anteriores: Caballerosidad, Don del Señor y
+      Virtud de Pureza.
+- id: shared-rule.knights-virtue
+  name: Knight's Virtue
+  name_i18n:
+    es: Virtud del Caballero
+  effect: >-
+    A knight is a chivalrous warrior who is superior to ordinary warriors. He will never panic and
+    break from combat and so does not have to pass a Leadership test for being all alone.
+  effect_i18n:
+    es: >-
+      Un caballero es un guerrero caballeroso superior a los guerreros ordinarios. Nunca entra en
+      pánico ni huye del combate, por lo que no tiene que superar un chequeo de Liderazgo por estar
+      solo.
+- id: shared-rule.forest-goblin-wizard
+  name: Wizard (Forest Goblin Shaman)
+  name_i18n:
+    es: Mago (Chamán Goblin del Bosque)
+  effect: >-
+    The Shaman begins with one spell randomly chosen from the Forest Goblin Spell list.
+  effect_i18n:
+    es: >-
+      El Chamán comienza con un hechizo elegido aleatoriamente de la lista de hechizos de los
+      Goblins del Bosque.
+- id: shared-rule.tunnel-rat
+  name: Tunnel Rat
+  name_i18n:
+    es: Rata de Túnel
+  effect: >-
+    Any characteristic-based tests taken for scenarios set in sewers or elsewhere underground can be
+    re-rolled.
+  effect_i18n:
+    es: >-
+      Cualquier chequeo basado en características realizado en escenarios situados en cloacas u
+      otros lugares subterráneos puede repetirse.
+- id: shared-rule.amphibious
+  name: Amphibious
+  name_i18n:
+    es: Anfibio
+  effect: >-
+    This warrior moves through aquatic terrain without movement penalties and counts as being in
+    cover while in water.
+  effect_i18n:
+    es: >-
+      Este guerrero se mueve por terreno acuático sin penalizaciones de movimiento y cuenta como en
+      cobertura mientras esté en el agua.
+- id: shared-rule.dodgy
+  name: Dodgy
+  name_i18n:
+    es: Escurridizos
+  effect: >-
+    The little creatures are constantly ducking and diving in the most infuriating way. They get a
+    6+ dodge save against shooting.
+  effect_i18n:
+    es: >-
+      Las pequeñas criaturas se agachan y esquivan constantemente de la forma más irritante. Tienen
+      una salvación de esquiva de 6+ contra disparos.
+- id: shared-rule.snotling-mob
+  name: Mob
+  name_i18n:
+    es: Horda
+  effect: >-
+    Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You may
+    replace mob members up to the maximum of 5. They will always move and fight as a mob. All
+    members must stay within 1" and all will join in the same combat if possible.
+  effect_i18n:
+    es: >-
+      Los Snotlings son criaturas naturalmente gregarias. Se compran inicialmente en una horda de 5.
+      Puedes reponer miembros de la horda hasta un máximo de 5. Siempre se moverán y lucharán como
+      una horda. Todos los miembros deben permanecer a 1" o menos entre sí y todos se unirán al mismo combate si es
+      posible.
+- id: shared-rule.they-got-away
+  name: They Got Away!
+  name_i18n:
+    es: ¡Se Han Escapado!
+  effect: >-
+    If the Pirate Warband itself Routs, any of these warriors who have already left the table in
+    previous turns are presumed to have made a successful escape, and are never seen from again.
+    Remove them from your warband roster as if they had been killed.
+  effect_i18n:
+    es: >-
+      Si la Banda Pirata Huye, cualquiera de estos guerreros que ya haya abandonado la mesa en
+      turnos anteriores se da por escapado con éxito, y nunca más se le verá. Retíralos de la lista
+      de la banda como si hubieran muerto.
+- id: shared-rule.dont-mind-them
+  name: Don't Mind Them, They Ain't True Crew!
+  name_i18n:
+    es: ¡No Les Hagáis Caso, No Son Tripulación de Verdad!
+  effect: >-
+    The rest of the crew barely notice if any of these warriors run away or go Out of Action - they
+    know they'll find them later on and give them 30 lashes if they're lucky! Any of these warriors
+    who are running away or have been taken out of action do not count towards the need to take a
+    Rout test for the warband.
+  effect_i18n:
+    es: >-
+      Al resto de la tripulación apenas le importa si alguno de estos guerreros huye o queda Fuera
+      de combate: ¡saben que los encontrarán más tarde y les darán 30 latigazos si tienen suerte!
+      Los que estén huyendo o hayan quedado fuera de combate no cuentan a la hora de hacer el
+      chequeo de Huida de la banda.
+- id: shared-rule.crew-never-gain-experience
+  name: Never Gain Experience (Crew)
+  name_i18n:
+    es: Nunca Ganan Experiencia (Tripulación)
+  effect: >-
+    These warriors generally aren't interested in proving their worth to the crew, they are
+    interested in survival and hopefully escape! They never gain experience in games.
+  effect_i18n:
+    es: >-
+      Estos guerreros no están interesados en demostrar su valor a la tripulación, ¡les interesa
+      sobrevivir y escapar si pueden! Nunca ganan experiencia en las partidas.
+- id: shared-rule.flammable
+  name: Flammable
+  name_i18n:
+    es: Inflamable
+  effect: >-
+    A fire-based attack that wounds this warrior causes double the normal number of Wounds.
+  effect_i18n:
+    es: >-
+      Un ataque de fuego que hiera a este guerrero causa el doble del número normal de Heridas.
+- id: shared-rule.stake-the-vampire
+  name: Stake the Vampire!
+  name_i18n:
+    es: ¡Empala al Vampiro!
+  effect: >-
+    This warrior Hates Vampires. He must always move towards a Vampire on the field (if he can see
+    one) unless he can shoot (in which case he may choose).
+  effect_i18n:
+    es: >-
+      Este guerrero Odia a los Vampiros. Siempre debe moverse hacia un Vampiro en el campo (si puede
+      verlo) a menos que pueda disparar (en cuyo caso puede elegir).
+- id: shared-rule.high-elf-equipment-restrictions
+  name: Equipment Restrictions (High Elves)
+  name_i18n:
+    es: Restricciones de Equipo (Altos Elfos)
+  effect: >-
+    May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made
+    equipment, including Gromril and Obsidian equipment. May not select the Mage Staff or Elven
+    Runestones; those entries are Loremaster only.
+  effect_i18n:
+    es: >-
+      Nunca puede usar armas de pólvora negra. Nunca puede usar drogas ni venenos. Nunca puede usar
+      equipo de fabricación enana, incluido el equipo de Gromril y Obsidiana. No puede elegir el
+      Bastón de Mago ni las Piedras Rúnicas Élficas; esas entradas son solo para el Maestro de Saberes.
+# The two armour prohibitions differ in what they forbid, and each text says exactly that. Members
+# of `no-armour` bind `forbids: armour` (every armour item, shields and helmets included); members
+# of `no-body-armour` bind `forbids: armour-suit` (body armour only). Most members state the
+# prohibition in their profile entry rather than as a printed rule.
+- id: shared-rule.no-armour
+  name: No Armour
+  name_i18n:
+    es: Sin Armadura
+  effect: >-
+    This warrior may never wear any form of armour.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca puede llevar ningún tipo de armadura.
+- id: shared-rule.no-body-armour
+  name: No Body Armour
+  name_i18n:
+    es: Sin Armadura Corporal
+  effect: >-
+    This warrior may not wear body armour. Shields, bucklers and helmets are not affected by this
+    restriction.
+  effect_i18n:
+    es: >-
+      Este guerrero no puede llevar armadura corporal. Los escudos, las rodelas y los yelmos no se
+      ven afectados por esta restricción.
+- id: shared-rule.no-missile-weapons
+  name: No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect: >-
+    This warrior may never use missile weapons.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca puede usar armas de proyectiles.
+- id: shared-rule.no-armoured-casting
+  name: No Armoured Casting
+  name_i18n:
+    es: Sin Lanzar Hechizos con Armadura
+  effect: >-
+    This warrior may not cast spells while wearing armour.
+  effect_i18n:
+    es: >-
+      Este guerrero no puede lanzar hechizos mientras lleve armadura.
+- id: shared-rule.no-weapons-or-armour
+  name: No Weapons or Armour
+  name_i18n:
+    es: Sin Armas ni Armadura
+  effect: >-
+    This warrior never uses or needs weapons or armour.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca usa ni necesita armas ni armadura.
+- id: shared-rule.expert-riggers
+  name: Expert Riggers
+  name_i18n:
+    es: Jarcia Experta
+  effect: >-
+    Boatswains are highly trained in using their ropes, as they are the ones who maintain the
+    complex network of rigging throughout the ship. They may re-roll failed Initiative tests Leaping
+    over Gaps, Jumping Down, and performing a Diving Charge, as well as the normal test for Climbing
+    Up or Down that a Rope allows.
+  effect_i18n:
+    es: >-
+      Los Contramaestres están muy entrenados en el uso de sus cuerdas, ya que son quienes mantienen
+      la compleja red de aparejos de todo el barco. Pueden repetir los chequeos de Iniciativa
+      fallidos al Saltar huecos, Saltar hacia abajo y realizar una Carga en picado, así como el
+      chequeo normal de Trepar o Descender que permite una Cuerda.
+- id: shared-rule.swabbies-not-hired
+  name: Not Hired
+  name_i18n:
+    es: No Contratadas
+  effect: >-
+    Swabbies are not hired, they follow the special 'recruitment' rules (see the Sartosa campaign
+    rules for capturing Swabbies).
+  effect_i18n:
+    es: >-
+      Los Fregones no se contratan: siguen las reglas especiales de «reclutamiento» (véanse las
+      reglas de campaña de Sartosa para capturar Fregones).
+- id: shared-rule.pit-fighter
+  name: Pit Fighter
+  name_i18n:
+    es: Luchador de Foso
+  effect: >-
+    This warrior has the warband's Pit Fighter rule.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene la regla Luchador de Foso de la banda.
+- id: shared-rule.black-orc-save
+  name: Black Orc
+  name_i18n:
+    es: Orco Negro
+  effect: >-
+    Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other
+    equipment to improve it.
+  effect_i18n:
+    es: >-
+      El modelo empieza con una tirada de salvación de Orco Negro natural de 6+. Esta salvación
+      puede combinarse con otro equipo para mejorarla.
+- id: shared-rule.killing-blow
+  name: Killing Blow
+  name_i18n:
+    es: Golpe Asesino
+  effect: >-
+    A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
+    armour and saving throws are allowed.
+  effect_i18n:
+    es: >-
+      Un 6 natural en la tirada para impactar hiere automáticamente; el golpe no puede ser parado,
+      pero se permiten las tiradas de armadura y salvación.
+- id: shared-rule.pirate-rules
+  name: General Pirate Rules
+  name_i18n:
+    es: Reglas Generales de Piratas
+  effect: >-
+    Swabbies: Human Pirates take human Swabbies (see the rules for capturing Swabbies in the Sartosa
+    campaign rules). Hired Swords: unless noted otherwise, Pirate Warbands have the same access to
+    Hired Swords & any other items as for a regular human Mercenary Warband; they must however pay
+    an additional +20 gc in upkeep if they have both Dwarfs and Elves together in the same warband
+    (the ship is only so big!). Swivel Guns are Rare, Matey!: except for Sartosan Pirates, no Pirate
+    Warband may start with a Swivel Gun on their roster in campaign games; if playing a one-off
+    game, non-Sartosans may purchase a Swivel Gun for an additional price of 2D6 gc. Succession: if
+    the Captain is killed, one of the Mates will take over in the same manner as a Champion taking
+    over for a Mercenary warband.
+  effect_i18n:
+    es: >-
+      Fregones: los Piratas Humanos llevan Fregones humanos (ver las reglas para capturar Fregones
+      en las reglas de campaña de Sartosa). Espadas a Sueldo: salvo indicación contraria, las bandas
+      de Piratas tienen el mismo acceso a Espadas a Sueldo y objetos que una banda mercenaria humana
+      normal; sin embargo, deben pagar +20 coronas adicionales de mantenimiento si tienen enanos y
+      elfos juntos en la misma banda (¡el espacio en el barco es limitado!). Los cañones giratorios son
+      raros, ¡amigo!: salvo los Piratas Sartosanos, ninguna banda pirata puede empezar con un cañón
+      giratorio en su lista en partidas de campaña; en partidas sueltas, los no Sartosanos pueden
+      comprar uno por 2D6 coronas adicionales. Sucesión: si el Capitán muere, uno de los
+      Contramaestres tomará el mando de la misma forma que un Campeón en una banda mercenaria.
+- id: shared-rule.swivel-guns-are-dangerous
+  name: Swivel Guns Is Dangerous, Matey!
+  name_i18n:
+    es: ¡Los Cañones Giratorios Son Peligrosos, Grumete!
+  effect: >-
+    If a Pirate Warband includes a Swivel Gun, the Gunner wielding it will always be considered an
+    individual and can never have anyone else with him. Since a Pirate Warband may only have one
+    Swivel Gun, if a Gunner is equipped with one then he must either be a new Gunner, or split from
+    an existing unit. If the latter, he retains all Experience and Skills he had previously.
+  effect_i18n:
+    es: >-
+      Si una Banda Pirata incluye un Cañón Giratorio, el Artillero que lo porte siempre será
+      considerado un individuo y nunca podrá llevar a nadie más con él. Como una Banda Pirata solo
+      puede tener un Cañón Giratorio, si un Artillero lleva uno, debe ser un Artillero nuevo o
+      separarse de una unidad existente. En este último caso, conserva toda la Experiencia y
+      Habilidades que tuviera previamente.
+- id: shared-rule.rabble
+  name: Rabble
+  name_i18n:
+    es: Chusma
+  effect: >-
+    These warriors do not need to be armed all the same. Each may be given different equipment, but only
+    items listed in their own equipment list. They can never use magic, or cast spells of any sort, no
+    matter their original background or abilities.
+  effect_i18n:
+    es: >-
+      Estos guerreros no necesitan ir armados todos igual. Cada uno puede recibir equipo distinto, pero
+      solo objetos de su propia lista de equipo. Nunca pueden usar magia ni lanzar hechizos de ningún
+      tipo, sin importar su origen o habilidades previas.
+- id: shared-rule.ethereal-reference
+  name: Ethereal
+  name_i18n:
+    es: Etéreo
+  effect: >-
+    See the band Ethereal rule.
+  effect_i18n:
+    es: >-
+      Ver la regla de banda Etéreo.
+- id: shared-rule.mutations-great-claw
+  name: Great Claw
+  name_i18n:
+    es: Garra Enorme
+  effect: >-
+    One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm,
+    but gains an extra attack in hand-to-hand combat with a +1 Strength bonus. Cost: 50 gold crowns.
+  effect_i18n:
+    es: >-
+      Uno de los brazos del mutante termina en una gran garra parecida a la de un cangrejo. No puede
+      llevar armas en este brazo, pero gana un ataque extra en combate cuerpo a cuerpo con un bonus
+      de +1 de Fuerza. Coste: 50 coronas de oro.
+- id: shared-rule.mutations-tentacle
+  name: Tentacle
+  name_i18n:
+    es: Tentáculo
+  effect: >-
+    One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to
+    reduce his attacks by -1, down to a minimum of 1. The mutant may decide which attack his
+    opponent loses. Cost: 35 gold crowns
+  effect_i18n:
+    es: >-
+      Uno de los brazos del mutante termina en un tentáculo. Puede atrapar a su oponente en combate
+      cuerpo a cuerpo para reducir sus ataques en -1, hasta un mínimo de 1. El mutante puede decidir
+      qué ataque pierde su oponente. Coste: 35 coronas de oro.
+- id: shared-rule.mutations-blackblood
+  name: Blackblood
+  name_i18n:
+    es: Sangre Negra
+  effect: >-
+    If the model loses a wound in close combat, anyone in base contact with the model suffers a
+    Strength 3 hit (no critical hits) from the spurting corrosive blood. Cost: 30 gold crowns
+  effect_i18n:
+    es: >-
+      Si la miniatura pierde una herida en combate cuerpo a cuerpo, cualquiera en contacto base con
+      la miniatura sufre un impacto de Fuerza 3 (sin golpes críticos) de la sangre corrosiva a
+      chorro. Coste: 30 coronas de oro.
+- id: shared-rule.loner
+  name: Loner
+  name_i18n:
+    es: Solitario
+  effect: >-
+    Few people care to spend any length of time in the company of a priest of Morr - even when it is
+    their duty to do so. As such, a priest of Morr is used to being alone and probably prefers it
+    that way. Priests of Morr do not suffer from the all alone rules.
+  effect_i18n:
+    es: >-
+      Poca gente se detiene a pasar tiempo en compañía de un sacerdote de Morr, aunque sea su deber
+      hacerlo. Así, un sacerdote de Morr está acostumbrado a estar solo y probablemente lo prefiere
+      así. Los sacerdotes de Morr no sufren las reglas de Todo Solo.
+- id: shared-rule.town-crier-6-dwarf-special-skills
+  name: Dwarf Special Skills
+  name_i18n:
+    es: Habilidades Especiales Enanas
+  effect: >-
+    Dwarf Heroes may use any of the Dwarf Special Skills listed in Town Crier 6 (or Best of Town
+    Crier): Master of Blades, Extra Tough, Resource Hunter, True Grit and Thick Skull. Master of
+    Blades is one printed entry and publishes one equivalent skill, Unbeatable Warrior (parry by
+    equalling the highest hit roll, and two parries with two Parry weapons); the Vampire's Sword
+    Master is a different contract and is never granted for this entry. The printed Master of Blades
+    sentence about two Dwarf Axes reaches rule.dwarf-axe-parry-reroll, not this column. Extra Tough
+    and Resource Hunter are printed members whose entire effect is post-game campaign bookkeeping,
+    so each carries its own out-of-scope disposition.
+  effect_i18n:
+    es: >-
+      Los Héroes enanos pueden usar cualquiera de las Habilidades Especiales Enanas listadas en Town
+      Crier 6 (o Best of Town Crier): Maestro de las Hojas, Extra Resistente, Cazador de Recursos,
+      Entereza y Cráneo Grueso. Maestro de las Hojas es una única entrada impresa y publica una
+      única habilidad equivalente, Guerrero Imbatible (parar igualando la tirada más alta y dos
+      paradas con dos armas con Parada); Maestro de la Espada del Vampiro es un contrato distinto y
+      nunca se concede por esta entrada. La frase impresa de Maestro de las Hojas sobre dos Hachas
+      Enanas llega a rule.dwarf-axe-parry-reroll, no a esta columna. Extra Resistente y Cazador de
+      Recursos son miembros impresos cuyo efecto completo es contabilidad de campaña posterior a la
+      partida, así que cada uno lleva su propia disposición fuera de alcance.
+- id: shared-rule.animosity-forest-goblins
+  name: Animosity
+  name_i18n:
+    es: Rencor
+  effect: >-
+    This warrior is subject to the rules for Animosity.
+  effect_i18n:
+    es: >-
+      Este guerrero está sujeto a las reglas de Rencor.
+- id: shared-rule.field-of-scholarship
+  name: Field of Scholarship
+  name_i18n:
+    es: Campo de Erudición
+  effect: >-
+    When joining a warband, the scholar must choose the area of knowledge he specialises in. Choose
+    one of the following. Cartography: the Scholar keeps a detailed map of where you have been; you
+    may add or deduct 1 from a D6 when exploring. Physiology: after all serious injuries have been
+    resolved you may select a hero to re-roll his result. Poetry: the Scholar writes grand poems
+    that increase the reputation of the warband throughout the land and inspires them to great
+    deeds; your leader adds +1 to his Leadership for his first leadership test in a scenario if your
+    warband won the last battle they fought; also, for one turn during a scenario the poet grants
+    any friendly model within 6" +1 WS and +1 A. Theology: this Scholar is a devoted servant of The
+    One and has access to Holy Skills. The Occult: the scholar is versed in the arts of magic and is
+    a wizard that can use Lesser magic (see the Magic section of the Core Rules).
+  effect_i18n:
+    es: >-
+      Al unirse a una banda, el erudito debe elegir el área de conocimiento en la que se
+      especializa. Elige una de las siguientes. Cartografía: el Erudito conserva un mapa detallado
+      de los lugares visitados; puedes sumar o restar 1 a un D6 al explorar. Fisiología: una vez
+      resueltas todas las heridas graves, puedes elegir un héroe para que repita su resultado.
+      Poesía: el Erudito escribe grandes poemas que aumentan la reputación de la banda por toda la
+      tierra y los inspiran a grandes hazañas; tu líder suma +1 a su Liderazgo en su primer chequeo
+      de liderazgo de un escenario si tu banda ganó la última batalla; además, durante un turno de
+      un escenario, el poeta otorga a cualquier modelo aliado a 6" +1 HA y +1 A. Teología: este
+      Erudito es un devoto servidor de El Uno y tiene acceso a Habilidades Sagradas. Lo Oculto: el
+      erudito está versado en las artes de la magia y es un mago que puede usar Magia Menor (ver la
+      sección de Magia de las reglas básicas).
+- id: shared-rule.knights-ride
+  name: Ride – Horse, Warhorse
+  name_i18n:
+    es: Montar – Caballo, Caballo de Guerra
+  effect: >-
+    Knights have the Ride skill as detailed in the Blazing Saddles article.
+  effect_i18n:
+    es: >-
+      Los Caballeros tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
+- id: shared-rule.skink-priest-wizard
+  name: Wizard
+  name_i18n:
+    es: Mago
+  effect: >-
+    The Skink Priest is a Wizard and may use Lizardmen magic.
+  effect_i18n:
+    es: >-
+      El Sacerdote Skink es un hechicero y puede usar la magia de los Hombres Lagarto.
+- id: shared-rule.kroxigor-large
+  name: Large
+  name_i18n:
+    es: Grande
+  effect: >-
+    This warrior stands out amongst the rest of the warband and may be picked out by an archer even if
+    he is not the closest model.
+  effect_i18n:
+    es: >-
+      Este guerrero destaca entre el resto de la banda y puede ser elegido por un arquero incluso si no
+      es el modelo más cercano.
+- id: shared-rule.saurus-skill-prohibitions
+  name: Saurus Skill Prohibitions
+  name_i18n:
+    es: Prohibiciones de Habilidades Saurus
+  effect: >-
+    Saurus can never receive Academic skills and can never use missile weapons.
+  effect_i18n:
+    es: >-
+      Los Saurus jamás pueden recibir habilidades Académicas y jamás pueden usar armas de misil.
+- id: shared-rule.great-hunter
+  name: Great Hunter
+  name_i18n:
+    es: Gran Cazador
+  effect: >-
+    The Skink Great Crest is adept at making the most of the cover available and imposes an
+    additional -1 to hit the Skink if he is in cover, i.e. a -2 to hit penalty.
+  effect_i18n:
+    es: >-
+      El Skink Gran Cresta es experto en sacar el máximo provecho de la cobertura disponible e
+      impone un -1 adicional para impactar al Skink si está en cobertura, es decir, una penalización
+      de -2 para impactar.
+- id: shared-rule.bellowing-battle-roar
+  name: Bellowing Battle Roar
+  name_i18n:
+    es: Rugido de Batalla Atronador
+  effect: >-
+    The Saurus' roar is so deafening that enemy models in base contact suffer -1 to hit in the first
+    round of combat against them.
+  effect_i18n:
+    es: >-
+      El rugido del Saurus es tan ensordecedor que los modelos enemigos en contacto de peana sufren
+      -1 para impactar en el primer asalto de combate contra ellos.
+- id: shared-rule.toughened-hide
+  name: Toughened Hide
+  name_i18n:
+    es: Piel Endurecida
+  effect: >-
+    Through years of battle the Saurus' hide has become hardened and the Saurus will only be taken
+    out of action on a 6+.
+  effect_i18n:
+    es: >-
+      Tras años de batalla, la piel del Saurus se ha endurecido y el Saurus solo será puesto Fuera
+      de combate con un 6+.
+- id: shared-rule.animal-no-equipment
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    This model is an Animal and does not select weapons or armour from the warband equipment lists.
+  effect_i18n:
+    es: >-
+      Este modelo es un Animal y no elige armas ni armaduras de las listas de equipo de la banda.
+- id: shared-rule.ogre-no-daggers
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    Ogres do not receive free daggers and never fight with daggers in close combat.
+  effect_i18n:
+    es: >-
+      Los Ogros no reciben dagas gratis y nunca luchan con dagas en combate cuerpo a cuerpo.
+- id: shared-rule.slaves-can-lead
+  name: Slaves May Become Warband Leader
+  name_i18n:
+    es: Los Esclavos Pueden Llegar a Líderes de Banda
+  effect: >-
+    It is a regular occurrence for slaves, or the sons of slaves, to gain high positions, especially
+    if they can prove themselves on the battlefield. Therefore, it is possible for a slave in an
+    Arabian warband to become a warband leader.
+  effect_i18n:
+    es: >-
+      Es habitual que los esclavos, o los hijos de esclavos, alcancen posiciones elevadas, sobre
+      todo si demuestran su valía en el campo de batalla. Por tanto, es posible que un esclavo de
+      una banda árabe se convierta en el líder de la banda.
+- id: shared-rule.no-weapons-or-armour-unarmed
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    May never use weapons or armour and suffers no penalty for fighting unarmed.
+  effect_i18n:
+    es: >-
+      Nunca puede usar armas ni armaduras y no sufre penalización por luchar sin armas.
+- id: shared-rule.tail-fighting
+  name: Tail Fighting
+  name_i18n:
+    es: Combate con la Cola
+  effect: >-
+    The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional
+    attack with that weapon; a shield grants +1 to the model's armour save.
+  effect_i18n:
+    es: >-
+      El skaven puede empuñar un escudo, cuchillo o espada con su cola. Un arma concede un ataque
+      adicional con esa arma; un escudo concede +1 a la salvación por armadura de la miniatura.
+- id: shared-rule.wall-runner
+  name: Wall Runner
+  name_i18n:
+    es: Corredor de Muros
+  effect: >-
+    The Skaven automatically passes Initiative tests required to climb walls and other sheer
+    surfaces.
+  effect_i18n:
+    es: >-
+      El skaven supera automáticamente los chequeos de Iniciativa necesarios para trepar por muros y
+      otras superficies verticales.
+- id: shared-rule.slaves-all-races
+  name: All Races
+  name_i18n:
+    es: Todas las Razas
+  effect: >-
+    Skaven slaves may be from any race including their fellow Skaven. The above profile represents
+    the weakened state of all of them.
+  effect_i18n:
+    es: >-
+      Los esclavos Skaven pueden ser de cualquier raza, incluidos sus propios compañeros Skaven. El
+      perfil anterior representa el estado debilitado de todos ellos.
+- id: shared-rule.slavers
+  name: Slavers
+  name_i18n:
+    es: Esclavistas
+  effect: >-
+    Any enemy warrior who is captured may be added to a Skavenslave group. He will have the above
+    profile and will have to be equipped the same as the rest of the group. Any equipment he carried
+    when he was captured may be kept or sold by the warband.
+  effect_i18n:
+    es: >-
+      Cualquier guerrero enemigo que sea capturado puede añadirse a un grupo de Esclavos Skaven.
+      Tendrá el perfil anterior y deberá equiparse igual que el resto del grupo. Cualquier equipo
+      que llevara cuando fue capturado puede quedarse la banda o venderse.
+- id: shared-rule.diseased-frenzy
+  name: Frenzy
+  name_i18n:
+    es: Frenesí
+  effect: >-
+    The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
+    frothing madman in combat. The Skaven is subject to Frenzy.
+  effect_i18n:
+    es: >-
+      El skaven ha contraído una enfermedad que le da pesadillas febriles que lo convierten en un
+      loco espumeante en combate. El skaven está sujeto a Frenesí.
+- id: shared-rule.giant-rat-pack-size
+  name: Pack Size
+  name_i18n:
+    es: Tamaño de la Manada
+  effect: >-
+    You can recruit as many Giant Rats as you wish.
+  effect_i18n:
+    es: >-
+      Puedes reclutar tantas Ratas Gigantes como desees.
+- id: shared-rule.bat-flyers
+  name: Flyers
+  name_i18n:
+    es: Voladores
+  effect: >-
+    The Bats ignore terrain when they move and can freely charge any model that they can see,
+    regardless of height and interceptors.
+  effect_i18n:
+    es: >-
+      Los Murciélagos ignoran el terreno cuando se mueven y pueden cargar libremente contra
+      cualquier modelo que puedan ver, sin importar la altura ni los interceptores.
+- id: shared-rule.flagellants-no-missile-weapons
+  name: No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect: >-
+    This warrior may never use missile weapons, even if an Advance would otherwise allow access to them.
+  effect_i18n:
+    es: >-
+      Este guerrero jamás puede usar armas de proyectil, incluso si una Mejora le permitiera acceder a
+      ellas.
+- id: shared-rule.crossfire
+  name: Crossfire
+  name_i18n:
+    es: Fuego Cruzado
+  effect: >-
+    If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
+  effect_i18n:
+    es: >-
+      Si más de un secuaz explorador dispara al mismo objetivo, obtienen +1 en la tirada
+      de herida.
+- id: shared-rule.lahmian-brotherhood-equipment-restrictions
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    Use only the Undead Equipment List assigned by the selected Foreign or Native background. May
+    not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  effect_i18n:
+    es: >-
+      Usa solo la Lista de Equipo No Muerto asignada por el trasfondo Extranjero o Nativo elegido.
+      No puede elegir el Látigo de Serpiente; está restringido al Vampiro Lahmiano y a la Hermana de
+      Sangre.
+- id: shared-rule.khemri-mages-equipment-restrictions
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    Sling is Pupils only. A Familiar cannot be bought by this profile during warband creation; after
+    creation it may be acquired through Trading because this profile is a spellcaster.
+  effect_i18n:
+    es: >-
+      La Honda es solo para Pupilos. Este perfil no puede comprar un Familiar durante la creación de
+      la banda; después de la creación puede adquirirse mediante Comercio, ya que este perfil es
+      lanzador de conjuros.
+- id: shared-rule.thieves-guild-equipment-restrictions
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries
+    are Ruffians and Enforcers only. May not select Bagh Nakh at the listed warband-creation price;
+    only the Hashashiyyin Assassin may do so. Other warband members must acquire it through Trading.
+  effect_i18n:
+    es: >-
+      No puede elegir Lanza, Ankus, Escudo ni Armadura Pesada de la Lista de Equipo de Ladrones;
+      esas entradas son solo para Rufianes y Ejecutores. No puede elegir Bagh Nakh al precio
+      indicado para la creación de la banda; solo el Asesino Hashashiyyin puede hacerlo. Los demás
+      miembros de la banda deben adquirirlo mediante Comercio.
+- id: shared-rule.thieves-guild-bagh-nakh-restriction
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin
+    may do so. Other warband members must acquire it through Trading.
+  effect_i18n:
+    es: >-
+      No puede elegir Bagh Nakh al precio indicado para la creación de la banda; solo el Asesino
+      Hashashiyyin puede hacerlo. Los demás miembros de la banda deben adquirirlo mediante Comercio.
+- id: shared-rule.pestilens-rat-familiar-restriction
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    May not use the Rat Familiar Scroll; only a Pestilens Sorcerer can use its spell.
+  effect_i18n:
+    es: >-
+      No puede usar el Pergamino del Familiar Rata; solo un Hechicero Pestilens puede usar su
+      conjuro.
+- id: shared-rule.parrot-restriction
+  name: Equipment Restrictions
+  name_i18n:
+    es: Restricciones de Equipo
+  effect: >-
+    May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
+  effect_i18n:
+    es: >-
+      No puede elegir un Loro; está restringido al Capitán Pirata y a los Contramaestres.
+- id: shared-rule.no-missiles-or-armour
+  name: No Missile Weapons or Armour
+  name_i18n:
+    es: Sin Armas de Proyectil ni Armadura
+  effect: >-
+    May not use any missile weapons or armour.
+  effect_i18n:
+    es: >-
+      No puede usar armas de proyectil ni armadura de ningún tipo.
+- id: shared-rule.no-equipment-but-bones
+  name: No Equipment but Bones
+  name_i18n:
+    es: Sin Equipo Salvo Huesos
+  effect: >-
+    This warrior never carries any equipment, apart from a few bones used as primitive weapons.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca lleva equipo alguno, aparte de unos pocos huesos que usa como armas
+      primitivas.
+- id: shared-rule.no-equipment-unarmed
+  name: No Equipment
+  name_i18n:
+    es: Sin Equipo
+  effect: >-
+    This warrior carries no equipment and suffers no penalty for fighting unarmed.
+  effect_i18n:
+    es: >-
+      Este guerrero no lleva equipo y no sufre penalización por luchar sin armas.
+- id: shared-rule.no-weapons-unarmed
+  name: No Weapons
+  name_i18n:
+    es: Sin Armas
+  effect: >-
+    This warrior may never use weapons and suffers no penalty for fighting unarmed.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca puede usar armas y no sufre penalización por luchar sin armas.
+- id: shared-rule.accustomed-to-fear
+  name: Accustomed to Fear
+  name_i18n:
+    es: Acostumbrado al Miedo
+  effect: >-
+    This warrior is immune to Fear caused by Vampires, Skeletons and Spirits.
+  effect_i18n:
+    es: >-
+      Este guerrero es inmune al Miedo causado por Vampiros, Esqueletos y Espíritus.
+- id: shared-rule.advancement-wound-to-skill
+  name: Advancement
+  name_i18n:
+    es: Progresión
+  effect: >-
+    If this warrior gets an advance roll of +1 Wound, they may instead pick a new skill from their
+    available lists.
+  effect_i18n:
+    es: >-
+      Si este guerrero obtiene una mejora de +1 Herida, puede elegir en su lugar una nueva habilidad de
+      sus listas disponibles.
+- id: shared-rule.always-hungry-15gc
+  name: Always Hungry
+  name_i18n:
+    es: Siempre Hambriento
+  effect: >-
+    A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must be fed
+    to the Troll in order to keep him loyal to the warband. The warband must pay 15 gold crowns after
+    every game in order to keep the Troll. If the warband lacks the gold to pay the upkeep, the Boss has
+    the option of sacrificing two Goblin Warriors or Cave Squigs to the Troll in lieu of buying food
+    (Trolls eat nearly anything). If this fee is not paid (either in gold or in warband members) the
+    Troll gets hungry and wanders off in search of food.
+  effect_i18n:
+    es: >-
+      Un troll requiere un coste de manutención. Este coste representa las cantidades copiosas de comida
+      que hay que darle al troll para mantenerlo leal a la banda. La banda debe pagar 15 coronas de oro
+      tras cada partida para conservar al troll. Si la banda carece de oro para pagar la manutención, el
+      Jefe tiene la opción de sacrificar dos Guerreros Goblin o Squigs de Cueva al troll en lugar de
+      comprar comida (los trolls comen casi cualquier cosa). Si no se paga esta cuota (ya sea en oro o
+      en miembros de la banda), el troll se queda con hambre y se marcha en busca de comida.
+- id: shared-rule.amazon-priestess-wizard
+  name: Wizard
+  name_i18n:
+    es: Mago
+  effect: >-
+    This warrior is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at random
+    from the list.
+  effect_i18n:
+    es: >-
+      Esta guerrera es una Hechicera y puede usar los Rituales de las Amazonas. Comienza con un ritual
+      elegido al azar de la lista.
+- id: shared-rule.ancestral-customs
+  name: Ancestral Customs
+  name_i18n:
+    es: Costumbres Ancestrales
+  effect: >-
+    Warriors of this warband may never use blackpowder weapons.
+  effect_i18n:
+    es: >-
+      Los guerreros de esta banda nunca pueden usar armas de pólvora.
+- id: shared-rule.animal-dies-on-1-2
+  name: Animal
+  name_i18n:
+    es: Animal
+  effect: >-
+    This warrior is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6 roll
+    of 1–2.
+  effect_i18n:
+    es: >-
+      Este guerrero es un Animal, no puede ganar Experiencia, y si es puesto Fuera de combate muere con
+      una tirada de 1-2 en 1D6.
+- id: shared-rule.animal-friendship
+  name: Animal Friendship
+  name_i18n:
+    es: Amistad Animal
+  effect: >-
+    Having grown up amidst the animals of the forest, this warrior exudes a certain charm to all
+    'normal' animals (warhorses, warhounds, etc.). Animals will never attack him and up to two wardogs
+    that the warrior owns do not count against the maximum number of models in the warband.
+  effect_i18n:
+    es: >-
+      Habiéndose criado entre los animales del bosque, este guerrero irradia un cierto encanto a todos
+      los animales 'normales' (corceles de guerra, sabuesos de guerra, etc.). Los animales jamás lo
+      atacarán y hasta dos perros de guerra que posea el guerrero no cuentan para el número máximo de
+      modelos de la banda.
+- id: shared-rule.aquatic
+  name: Aquatic
+  name_i18n:
+    es: Acuático
+  effect: >-
+    This warrior may move through water terrain without penalty and counts as being in cover whilst in
+    the water.
+  effect_i18n:
+    es: >-
+      Este guerrero puede moverse por terreno de agua sin penalización y cuenta como en cobertura
+      mientras esté en el agua.
+- id: shared-rule.art-of-silent-death
+  name: Art of Silent Death
+  name_i18n:
+    es: Arte de la Muerte Silenciosa
+  effect: >-
+    This warrior may fight unarmed without penalty and counts as using two close-combat weapons, gaining
+    +1 Attack. He scores a critical hit on a 'to wound' roll of 5-6 instead of only 6. When combined
+    with Eshin Fighting Claws, the skill grants +2 Attacks instead of +1.
+  effect_i18n:
+    es: >-
+      Este guerrero puede luchar desarmado sin penalización y cuenta como si usara dos armas de combate
+      cuerpo a cuerpo, ganando +1 Ataque. Obtiene un golpe crítico con una tirada de herir de 5-6 en
+      lugar de solo 6. Combinada con las Garras de combate de Eshin, la habilidad otorga +2 Ataques en
+      lugar de +1.
+- id: shared-rule.beastmaster-leadership
+  name: Beastmaster Leadership
+  name_i18n:
+    es: Liderazgo del Maestro de Bestias
+  effect: >-
+    If within 6 inches of the Reaver Beastmaster, this warrior may use the Beastmaster's Leadership.
+  effect_i18n:
+    es: >-
+      Si está a 6 pulgadas del Maestro de Bestias Asaltante, este guerrero puede usar el Liderazgo del
+      Maestro de Bestias.
+- id: shared-rule.berserker
+  name: Berserker
+  name_i18n:
+    es: Berserker
+  effect: >-
+    This warrior may add +1 to his close combat to hit rolls during the turn in which he charges.
+  effect_i18n:
+    es: >-
+      Este guerrero puede sumar +1 a sus tiradas para impactar en combate cuerpo a cuerpo durante el
+      turno en el que carga.
+- id: shared-rule.bite-attack
+  name: Bite Attack
+  name_i18n:
+    es: Ataque de Mordisco
+  effect: >-
+    This warrior has a powerful bite attack. The bite attack uses this warrior's own Strength to wound
+    and receives no penalty for not using a weapon. The bite attack always strikes last, regardless of
+    who charged or which weapon is used, even after double-handed weapons.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene un poderoso ataque de mordisco. Este ataque usa la propia Fuerza de este
+      guerrero para herir y no recibe penalización por no usar un arma. El ataque de mordisco siempre
+      golpea el último, sin importar quién cargó ni qué arma se use, incluso después de armas a dos
+      manos.
+- id: shared-rule.black-hunger-trollheim
+  name: Black Hunger
+  name_i18n:
+    es: Hambre Negra
+  effect: >-
+    At the start of his turn, this Hero may invoke Black Hunger. For that turn he gains +1 Attack and
+    adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3
+    hits with no armour save.
+  effect_i18n:
+    es: >-
+      Al comienzo de su turno, este Héroe puede invocar el Hambre Negra. Durante ese turno gana +1
+      Ataque y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre 1D3
+      impactos de Fuerza 3 sin tirada de salvación por armadura.
+- id: shared-rule.bull-charge
+  name: Bull Charge
+  name_i18n:
+    es: Carga de Toro
+  effect: >-
+    Ogres learn to use their vast bulk in a charge, trampling the enemy to the ground. When charging,
+    this warrior may attempt a single attack with a +1 'to hit' modifier rather than making his normal
+    attacks. If successful the enemy model is automatically knocked down.
+  effect_i18n:
+    es: >-
+      Los ogros aprenden a usar su enorme mole al cargar, arrollando al enemigo. Al cargar, este
+      guerrero puede intentar un único ataque con un modificador de +1 para impactar en lugar de
+      realizar sus ataques normales. Si tiene éxito, el modelo enemigo queda automáticamente derribado.
+- id: shared-rule.camouflage
+  name: Camouflage
+  name_i18n:
+    es: Camuflaje
+  effect: >-
+    This warrior is an expert at camouflage. He wears cloaks of green, brown or grey made from leaves
+    sewn together, and by painting his face and body with green and brown paint he is almost invisible
+    when hiding. When this warrior is hidden, each enemy model has to make an additional Initiative test
+    to spot him.
+  effect_i18n:
+    es: >-
+      Este guerrero es un experto en camuflaje. Lleva capas verdes, marrones o grises hechas de hojas
+      cosidas, y pintándose la cara y el cuerpo con pintura verde y marrón es casi invisible cuando se
+      oculta. Cuando este guerrero está oculto, cada modelo enemigo debe hacer un chequeo adicional de
+      Iniciativa para detectarlo.
+- id: shared-rule.chaos-dwarf-hired-swords
+  name: Hired Swords
+  name_i18n:
+    es: Espadas a Sueldo
+  effect: >-
+    The warband may hire Ogre Bodyguards, Pit Fighters, Warlocks, Imperial Assassins and Hobgoblin
+    Scouts, plus any Hired Sword available to all warbands or to Orc or Chaos warbands. It may never
+    hire Elves.
+  effect_i18n:
+    es: >-
+      La banda puede contratar Guardaespaldas ogros, Luchadores de fosa, Brujos, Asesinos imperiales y
+      Exploradores hobgoblin, más cualquier Espada a sueldo disponible para todas las bandas o para
+      bandas de orcos o del Caos. Nunca puede contratar elfos.
+- id: shared-rule.chosen-of-morr
+  name: Choosen of Morr
+  name_i18n:
+    es: Elegido de Morr
+  effect: >-
+    A Priest of Morr must ALWAYS certify that each dreamer is genuine, not a heretic...or worse! which
+    means that he must prove through a ritual that the dreamer's dreams truly come from Morr and are not
+    the product of necromantic magic or the corruption of chaos. When creating a band of dreamwalkers,
+    the Priest of Morr must roll a D6. If you get a +4, you can hire the Dreamer; Otherwise, the Priest
+    of Morr rejects him, through the necessary ritual he learns that the dreams of that dreamer do not
+    come from Morr. Then the priest himself will take leadership of the warband to fulfill Morr's will.
+    (in game effects the priest of Morr will be considered the Leader). They will be able to try to find
+    (hire) a new genuine Morr Dreamer again after their next battle... paying their costs normally. If
+    the priest finds a genuine dreamer, he will give him the leadership of the band. (For game purposes
+    the Dreamer will be considered the leader, until he dies, in which case leadership will revert to
+    the priest again. Once a band has a genuine Dreamer and he or she dies, they will not be able to
+    hire another one again.)
+  effect_i18n:
+    es: >-
+      Un Sacerdote de Morr debe SIEMPRE certificar que cada soñador es genuino, ¡y no un hereje... o
+      algo peor!, lo que significa que debe demostrar mediante un ritual que los sueños del soñador
+      provienen realmente de Morr y no son producto de la magia necromántica o de la corrupción del
+      caos. Al crear una banda de caminantes del sueño, el Sacerdote de Morr debe lanzar un D6. Si
+      obtienes un 4+, puedes contratar al Soñador; de lo contrario, el Sacerdote de Morr lo rechaza:
+      mediante el ritual necesario aprende que los sueños de ese soñador no provienen de Morr. Entonces
+      el propio sacerdote tomará el liderazgo de la banda para cumplir la voluntad de Morr (a efectos de
+      juego, el sacerdote de Morr será considerado el Líder). Podrán intentar buscar (contratar) de
+      nuevo un Soñador de Morr genuino tras su próxima batalla... pagando sus costes con normalidad. Si
+      el sacerdote encuentra un soñador genuino, le entregará el liderazgo de la banda (a efectos de
+      juego, el Soñador será considerado el líder hasta que muera, en cuyo caso el liderazgo revertirá
+      de nuevo al sacerdote. Una vez que una banda ha tenido un Soñador genuino y este muere, no podrán
+      contratar otro nunca más).
+- id: shared-rule.clockwork-construct
+  name: Construct
+  name_i18n:
+    es: Construcción
+  effect: >-
+    This warrior is a construct as described in the band special rules.
+  effect_i18n:
+    es: >-
+      Este guerrero es un constructo, tal como se describe en las reglas especiales de la banda.
+- id: shared-rule.cloud-of-flies
+  name: Cloud of Flies
+  name_i18n:
+    es: Nube de Moscas
+  effect: >-
+    This warrior is surrounded by a cloud of flies, which buzz around him and his combat opponent. They
+    do not affect this warrior but distract foes by buzzing into eyes, nostrils and mouths. This
+    warrior's close combat opponent suffers a -1 to hit modifier on all attacks.
+  effect_i18n:
+    es: >-
+      Este guerrero está rodeado por una nube de moscas, que zumban a su alrededor y alrededor de su
+      oponente de combate. No afectan a este guerrero pero distraen a los enemigos zumbando en ojos,
+      fosas nasales y bocas. El oponente de combate de este guerrero sufre un modificador de -1 para
+      impactar en todos los ataques.
+- id: shared-rule.craven-mystic-mist
+  name: Craven
+  name_i18n:
+    es: Cobarde
+  effect: >-
+    This warrior is subject to the effects of fear unless protected by Mystic Mist.
+  effect_i18n:
+    es: >-
+      Este guerrero está sujeto a los efectos del miedo salvo que esté protegido por Niebla Mística.
+- id: shared-rule.da-mob-base-rules
+  name: Base Rules (Da Mob)
+  name_i18n:
+    es: Reglas Base (la Horda)
+  effect: >-
+    This warband uses the exact same rules as the Da Mob Warband with the changes listed in this
+    document.
+  effect_i18n:
+    es: >-
+      Esta banda usa exactamente las mismas reglas que la banda de La Horda con los cambios listados en
+      este documento.
+- id: shared-rule.daemonic-immune-to-poison
+  name: Immune to Poison
+  name_i18n:
+    es: Inmune al Veneno
+  effect: >-
+    This warrior is the Daemonic embodiment of disease and pestilence and is totally immune to all
+    poisons and diseases.
+  effect_i18n:
+    es: >-
+      Este guerrero es la encarnación demoníaca de la enfermedad y la pestilencia y es totalmente inmune
+      a todos los venenos y enfermedades.
+- id: shared-rule.daemonic-immune-to-psychology
+  name: Immune to Psychology
+  name_i18n:
+    es: Inmune a la Psicología
+  effect: >-
+    This warrior is a Daemon and does not know the concept of fear. It automatically passes any
+    Leadership-based test it is required to take.
+  effect_i18n:
+    es: >-
+      Este guerrero es un Demonio y no conoce el concepto de miedo. Supera automáticamente cualquier
+      chequeo basado en Liderazgo que deba realizar.
+- id: shared-rule.daemonic-instability
+  name: Daemonic Instability
+  name_i18n:
+    es: Inestabilidad Demoníaca
+  effect: >-
+    This warrior is bound to the world by Dark Sorcery that is highly volatile and unstable. If taken
+    out of action it is banished and effectively destroyed on a D6 roll of 1-3 (do not roll for injury).
+    In addition, if the warband routs then every warrior with this rule must take an immediate
+    Leadership test. If this test is failed, the warrior counts as destroyed.
+  effect_i18n:
+    es: >-
+      Este guerrero está atado al mundo por una Hechicería Oscura muy volátil e inestable. Si es puesto
+      fuera de combate, es desterrado y efectivamente destruido con una tirada de 1D6 de 1-3 (no tires
+      para la herida). Además, si la banda huye, cada guerrero con esta regla debe realizar un chequeo
+      de Liderazgo inmediato. Si este chequeo falla, el guerrero cuenta como destruido.
+- id: shared-rule.devoted-to-the-vampire
+  name: Devoted to the Vampire
+  name_i18n:
+    es: Devotos del Vampiro
+  effect: >-
+    If the Lahmian Vampire is Knocked Down in close combat, this warrior enters Frenzy until the Vampire
+    stands up. He must move toward her as quickly as possible and attacks anyone within 2" of the
+    Vampire. If the Vampire is killed in close combat, this warrior enters Frenzy and is subject to
+    Hatred against her killer until that model dies; after the killer dies, this warrior returns to
+    normal.
+  effect_i18n:
+    es: >-
+      Si el Vampiro Lahmiano es Derribado en combate cuerpo a cuerpo, este guerrero entra en Frenesí
+      hasta que el Vampiro se levante. Debe moverse hacia ella lo más rápido posible y ataca a
+      cualquiera que esté a 2" del Vampiro. Si el Vampiro muere en combate cuerpo a cuerpo, este
+      guerrero entra en Frenesí y está sujeto a Odio contra quien lo mató hasta que ese modelo muera;
+      tras la muerte del asesino, este guerrero vuelve a la normalidad.
+- id: shared-rule.eaters-of-flesh
+  name: Eaters of Flesh
+  name_i18n:
+    es: Comedores de Carne
+  effect: >-
+    If this warrior takes a living enemy out of action and is not in base contact with an enemy model,
+    he will be stricken with a hunger for blood and flesh. He must make a Leadership test and if he
+    fails he will start eating the body. He may do nothing during these turns. When D3 turns are up or
+    he is hit by an attack he may take his turns as normal.
+  effect_i18n:
+    es: >-
+      Si este guerrero deja fuera de combate a un enemigo vivo y no está en contacto base con un modelo
+      enemigo, le asaltará un hambre de sangre y carne. Debe hacer un chequeo de Liderazgo y, si falla,
+      empezará a comerse el cuerpo. No puede hacer nada durante esos turnos. Cuando pasen 1D3 turnos o
+      sea golpeado por un ataque, podrá actuar con normalidad.
+- id: shared-rule.fanatic-automatic-leadership
+  name: Fanatic
+  name_i18n:
+    es: Fanático
+  effect: >-
+    This warrior automatically passes every test based on Leadership.
+  effect_i18n:
+    es: >-
+      Este guerrero supera automáticamente todos los chequeos basados en Liderazgo.
+- id: shared-rule.ferocious-charge
+  name: Ferocious Charge
+  name_i18n:
+    es: Carga Feroz
+  effect: >-
+    This warrior may double his Attacks on the turn in which he charges, but suffers a -1 to hit penalty
+    that turn.
+  effect_i18n:
+    es: >-
+      Este guerrero puede doblar sus Ataques en el turno en el que carga, pero sufre una penalización de
+      -1 para impactar ese turno.
+- id: shared-rule.ghost-pirate-undead
+  name: Undead (Ghost Captain)
+  name_i18n:
+    es: No Muerto (Capitán Fantasma)
+  effect: >-
+    This warrior is Immune to Poison, Immune to Psychology, and causes Fear.
+  effect_i18n:
+    es: >-
+      Este guerrero es inmune al veneno, inmune a la psicología y causa miedo.
+- id: shared-rule.gigantic-spider-poisonous
+  name: Poisonous
+  name_i18n:
+    es: Venenoso
+  effect: >-
+    This warrior's maw drips with vile poisons. When it wounds an enemy and a roll is made on the injury
+    table: 1 = knocked down, 2-4 = stunned, 5-6 = out of action.
+  effect_i18n:
+    es: >-
+      El hocico de este guerrero gotea venenos repugnantes. Cuando hiere a un enemigo y se tira en la
+      tabla de heridas: 1 = derribado, 2-4 = aturdido, 5-6 = Fuera de combate.
+- id: shared-rule.hates-the-living
+  name: Hates the Living
+  name_i18n:
+    es: Odia a los Vivientes
+  effect: >-
+    This warrior may hire only Undead Hired Swords or Dramatis Personae.
+  effect_i18n:
+    es: >-
+      Este guerrero solo puede contratar Espadas a Sueldo o Dramatis Personae No muertos.
+- id: shared-rule.hide-in-shadows
+  name: Hide in Shadows
+  name_i18n:
+    es: Ocultarse en las Sombras
+  effect: >-
+    This warrior has become an expert at concealing himself from his enemies (and potential victims!).
+    An enemy warrior attempting to detect this warrior when he is Hidden must halve his Initiative
+    (round up) before measuring the distance.
+  effect_i18n:
+    es: >-
+      Este guerrero se ha convertido en un experto ocultándose de sus enemigos (¡y de sus potenciales
+      víctimas!). Un guerrero enemigo que intente detectar a este guerrero cuando esté Oculto debe
+      dividir a la mitad su Iniciativa (redondeando hacia arriba) antes de medir la distancia.
+- id: shared-rule.hobgoblin-moving-shot
+  name: Moving Shot
+  name_i18n:
+    es: Disparo en Movimiento
+  effect: >-
+    This warrior ignores the normal shooting penalty for moving. This rule may also be used while this
+    warrior is mounted on a Giant Wolf.
+  effect_i18n:
+    es: >-
+      Este guerrero ignora la penalización normal de disparo por moverse. Esta regla también puede
+      usarse mientras este guerrero esté montado en un Lobo Gigante.
+- id: shared-rule.ignore-pain
+  name: Ignore Pain
+  name_i18n:
+    es: Ignorar el Dolor
+  effect: >-
+    Requires the Resilient Strength skill. This warrior treats a Stunned result on the Injury chart as
+    Knocked Down.
+  effect_i18n:
+    es: >-
+      Requiere la habilidad Fuerza Resistente. Este guerrero trata un resultado de Aturdido en la tabla
+      de Heridas como Derribado.
+- id: shared-rule.ignored-for-rout
+  name: Ignored
+  name_i18n:
+    es: Ignorado
+  effect: >-
+    When this warrior is out of action he does not count toward the number of out-of-action models for
+    the purpose of Rout tests.
+  effect_i18n:
+    es: >-
+      Cuando este guerrero está Fuera de combate no cuenta para el número de modelos Fuera de combate a
+      efectos de chequeos de huida.
+- id: shared-rule.immune-to-drugs-and-poisons
+  name: Immune to Poisons
+  name_i18n:
+    es: Inmune a Venenos
+  effect: >-
+    This warrior is not affected by any drug or poison.
+  effect_i18n:
+    es: >-
+      Este guerrero no se ve afectado por ninguna droga ni veneno.
+- id: shared-rule.impossible-to-hide
+  name: Impossible to Hide
+  name_i18n:
+    es: Imposible de Ocultar
+  effect: >-
+    This warrior is too large to Hide.
+  effect_i18n:
+    es: >-
+      Este guerrero es demasiado grande para Ocultarse.
+- id: shared-rule.jungle-native
+  name: Jungle Native
+  name_i18n:
+    es: Nativos de la Selva
+  effect: >-
+    This warrior moves through jungle terrain without movement penalties.
+  effect_i18n:
+    es: >-
+      Este guerrero se mueve por terreno de selva sin penalizaciones de movimiento.
+- id: shared-rule.jungle-natives-band
+  name: Jungle Natives
+  name_i18n:
+    es: Nativos de la Selva
+  effect: >-
+    Warriors of this warband suffer no movement penalties for moving through woods or any kind of
+    vegetation.
+  effect_i18n:
+    es: >-
+      Los guerreros de esta banda no sufren penalizaciones de movimiento por moverse por bosques ni por
+      ningún tipo de vegetación.
+- id: shared-rule.khemri-disable-traps
+  name: Disable Traps
+  name_i18n:
+    es: Desactivar Trampas
+  effect: >-
+    This warrior is an expert at detecting and disabling traps. Resolve this using the trap rules
+    referenced by the Khemri Experience section.
+  effect_i18n:
+    es: >-
+      Este guerrero es un experto en detectar y desactivar trampas. Resuélvelo usando las reglas de
+      trampas referenciadas por la sección de Experiencia de Khemri.
+- id: shared-rule.life-of-slavery
+  name: Life of Slavery
+  name_i18n:
+    es: Vida de Esclavitud
+  effect: >-
+    This warrior may gain experience, but if he rolls The Lad's Got Talent the leader executes him and
+    he is removed from the roster. The rest of the group may then re-roll their advance.
+  effect_i18n:
+    es: >-
+      Este guerrero puede ganar experiencia, pero si obtiene 'El mozo tiene talento' el líder lo ejecuta
+      y se retira de la lista. El resto del grupo puede entonces repetir su mejora.
+- id: shared-rule.looney
+  name: Looney
+  name_i18n:
+    es: Chiflado
+  effect: >-
+    Due to the effect of the mushrooms this warrior is subject to Frenzy. He must also test for
+    permanent damage after the battle as described in the rulebook.
+  effect_i18n:
+    es: >-
+      Debido al efecto de las setas, este guerrero está sujeto a Frenesí. También debe hacer un chequeo
+      de daño permanente tras la batalla, tal y como se describe en el libro de reglas.
+- id: shared-rule.low-caste
+  name: Low Caste
+  name_i18n:
+    es: Baja Cuna
+  effect: >-
+    This warrior is a peasant, and while peasants are not stupid, there is a glass ceiling to what they
+    can attain in Bretonnian society. Low Caste henchmen gain experience and advance as normal, but
+    reroll any results of "The Lad's Got Talent", and may never become heroes.
+  effect_i18n:
+    es: >-
+      Este guerrero es un campesino y, aunque los campesinos no son estúpidos, hay un techo de cristal
+      en lo que pueden alcanzar en la sociedad bretoniana. Los secuaces de Baja cuna ganan experiencia y
+      mejoran con normalidad, pero repiten cualquier resultado de 'El mozo tiene talento' y jamás pueden
+      convertirse en héroes.
+- id: shared-rule.monster-slayer
+  name: Monster Slayer
+  name_i18n:
+    es: Matamostro
+  effect: >-
+    This warrior always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
+    Strength (after all modifiers for weapons used, etc.) would mean that a lower roll than this is
+    needed.
+  effect_i18n:
+    es: >-
+      Este guerrero siempre hiere a cualquier oponente con una tirada de 4+, independientemente de la
+      Resistencia, a menos que su propia Fuerza (tras todos los modificadores por armas usadas, etc.)
+      signifique que se necesita una tirada menor.
+- id: shared-rule.monster-slayer-trollheim
+  name: Monster Slayer
+  name_i18n:
+    es: Matamostro
+  effect: >-
+    This warrior always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength
+    would normally allow him to wound on a lower result.
+  effect_i18n:
+    es: >-
+      Este guerrero siempre hiere a un oponente con un 4+ independientemente de su Resistencia, salvo
+      que su Fuerza modificada le permita normalmente herir con un resultado menor.
+- id: shared-rule.natural-stealth
+  name: Natural Stealth
+  name_i18n:
+    es: Sigilo Natural
+  effect: >-
+    While this warrior is Hidden, enemy models suffer -1 Initiative when determining whether they can
+    detect it.
+  effect_i18n:
+    es: >-
+      Mientras este guerrero esté Oculto, los modelos enemigos sufren -1 de Iniciativa al determinar si
+      pueden detectarlo.
+- id: shared-rule.natural-weapons-animal
+  name: Natural Weapons
+  name_i18n:
+    es: Armas Naturales
+  effect: >-
+    This warrior is an animal and never uses weapons or armour; its claws and jaws are natural attacks.
+  effect_i18n:
+    es: >-
+      Este guerrero es un animal que nunca usa armas ni armaduras; sus garras y mandíbulas son ataques
+      naturales.
+- id: shared-rule.night-goblin-animosity
+  name: Animosity
+  name_i18n:
+    es: Rencor
+  effect: >-
+    Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this will
+    happen at the worst of times. At the beginning of each Night Goblin turn roll a D6. On a roll of 1
+    they start to squabble and will do nothing else for the rest of the turn. Only Night Goblins are
+    affected. Trolls, Squigs, Snotlings and other non-goblins are not affected and will act as normal.
+  effect_i18n:
+    es: >-
+      Los Goblins pasan gran parte de sus vidas riñendo y peleando entre ellos. A veces esto ocurre en
+      el peor de los momentos. Al inicio de cada turno de Goblins Nocturnos tira 1D6. Con un resultado
+      de 1, empiezan a reñir y no harán nada más durante el resto del turno. Solo se ven afectados los
+      Goblins Nocturnos. Trolls, Squigs, Snotlings y otros no goblins no se ven afectados y actuarán con
+      normalidad.
+- id: shared-rule.no-brain
+  name: No Brain
+  name_i18n:
+    es: Sin Cerebro
+  effect: >-
+    This warrior never gains Experience.
+  effect_i18n:
+    es: >-
+      Este guerrero nunca gana Experiencia.
+- id: shared-rule.not-hired
+  name: Not Hired (Floordogs)
+  name_i18n:
+    es: No Contratados (Perros de Cubierta)
+  effect: >-
+    This warrior is not hired; it follows the special 'recruitment' rules.
+  effect_i18n:
+    es: >-
+      Este guerrero no se contrata; sigue las reglas especiales de 'reclutamiento'.
+- id: shared-rule.pestilens-resilient
+  name: Resilient (Plague Priest)
+  name_i18n:
+    es: Resistente
+  effect: >-
+    This warrior is a disease-ridden Skaven and starts with the Resilient Strength skill.
+  effect_i18n:
+    es: >-
+      Este guerrero es un skaven lleno de enfermedades y empieza con la habilidad de Fuerza Resistente.
+- id: shared-rule.pit-fighter-arms-master
+  name: Arms Master
+  name_i18n:
+    es: Maestro de Armas
+  effect: >-
+    This warrior ignores all 'difficult to use' weapon restrictions and may combine weapons that would
+    normally be prohibited.
+  effect_i18n:
+    es: >-
+      Este guerrero ignora todas las restricciones de armas 'difíciles de usar' y puede combinar armas
+      que normalmente estarían prohibidas.
+- id: shared-rule.pit-fighter-body-slam
+  name: Body Slam
+  name_i18n:
+    es: Planchazo
+  effect: >-
+    Instead of making normal charge attacks, this warrior may make a single Body Slam attack at +1
+    Strength and +1 to hit, with no weapon or skill modifiers. The attack scores a critical hit on 5+.
+  effect_i18n:
+    es: >-
+      En lugar de realizar los ataques de carga normales, este guerrero puede realizar un único ataque
+      de Planchazo a +1 Fuerza y +1 para impactar, sin modificadores de armas ni habilidades. El ataque
+      causa un impacto crítico con un 5+.
+- id: shared-rule.pit-fighter-bulging-biceps
+  name: Bulging Biceps
+  name_i18n:
+    es: Bíceps Desbordantes
+  effect: >-
+    This warrior ignores the penalty from the Heavy weapon special rule; the weapon's Strength bonus
+    therefore applies in every round of close combat.
+  effect_i18n:
+    es: >-
+      Este guerrero ignora la penalización de la regla especial de Arma Pesada; el bonificador de Fuerza
+      del arma se aplica por tanto en cada asalto de combate cuerpo a cuerpo.
+- id: shared-rule.pristekk-countless
+  name: Countless
+  name_i18n:
+    es: Incontables
+  effect: >-
+    Giant Rats may increase the warband's numbers up to 20.
+  effect_i18n:
+    es: >-
+      Las Ratas Gigantes pueden aumentar el número de la banda hasta 20.
+- id: shared-rule.prize-fighter
+  name: Prize-Fighter
+  name_i18n:
+    es: Luchador
+  effect: >-
+    This warrior suffers no penalties whatsoever for fighting unarmed and receives +1 Attack when doing
+    so.
+  effect_i18n:
+    es: >-
+      Este guerrero no sufre penalización alguna por luchar desarmado y recibe +1 Ataque al hacerlo.
+- id: shared-rule.protection-of-sigmar
+  name: Protection of Sigmar
+  name_i18n:
+    es: Protección de Sigmar
+  effect: >-
+    This warrior has been blessed by the Church of Sigmar. Any spell which would affect this warrior is
+    nullified on a D6 roll of 4+. Note that if the spell is nullified it will not affect any other
+    models either.
+  effect_i18n:
+    es: >-
+      Este guerrero ha sido bendecido por la Iglesia de Sigmar. Cualquier conjuro que pudiera afectarle
+      se anula con un resultado de 4+ en 1D6. Ten en cuenta que, si el conjuro se anula, tampoco
+      afectará a ningún otro modelo.
+- id: shared-rule.reikland-military-discipline
+  name: Reikland — Military Discipline
+  name_i18n:
+    es: Reikland — Disciplina Militar
+  effect: >-
+    Warriors of this warband may use their Captain's Leadership while within 12" instead of the normal
+    6".
+  effect_i18n:
+    es: >-
+      Los guerreros de esta banda pueden usar el Liderazgo de su Capitán estando a 12" en lugar de los
+      6" habituales.
+- id: shared-rule.ride-blazing-saddles
+  name: Ride
+  name_i18n:
+    es: Montar
+  effect: >-
+    This warrior has the Ride skill as detailed in the Blazing Saddles article.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
+- id: shared-rule.ride-warhorse
+  name: Ride Warhorse
+  name_i18n:
+    es: Montar Corcel de Guerra
+  effect: >-
+    This warrior has the Ride Warhorse skill.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene la habilidad Montar corcel de guerra.
+- id: shared-rule.riding-horses
+  name: Riding (Horse)
+  name_i18n:
+    es: Montar (Caballo)
+  effect: >-
+    This warrior has the Riding (horses) skill.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene la habilidad Montar (caballos).
+- id: shared-rule.saurus-bite-attack
+  name: Bite Attack
+  name_i18n:
+    es: Ataque de Mordisco
+  effect: >-
+    This warrior makes one additional bite attack using its own Strength to wound and suffers no penalty
+    for fighting unarmed. The bite always strikes last, regardless of who charged or which weapons are
+    used, and is resolved after attacks made with Great Weapons.
+  effect_i18n:
+    es: >-
+      Este guerrero realiza un ataque de mordisco adicional usando su propia Fuerza para herir y no
+      sufre penalización por combatir desarmado. El mordisco siempre golpea en último lugar, sin
+      importar quién cargó ni qué armas se usen, y se resuelve tras los ataques realizados con Armas a
+      dos manos.
+- id: shared-rule.scaly-skin-4
+  name: Scaly Skin
+  name_i18n:
+    es: Piel Escamosa
+  effect: >-
+    This warrior has a natural save of 4+.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene una salvación natural de 4+.
+- id: shared-rule.scaly-skin-6
+  name: Scaly Skin 6+
+  name_i18n:
+    es: Piel Escamosa 6+
+  effect: >-
+    This warrior has a natural 6+ Scaly Skin save.
+  effect_i18n:
+    es: >-
+      Este guerrero tiene una salvación natural de Piel Escamosa de 6+.
+- id: shared-rule.scorpion-sting
+  name: Scorpion's Sting
+  name_i18n:
+    es: Aguijón de Escorpión
+  effect: >-
+    This warrior attacks with the poisonous sting in its tail. The source resolves this as though the
+    attack used Black Lotus; the underlying poison-item mechanics are intentionally not duplicated in
+    this file.
+  effect_i18n:
+    es: >-
+      Este guerrero ataca con el aguijón venenoso de su cola. La fuente lo resuelve como si el ataque
+      usara Loto Negro; las mecánicas subyacentes del objeto veneno no están duplicadas
+      intencionadamente en este fichero.
+- id: shared-rule.skittish
+  name: Skittish
+  name_i18n:
+    es: Nerviosos
+  effect: >-
+    As a newly crowned Slayer, this warrior does not have the skill 'Death Wish' and suffers psychology
+    like normal. When he gains 'That Lad's Got Talent', instead of making an immediate roll on the Hero
+    Advance Table, he MUST learn the skill 'Death Wish'.
+  effect_i18n:
+    es: >-
+      Como Matatrolles recién coronado, este guerrero no tiene la habilidad "Deseo de Muerte" y sufre
+      psicología con normalidad. Cuando gana "¡Ese Chico Tiene Talento!", en lugar de hacer una tirada
+      inmediata en la Tabla de Mejoras del Héroe, DEBE aprender la habilidad "Deseo de Muerte".
+- id: shared-rule.skittish-slayer-promotion
+  name: Skittish (Promotion Rule)
+  name_i18n:
+    es: Asustadizos (Regla de Ascenso)
+  effect: >-
+    As a newly crowned Slayer, this warrior does not have the skill 'Death Wish', and suffers psychology
+    like normal. When this warrior gains 'That Lad's Got Talent', instead of making an immediate roll on
+    the Hero Advance Table, he MUST learn 'Death Wish'. Death Wish may be learned even if the model does
+    not choose Special skills as one of his two skill lists.
+  effect_i18n:
+    es: >-
+      Como Matagigantes recién coronado, este guerrero no tiene la habilidad 'Deseo de Muerte' y sufre
+      psicología con normalidad. Cuando este guerrero gana 'Ese Chico Tiene Talento', en lugar de hacer
+      una tirada inmediata en la Tabla de Progreso de Héroes, DEBE aprender 'Deseo de Muerte'. Deseo de
+      Muerte puede aprenderse aunque el modelo no elija Habilidades Especiales como una de sus dos
+      listas de habilidades.
+- id: shared-rule.slayer-berserker
+  name: Berserker
+  name_i18n:
+    es: Berserker
+  effect: >-
+    This warrior gains +1 To Hit during the turn in which he charges.
+  effect_i18n:
+    es: >-
+      Este guerrero gana +1 para impactar durante el turno en el que carga.
+- id: shared-rule.slayer-skills
+  name: Slayer Skills
+  name_i18n:
+    es: Habilidades de Matatrolles
+  effect: >-
+    This warrior may choose a skill from the Troll Slayer Skill table instead of the normal Skill tables
+    when he gains a new skill.
+  effect_i18n:
+    es: >-
+      Este guerrero puede elegir una habilidad de la tabla de Habilidades de Matatrolles en lugar de las
+      tablas de Habilidades normales cuando gana una nueva habilidad.
+- id: shared-rule.sluggas
+  name: Sluggas
+  name_i18n:
+    es: Apedreadores (Sluggas)
+  effect: >-
+    In the shooting phase, this warrior may throw thrown weapons up to three times. This may not be
+    combined with Quick Shot if he is promoted to hero status.
+  effect_i18n:
+    es: >-
+      En la fase de disparo, este guerrero puede lanzar armas arrojadizas hasta tres veces. Esto no
+      puede combinarse con Disparo Rápido si es ascendido a estatus de héroe.
+- id: shared-rule.snotling-teamwork
+  name: Teamwork
+  name_i18n:
+    es: Trabajo en Equipo
+  effect: >-
+    While this model technically consists of several snotlings, for all intents and purposes they count
+    as one model.
+  effect_i18n:
+    es: >-
+      Aunque este modelo técnicamente consiste en varios snotlings, a todos los efectos prácticos cuenta
+      como un solo modelo.
+- id: shared-rule.spiked-tail
+  name: Spiked Tail
+  name_i18n:
+    es: Cola con Púas
+  effect: >-
+    Fimir have a flexible tail with a mace-like bony tip; this warrior gains an extra tail attack in
+    each hand-to-hand combat phase at the Fimir's Strength +1.
+  effect_i18n:
+    es: >-
+      Los Fimir tienen una cola flexible con punta ósea de maza; este guerrero obtiene un ataque de cola
+      extra en cada fase de combate cuerpo a cuerpo a la Fuerza del Fimir +1.
+- id: shared-rule.stupidity-mystic-mist
+  name: Stupidity
+  name_i18n:
+    es: Estupidez
+  effect: >-
+    This warrior is subject to stupidity unless protected by Mystic Mist.
+  effect_i18n:
+    es: >-
+      Este guerrero está sujeto a estupidez salvo que esté protegido por Niebla Mística.
+- id: shared-rule.swabbie-limit
+  name: Swabbie Limit
+  name_i18n:
+    es: Límite de Fregones
+  effect: >-
+    The warband may never include more Swabbies than Crew.
+  effect_i18n:
+    es: >-
+      La banda nunca puede incluir más Fregonas que Tripulación.
+- id: shared-rule.thieves-guild-contacts
+  name: Contacts
+  name_i18n:
+    es: Contactos
+  effect: >-
+    This warrior gains +1 on rolls to find Rare items in the black market.
+  effect_i18n:
+    es: >-
+      Este guerrero obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
+- id: shared-rule.thieves-guild-wanted
+  name: Wanted
+  name_i18n:
+    es: Buscado
+  effect: >-
+    If this warrior is captured by an enemy warband after a battle, that warband may sell him to the
+    authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the captive:
+    1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1 Toughness and
+    -3 on rolls to find Rare items; 6 = he is executed.
+  effect_i18n:
+    es: >-
+      Si este guerrero es capturado por una banda enemiga tras una batalla, esa banda puede venderlo a
+      las autoridades por 1D6 más su Experiencia acumulada en coronas de oro. Luego tira D6 por el
+      cautivo: 1-3 = le cortan una mano; 4-5 = le marcan la frente con hierro, sufriendo -1 Resistencia
+      y -3 en las tiradas para encontrar objetos Raros; 6 = es ejecutado.
+- id: shared-rule.unforgiving
+  name: Unforgiving
+  name_i18n:
+    es: Implacables
+  effect: >-
+    In multiplayer games, this warband may never form an alliance with a warband of a Chaotic nature,
+    including Possessed, Skaven, Beastmen and Dark Elves.
+  effect_i18n:
+    es: >-
+      En partidas multijugador, esta banda nunca puede formar una alianza con una banda de naturaleza
+      Caótica, incluyendo Poseídos, Skaven, Hombres bestia y Elfos Oscuros.
+- id: shared-rule.unpredictable-attack
+  name: Unpredictable
+  name_i18n:
+    es: Impredecible
+  effect: >-
+    This warrior may declare one of its attacks Unpredictable; that attack cannot be parried by the
+    opponent.
+  effect_i18n:
+    es: >-
+      Este guerrero puede declarar uno de sus ataques Impredecible; ese ataque no puede ser parado por
+      el oponente.
+- id: shared-rule.waaagh-wizard
+  name: Wizard
+  name_i18n:
+    es: Mago
+  effect: >-
+    This warrior is a Wizard and uses Waaagh! Magic.
+  effect_i18n:
+    es: >-
+      Este guerrero es un Hechicero y usa la Magia ¡Waaagh!.
+- id: shared-rule.wizard-horned-rat
+  name: Wizard
+  name_i18n:
+    es: Mago
+  effect: >-
+    This warrior is a wizard and uses the Magic of the Horned Rat. See the Magic section of the rulebook
+    for details.
+  effect_i18n:
+    es: >-
+      Este guerrero es un mago y usa la Magia de la Rata Cornuda. Consulta la sección de Magia del libro
+      de reglas para más detalles.

@@ -1,0 +1,128 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.scryer
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios derived from the printed rule ("A Sleuth can re-roll
+#   any rolls in close combat (the second result must be accepted)") and the 2026-11-18 ruling
+#   (docs/decisions/design-rulings.md, Conformance triage decisions, second batch: "Scryer
+#   rerolls only the Sleuth's own close-combat dice"): each of the bearer's own rolls may be
+#   re-rolled at most once, the second result stands, no resource is spent and the opponent's
+#   dice are never touched; the exploration re-roll is outside the duel.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios on a hand-built bearer (skill_ids: [mechanic.scryer], mirroring
+#   cases/mechanics/mechanic.hypnotist.yaml): the missed To Hit die re-rolled into a hit whose
+#   wound die then gets its own declined offer, the worse second result that stands with no
+#   second re-roll, the declined re-roll that keeps the miss, and the opponent's dice receiving
+#   no scryer decision at all.  The real-recipient scenarios live in the grants file of
+#   rule/mordheim/watchmen-mim/private-sleuth--scryer/mechanic.scryer.
+
+# --- Authored scenarios ---
+# The bearer (WS3 vs WS3, hitting on 4+) misses on a 2, takes the printed re-roll
+# (decision round.0.second.attack.0.hit.scryer) and the second die of 4 hits, so the To Wound
+# die is requested.  That wound die receives its own scryer offer - a per-roll choice, never a
+# spent resource - which is declined, and the 1 wounds nothing (mace S3 vs T3 needs 4+).
+- audit_id: mechanic/mechanic.scryer
+  id: a-missed-hit-is-rerolled-and-the-second-result-hits
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.scryer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.attack.0.hit.scryer, value: true}
+    - {key: round.0.second.attack.0.wound.scryer, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit.scryer.reroll, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: true, attacks.1.wounded: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "the second result must be accepted": a 5 that already hits is re-rolled into a 2
+# and the miss stands.  A roll already re-rolled is never offered scryer again (its key carries
+# .scryer.reroll), so the strict tape's complete consumption also proves that no second re-roll
+# was requested, and no To Wound die follows the standing miss.
+- audit_id: mechanic/mechanic.scryer
+  id: a-worse-second-result-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.scryer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.attack.0.hit.scryer, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 5}
+    - {key: round.0.second.attack.0.hit.scryer.reroll, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "can re-roll" is an option: declining it keeps the missed 2 and requests no
+# re-roll die.
+- audit_id: mechanic/mechanic.scryer
+  id: a-declined-reroll-keeps-the-miss
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.scryer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.attack.0.hit.scryer, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The adopted boundary: only the bearer's OWN dice are eligible (modular/contexts.py reads the
+# roller's effects).  The bearer is silenced and the opponent rolls its hit and its failed
+# wound; the tape declares no decision at all, and the runner's complete consumption of strict
+# scripts makes that absence assertive - had the engine offered the bearer a re-roll of an
+# enemy die, the undeclared decision request would fail the scenario.
+- audit_id: mechanic/mechanic.scryer
+  id: the-opponents-dice-offer-no-scryer-decision
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.scryer]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

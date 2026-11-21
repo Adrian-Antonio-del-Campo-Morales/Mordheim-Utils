@@ -69,6 +69,47 @@ def _objects(value, count: int) -> np.ndarray:
     return column
 
 
+class TrackedObjects(np.ndarray):
+    """Object column that remembers whether any element was ever assigned.
+
+    ``touched`` turns on at the first item assignment, on this array or on a
+    view of it.  While it is off, every row still holds the column's initial
+    value, so a per-row truth test can be answered without visiting the rows.
+    Views and copies of a tracked column inherit its flag; an array of any
+    other origin (concatenation, ufunc output) starts touched, which only
+    falls back to the full per-row test.  Writes that bypass item assignment
+    (``fill``, ``np.copyto``, ``out=``) are not tracked; the engine's writers
+    (``_mutations.py``) assign items.
+    """
+
+    touched: bool
+
+    def __array_finalize__(self, obj) -> None:
+        self.touched = obj.touched if isinstance(obj, TrackedObjects) else True
+
+    def __setitem__(self, key, value) -> None:
+        array = self
+        while isinstance(array, TrackedObjects):
+            array.touched = True
+            array = array.base
+        super().__setitem__(key, value)
+
+
+def _tracked_objects(value, count: int) -> TrackedObjects:
+    """``_objects`` for a column whose untouched state must be cheap to test."""
+    column = _objects(value, count).view(TrackedObjects)
+    column.touched = False
+    return column
+
+
+def any_true_objects(column: np.ndarray) -> np.ndarray:
+    """``column.astype(bool)``, skipped for an untouched falsy tracked column."""
+    if (isinstance(column, TrackedObjects) and not column.touched
+            and (column.size == 0 or not column[0])):
+        return np.zeros(column.shape, dtype=bool)
+    return column.astype(bool)
+
+
 # ``maximum_wounds`` is re-exported from the validated modular contract: the
 # extra Wound of the shared monstrous operator and the Petru Fortitude
 # exception must stay one definition, not a second copy.
@@ -241,7 +282,7 @@ def initialize_fighter(
         grappled=np.zeros(count, dtype=bool),
         grappling=np.zeros(count, dtype=bool),
         backley_penalties=_objects(tuple(backley.items()), count),
-        mutations=_objects((), count),
+        mutations=_tracked_objects((), count),
         mutation_equipment=_objects(None, count),
         mutation_weapon_limbs=_objects((), count),
         mutated_hands=_objects((), count),
@@ -253,7 +294,7 @@ def initialize_fighter(
             count, "compiler.hillman-wolf-form" in fighter.construction_tags, dtype=bool,
         ),
         mutation_tail=np.full(count, -1, dtype=np.int8),
-        effective_fighter=_objects(None, count),
+        effective_fighter=_tracked_objects(None, count),
         drenok_fighting=np.zeros(count, dtype=bool),
         # Once-per-battle markers: the modular state starts with an empty
         # ``resources_spent``, so neither resource is spent at duel start.

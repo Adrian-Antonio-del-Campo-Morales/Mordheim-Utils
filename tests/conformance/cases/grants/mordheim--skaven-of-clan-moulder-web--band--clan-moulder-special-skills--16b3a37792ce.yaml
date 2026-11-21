@@ -1,0 +1,133 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
+# authoring_status: AUTHORED
+# Status corrected 2026-11-19: the open reading is settled by the ruling "Hypnotic Musk gates the
+#   animal's charge" (docs/decisions/design-rulings.md, 2026-11-19): the printed "wishing to charge
+#   him must pass a Leadership test to do so" is a charge gate, which these scenarios assert and
+#   modular/psychology.py implements (with the printed mount and Goading exceptions).
+# Real-recipient addendum (2026-11-16): 2 further scenario(s) build the printed Skaven of Clan
+# Moulder profile itself (packmaster) and select band--clan-moulder-special-skills-hypnotic-musk
+# through special_rule_ids, so the KB grant of this identity is exercised rather than only the
+# shared operator injected into hand-built fixtures; the earlier fixture scenarios stay as the
+# operator cases.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+# AUTHORED: 4 scenarios cover the animal charger's failed musk gate and the ungated non-animal charger.
+# Disposition (the former PARTIAL marker, retired 2026-11-19; kept as provenance): Scenarios moved here on 2026-11-16 from the placeholder identity rule/mordheim/skaven-of-
+#   clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-
+#   web.special.clan-moulder-special-skills, whose KB effect is now unbound (covered.elsewhere: each
+#   listed skill is its own bound identity); the duel behaviour they exercise is this identity's.
+#   Inputs, dice and expectations are unchanged by the move; each scenario's own comments carry its
+#   derivation and may still name the placeholder record they were authored against.  An animal charger
+#   takes the musk gate and fails it; a non-animal charger is ungated.  Gap (an open reading, not a
+#   missing input): the scenarios take the charge-gate reading of the printed text, and the KB records
+#   no ruling between that and the attack-variant reading; a ruling in docs/decisions/design-rulings.md
+#   would settle it.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
+  id: the-animal-charger-takes-the-musk-gate-and-fails-it
+  # The printed gate: an animal charger must pass a Leadership test to charge the musking
+  # warrior.  The charging enemy (declared Leadership 5, normal animal) rolls 4+3 = 7, above 5,
+  # so the charge fails and the round resolves without combat - the strict tape holds no combat
+  # dice, even though the enemy declared one.
+  fighters:
+    first:
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false}
+  # The failed gate cancels the charge, so the duel is no longer engaged and the
+  # documented termination reason for that state is `disengaged`.
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The control: a non-animal charger of the same build is not printed by the clause, so no gate die
+# exists and the charge resolves as ordinary close combat (natural-1 strikes miss for everyone).
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
+  id: the-non-animal-charger-is-ungated
+  fighters:
+    first:
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Real recipient (2026-11-16): the same duel as the-animal-charger-takes-the-musk-gate-and-fails-it,
+# but the bearer is built as the printed Skaven of Clan Moulder Packmaster profile
+# (mordheim/skaven-of-clan-moulder-web/packmaster), with the band rule selected through
+# special_rule_ids [band--clan-moulder-special-skills-hypnotic-musk] instead of injecting
+# mechanic.hypnotic-musk into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
+  id: the-animal-charger-takes-the-musk-gate-and-fails-it-as-the-real-packmaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+      special_rule_ids: [band--clan-moulder-special-skills-hypnotic-musk]
+    second:
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context:
+    charging: [second]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+  - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# Real recipient (2026-11-16): the same duel as the-non-animal-charger-is-ungated, but the bearer is
+# built as the printed Skaven of Clan Moulder Packmaster profile
+# (mordheim/skaven-of-clan-moulder-web/packmaster), with the band rule selected through
+# special_rule_ids [band--clan-moulder-special-skills-hypnotic-musk] instead of injecting
+# mechanic.hypnotic-musk into a hand-built fighter; the explicit characteristics keep that
+# scenario's dice model.
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills-hypnotic-musk/mechanic.hypnotic-musk
+  id: the-non-animal-charger-is-ungated-as-the-real-packmaster
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+      special_rule_ids: [band--clan-moulder-special-skills-hypnotic-musk]
+    second:
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context:
+    charging: [second]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - {key: round.0.second.attack.0.hit, value: 1}
+  - {key: round.0.second.attack.1.hit, value: 1}
+  - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

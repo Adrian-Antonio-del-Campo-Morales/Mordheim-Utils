@@ -4,7 +4,7 @@ Prerequisites: [Architecture](../reference/architecture.md) and
 [Verification](../reference/verification.md).
 
 The modular engine is the rule reference. Its mechanics tests establish the
-expected behaviour from written sources; E2E tests exercise the connected
+expected behaviour from written sources; conformance scenarios exercise the connected
 KB/compiler/modular pipeline. Statistical parity compares NumPy and native
 with that reference. The former semantic YAML runner and NumPy operation
 adapters are retired; no parallel specification corpus is required.
@@ -23,7 +23,7 @@ adapters are retired; no parallel specification corpus is required.
 5. Express the rule and its relevant limits in
    `tests/engines/modular/mechanics/`. Reuse exact frozen inputs where available.
    Do not substitute a similar fighter or weaken an assertion for a missing key.
-6. Use `tests/integration/e2e/` for the connection from actual construction to
+6. Use the rules-conformance suite (`tests/conformance/`) for the connection from actual construction to
    observed modular results. Real compilation/eligibility and KB contracts
    belong in `tests/construction/` and `tests/knowledge/` respectively.
 
@@ -39,40 +39,38 @@ not replace the mechanics assertions.
 ## Use the development queue
 
 ```powershell
-python tools/mordheim-utils.py check report rules --inventory-only --historical-origins --output outputs/audit/development
+python tools/knowledge/clauses.py coverage --pending          # admitted clauses nobody covers yet
+python tools/knowledge/clauses.py coverage --identity <id>    # one identity's clauses and references
+python tools/knowledge/clauses.py check                       # unknown references, YES clauses under non-YES effects
+python tools/mordheim-utils.py check report rules --output outputs/audit
 ```
 
-Use `combat-audit.csv` as the operational list. `--work-status implementation_required`
-selects admitted effects needing implementation; `--family <mechanism>` groups
-related effects. `development_family` uses the existing origin register's names.
-The legacy `--t13` spelling of `--historical-origins` remains compatible.
+The knowledge base is the queue. Every core rule, kept mechanic, implemented
+item and `YES` rule effect is one obligation, split into `clauses: [{id, scope}]`
+only when its printed text has several observable parts; the conformance corpus names
+them through `audit_id`/`covers` and the deterministic suites through
+`@pytest.mark.covers(identity, *clause_ids)`. `rules-inventory.csv` lists every
+rule effect, mechanic and item with its scope, binding and `status`
+(`covered`, `partial`, `uncovered`); filter it in a spreadsheet.
 
-An inventory export is a structural/planning snapshot, not executed behavioural
-proof. Legacy `semantic_status`, `semantic_reason` and related CSV fields must
-not be read as a newly passed semantic suite: that runner has been retired.
-Export success means files were written. It does not certify mechanics, E2E
+A coverage export is a structural snapshot of declared references, not executed
+behavioural proof: the named scenarios and tests must still run and pass.
+Export success means files were written. It does not certify mechanics, conformance
 or statistical parity.
 
-| Work status | Next step |
+| Status | Next step |
 | --- | --- |
-| `implementation_required` | Implement the complete admitted effect. |
-| `implemented_pending_verification` | Review actual mechanics/E2E evidence before changing the implementation. |
-| `deferred_scope_review` | Review scope and prerequisites; `LATER` is not an exclusion. |
-| `needs_classification` | Classify against the current 1v1 duel scope. |
-| `needs_ruling` | Resolve a concrete unanswered source question. |
-| `needs_question_review` | Reconcile historical questions with current adopted decisions. |
-| `needs_target_reconciliation` | Locate the current clause and existing implementation. |
-| `verified_modular` | No modular implementation work remains; optimized ports stay separate. |
-| `excluded` | No duel implementation work. |
+| `uncovered` / `partial` | Author the missing conformance scenarios or mark the deterministic test that demonstrates the clause. |
+| `covered` | Review the named evidence before changing the implementation; coverage is declared, not proven. |
+| effect `implemented: NO` with YES clauses | Implement the complete admitted effect, reusing its binding family. |
+| clause `YES` under a `NO`/`LATER` effect (`check`) | Reconcile the clause scope with the effect classification. |
+| unbound effect | Its `reason` code says why (`pending-classification`, `out-of-scope.*`, `deferred.*`); the archived free text is in `docs/archive/reason-texts.csv`. |
 
 Bindings and `implemented: YES` are declarations, not independent behavioural
 proof. Planned bindings require explicit `implemented: NO`; active bindings
 require scope `YES`. The structural audit checks binding references and default
 profile construction, not whether each combat rule produces the correct result.
 
-The source-scope review applies only when source identity and text hash match;
-changed text needs review again. Historical dispositions never remove current
-KB candidates, and old report statuses never establish current execution.
 Never edit generated CSVs to close a rule. Change canonical declarations,
 implementation or owned tests, then regenerate the relevant report when authorized.
 
@@ -90,12 +88,11 @@ A ruling by itself does not prove implementation or correct execution.
 
 ## Validate the owned change
 
-1. Inspect existing mechanics, construction and E2E checks before adding another.
+1. Inspect existing mechanics, construction and conformance checks before adding another.
 2. Run the smallest relevant checks only when execution is authorized. Test
    execution and broader integration/certification are separate scopes.
-3. Check structural KB/contracts with `check verify`. `--structural` is accepted only
-   as a compatibility flag: verification is structural only and does not run a
-   semantic scenario corpus.
+3. Check structural KB/contracts with `check verify`. Verification is structural
+   only and does not run a semantic scenario corpus.
 4. For optimized-engine changes, use the existing statistical scenario catalogue
    against the modular oracle when that verification is authorized. Do not add
    NumPy per-operation YAML adapters as another rule-authoring system.

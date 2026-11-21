@@ -1,0 +1,86 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sons-of-hashut/bull-centaur--large-target/condition.large-target
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenarios (Large Target duel-evidence family, model
+#   catalog--hired-swords--hireling.hired-sword.ogre-slave-master.rule.large--2c8fd2324f9c): the
+#   printed Large Target grant exposes size.large to a charging Slay Large Creature bearer (the
+#   declared wound roll of 3 that only succeeds at S4 vs T3), and the hand-built control without the
+#   rule is not wounded by the same 3.  REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the clause: the real recipient's size.large lets the declared
+#   wound roll of 3 succeed for the charging Slay Large Creature bearer (S4 vs T3 after the
+#   charge bonus; no fear or save die is requested), and the hand-built control without the rule
+#   is not wounded by the same 3 (S3 vs T3 needs 4+); the printed shooting and warband-rating
+#   clauses stay excluded.
+# Record: sources/knowledge/bands/mordheim/sons-of-hashut/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Uniform Large Target binding (design ruling recorded 2026-11-18): every printed "is a / counts as
+# a Large Target" rule binds condition.large-target, whose execution entry tags the bearer
+# [size.large].  The printed rule's other clauses stay out of these claims: the shooting
+# consequences ("shooting attacks against it gain +1 to hit and it may be selected even if it is not
+# the closest target") and the warband-rating clause ("adds +20 to the warband rating instead of the
+# normal +5") are both excluded under unimplemented.sons-of-hashut.bull-centaur.large-target
+# (out-of-scope.shooting); only the size.large exposure is asserted here.  The duel reader is the
+# printed Slay Large Creature bonus ("+1 Strength when charging a Large creature in the first
+# round"), injected into a hand-built charger through skill_ids - the same evidence route as the
+# hireling Large model file.  Arithmetic: S3 wounds T3 on 4+, the +1S of the charge against a Large
+# bearer (S4 vs T3) on 3+, so the declared wound roll of 3 separates the real recipient from the
+# hand-built control.
+# Profile dice: the Bull Centaur causes no Fear and has no stupidity, armour or regeneration die, so
+# the tape is the charger's hit and wound alone.  It is armed with the mace its printed Chaos Dwarf
+# Equipment List offers, so the supplied zero attack count silences it completely (an unarmed build
+# would keep one fist attack under the unarmed cap).  Its profile-granted trait.concussion-immune
+# (band--hard-head) is never reached: the single wound leaves it standing with no injury roll.
+
+# The Slay Large Creature charger wounds the Large Bull Centaur on a 3 (S4 vs T3 after the charge bonus).
+- audit_id: rule/mordheim/sons-of-hashut/bull-centaur--large-target/condition.large-target
+  id: a-slay-large-creature-charger-wounds-the-large-bull-centaur-on-a-3
+  fighters:
+    first:
+      &charger
+      main_weapon_id: weapon.mace
+      skill_ids: [rule.slay-large-creature]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a hand-built opponent without the Large rule carries no size.large, so the same
+# charge carries no bonus and the same 3 does not wound (S3 vs T3 needs 4+).
+- audit_id: rule/mordheim/sons-of-hashut/bull-centaur--large-target/condition.large-target
+  id: without-the-large-rule-the-same-three-fails
+  fighters:
+    first:
+      <<: *charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

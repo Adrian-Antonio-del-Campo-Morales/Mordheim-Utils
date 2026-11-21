@@ -70,52 +70,43 @@ def test_shared_queue_crosses_scenario_boundary_and_resumes(cases, tmp_path, mon
         assert record.maximum_rounds == scenario.case.limits.maximum_rounds
 
 
-def test_e2e_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
-    from tools.verification import e2e_parity
-    from tests.engines.parity.statistical.test_e2e_parity import CASES
+def test_delivery_selection_keeps_non_runnable_deliveries_and_rejects_unknown_ids():
+    from tools.verification import parity_deliveries
+    from tests.engines.parity.statistical.test_parity_deliveries import CASES
 
-    args = store._parser().parse_args([
-        "status", "--level", "e2e",
-        *[value for key in CASES.values() for value in ("--id", key)],
-    ])
+    args = store._parser().parse_args(["status", "--scenarios", *CASES.values()])
     scenarios, rejected, chosen = store._selection(args)
-    assert {key for key, _ in chosen} == set(CASES.values())
+    assert {entry.key for entry in chosen} == set(CASES.values())
     assert {scenario.key for scenario in scenarios} == {CASES["simple"]}
     assert scenarios[0].case.limits.maximum_rounds == 50
     reasons = dict(rejected)
     assert reasons[CASES["blocked"]].startswith("blocked:")
     assert reasons[CASES["not_applicable"]].startswith("not-applicable:")
     assert "initial_state" in reasons[CASES["initial_state"]]
-    args.ids = []
+    args.scenarios = ["deliveries"]
     _, _, chosen = store._selection(args)
-    assert {key for key, _ in chosen} == set(e2e_parity.discover()[0])
-    args.ids = ["e2e/unknown"]
+    assert {entry.key for entry in chosen} == set(parity_deliveries.discover()[0])
+    args.scenarios = ["delivery/unknown"]
     with pytest.raises(store.SampleStoreError):
         store._selection(args)
 
 
-@pytest.mark.parametrize("compress", [False, True])
-def test_e2e_cli_samples_resumes_and_compares(tmp_path, compress):
-    from tests.engines.parity.statistical.test_e2e_parity import CASES
+def test_delivery_cli_samples_resumes_and_compares(tmp_path):
+    from tests.engines.parity.statistical.test_parity_deliveries import CASES
 
     key = CASES["simple"]
-    selection = ["--level", "e2e", "--id", key, "--store", str(tmp_path)]
-    command = ["sample", "--engine", "modular", *selection,
-               "--simulations", "2", "--chunk", "1", "--workers", "1"]
-    if compress:
-        command.append("--compress")
+    selection = ["--scenarios", key, "--store", str(tmp_path)]
+    command = ["sample", "--backend", "modular", *selection,
+               "--simulations", "2", "--batch-size", "1", "--workers", "1"]
     assert store.main(command) == 0
     path = store.sample_path(tmp_path, "modular", key)
-    assert path.name.endswith(".json.gz" if compress else ".json")
+    assert path.name.endswith(".json.gz")  # new records are always compressed
     record = store.load_sample(path)
     assert record is not None and record.coverage() == 2
     assert record.maximum_rounds == 50
     original = path.read_bytes()
     # A completed sample must resume without rewriting or running more duels.
     assert store.main(command) == 0
-    assert path.read_bytes() == original
-    # Resuming without the flag preserves compressed records too.
-    assert store.main([arg for arg in command if arg != "--compress"]) == 0
     assert path.read_bytes() == original
     # A new explicit horizon must never append to the old experiment.
     assert store.main([*command, "--rounds", "3"]) == 2
@@ -127,7 +118,7 @@ def test_e2e_cli_samples_resumes_and_compares(tmp_path, compress):
     assert store.main(["compare", "--backend", "numpy", *selection]) == 1
     report = json.loads((tmp_path / "compare" / "parity-campaign.json").read_text())
     assert report["config"]["scenario_keys"] == [key]
-    assert report["config"]["corpus"].endswith("e2e-statistical-deliveries")
+    assert report["config"]["corpus"].endswith("tests/engines/parity/deliveries")
     assert report["scenarios"][0]["status"] == "NOT_RUN"
 
 
@@ -136,23 +127,20 @@ def _scenario(cases, name="basic") -> CampaignScenario:
     return CampaignScenario(key, name, cases[key])
 
 
-@pytest.mark.parametrize("verbose", [False, True])
-def test_sample_cli_logs_case_elapsed_time_and_optional_chunks(cases, tmp_path, monkeypatch, capsys, verbose):
+def test_sample_cli_logs_case_elapsed_time(cases, tmp_path, monkeypatch, capsys):
     scenario = _scenario(cases)
     ticks = iter((10.0, 12.0, 20.0, 21.0))
     monkeypatch.setattr(store.time, "perf_counter", lambda: next(ticks))
     monkeypatch.setattr(store, "run_modular_chunk", lambda first, second, start, count, *args:
                         store.SampleChunk(start, count, count, 0, 0, 0.0, "t"))
-    command = ["sample", "--engine", "modular", "--id", scenario.key,
-               "--simulations", "2", "--chunk", "1", "--store", str(tmp_path)]
-    if verbose:
-        command.append("--verbose")
+    command = ["sample", "--backend", "modular", "--scenarios", scenario.key,
+               "--simulations", "2", "--batch-size", "1", "--store", str(tmp_path)]
     assert store.main(command) == 0
     lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
-    assert len(lines) == (4 if verbose else 2)
+    assert len(lines) == 2
     assert ": started " in lines[0]
     assert ": complete in 2.00s; coverage 2" in lines[-1]
-    assert sum("saved" in line for line in lines) == (2 if verbose else 0)
+    assert sum("saved" in line for line in lines) == 0
     # Already-complete cases keep the same two-line summary without rerunning.
     assert store.main(command) == 0
     lines = [line for line in capsys.readouterr().out.splitlines() if scenario.key in line]
@@ -456,7 +444,7 @@ def test_compare_stored_reports_missing_samples_as_not_run_and_pairs_as_rows(cas
     assert row.status in ("PASS", "DIVERGENCE")
     # The CLI reads the separate oracle store without sampling either engine.
     result = store.main([
-        "compare", "--backend", backend, "--id", scenario.key,
+        "compare", "--backend", backend, "--scenarios", scenario.key,
         "--store", str(tmp_path), "--reference-store", str(reference),
         "--simulations", "4",
     ])
@@ -493,7 +481,7 @@ def test_compare_decides_stale_samples_and_warns_about_them(cases, tmp_path, mon
     assert any("uncommitted changes" in item for item in warnings)
     assert provenance[backend]["warnings"] == []
     capsys.readouterr()
-    command = ["compare", "--backend", backend, "--id", scenario.key, "--store", str(tmp_path),
+    command = ["compare", "--backend", backend, "--scenarios", scenario.key, "--store", str(tmp_path),
                "--reference-store", str(reference), "--simulations", "8000"]
     assert store.main(command) == 0
     out = capsys.readouterr()
@@ -518,8 +506,8 @@ def test_candidate_cli_workers_preserve_sequential_chunks(cases, tmp_path, engin
     )
     parallel_store = tmp_path / "parallel"
     command = [
-        "sample", "--engine", engine, "--id", scenario.key,
-        "--simulations", "12", "--seed", "7", "--chunk", "5",
+        "sample", "--backend", engine, "--scenarios", scenario.key,
+        "--simulations", "12", "--seed", "7", "--batch-size", "5",
         "--workers", "2", "--store", str(parallel_store),
     ]
     assert store.main(command) == 0
@@ -528,10 +516,12 @@ def test_candidate_cli_workers_preserve_sequential_chunks(cases, tmp_path, engin
     assert parallel is not None
     assert parallel.counts(12) == sequential.counts(12)
     # Resume with only the missing batch; the completed batches stay intact.
-    raw = json.loads(path.read_text())
+    import gzip
+
+    raw = json.loads(gzip.decompress(path.read_bytes()))
     kept = [chunk for chunk in raw["chunks"] if chunk["start"] != 5]
     raw["chunks"] = kept
-    path.write_text(json.dumps(raw))
+    path.write_bytes(gzip.compress(json.dumps(raw).encode("utf-8")))
     assert store.main(command) == 0
     resumed = store.load_sample(path)
     assert resumed is not None
@@ -544,8 +534,8 @@ def test_an_engine_imported_from_elsewhere_is_digested_where_it_ran(cases, tmp_p
     real = store._COMBAT
     expected = store.engine_digest("numpy")
     monkeypatch.setattr(store, "_COMBAT", tmp_path / "elsewhere" / "mordheim_combat")
-    command = ["sample", "--engine", "numpy", "--id", scenario.key, "--simulations", "4",
-               "--chunk", "2", "--store", str(tmp_path / "store")]
+    command = ["sample", "--backend", "numpy", "--scenarios", scenario.key, "--simulations", "4",
+               "--batch-size", "2", "--store", str(tmp_path / "store")]
     assert store.main(command) == 0
     assert "PROVENANCE WARNING: mordheim_combat was imported from" in capsys.readouterr().err
     assert store._COMBAT == real.resolve()
@@ -559,8 +549,8 @@ def test_pool_workers_must_import_the_parent_engine(cases, tmp_path, monkeypatch
     # The parent claims another engine copy; every real worker then disagrees.
     monkeypatch.setattr(store, "check_engine_origins",
                         lambda engine: {**origins, "mordheim_combat": "/elsewhere/__init__.py"})
-    command = ["sample", "--engine", "numpy", "--id", scenario.key, "--simulations", "4",
-               "--chunk", "2", "--workers", "2", "--store", str(tmp_path / "store")]
+    command = ["sample", "--backend", "numpy", "--scenarios", scenario.key, "--simulations", "4",
+               "--batch-size", "2", "--workers", "2", "--store", str(tmp_path / "store")]
     assert store.main(command) == 2
     assert "worker pool failed" in capsys.readouterr().err
     assert store.load_sample(store.sample_path(tmp_path / "store", "numpy", scenario.key)) is None

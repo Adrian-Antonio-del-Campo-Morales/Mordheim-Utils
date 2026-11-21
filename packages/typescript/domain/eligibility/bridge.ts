@@ -24,10 +24,14 @@ export function profileFacts(pack: BandPackage, profile: EditorialProfile, bandI
   });
 }
 
-/** Band-wide prohibition tokens and whole-set limits of one canonical band. */
-export function bandFacts(pack: BandPackage): { equipment_forbids: readonly string[]; equipment_limits: EquipmentLimits | null } {
+/**
+ * Band-wide prohibition tokens and whole-set limits of one canonical band. With
+ * a profile, the tokens are those of the band rules whose printed recipients
+ * reach that member (`applies_to.profile_ids`).
+ */
+export function bandFacts(pack: BandPackage, profile?: EditorialProfile | null): { equipment_forbids: readonly string[]; equipment_limits: EquipmentLimits | null } {
   return {
-    equipment_forbids: eligibility.bandEquipmentForbids(pack),
+    equipment_forbids: eligibility.bandEquipmentForbids(pack, profile),
     equipment_limits: eligibility.bandEquipmentLimits(pack),
   };
 }
@@ -55,7 +59,7 @@ export function desktopCall(operation: string, key: string, input: Omit<BuildCon
   // same kind of fact for a printed recipient: `configuredProfile` carries both
   // so a conditional line is decided by the one `entryReachesProfile`.
   const profile = input.profile.type
-    ? eligibility.configuredProfile(input.profile, input.build.variant_ids, input.build.condition_ids ?? [])
+    ? eligibility.configuredProfile(input.profile, input.build.variant_ids, input.build.condition_ids ?? [], input.package)
     : input.profile;
   const context = { ...input, profile, catalogue };
   input = { ...input, profile };
@@ -76,7 +80,7 @@ export function desktopCall(operation: string, key: string, input: Omit<BuildCon
     input.package, input.build.special_rule_ids ?? [], catalogue);
   if (operation === "skillChoices") return eligibility.catalogueSkillChoices(context);
   if (operation === "profileFacts") return profileFacts(input.package, input.profile, input.build.band_id ?? undefined, catalogue, input.profile_bindings, input.build);
-  if (operation === "bandFacts") return bandFacts(input.package);
+  if (operation === "bandFacts") return bandFacts(input.package, input.profile);
   if (operation === "profileSkillLists") return profileSkillLists(input.package, input.profile);
   if (operation === "profileBindings") return profileBindings(input.package, input.profile);
   if (operation === "selectedRuleBindings") return selectedRuleBindings(

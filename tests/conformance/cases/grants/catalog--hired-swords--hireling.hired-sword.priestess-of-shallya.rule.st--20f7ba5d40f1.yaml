@@ -1,0 +1,103 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.equipment-restrictions
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (construction set, 2026-11-18): the printed walking staff
+#   admitted with the no-armour face observed on the compiled armour_save, and the refusals of a suit of
+#   armour, a helmet and a weapon outside the printed kit.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the construction scenarios are declared below (see authoring_progress); REVIEWED still
+#   requires manual semantic review.
+# Removal-probe expectation (2026-11-18): the strictures are a construction rule, so the probe's
+#   construction-only verdict is the rule's own effect (README, Rule-removal probe).
+# Discrimination note (2026-11-18): the hireling kit resolver (`resolveHirelingKit`, the consumer of
+#   the catalogue-wide compiler.hireling-fixed-equipment clause) runs before the profile's
+#   profile.equipment-restrictions gate, and the Priestess's printed kit is the ceremonial dagger and the
+#   walking staff alone.  Every forbidden item below is therefore refused as an incomplete printed kit
+#   and the stricture's own sentence ("armour is forbidden for hirelings.hired-sword.2b/
+#   hireling.hired-sword.priestess-of-shallya") is unreachable; the refusals survive the removal of this
+#   binding, so the duplicate carrier is the kit matcher of
+#   rule/catalog/hired-swords/hireling.hired-sword.rule.fixed-equipment (precedent: the Haunted Mien
+#   file ...priest-of-morr-miracle-worke--45c97d805c6e.yaml and cases/mechanics/defence.wolf-pelt-cloak.yaml).
+# Semantic wrinkle (2026-11-18): the same Strictures rule binds profile.active-weapon-restrictions
+#   forbidding weapon.dagger, so the ceremonial dagger the kit prints may be carried but never wielded;
+#   a build that omits its main weapon defaults to that dagger and is refused ("weapon.dagger may not be
+#   used by hirelings.hired-sword.2b/hireling.hired-sword.priestess-of-shallya").  That sibling binding
+#   has its own identity and is not asserted here; every build below names the staff explicitly.  The
+#   rule's charge bar (mechanic.shallya-strictures) is a duel effect and never fires in these
+#   construction-only engagements.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-2b.yaml, Strictures): "Priestesses of Shallya always begin equipped with a walking
+# staff (counts as a staff). They may only be armed with a walking staff. Priestesses of Shallya may
+# never wear armour."  The binding forbids the `armour` token.  The recipient is the printed Priestess
+# compiled through the hireling route (hirelings.hired-sword.2b /
+# hireling.hired-sword.priestess-of-shallya) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8
+# stays); the staff item resolves to weapon.quarter-staff (catalog/items/weapons-close-combat.yaml).
+# The admission uses the corpus's construction-only shape (no charge, the bearer out of action before
+# the first phase, so the duel requests no die) and observes the compiled build alone: armour_save 7
+# is the no-armour face.  The refusals use the kit-resolver fragment already asserted in
+# cases/mechanics/defence.wolf-pelt-cloak.yaml.
+
+# The printed walking staff in hand: no armour, so the compiled save is the 7 of a bare warrior.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.equipment-restrictions
+  id: the-printed-walking-staff-compiles-with-no-armour
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.quarter-staff
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.armour_save: 7
+
+# "Priestesses of Shallya may never wear armour": a suit of light armour over the staff is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.equipment-restrictions
+  id: armour-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.quarter-staff
+      armour_id: armour.light-armour
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# A helmet is armour under the KB's `armour` token; it is refused as well.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.equipment-restrictions
+  id: a-helmet-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.quarter-staff
+      defence_ids: [defence.helmet]
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# "They may only be armed with a walking staff": a sword in the main hand is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.priestess-of-shallya.rule.strictures/profile.equipment-restrictions
+  id: a-weapon-outside-the-walking-staff-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.priestess-of-shallya
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      main_weapon_id: weapon.sword
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"

@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.bear-hug
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): two undefended
+#   hits of the hand-built bearer are replaced by one Bear Hug whose opposed D6+Strength tie deals one
+#   automatic wound with no armour die, the losing branch deals none, declining the hug resolves the
+#   two hits normally, and a single hit offers no hug.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): this shared mechanic compiles the `bear_hug` flag alone; the printed
+#   "both of his unarmed attacks" precondition is the sibling marker rule.bear-hug-unarmed (its own
+#   identity, pools.py ~489-491), so the hand-built bearer here hugs from two mace hits and the
+#   armed-vs-unarmed face is evidenced in that sibling and in the Domnu's own files.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (channel-rats-mim special-rules.yaml, Domnu / Bear Hug): "If the Domnu hits the same
+# enemy warrior with both of his unarmed attacks in the same round of combat, the player may choose to
+# make a single Bear Hug attack instead of resolving the attacks normally.  Each player rolls a D6 and
+# adds his warrior's Strength to the roll.  If the Domnu's total is higher or the totals are equal, the
+# opposing warrior takes a single automatic wound with no armour save allowed.  If the enemy warrior's
+# total is higher, the warrior has broken the Domnu's hold and suffers no damage".  Consumer:
+# modular/pools.py ~486-530 (two undefended hits of the first two allocated attacks, decision
+# `<pool>.bear-hug`, opposed dice `<pool>.bear-hug.attacker` / `.defender`, phases.bear_hug_wins ties
+# to the attacker, one automatic unparryable armour-ignoring single wound; declining resolves the two
+# hits through their ordinary wound dice).  Fixture: hand-built bearer (WS3 S4 T3 W2 I5 A2, mace,
+# skill_ids [mechanic.bear-hug]) against a hand-built opponent (WS3 S3 T3 W3 I2 A1 Ld7, mace) whose
+# attacks are silenced; nobody charges and the bearer's higher Initiative acts first.  WS3 against WS3
+# hits on 4+; S4 wounds T3 on 3+.
+
+# The tie: 3+4 against 3+3, one automatic wound and no armour die although the target wears plate.
+- audit_id: mechanic/mechanic.bear-hug
+  id: two-undefended-hits-are-replaced-by-one-bear-hug-that-wins-the-tie
+  fighters:
+    first: &hug-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-hug]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.plate-armour
+      characteristics: &hug-opponent-stats {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.bear-hug.attacker, value: 3}
+    - {key: round.0.first.bear-hug.defender, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 5}
+    - {kind: decision, key: round.0.first.bear-hug, value: true}
+    - {kind: roll, key: round.0.first.bear-hug.attacker, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.bear-hug.defender, sides: 6, value: 3}
+
+# The losing branch: 1+4 against 5+3, the hold is broken and no damage is dealt.
+- audit_id: mechanic/mechanic.bear-hug
+  id: losing-the-opposed-roll-deals-no-damage
+  fighters:
+    first: *hug-bearer
+    second: &hug-opponent
+      main_weapon_id: weapon.mace
+      characteristics: *hug-opponent-stats
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.bear-hug.attacker, value: 1}
+    - {key: round.0.first.bear-hug.defender, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "may choose": declining the hug resolves the two hits normally through their own wound dice (the
+# first wounds on the 3, the second's 1 does not).
+- audit_id: mechanic/mechanic.bear-hug
+  id: declining-the-hug-resolves-the-two-hits-normally
+  fighters:
+    first: *hug-bearer
+    second: *hug-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One hit only: the printed precondition is both attacks hitting, so no hug decision is offered (the
+# strict decision tape holds none) and the single hit resolves normally.
+- audit_id: mechanic/mechanic.bear-hug
+  id: a-single-hit-offers-no-hug
+  fighters:
+    first: *hug-bearer
+    second: *hug-opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

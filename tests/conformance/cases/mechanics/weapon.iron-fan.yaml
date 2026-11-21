@@ -1,0 +1,113 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.iron-fan
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (survival-saves-and-rerolls batch, 2026-11-18): the wielded fan
+#   parries a hit (5 beats 4), a parry die equal to the hit roll fails, the fan strikes at the
+#   bearer's own Strength and grants the enemy no save, and the mace control is offered no parry.
+#   The printed +1 Initiative belongs to the sibling profile mechanic (mechanic.iron-fan); the
+#   printed missile parry is outside the duel.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios cover the parry on both faces, Strength as user with no granted save, and
+#   the mace control without a parry.
+
+# --- Authored scenarios ---
+# mechanic/weapon.iron-fan - Border Town Burning, Grand Master Ippan Shu / Iron Fan (items/
+# combat-equipment.yaml iron_fan): "It uses the bearer's normal Strength, grants him +1 Initiative
+# and allows him to parry enemy blows."  The wielded item's mechanic carries the parry alone
+# (execution.yaml weapon.iron-fan: parry true; main_hand true in close-combat.yaml), so the ordinary
+# parry contract applies (modular/contexts.py _parry_context; phases.py resolve_parry: the die must
+# beat the hit roll, a natural 6 cannot be parried).  Expectations come from the printed entry,
+# never from engine output: WS3 against WS3 hits on 4+, S3 wounds T3 on 4+, and the fan grants no
+# save so an unarmoured target rolls no armour die.  The bearer defends as `second` (Initiative 2)
+# so the attacker's hit resolves first.
+
+# The fan parries: the hit of 4 is beaten by the parry die 5 and no wound follows.
+- audit_id: mechanic/weapon.iron-fan
+  id: the-iron-fan-parries-a-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &fan-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.iron-fan
+      characteristics: &fan-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &fan-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A parry die equal to the hit roll does not beat it: the 4 fails and the wound lands.
+- audit_id: mechanic/weapon.iron-fan
+  id: a-parry-die-equal-to-the-hit-roll-fails
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fan-attacker
+    second:
+      main_weapon_id: weapon.iron-fan
+      characteristics: *fan-defender
+  duel_context: *fan-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Strength as user, no granted save: the fan bearer's 4 wounds at Strength 3 and the unarmoured
+# opponent rolls no armour die (unlike a fist or a dagger).
+- audit_id: mechanic/weapon.iron-fan
+  id: the-fan-strikes-at-the-bearers-own-strength-and-grants-no-save
+  fighters:
+    first:
+      main_weapon_id: weapon.iron-fan
+      characteristics: *fan-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fan-defender
+  duel_context: *fan-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a mace defender is offered no parry die against the identical hit.
+- audit_id: mechanic/weapon.iron-fan
+  id: a-mace-defender-is-offered-no-parry
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *fan-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *fan-defender
+  duel_context: *fan-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

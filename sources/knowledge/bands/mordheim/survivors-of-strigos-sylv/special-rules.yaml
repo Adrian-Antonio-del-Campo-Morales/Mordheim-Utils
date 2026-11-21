@@ -3,16 +3,17 @@ band_id: survivors-of-strigos-sylv
 rules:
 - id: band--undead-leader
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.band.undead-leader
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: leader death/replacement and hiring rules are campaign mechanics outside
-        the duel scope.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: undead-leader
+        scope: 'NO'
   name: Undead Leader
   effect: >-
     The Strigoi Vampire is the only Undead model in the warband. The warband does not disband if the
@@ -32,15 +33,17 @@ rules:
     band: true
 - id: band--hired-swords
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.band.hired-swords
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+      reason: out-of-scope.construction
+      clauses:
+      - id: hired-swords
+        scope: 'NO'
   name: Hired Swords
   effect: The warband may hire Hired Swords available to Undead warbands.
   source:
@@ -114,7 +117,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Vampires are terrifying Undead creatures and therefore cause Fear.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -122,11 +124,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los vampiros son criaturas no muertas aterradoras y por tanto causan Miedo.
   applies_to:
     profile_ids:
     - strigoi-vampire
+  rule_ref: shared-rule.fear
 - id: strigoi-vampire--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -138,8 +139,12 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+      clauses:
+      - id: psychology-immunity
+        scope: 'YES'
+      - id: never-leaves-combat
+        scope: 'NO'
   name: Immune to Psychology
-  effect: Vampires are not affected by psychology (such as fear) and never leave combat.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -147,13 +152,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los vampiros no se ven afectados por la psicología (como el miedo) y nunca abandonan el
-      combate.
   applies_to:
     profile_ids:
     - strigoi-vampire
+  rule_ref: shared-rule.immune-to-psychology
 - id: strigoi-vampire--immune-to-poison
   runtime:
     scope: 'YES'
@@ -168,7 +170,6 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Vampires are not affected by any poison.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -176,11 +177,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: Los vampiros no se ven afectados por ningún veneno.
   applies_to:
     profile_ids:
     - strigoi-vampire
+  rule_ref: shared-rule.immune-to-poison
 - id: strigoi-vampire--no-pain
   runtime:
     scope: 'YES'
@@ -193,7 +193,6 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -201,23 +200,23 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Sin Dolor
-  effect_i18n:
-    es: Los vampiros tratan un resultado Aturdido de la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - strigoi-vampire
+  rule_ref: shared-rule.no-pain
 - id: seer--seeker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.seer.seeker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: exploration-dice modification is a post-duel/campaign resolution
-        mechanic.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Seeker
   effect: >-
     Due to their premonitions, Seers who partake in a battle, and are not taken Out of Action may
@@ -245,9 +244,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.seer.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Charms & Hexes; the spell list is preserved in
-        catalog/campaign/magic.yaml).
+      reason: out-of-scope.magic
   name: Wizard
   effect: Seers have one spell randomly generated from the Charms & Hexes spell list.
   source:
@@ -273,9 +270,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.domnu.child-of-darkness
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.non-duel
   name: Child of Darkness
   effect: >-
     Borne of the night, Domnu are steadfast and loyal servants of the Strigoi. They are immune to
@@ -335,7 +330,6 @@ rules:
         kind: mechanic
         id: mechanic.causes-fear
   name: Cause Fear
-  effect: Ghouls are twisted and repulsive creatures and therefore cause Fear.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -343,22 +337,23 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Causan Miedo
-  effect_i18n:
-    es: Los necrófagos son criaturas retorcidas y repulsivas y por tanto causan Miedo.
   applies_to:
     profile_ids:
     - ghouls
+  rule_ref: shared-rule.fear
 - id: giant-bats--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Animals
   source:
     manual: sylvania-supplement
@@ -380,9 +375,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.flying
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Flying
   effect: >-
     Giant Bats fly through the night air, and thus do not need to climb or leap over gaps, even if
@@ -410,9 +403,10 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.large
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: Large-target targeting and hitting modifiers are outside the current
-        engine scope.
+      reason: deferred.other
+      clauses:
+      - id: large-target-fact
+        scope: 'NO'
   name: Large
   effect: Giant Bats are Large creatures.
   source:
@@ -436,9 +430,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.giant-bats.sonic
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Sonic
   effect: >-
     Giant Bats use sonic vibrations to navigate the dark of night. No Line of Sight is needed for a
@@ -572,9 +564,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.special.dark-arts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic subsystem (Dark Arts; the spell list is preserved in
-        catalog/campaign/magic.yaml).
+      reason: out-of-scope.magic
   name: Dark Arts
   effect: >-
     The Strigoi has retained some of its former magical aptitude. He may choose Arcane Lore as an
@@ -597,15 +587,17 @@ rules:
     - strigoi-vampire
 - id: seer--light-fingers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.survivors-of-strigos-sylv.special.light-fingers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: post-duel wyrdstone collection is a campaign resolution mechanic.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Light Fingers
   effect: >-
     Gypsies are apt to find things that others have lost. Should a Hero with this skill take an
@@ -642,8 +634,6 @@ rules:
           forbids:
           - equipment
   name: Equipment Restrictions
-  effect: >-
-    Ghouls never carry any equipment, apart from a few bones which they use as primitive weapons.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -651,13 +641,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      Los Carroñeros nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas
-      primitivas.
   applies_to:
     profile_ids:
     - ghouls
+  rule_ref: shared-rule.no-equipment-but-bones
 - id: strigoi-vampire--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -699,9 +686,7 @@ rules:
     - id: unimplemented.survivors-of-strigos-sylv.special.practiced-arm
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: shooting, casting or escape without resolving the
-        duel. Source prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.shooting
   name: Practiced Arm
   effect: >-
     Such is the skill with which the Gypsy can launch throwing knives that he can throw two of them

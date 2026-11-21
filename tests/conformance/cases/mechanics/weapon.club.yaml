@@ -1,0 +1,112 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.club
+# authoring_status: AUTHORED
+# authoring_progress: 4 scenarios (equipment-items batch, 2026-11-18) pin the club's normal
+#   Strength at its wound boundary (a 4 wounds Toughness 3, a 3 does not) and the printed
+#   Concussion band at its lower edge (an injury of 1 stays Knocked Down), its start (2
+#   becomes Stunned) and its end (4 becomes Stunned), the same probe the canonical mace
+#   carries.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 4 scenarios cover the normal-Strength wound boundary and the Concussion band
+#   (1 Knocked Down, 2 and 4 Stunned).
+
+# --- Authored scenarios ---
+# mechanic/weapon.club - the rulebook prints one entry for the Hammer, Staff, Mace or
+# Club: Strength as user, Concussion (an Injury roll of 2-4 is treated as Stunned).
+# The club is the mace's sibling id (execution.yaml tags it weapon.club and weapon.mace
+# with concussion), so the family model of weapon.mace.yaml applies unchanged.
+#
+# Expectations come from the printed entry, never from engine output.  Strength 3 wounds
+# Toughness 3 on a 4+, so the wound die 4 is the boundary; the Concussion band is pinned
+# at its lower edge (1 stays Knocked Down), its start (2) and its end (4).
+
+# Normal Strength: the 3 is one face below the unmodified target, so the club adds no
+# hidden Strength.
+- audit_id: mechanic/weapon.club
+  id: club-does-not-wound-one-face-below-the-users-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.club
+      characteristics: &club-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &club-defender-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &club-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band's lower edge: an injury of 1 is below the Concussion band and stays Knocked Down.
+- audit_id: mechanic/weapon.club
+  id: club-injury-1-is-knocked-down
+  fighters:
+    first:
+      main_weapon_id: weapon.club
+      characteristics: *club-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *club-defender-w1
+  duel_context: *club-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band starts at 2: the injury that is Knocked Down on an ordinary weapon becomes Stunned.
+- audit_id: mechanic/weapon.club
+  id: club-injury-2-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.club
+      characteristics: *club-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *club-defender-w1
+  duel_context: *club-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band's end: a 4 is still Stunned (5-6 would be Out of Action on the ordinary chart
+# either way).
+- audit_id: mechanic/weapon.club
+  id: club-injury-4-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.club
+      characteristics: *club-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *club-defender-w1
+  duel_context: *club-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

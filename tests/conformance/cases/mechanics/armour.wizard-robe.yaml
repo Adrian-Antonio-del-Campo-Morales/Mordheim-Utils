@@ -1,0 +1,104 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.wizard-robe
+# authoring_status: AUTHORED
+# authoring_progress: 3 scenarios (equipment-items batch, 2026-11-18) pin the recorded 6+ save
+#   on both faces (the die 6 saves, the 5 is one face short) and show a declared spellcaster
+#   wearing the robe compiled with the same 6+ (expect_fighters), the robe being the mage
+#   armour of its list.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# Semantic wrinkle (2026-11-18): the knowledge base records the robe as `base_save: 6` and no
+#   other parameter; the printed casting permission (a wizard may cast in it) is not encoded
+#   anywhere, and the compiler has no armour-versus-casting restriction to waive, so the
+#   spellcaster scenario only evidences that the declared caster compiles and saves with it.
+# Discrimination note (2026-11-18): the removal probe reports this identity non-discriminating or inert.
+#   The execution entry carries only its tag; the 6+ save comes from the catalogue base_save the
+#   probe does not substitute (TODO.md: equipment mechanics the probe cannot reach) — inert.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 3 scenarios cover the 6+ save boundary pair on a hand-built wearer and the
+#   declared spellcaster wearing the robe.
+
+# --- Authored scenarios ---
+# mechanic/armour.wizard-robe - Chaos in the Streets p.68 (Yohan's store, "Tunica de
+# Mago"): a mage's robe worth a 6+ armour save (the record's `base_save: 6`).  The robe
+# is worn through `armour_id`, the attacker is Strength 3 so no modifier applies, and
+# the armour die 6 is the one face that saves.
+
+# The recorded save on its only face.
+- audit_id: mechanic/armour.wizard-robe
+  id: wizard-robe-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &wr-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-robe
+      characteristics: &wr-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &wr-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the 5 is not a 6+ and the wound is taken.
+- audit_id: mechanic/armour.wizard-robe
+  id: wizard-robe-does-not-save-on-five
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wr-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-robe
+      characteristics: *wr-defender
+  duel_context: *wr-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The robe is the mage armour of its list: a declared spellcaster wearing it compiles
+# with the same 6+ and the die 6 saves him too.
+- audit_id: mechanic/armour.wizard-robe
+  id: a-spellcaster-wears-the-robe-and-saves-on-six
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *wr-attacker
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-robe
+      trait_overrides: {spellcaster: true}
+      characteristics: *wr-defender
+  duel_context: *wr-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

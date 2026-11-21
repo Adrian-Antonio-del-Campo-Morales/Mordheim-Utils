@@ -1,0 +1,162 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the real
+#   Belandysh compiles with regeneration_save 4 and, after his Chaos Armour fails, the regeneration
+#   die of four turns the wound while a three lets it through; a passed armour save asks for no
+#   regeneration die; the Bard control (regeneration_save 7) is asked none after its failed save; the
+#   rule is refused on a hireling outside its printed profile.  REVIEWED still requires manual
+#   semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): Belandysh's Inconsistency rolls his variable line when
+#   first needed (Initiative for the strike order and the D3 Attacks at the round's start, Weapon
+#   Skill before his blow, Toughness when the enemy's wound is rolled); he is not silenced because
+#   the Attacks die would override a supplied 0, so his own blow is declared a miss.  Strongman
+#   cancels the broadsword's strike-last, so his rolled I6 sends him first and the enemy's attack is
+#   index 1 of the round.  The printed "source 4+" is carried as the trait's value 4; the source's
+#   fire exception is the sibling trait.regeneration-blocked-by-fire (...9278f033a6cd).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1c.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-1c.yaml, hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration,
+# grant profile): "Regenerates wounds on source 4+ except fire/fire magic" - binding
+# trait.regeneration-save, parameters value 4.  Compiler: the trait lands as regeneration_save
+# (compiler.py ~495, range-checked ~795) and is projected onto global_effects.regeneration_save
+# (~1234).  Engine: after a failed armour save modular/attacks.py ~733-747 prepares the special save
+# (contexts.py prepare_special_save_context ~630-700: the ward first, then the regeneration) and
+# phases.py resolve_special_save (~669-681) asks round.<i>.<attacker>.attack.<n>.special.regeneration
+# while regeneration_save is 6 or better and not blocked; a roll at or above the value turns the
+# wound (attacks.<n>.saved true, no damage).  Belandysh has no ward, so no .special.ward die is asked.
+# Hireling family model (README, Hireling recipients; the authored Chaos Armour file ...781e481a56ff
+# is the tape model): the real Belandysh through the hireling route (hirelings.dramatis-personae.1c)
+# with the fixture facts (WS3 S3 T3 W2 I5 A1; printed Ld10 stays) and his complete printed kit active
+# (main_weapon_id weapon.broadsword-of-damnation, armour_id armour.chaos-armour, defence_ids
+# defence.helmet - the admission build).  The attacker is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace,
+# no armour); the duel is uncharged.  Dice: Belandysh's I (6), his A (D3: 1), his WS (3) before his
+# hit (1, a miss), then the enemy's hit (4), Belandysh's T when the wound is rolled (3, so S3 wounds
+# on 4+), the wound (4), the Chaos Armour die (3, one short of its 4+) and the regeneration die.  The
+# helmet only acts on a Stunned result and the damage never reaches the Injury step (W2).  The
+# control is the grade-1b Bard in the light armour of his own printed kit (6+), silenced, whose
+# failed save is followed by no regeneration die.
+
+# The compiled Belandysh regenerates on 4+: after the failed armour save the four turns the wound.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+  id: the-real-belandysh-regenerates-on-four-after-a-failed-armour-save
+  fighters:
+    first:
+      &belandysh-regen-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &belandysh-regen-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1c
+      profile_id: hireling.dramatis.belandysh-condemned-champion-of-chen
+      main_weapon_id: weapon.broadsword-of-damnation
+      armour_id: armour.chaos-armour
+      defence_ids: [defence.helmet]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.characteristic.I.0, value: 6}
+    - {key: round.0.second.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.attacker.characteristic.WS.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.defender.characteristic.T.0, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
+  expect_fighters:
+    second.global_effects.regeneration_save: 4
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.wounded: true, attacks.1.saved: true, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 4+: the three fails and the wound is taken.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+  id: a-regeneration-die-of-three-lets-the-wound-through
+  fighters:
+    first: *belandysh-regen-attacker
+    second: *belandysh-regen-recipient
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.characteristic.I.0, value: 6}
+    - {key: round.0.second.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.attacker.characteristic.WS.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.defender.characteristic.T.0, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.first.attack.0.special.regeneration, value: 3}
+  expect_rounds:
+    0: {attacks.1.wounded: true, attacks.1.saved: false, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A passed armour save asks for no regeneration die: the strict tape ends at the Chaos Armour's four.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+  id: a-passed-armour-save-asks-for-no-regeneration-die
+  fighters:
+    first: *belandysh-regen-attacker
+    second: *belandysh-regen-recipient
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.characteristic.I.0, value: 6}
+    - {key: round.0.second.characteristic.A.0, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.attacker.characteristic.WS.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.defender.characteristic.T.0, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.1.wounded: true, attacks.1.saved: true, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard in his kit light armour, 6+): the failed save is followed by no regeneration die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+  id: a-hireling-without-the-rule-is-asked-no-regeneration-die
+  fighters:
+    first: *belandysh-regen-attacker
+    second:
+      &belandysh-regen-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+  expect_fighters:
+    second.global_effects.regeneration_save: 7
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Belandysh's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration/trait.regeneration-save
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *belandysh-regen-attacker
+    second:
+      <<: *belandysh-regen-control
+      special_rule_ids: [hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

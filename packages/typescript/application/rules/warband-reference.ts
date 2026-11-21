@@ -64,6 +64,7 @@ export class WarbandReferences {
     const profiles = this.knowledge.list("profile").filter((row) => row.band_id === bandId);
     const metadata = referenceRows(this.knowledge.campaignSection("warband-reference").rows).find((row) => row.band_id === bandId);
     const local = this.knowledge.rulesDocument("profile-special-rules").filter((row) => row.band_id === bandId);
+    const delegatingRules = this.knowledge.rulesDocument("delegating-rules").filter((row) => row.band_id === bandId);
     const localEntries = new Map(catalogue.entries("band-rules", locale).filter((entry) => entry.band_id === bandId).map((entry) => [entry.rule_id!, entry]));
     const shared = new Map(catalogue.entries("special-rules", locale).map((entry) => [entry.entry_id, entry]));
     const items = new Map(this.knowledge.list("item").map((row) => [String(row.id ?? row.item_id), row]));
@@ -102,10 +103,14 @@ export class WarbandReferences {
       // A declared rule that owns the restriction and resolves localized prose
       // is authoritative; the legacy profile field only carries source
       // sentences and older translations, so it is the fallback.
-      const restrictionRules = local.filter((row) => ids(object(row.applies_to).profile_ids).includes(String(profile.id))
-        && referenceRows(object(row.runtime).effects).some((effect) => object(effect.binding).id === "profile.equipment-restrictions"))
-        .map((row) => fromRule(String(row.id)))
-        .filter((rule) => rule.effect !== unavailableText(locale));
+      // A restriction rule that delegates its prose to a shared rule (`rule_ref`)
+      // owns the restriction just the same; its text is the shared rule's.
+      const restricts = (row: ArtefactRow) => ids(object(row.applies_to).profile_ids).includes(String(profile.id))
+        && referenceRows(object(row.runtime).effects).some((effect) => object(effect.binding).id === "profile.equipment-restrictions");
+      const restrictionRules = [
+        ...local.filter(restricts).map((row) => fromRule(String(row.id))),
+        ...delegatingRules.filter(restricts).map((row) => fromRule(String(row.rule_ref))),
+      ].filter((rule) => rule.effect !== unavailableText(locale));
       return {
         id: String(profile.id), name: this.knowledge.recordText(profile, "name", locale), type: String(profile.type ?? ""),
         cost: profile.cost, experience: profile.experience, characteristics: object(profile.characteristics),

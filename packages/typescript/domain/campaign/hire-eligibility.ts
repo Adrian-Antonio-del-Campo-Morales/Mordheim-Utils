@@ -27,7 +27,7 @@ export interface WarbandHireContext {
   readonly member_profile_ids: ReadonlySet<string>;
   readonly hired_sword_profile_ids: ReadonlySet<string>;
   readonly variant?: string | null;
-  /** Canonical hireling traits: profile id → trait set. */
+  /** Hireling facts derived from each KB profile (`hireling_traits`): profile id → trait set. */
   readonly hireling_traits: ReadonlyMap<string, ReadonlySet<string>>;
 }
 
@@ -101,7 +101,6 @@ interface RosterFacts {
 function buildFacts(ctx: WarbandHireContext): RosterFacts {
   const members = ctx.member_profile_ids;
   const hired = ctx.hired_sword_profile_ids;
-  const all = new Set<string>([...members, ...hired]);
   const groups = ctx.band_groups;
   const traits = ctx.hireling_traits;
   const memberTraits = traitsOf(members, traits);
@@ -121,11 +120,16 @@ function buildFacts(ctx: WarbandHireContext): RosterFacts {
   const isMiddenheim = variant === "middenheim";
   const williamAuto = isMercenary || isWitchHunter || ctx.band_id === "sisters-of-sigmar";
 
+  // Hirelings are judged only by the facts the KB derives from their profiles
+  // (`hireling_traits`); the keyword lists stay a stopgap for band members,
+  // whose facts are not published yet (TODO.md, hireling hiring facts).
+  const memberSpellcasterKeyword = hasKeyword(members, SPELLCASTER_PROFILE_KEYWORDS);
   let spellcasterMembers =
-    hasKeyword(all, SPELLCASTER_PROFILE_KEYWORDS) ||
+    memberSpellcasterKeyword ||
+    allTraits.has("spellcaster") ||
     [...groups].some((g) => SPELLCASTER_BAND_GROUPS.has(g));
   // Priests never taint the roster for the Witch Hunter rule.
-  const priestsOnly = allTraits.has("priest") && !hasKeyword(all, SPELLCASTER_PROFILE_KEYWORDS);
+  const priestsOnly = allTraits.has("priest") && !memberSpellcasterKeyword && !allTraits.has("spellcaster");
   spellcasterMembers = spellcasterMembers && !priestsOnly;
 
   return {
@@ -137,8 +141,8 @@ function buildFacts(ctx: WarbandHireContext): RosterFacts {
     hasUndeadMember: bandUndead || allTraits.has("undead"),
     hasFearCausingMember:
       [...groups].some((g) => FEAR_BAND_GROUPS.has(g)) ||
-      hiredTraits.has("fear-causing") ||
-      hasKeyword(all, FEAR_PROFILE_KEYWORDS),
+      allTraits.has("fear-causing") ||
+      hasKeyword(members, FEAR_PROFILE_KEYWORDS),
     hasSpellcasterMember: spellcasterMembers,
     hasWarriorPriestMember:
       hired.has("hireling.hired-sword.warrior-priest-of-sigmar") ||

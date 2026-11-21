@@ -31,15 +31,21 @@ rules:
     - youths
 - id: band--large
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.large-target
+        parameters:
+          profile_ids: [broodmother, firstborns, youths]
     - id: unimplemented.brood-of-ghurash-the-sc.band.large
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.shooting
   name: Large
   effect: All Heroes are large targets.
   source:
@@ -55,16 +61,17 @@ rules:
     band: true
 - id: band--slow-witted
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.band.slow-witted
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Slow Witted
   effect: Brood members only gain half the experience normal models would get.
   source:
@@ -89,9 +96,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Always Hungry
   effect: Every Hero counts as two models when selling moonstones.
   source:
@@ -116,18 +121,25 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.stupidity
+      clauses:
+      - id: stupidity--scope--stupidity
+        scope: 'YES'
+      - id: stupidity--scope--roster-condition
+        scope: 'NO'
     - id: mechanic.brood-mentality
       scope: 'YES'
       binding:
         kind: mechanic
         id: mechanic.brood-mentality
+      clauses:
+      - id: brood-mentality--scope--stupidity
+        scope: 'YES'
+      - id: brood-mentality--scope--roster-condition
+        scope: 'NO'
     - id: unimplemented.brood-of-ghurash-the-sc.band.brood-mentality.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: out-of-scope.construction
   name: Brood Mentality
   effect: >-
     All Brood members suffer from stupidity, but trolls taking stupidity tests add 1 point to their
@@ -161,9 +173,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.hoard
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Hoard
   effect: >-
     These greedy fellows never sell any rare items, even if no Brood member is able to use them.
@@ -185,16 +195,17 @@ rules:
     band: true
 - id: band--regenerate
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.band.regenerate
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: serious-injury-recovery
+        scope: 'NO'
   name: Regenerate
   effect: >-
     When rolling for serious injuries after being taken out of action, treat any results of 16-35 as
@@ -224,12 +235,8 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.aquatic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.movement
   name: Aquatic
-  effect: >-
-    Brood members may move through water terrain without penalty and count as being in cover whilst
-    they are in the water.
   source:
     manual: broheim.net
     printed_page: 1
@@ -237,12 +244,9 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
   name_i18n:
     es: Acuático
-  effect_i18n:
-    es: >-
-      Los miembros de la Cría pueden moverse por terreno de agua sin penalización y cuentan como en
-      cobertura mientras estén en el agua.
   applies_to:
     band: true
+  rule_ref: shared-rule.aquatic
 - id: broodmother--leader
   runtime:
     scope: 'YES'
@@ -255,7 +259,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: Any warrior within 6 inches of the Broodmother may use her Leadership instead of his own.
   source:
     manual: broheim.net
     printed_page: 3
@@ -263,13 +266,10 @@ rules:
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier guerrero a 6 pulgadas de la Madre de Cría puede usar su Liderazgo en lugar del
-      propio.
   applies_to:
     profile_ids:
     - broodmother
+  rule_ref: shared-rule.leader
 - id: broodmother--mother-knows-best
   runtime:
     scope: 'NO'
@@ -279,10 +279,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.broodmother.mother-knows-best
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple
-        opponents. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.group
   name: Mother Knows Best
   effect: When taking rout tests, this model may use the bonus of Brood Mentality.
   source:
@@ -299,16 +296,17 @@ rules:
     - broodmother
 - id: newborns--nestlings
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.newborns.nestlings
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: out-of-scope.group
+      clauses:
+      - id: nestlings
+        scope: 'NO'
   name: Nestlings
   effect: >-
     If a Newborn is taken out of action by an enemy warrior in close combat, every Brood hero with
@@ -339,9 +337,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.newborns.too-little
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: out-of-scope.campaign
   name: Too Little
   effect: Newborns never become heroes; re-roll all results of 'that lad's got talent'.
   source:
@@ -367,8 +363,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.baneworms.mer-creature
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: out-of-scope.movement
   name: Mer-Creature
   effect: >-
     Baneworms live underwater but are able to wriggle on solid ground. See the Stygian Mutations for
@@ -396,9 +391,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.baneworms.lurker
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source
-        prose is retained; this is an exclusion, not deferred modular implementation.
+      reason: out-of-scope.movement
   name: Lurker
   effect: >-
     When charging while hidden in the previous turn, Baneworms may perform a "diving charge" even if
@@ -426,10 +419,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.baneworms.animal
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel
-        aftermath. Source prose is retained; this is an exclusion, not deferred modular
-        implementation.
+      reason: out-of-scope.campaign
   name: Animal
   effect: >-
     Baneworms gain no experience and may not climb. They do not benefit or suffer from any of the
@@ -450,15 +440,17 @@ rules:
     - baneworms
 - id: band--characteristic-increase
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.band.characteristic-increase
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: characteristic-increase caps on advancement.
+      reason: out-of-scope.campaign
+      clauses:
+      - id: whole
+        scope: 'NO'
   name: Characteristic Increase (Troll Maximums)
   effect: >-
     Troll characteristics may not be increased beyond the Troll maximum characteristic profile
@@ -486,8 +478,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.the-terror
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the All Alone test is a psychology-subsystem interaction.
+      reason: out-of-scope.group
   name: The Terror
   effect: >-
     The Troll is an abominable blasphemy of nature itself, nightmarish beyond any lunatic's
@@ -520,8 +511,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.ground-pounder
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: the shooting-phase quake and the Initiative test are phase-specific mechanics.
+      reason: out-of-scope.shooting
   name: Ground Pounder
   effect: >-
     The Brood member is capable of slamming both fists into the ground with such force that the
@@ -581,8 +571,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.hurl
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: substituting the shooting attack for a throw is a shooting-phase mechanic.
+      reason: out-of-scope.shooting
   name: Hurl
   effect: >-
     Instead of shooting, the Brood member may grab a normal-sized model in base-to-base contact and
@@ -616,9 +605,7 @@ rules:
     - id: unimplemented.brood-of-ghurash-the-sc.band.accelerated-evolution
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: consuming moonstones during an advance is an advancement-time mechanic; the
-        mutation groups it can grant are listed here.
+      reason: out-of-scope.campaign
   name: Accelerated Evolution
   effect: >-
     Usually it takes years for Trolls to adapt to a certain environment or feeding behaviour. Due to

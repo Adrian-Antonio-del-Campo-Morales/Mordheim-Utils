@@ -187,7 +187,8 @@ function makeKnowledge() {
     queryKnowledge(query: { id: { kind: string; value: string } }) {
       const row = records.get(`${query.id.kind}:${query.id.value}`);
       if (!row) return { ok: false as const, reason: "not_found" as const };
-      const { id, name, names, ...data } = row;
+      const { name, names, ...data } = row;
+      delete (data as { id?: unknown }).id;
       return {
         ok: true as const,
         record: {

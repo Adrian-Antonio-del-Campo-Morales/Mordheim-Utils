@@ -126,6 +126,7 @@ def test_the_lunatics_rule_reaches_its_printed_recipient_only(precompiled):
     assert LUNATICS not in sibling.global_effects.tags
 
 
+@pytest.mark.covers("rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/mechanic.lunatics")
 def test_a_roll_of_one_to_three_grants_frenzy_and_retains_recovered_duration(precompiled):
     fighter, foe = precompiled().first, precompiled().second
     dice = KeyedDice({"round.0.first.lunatics": 2, **misses(0, "first", 2), **misses(0, "second", 1)})
@@ -145,6 +146,7 @@ def test_a_roll_of_one_to_three_grants_frenzy_and_retains_recovered_duration(pre
     assert second.state.first.frenzy and len(second.attacks) == 3
 
 
+@pytest.mark.covers("rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/mechanic.lunatics")
 def test_a_roll_of_four_to_six_grants_the_printed_stupidity(precompiled):
     fighter, foe = precompiled().first, precompiled().second
     # The opponent closes the charge, so the failure reads only as the printed
@@ -180,6 +182,7 @@ def test_a_roll_of_four_to_six_grants_the_printed_stupidity(precompiled):
     assert third.state.first.stupidity_failed and len(third.attacks) == 1
 
 
+@pytest.mark.covers("rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/mechanic.lunatics")
 def test_the_granted_frenzy_exempts_the_stupidity_and_its_loss_resumes_it(precompiled):
     fighter, foe = precompiled().first, precompiled().second
     # The Frenzy the same printed rule granted holds: the model's own printed

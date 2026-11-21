@@ -146,6 +146,7 @@ def strike(attacker, defender, rolls):
     return result
 
 
+@pytest.mark.covers("item/shortsword")
 @pytest.mark.usefixtures("_frozen_compiles")
 @pytest.mark.parametrize('armour,face', [('armour.no-armour', 6), ('armour.heavy-armour', 4)])
 def test_shortsword_keeps_parry_and_grants_the_printed_enemy_armour_bonus(armour, face):
@@ -647,6 +648,7 @@ def test_blood_dragon_no_pain_changes_the_real_injury_result(precompiled):
         [('hit', 4), ('wound', 4), ('injury.0', 4)]).defender.condition == Condition.STUNNED
 
 
+@pytest.mark.covers("rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile")
 def test_poltergeist_incorporeal_uses_existing_immediate_out_before_no_pain(precompiled):
     incoming, ghost = precompiled().first, precompiled().second
     assert ghost.injury_profile == 2
@@ -1353,6 +1355,8 @@ def test_stupidity_completion_acquired_prior_failure_lasts_until_next_own_turn()
     dice.finish(); decisions.finish()
 
 
+@pytest.mark.covers("mechanic/mechanic.disability", "head-injury-stupidity", "no-two-weapons-or-weapon-and-shield", "permanent-characteristic-penalty")
+@pytest.mark.covers("rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability", "head-injury-stupidity", "no-two-weapons-or-weapon-and-shield", "permanent-characteristic-penalty")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_stupidity_completion_disability_head_injury_uses_the_same_turn_operator():
     from mordheim_combat.modular.psychology import resolve_stupidity
@@ -3255,6 +3259,8 @@ def test_supplied_hatred_condition_tests_any_enemy_in_the_first_round_only(first
     assert _hit_reroll(immune, foe, immune.main_weapon, immune.global_effects, True, False) is False
 
 
+@pytest.mark.covers("rule/mordheim/adventurers-kaz/dwarf--hard-head/trait.concussion-immune")
+@pytest.mark.covers("rule/mordheim/adventurers-kaz/dwarf--hard-to-kill/skill.hard-to-kill")
 @pytest.mark.usefixtures("_frozen_compiles")
 def test_kasgal_dwarf_hard_head_and_hard_to_kill_bind_the_shared_injury_chart():
     dwarf = canonical('adventurers-kaz', 'dwarf', 'weapon.fist')

@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/mechanic.leader-fallback
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fallback binding carries 3 authored scenarios derived from the
+#   printed sentence ("If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader
+#   rule with a 4\" range", Lustria p.100): a usable standing Witch Doctor withholds the Big Boss's
+#   borrow (the strict decision tape proves it), while a knocked-down or absent Witch Doctor leaves
+#   it offered and the Big Boss's printed Leadership 7 is the one tested.  The second printed
+#   sentence (leader succession) stays excluded, as its own clause block records.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/trollheim/lustria-savage-goblins/special-rules.yaml
+#
+# Clause: leader-four--scope--leader-succession (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+#
+# AUTHORED: the printed condition of the grant.  The borrower is the band's own Trackers fixture
+#   (printed Leadership 6) with a supplied Stupidity test as the individual Leadership-test vehicle;
+#   the Witch Doctor (the band's Leader, printed Leadership 6) and the Big Boss are supplied standing
+#   or knocked-down nearby participants with declared distances.  Dice: 2d6 <= Leadership passes, so
+#   the declared 3+4=7 passes only the Big Boss's 7 and fails both printed sixes; a wrongly offered
+#   borrow would request an undeclared leader decision and fail the strict tape.  The sibling
+#   mechanic.leader-six and mechanic.leader-four bindings of this rule carry their own files.
+
+# --- Authored scenarios ---
+# The printed condition does not hold: the Witch Doctor stands five inches away, inside his own
+# six-inch radius, so his Leadership can be used and the Big Boss four inches away is not offered at
+# all.  The declined senior borrow leaves the borrower's own 6, which fails the seven and cancels
+# the charge.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/mechanic.leader-fallback
+  id: a-usable-witch-doctor-withholds-the-big-boss
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, witch-doctor, 5], [first, big-boss, 4]]
+    nearby:
+      - participant_id: witch-doctor
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: witch-doctor}
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.witch-doctor, value: false}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed condition holds: a knocked-down Witch Doctor cannot lend his Leadership, so the Big
+# Boss's four-inch Leader borrow is offered and his 7 passes the identical seven.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/mechanic.leader-fallback
+  id: a-knocked-down-witch-doctor-admits-the-big-boss
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, witch-doctor, 3], [first, big-boss, 4]]
+    nearby:
+      - participant_id: witch-doctor
+        side_id: first
+        condition: knocked-down
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: witch-doctor}
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.big-boss, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1}
+
+# The Witch Doctor is absent, so the printed condition holds trivially and the Big Boss alone is
+# offered; his borrowed 7 passes the seven that the borrower's own 6 would fail.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/mechanic.leader-fallback
+  id: the-absent-witch-doctor-admits-the-big-boss
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, big-boss, 4]]
+    nearby:
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.big-boss, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1}

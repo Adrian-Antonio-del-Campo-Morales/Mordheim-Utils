@@ -1,0 +1,56 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-high-elves/band--haughty/compiler.haughty
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: whole--scope--dwarf-equipment-bar (scope: YES)
+# AUTHORED[whole--scope--dwarf-equipment-bar]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.gromril-armour in armour_id is refused with "Dwarf-made equipment is forbidden for lustria-high-elves/loremaster", and the same recipient without the item is accepted at construction. The rule applies to the whole band (applies_to.band), so a canonical printed member of the band stands for the printed group named by the contract. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+#
+# Clause: whole--scope--hired-sword-blood-bar (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole--scope--dwarf-equipment-bar']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/lustria-high-elves/band--haughty/compiler.haughty
+  id: loremaster-with-compiler-haughty-is-refused
+  covers:
+  - whole--scope--dwarf-equipment-bar
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      armour_id: armour.gromril-armour
+  expect_error: Dwarf-made equipment is forbidden for lustria-high-elves/loremaster
+
+- audit_id: rule/trollheim/lustria-high-elves/band--haughty/compiler.haughty
+  id: loremaster-without-compiler-haughty-is-accepted-at-construction
+  covers:
+  - whole--scope--dwarf-equipment-bar
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    second:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

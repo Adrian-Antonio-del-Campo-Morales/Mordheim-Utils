@@ -1,0 +1,106 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/mechanic.achilles-heel
+# authoring_status: AUTHORED
+# authoring_progress: the criticals-on-six clause now carries two authored tapes (the printed critical on
+# a natural six regardless of the opponent's Toughness, and the control in which the same faces leave an
+# ordinary wound) declared through the band's own published warband_skill row; the armour-denial half
+# stays withheld because its conditional carrier - the Stampede charge attack of the same band - is itself
+# an accepted exclusion (scope NO, group coordination of charging models outside the two-duelist scope).
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: criticals-and-charge--scope--criticals-on-six (scope: YES)
+# AUTHORED[criticals-and-charge--scope--criticals-on-six]: the granted critical condition is now asserted by
+#   (2026-11-16: both scenarios of this clause pass against the modular engine, so the PENDING[B] consumer
+#   below exists; the remaining half of the stanza is now scope NO.)
+# the two tapes below, and the blocker previously recorded here is corrected because it was false.  The
+# band's own published row (bands/mordheim/snotlings-web/special-rules.yaml, id bullied-goblin--achilles-heel,
+# kind warband_skill, applies_to.profile_ids [bullied-goblin, bigsnotz, scouts, shaman]) is scope YES /
+# implemented YES / grant selectable and binds mechanic.achilles-heel - it is not the scope LATER / null
+# binding placeholder the earlier note claimed.  The printed half asserted is "Your Snotling always causes
+# Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness", declared through that
+# published row on the band's own Snotling profile and aimed at the one case the core contract excludes
+# from criticals (the required To-Wound target is already six), with its companion control in which the
+# same declared faces leave an ordinary wound.  PENDING[B] the consumer that re-admits a natural six as a
+# critical when the required target is already six: the selection is admitted, so this is behaviour and not
+# a missing input.  The Stampede half of the printed stanza is the separate clause below.
+#
+# Clause: criticals-and-charge--scope--stampede-armour-denial (scope: NO)
+# Outside the admitted clause scope since 2026-11-16 (KB set it to NO: it applies only with the Stampede charge attack, which is scope NO (out-of-scope.group)).
+#   Earlier note: KB-FIX (verified 2026-11-16).  The printed
+#   sentence is conditional on another rule: "In addition, when combined with the Stampede charge attack, on
+#   any successful rolls to wound of 5+, the opponent gains no armour save."  Its carrier,
+#   bands/mordheim/snotlings-web/special-rules.yaml bullied-goblin--stampede, is runtime scope 'NO' /
+#   implemented 'NO', effect unimplemented.snotlings-web.special.stampede with binding null, reason
+#   out-of-scope.group and its single clause whole scope 'NO' (Stampede tracks the other Snotlings that
+#   charged the same warrior and has them forfeit attacks - additional participants outside the duel).  With
+#   no in-scope Stampede charge attack there is no duel input that states the condition, so this clause
+#   cannot be an admitted obligation.  Recommended KB change: in the same file, record
+#   bullied-goblin--achilles-heel, effect mechanic.achilles-heel, set clause
+#   criticals-and-charge--scope--stampede-armour-denial to scope 'NO' (reason out-of-scope.group, following
+#   its carrier bullied-goblin--stampede).  Not authored.
+#
+
+# --- Authored scenarios ---
+# Derived from the printed skill and the band's own published row; no engine output was consulted.
+
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/mechanic.achilles-heel
+  id: a-natural-six-to-wound-is-critical-against-toughness-five
+  covers: [criticals-and-charge--scope--criticals-on-six]
+  # The printed half: "Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless
+  # of opponent's toughness".  The bearer is the band's own Snotling profile whose printed Strength 2 makes
+  # the required To-Wound target six against the declared Toughness 5 - exactly the case the core contract
+  # excludes from criticals and this printed rule re-admits.  The strict tape declares the wound face of
+  # six and the critical-chart die; a basic chart result of one leaves the printed damage of two.
+  # The re-admission is asserted by the requested critical-chart die itself: the strict tape declares
+  # exactly one, so an ordinary wound (no re-admission) would leave it unused and fail the case.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bullied-goblin--achilles-heel]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/mechanic.achilles-heel
+  id: without-the-printed-rule-the-same-six-is-an-ordinary-wound
+  covers: [criticals-and-charge--scope--criticals-on-six]
+  # The control that separates the printed rule from the ordinary case: the identical bearer and the
+  # identical declared hit and wound faces, but with no special selection, so the natural six against a
+  # required target of six wounds normally and no critical-chart die is requested at all (the strict tape
+  # would reject an unconsumed third roll).
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 5, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

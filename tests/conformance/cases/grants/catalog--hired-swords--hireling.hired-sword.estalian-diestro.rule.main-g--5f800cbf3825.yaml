@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the real Diestro holding rapier and main gauche chooses parry mode (one swing, the
+#   parry holds); chooses attack mode (the dagger swing lands and is saved on the granted 6+, while
+#   the rapier's own parry still holds); with the rapier alone he is asked no mode; the Bard
+#   control cannot hold the gauche (kit refusal); the rule is refused outside the Diestro's package.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Semantic wrinkle (2026-11-18, recorded): the Diestro's rapier parries on its own, so in attack mode
+#   the parry capacity (one per round) is still supplied by the rapier; the mode governs the gauche
+#   alone.  Barrage is the rapier's (weapon.rapier tag), so the gauche's saved hit opens no Barrage
+#   decision.  The kit's light armour stays owned, not worn, so no save of his own is rolled.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.hired-sword.estalian-diestro.rule.main-gauche, grant profile): "Each
+# turn the Main Gauche either grants an additional dagger attack or parries as a sword, forfeiting
+# its additional attack" - binding mechanic.main-gauche-modes (model
+# tests/conformance/cases/mechanics/mechanic.main-gauche-modes.yaml; consumer modular/rounds.py,
+# decision `round.<i>.<side>.main-gauche-parry` offered while a main gauche is held in the off hand).
+# Hireling family model (README, Hireling recipients): the real Diestro through the hireling route
+# (hirelings.hired-sword.2a / hireling.hired-sword.estalian-diestro) with the fixture facts (WS3 S3
+# T3 W2 I5 A1; printed Ld8 stays), his kit rapier in the main hand and his kit main gauche in the
+# off hand (his authored rapier file notes the choice only fires when the gauche is held).  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour).  Dice: WS3 against WS3 hits on
+# 4+; S3 wounds T3 on 4+; a parry must beat the hit roll; both rapier and dagger-mode gauche grant
+# the unarmoured opponent a 6+.  The Diestro strikes first (Initiative 5 against 2); his second
+# swing, when he has one, is the gauche and resolves last.  The control is the grade-1b Bard.
+
+# Parry mode: one swing only (the strict tape declares no second hit die) and the opponent's hit
+# of 4 is beaten by the parry die 5.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+  id: the-diestro-in-parry-mode-forfeits-the-dagger-swing-and-parries
+  fighters:
+    first:
+      &diestro-pair
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.estalian-diestro
+      main_weapon_id: weapon.rapier
+      off_hand_id: weapon.main-gauche
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &diestro-pair-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.main-gauche-parry, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.parried: true, attacks.1.wounded: false, state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Attack mode: the rapier misses, the dagger-mode gauche hits and its wound is saved on the granted
+# 6+; the rapier still parries the opponent's hit of 4 with a 5.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+  id: the-diestro-in-attack-mode-adds-the-dagger-swing
+  fighters:
+    first: *diestro-pair
+    second: *diestro-pair-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.main-gauche-parry, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.first.attack.1.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.saved: true, attacks.1.damage: 0, attacks.2.parried: true,
+        state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The choice belongs to a held gauche: with the rapier alone (the gauche owned, not held) the same
+# profile is asked no mode and swings once.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+  id: the-diestro-with-the-rapier-alone-is-asked-no-mode
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.estalian-diestro
+      main_weapon_id: weapon.rapier
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *diestro-pair-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the main gauche is outside the Bard's printed kit, so the kit resolver refuses the
+# build before any mode could be asked.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+  id: a-hireling-outside-the-kit-cannot-hold-the-gauche
+  fighters:
+    first:
+      &diestro-pair-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.main-gauche
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *diestro-pair-opponent
+  expect_error: "hireling active equipment and supplied ownership do not form a complete legal printed kit"
+
+# The printed grant belongs to the Diestro's profile; selecting it on a hireling of another package
+# is refused by the compiler (the band-only fragment).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.estalian-diestro.rule.main-gauche/mechanic.main-gauche-modes
+  id: the-rule-is-refused-on-a-hireling-outside-the-diestros-package
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      special_rule_ids: [hireling.hired-sword.estalian-diestro.rule.main-gauche]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *diestro-pair-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

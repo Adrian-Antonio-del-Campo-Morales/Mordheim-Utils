@@ -1,0 +1,144 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.rolling-pin
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios pin the printed +1 Strength at its wound boundary
+#   (a 3 wounds T3 with the pin, the same 3 fails with a mace), the cudgel's
+#   Concussion band (injury 1 stays Knocked Down, 2 becomes Stunned, 4 becomes
+#   Stunned), and the real "Busty" Gwen compiled through the hireling route with
+#   her pin (expect_fighters).  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: 5 scenarios cover the +1 Strength wound boundary with its mace
+#   control, the Concussion band (1 Knocked Down, 2 and 4 Stunned) and the
+#   real Gwen's compiled pin.
+
+# --- Authored scenarios ---
+# mechanic/weapon.rolling-pin - "Busty" Gwen's print (Fanatic Online 89): "treat
+# the rolling pin as a cudgel in close combat... add +1 S".  A cudgel is the
+# canonical club/mace, so the pin has Concussion (an Injury roll of 2-4 is
+# Stunned) plus its own reinforced-iron +1 Strength.
+#
+# Expectations come from the printed text, never from engine output.  S3 +1 = S4
+# against T3 wounds on a 3+, so the wound die 3 is the boundary; the Concussion
+# band is pinned at its lower edge (1 stays Knocked Down), its start (2) and its
+# end (4), the same probe the canonical mace carries.
+
+# The printed +1 Strength at its boundary; the injury 1 is below the Concussion
+# band and stays Knocked Down.
+- audit_id: mechanic/weapon.rolling-pin
+  id: rolling-pin-wounds-at-the-boosted-strength
+  fighters:
+    first:
+      main_weapon_id: weapon.rolling-pin
+      characteristics: &rp-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &rp-defender-w1 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &rp-charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mace control: the identical wound die 3 is one face below the unboosted S3
+# target against T3, so the point of Strength is the pin's own.
+- audit_id: mechanic/weapon.rolling-pin
+  id: the-same-wound-die-fails-without-the-pin
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *rp-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *rp-defender-w1
+  duel_context: *rp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The cudgel's Concussion band starts at 2: the injury that is Knocked Down on
+# an ordinary weapon becomes Stunned.
+- audit_id: mechanic/weapon.rolling-pin
+  id: rolling-pin-injury-2-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.rolling-pin
+      characteristics: *rp-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *rp-defender-w1
+  duel_context: *rp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band's end: a 4 is still Stunned (5-6 would be Out of Action on the
+# ordinary chart either way).
+- audit_id: mechanic/weapon.rolling-pin
+  id: rolling-pin-injury-4-is-stunned
+  fighters:
+    first:
+      main_weapon_id: weapon.rolling-pin
+      characteristics: *rp-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *rp-defender-w1
+  duel_context: *rp-charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The real "Busty" Gwen (hireling route) carries her printed pin: the compiled
+# main weapon shows +1 Strength and the cudgel's Concussion.  Her printed
+# starting skills are compile-time passives that request nothing here: Step
+# Aside's 5+ special save would only roll when she is wounded (the opponent's
+# declared hit is a miss), Mighty Blow's +1 Strength sits in her global effects
+# rather than on the pin, and Strike to Injure only shifts an injury total.
+- audit_id: mechanic/weapon.rolling-pin
+  id: the-real-gwen-compiles-her-printed-rolling-pin
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.busty-gwen
+      main_weapon_id: weapon.rolling-pin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.main_weapon.strength_bonus: 1
+    first.main_weapon.concussion: true
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

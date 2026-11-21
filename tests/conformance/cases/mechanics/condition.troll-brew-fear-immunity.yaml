@@ -1,0 +1,132 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.troll-brew-fear-immunity
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (supplied-condition batch, 2026-11-18): the nominated
+#   Guildsmen Hero charged by a fear-causer takes no Fear test with the strong brew (and is not
+#   frenzied by it), rolls and fails the test without it, charges a fear-causer without a Fear test,
+#   and the brew is refused on a henchman recipient and beside a second brew result.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.troll-brew-fear-immunity,
+#   "Strong Brew"): "A 1-2 brew result leaves the nominated Dwarf immune to fear for the duration of
+#   the battle."  Source: Karak Azgal (broheim.net) p25, Special Rules / Brewers: "1-2: ... The warrior
+#   is immune to fear for the duration of the battle."
+# AUTHORED: the pre-battle brew roll and the nomination are outside the duel; the result is the
+#   supplied current fact declared through condition_ids.  The row binds the shared
+#   mechanic.fear-immunity, read by modular/leadership.py (resolve_local_leadership: a Fear test is
+#   passed without dice for a bearer tagged mechanic.fear-immunity) and modular/psychology.py (the
+#   charged side's Fear gate).  The compiler gate (roster-construction compiler.py) admits any
+#   condition.troll-brew-* only on a mordheim dwarf-guildsmen-kaz Hero whose species is dwarf or
+#   unstated: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be
+#   a Hero"; the supplied-result resolver (conditions.py) refuses two results of the brew table:
+#   "choose only one supplied result of the same potion table".  The recipient is the printed
+#   Apprentice (a Hero) carrying the corpus fixture characteristics (Leadership 7), with its default
+#   kit blade.  Fear arithmetic: 4+4 = 8 fails Ld 7.
+
+# --- Authored scenarios ---
+
+# The brew: charged by a fear-causer, the nominated Apprentice takes no Fear test - no fear die is
+# requested, its hits are not clamped to sixes - and the strong brew leaves it unfrenzied.
+- audit_id: mechanic/condition.troll-brew-fear-immunity
+  id: the-nominated-dwarf-charged-by-a-fear-causer-takes-no-fear-test
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-fear-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.frenzy: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Apprentice without the brew owes the Fear test, and 4+4 = 8 fails its
+# Leadership 7, so its hits are clamped to sixes for the round.
+- audit_id: mechanic/condition.troll-brew-fear-immunity
+  id: without-the-brew-the-same-dwarf-rolls-and-fails-the-fear-test
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Immunity covers the charge as well: the nominated Apprentice charging a fear-causer owes no
+# fear.charge die and the charge is made.
+- audit_id: mechanic/condition.troll-brew-fear-immunity
+  id: the-nominated-dwarf-charges-a-fear-causer-without-a-fear-test
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-fear-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: true, state.engaged: true, state.first.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "The leader will allow D3 of his heroes to drink": a henchman of the same band is refused the brew
+# by the compiler's own sentence.
+- audit_id: mechanic/condition.troll-brew-fear-immunity
+  id: a-henchman-of-the-guildsmen-is-refused-the-brew
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: labourers
+      condition_ids: [condition.troll-brew-fear-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "only a Dwarf of the Guildsmen brewers may drink the supplied brew; the recipient must be a Hero"
+
+# One barrel is rolled per battle: two results of the brew table on one build are refused by the
+# supplied-result resolver's own sentence.
+- audit_id: mechanic/condition.troll-brew-fear-immunity
+  id: two-brew-results-on-one-build-are-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: apprentices
+      condition_ids: [condition.troll-brew-fear-immunity, condition.troll-brew-frenzy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  expect_error: "choose only one supplied result of the same potion table"

@@ -171,5 +171,13 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
             executed += 1
     # Promoted local rules add Shifty, local profiles and source-specific variants.
     # Crude Belch needs known enemy Leadership; the generic opponent supplies it.
-    # Fey Quickness adds one source-backed melee avoidance operator.
-    assert executed == 502
+    # Fey Quickness adds one source-backed melee avoidance operator. Chosen of
+    # the White Tower and Instinctive Warrior are classified against the parry
+    # operators the execution contract already carried.
+    # The Cleaver mechanic was retired into the Axe it fights as (2026-11-11).
+    # The second triage batch (2026-11-18) adds the Horseman's Hammer, Gwen's
+    # Rolling Pin, the Rat Ogre's Bio-Mechanical Armour, the Imperial
+    # Tactician's Plate Armour, the Spiral and the Triskele.
+    # The Sword Master split (ruling 2026-11-18) adds the Blood Dragon's own
+    # six-parry mechanic and the Master of Blades two-Dwarf-axes reroll.
+    assert executed == 516

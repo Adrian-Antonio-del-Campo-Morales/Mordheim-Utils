@@ -117,9 +117,9 @@ def test_app_warband_manager_forwards_vite_arguments(cli, monkeypatch):
 @pytest.mark.parametrize("name", ["benchmark", "calibrate"])
 def test_performance_commands_forward_to_the_lab(cli, monkeypatch, name):
     calls = _record(cli, monkeypatch)
-    assert cli.main(["performance", name, "--pairs", "mini"]) == 0
+    assert cli.main(["performance", name, "--scenarios", "small"]) == 0
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", name,
-                      "--pairs", "mini"]]
+                      "--scenarios", "small"]]
 
 
 @pytest.mark.parametrize("arguments, expected", [
@@ -136,7 +136,9 @@ def test_performance_commands_forward_to_the_lab(cli, monkeypatch, name):
     (["tests", "native", "runtime"], [["tests/engines/native/runtime"]]),
     (["tests", "kb"], [["tests/knowledge"]]),
     (["tests", "kb", "construction"], [["tests/construction"]]),
-    (["tests", "kb", "e2e"], [["tests/integration/e2e"]]),
+    (["tests", "conformance"], [["tests/conformance"]]),
+    (["tests", "conformance", "scenarios"], [["tests/conformance/execution"]]),
+    (["tests", "conformance", "integrity"], [["tests/conformance/integrity"]]),
     (["tests", "parity"], [["tests/engines/parity/statistical"], ["tests/tooling/parity"]]),
     (["tests", "parity", "statistical"], [["tests/engines/parity/statistical"]]),
     (["tests", "parity", "tooling"], [["tests/tooling/parity"]]),
@@ -216,8 +218,8 @@ def test_no_tests_collected_counts_only_when_no_run_collects(cli, monkeypatch, s
 
 def test_double_dash_is_not_forwarded(cli, monkeypatch):
     calls = _record(cli, monkeypatch)
-    assert cli.main(["tests", "kb", "e2e", "--", "-q"]) == 0
-    assert calls == [_pytest("tests/integration/e2e", "-q")]
+    assert cli.main(["tests", "conformance", "--", "-q"]) == 0
+    assert calls == [_pytest("tests/conformance", "-q")]
 
 
 def test_an_explicit_file_replaces_the_selection_paths(cli, monkeypatch):
@@ -470,13 +472,12 @@ def test_check_lab_commands_forward_to_the_lab(cli, monkeypatch, arguments, modu
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", module, *forwarded]]
 
 
-@pytest.mark.parametrize("kind, command", [("rules", "audit"),
-                                           ("tests", "test-report")])
-def test_check_report_routes_to_the_generator(cli, monkeypatch, kind, command):
+@pytest.mark.parametrize("kind, module, command", [("rules", "tools.knowledge.clauses", "report"),
+                                                   ("tests", "mordheim_combat_lab", "test-report")])
+def test_check_report_routes_to_the_generator(cli, monkeypatch, kind, module, command):
     calls = _record(cli, monkeypatch)
     assert cli.main(["check", "report", kind, "--output", "outputs"]) == 0
-    assert calls == [[sys.executable, "-m", "mordheim_combat_lab", command,
-                      "--output", "outputs"]]
+    assert calls == [[sys.executable, "-m", module, command, "--output", "outputs"]]
 
 
 def test_check_report_rejects_unknown_kinds(cli, monkeypatch):

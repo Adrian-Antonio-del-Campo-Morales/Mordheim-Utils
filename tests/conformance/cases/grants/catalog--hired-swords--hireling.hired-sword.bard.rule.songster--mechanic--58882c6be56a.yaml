@@ -1,0 +1,195 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (songster family model, 2026-11-18): a friendly warrior
+#   beside the real Bard rerolls its failed charged Fear test and passes only at the printed +1;
+#   the accepted second result when the reroll fails as well; the Bard one inch beyond the
+#   canonical six-inch radius, offering nothing; the control without the Bard, offered nothing;
+#   and the refusal outside the profile.  The direct template is the authored William
+#   Schakestange songster file of this directory (the same mechanic.songster binding and
+#   contract); the oracle for the shared binding is the authored sea-ghosts-mim
+#   minstrels--songster file.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the songster family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# The Bard's Songster is a profile grant bound to the shared mechanic.songster ("Friendly warriors
+# within the source-defined range benefit from the Bard's leadership song"; the canonical contract
+# is the Sea Ghosts print: nearby friendly models re-roll failed Leadership tests at +1 within six
+# inches).  The Bard is therefore supplied as a nearby participant of the recipient's own side,
+# compiled through the hireling route (hirelings.hired-sword.1b / hireling.hired-sword.bard) with
+# the fixture facts (WS3 S3 T3 W2 I5 A1; his printed Ld7 stays) and the kit dagger declared as his
+# main weapon; as a nearby provider he is never charged and strikes no blow, so he requests
+# nothing.  The clause qualifies the recipient, not the Bard, so the gift has no band gate (the
+# songster check in modular/leadership.py is cross-band) and a hand-built recipient (WS3 S3 T3 W2
+# I2 A1 Ld6, mace) receives it.  The enemy is a hand-built fear-causer that charges the recipient,
+# so the test under evidence is the recipient's charged Fear test: 6+6 fails Ld6, the declared
+# choice takes the one offered reroll, and a reroll of 3+4 = 7 passes only at the printed +1
+# (Ld6+1).  Every declared attack die is a natural 1, a miss.
+
+# 6+6 fails Ld6; the declared reroll of 3+4 = 7 passes only at the printed +1, so the recipient's
+# hits are not clamped to sixes.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+  id: a-friendly-warrior-beside-the-bard-rerolls-the-failed-fear-test-at-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: bard
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.1b
+          profile_id: hireling.hired-sword.bard
+          main_weapon_id: weapon.dagger
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, bard, 4]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The reroll is a single second attempt: 4+4 = 8 fails even at the printed +1 and the second
+# result stands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+  id: the-second-result-stands-when-the-reroll-fails-even-at-plus-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: bard
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.1b
+          profile_id: hireling.hired-sword.bard
+          main_weapon_id: weapon.dagger
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, bard, 4]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 4}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the canonical six-inch radius no reroll is offered at all, which the strict decision tape
+# itself proves.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+  id: the-bard-beyond-the-printed-radius-offers-no-reroll
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: bard
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: hirelings.hired-sword.1b
+          profile_id: hireling.hired-sword.bard
+          main_weapon_id: weapon.dagger
+          characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    distances:
+      - [second, bard, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the Bard the same failing dice are requested, no reroll decision is
+# offered, and the failure stands.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+  id: without-the-bard-the-first-failure-stands
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Bard's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bard.rule.songster/mechanic.songster
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2a
+      profile_id: hireling.hired-sword.imperial-tactician
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.bard.rule.songster]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.2a"

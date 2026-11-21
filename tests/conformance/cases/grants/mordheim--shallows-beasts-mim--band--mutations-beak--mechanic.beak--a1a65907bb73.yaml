@@ -1,0 +1,99 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-beak/mechanic.beak
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (Aquatic Mutants family, survival-injury-and-immunity batch
+#   2026-11-18): a Hero of the band taking the Beak compiles one additional natural bite that resolves
+#   after a double-handed weapon at the Hero's own Strength, the same Hero without the selection
+#   compiles no bite, and a henchman of the band is refused the mutation.  REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/shallows-beasts-mim/special-rules.yaml
+#
+# AUTHORED: the record is a `mutation` with `grant: selectable`, `applies_to.profile_types: [hero]`
+#   ("Any Hero may start the campaign with a single mutation from the following ... beak ...") binding
+#   mechanic.beak ("Unless it already possesses a bite, gains one additional close-combat bite at own
+#   Strength with no unarmed penalty. Always strikes after double-handed weapons, regardless of
+#   charge").  The tag has no engine read of its own; the compiler projects it as one extra attack
+#   tagged weapon.natural-attacks + rule.strikes-last-bite
+#   (packages/python/roster-construction/mordheim_construction/compiler.py), scheduled as the separate
+#   final event round.<r>.<owner>.last-bite.attack.0.* at tier -2, below a double-handed weapon's
+#   tier -1 (packages/python/combat-engine/mordheim_combat/modular/rounds.py).  The shared mechanics
+#   file (cases/mechanics/mechanic.beak.yaml) carries the hand-built face.
+#
+# Family model (Aquatic Mutants; the Great Claw and Tentacle files of this band are the construction
+# models).  Recipient: the printed Buccaneer (WS4 S4 T4 W1 I4 A1 Ld8) with a club from its own list and
+# the mutation selected through special_rule_ids.  Opponent: hand-built (WS3 S3 T3 W3 I2 A1 Ld7) with a
+# double-handed weapon.  The Buccaneer's club swing (Initiative 4) comes first, the double-handed
+# weapon (strikes last) second and the bite last; both weapon swings are declared natural ones so the
+# Strength 5 blow never reaches the one-Wound Hero.  WS4 against WS3 hits on 3+; the bite's wound die
+# of 3 wounds T3 at the Hero's own Strength 4 (3+) where an unarmed Strength 3 would need a 4; no die
+# is a natural six.  A henchman is refused by the recipients gate.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-beak/mechanic.beak
+  id: a-hero-taking-the-beak-bites-after-the-double-handed-weapon-at-its-own-strength
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      special_rule_ids: [band--mutations-beak]
+      main_weapon_id: weapon.club
+    second:
+      &beak-opponent
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.last-bite.attack.0.hit, value: 3}
+    - {key: round.0.first.last-bite.attack.0.wound, value: 3}
+  expect_fighters:
+    first.extra_attacks.0.tags: [weapon.natural-attacks, rule.strikes-last-bite]
+    first.characteristics.attacks: 1
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same Hero without the selection compiles no bite and strikes only with the club.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-beak/mechanic.beak
+  id: the-same-hero-without-the-mutation-has-no-bite
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: buccaneer
+      main_weapon_id: weapon.club
+    second: *beak-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_fighters:
+    first.extra_attacks: []
+  expect_rounds:
+    0: {state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mutation is a Hero's selection: a henchman of the band is refused it.
+- audit_id: rule/mordheim/shallows-beasts-mim/band--mutations-beak/mechanic.beak
+  id: a-henchman-of-the-band-is-refused-the-mutation
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shallows-beasts-mim
+      profile_id: wreckers
+      special_rule_ids: [band--mutations-beak]
+      main_weapon_id: weapon.mace
+    second: *beak-opponent
+  expect_error: "special rule is not available to shallows-beasts-mim/wreckers: band--mutations-beak"

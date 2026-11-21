@@ -441,6 +441,9 @@ def test_the_shared_definition_findings_are_pooled_and_unchanged():
     }
     assert shared == {
         ("unused_enum_value", "#/$defs/catalog_status"): ("str:draft",),
+        # The intake reason code: every effect that carried it was classified on
+        # 2026-11-13, and the vocabulary keeps it for the next unreviewed rule.
+        ("unused_enum_value", "#/$defs/runtime_effect.reason"): ("str:pending-classification",),
         ("unused_enum_value", "#/$defs/characteristic_name"): (
             "str:BS",
             "str:I",

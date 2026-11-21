@@ -1,0 +1,162 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (survival-injury-and-immunity batch, 2026-11-18): a construct die of four
+#   discards the Out of Action result without restoring the lost Wound, a three lets it stand, a
+#   magical attack is offered no construct die, and a hireling without the rule rolls none, and the rule is refused outside the profile.
+#   REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below (see authoring_progress); REVIEWED still requires
+#   manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1c.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1c.yaml, Undead Construct): "For each Injury result roll a D6: on 4+ the
+# result is ignored, without restoring lost Wounds. Magical attacks and magical weapons bypass this
+# roll. The ordinary Undead No Pain conversion still applies independently."  The binding is
+# mechanic.undead-construct, consumed by modular/attacks.py ~836-843: after each injury die
+# round.<i>.<attacker>.attack.<n>.injury.<k> the construct rolls
+# round.<i>.<attacker>.attack.<n>.injury.<k>.undead-construct; a 4+ (5+ under an active Djinn's
+# Curse) discards that Injury result, the lost Wound stays lost and no pre-damage save is created;
+# an attack tagged attack.magical is offered no construct die.  No Pain (skill.ignore-pain, Stunned
+# read as Knocked Down inside phases.py injury_condition) is the sibling binding of this rule
+# (...519b13280505) and the profile's own No Pain rule (...b1c3b1729796); its Stunned-to-Knocked-Down
+# face is not duplicated here, so every Injury face declared is a five (Out of Action on the
+# ordinary chart) that only the construct die can discard.
+# Hireling family model: the recipient is the printed Bone Goliath compiled through the hireling
+# route (hirelings.hired-sword.1c / hireling.hired-sword.bone-goliath) with the fixture facts (WS3
+# S3 T3 W2 I5 A1; the printed Ld6 stays), its innate natural attacks as kit and a single supplied
+# Wound so the injury step is reached; it contributes no swing.  It causes Fear, so the charging
+# opponent tests (1+1 passes Ld7); the opponent is hand-built (mace, WS3 S3 T3 W3 I2 A1 Ld7),
+# magical where the printed bypass is at stake.  It wears no armour, so the injury die follows the
+# wound die directly (a four; no critical die joins).  The control is the grade-1b Bard: the same
+# Out of Action face is final with no construct die.
+# Semantic wrinkle (2026-11-18): a construct whose Injury result is discarded stands at zero Wounds
+#   ("without restoring lost Wounds"), which the state shows as wounds 0 with condition STANDING; the
+#   Djinn's Curse 5+ face needs an active Djinn as attacker and is not asserted here.
+
+# The Out of Action face is discarded on a construct die of four: the Goliath stands, its lost
+# Wound not restored.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+  id: a-construct-die-of-four-discards-the-injury-result-without-restoring-the-wound
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.bone-goliath
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.0.undead-construct, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below: the Injury result stands and the Goliath is Out of Action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+  id: a-construct-die-of-three-lets-the-injury-result-stand
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.bone-goliath
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.injury.0.undead-construct, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed bypass: a magical attack is offered no construct die at all and the Injury result is
+# final.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+  id: a-magical-attack-bypasses-the-construct-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1c
+      profile_id: hireling.hired-sword.bone-goliath
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control: the same Out of Action face on the Bard is final with no construct die.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+  id: a-hireling-without-the-rule-rolls-no-construct-die
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0, wounds: 1}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.bone-goliath.rule.undead-construct/mechanic.undead-construct
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.hired-sword.bone-goliath.rule.undead-construct]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

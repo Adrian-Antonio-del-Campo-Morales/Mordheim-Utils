@@ -1,0 +1,145 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   a Knocked Down Injury result (1) leaves the Countess standing; the other Knocked Down face (2) does
+#   too; an Out of Action result still removes her; the plain-hireling control is Knocked Down by the
+#   same face; the rule is refused outside its printed profile.  REVIEWED still requires manual semantic
+#   review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1a.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1a.yaml, Countess Marianna / No Pain): "Stunned Injury results become Knocked Down
+# through No Pain; the source expressly combines her Jump Up skill with No Pain so those Knocked Down
+# Injury results do not leave her prone."  The rule binds three mechanics: skill.ignore-pain
+# (...b7411fb94a74), mechanic.marianna-no-pain-jump-up (...dbc913227fd8) and skill.jump-up (this
+# identity).  This binding's own contract is the printed Jump Up skill: a Knocked Down Injury result
+# is ignored and the warrior stays standing (packages/python/combat-engine/mordheim_combat/phases.py
+# injury_condition, ~741-742: jump_up turns a Knocked Down result into Standing unless No Pain produced
+# it; contexts.py ~498 reads the skill.jump-up tag).  Its discriminating face is therefore the plain
+# Knocked Down result (1-2 on the printed table): with this binding alone removed, the result stands
+# as Knocked Down - the sibling combination operator (attacks.py ~861-865) requires the skill.jump-up
+# tag as well, so it lifts nothing without it.  The Stunned face (No Pain's knock-down lifted through
+# the combination) is evidenced by the two sibling files.  The model is the authored mechanics file
+# cases/mechanics/skill.jump-up.yaml (which resolves Jump Up at the Injury roll, the reading adopted
+# by the sibling files).
+#
+# Hireling family model (P0, 2026-11-17) in the Cairn Wraith No Pain shape.  The recipient is the
+# printed profile compiled through the hireling route (hirelings.dramatis-personae.1a /
+# hireling.dramatis.countess-marianna-chevaux-vampire-assassin) with the fixture characteristics
+# (WS3 S3 T3 I5 A1) and wounds 1 so the first wound reaches the Injury table; she contributes no attack
+# of her own (initial_state).  The attacker is the stronger hand-built fixture (WS10 S8 I10, mace): 3+
+# to hit, 2+ to wound with no critical face, and twice her Strength makes her kit rapier's parry
+# ineligible, so no parry die is requested.  Her Step Aside is a 5+ special save against every close
+# combat wound, so one ward die (round.0.first.attack.0.special.ward) is declared and fails on 1 after
+# the wound; she wears no armour; nobody charges her Fear; she is immune to psychology; the garlic
+# coating acts only when she strikes a Vampire.  The control is the grade-1b Bard (dagger; kit armour
+# owned, not worn) with the same fixture.  Injury faces: 1-2 Knocked Down, 3-4 Stunned, 5-6 Out of
+# Action on the printed table.
+
+# The printed one-two band is Knocked Down, and Jump Up ignores that result: she is still standing.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+  id: a-knocked-down-result-leaves-countess-marianna-standing
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1a
+      profile_id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    # Step Aside (printed starting skill): the 5+ special save fails.
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    # 1 is Knocked Down on the printed table; her Jump Up ignores it.
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The other Knocked Down face of the printed band is ignored just the same.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+  id: the-second-knocked-down-face-also-leaves-her-standing
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Jump Up reads only the Knocked Down result: an Out of Action face removes her.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+  id: an-out-of-action-result-still-removes-countess-marianna
+  fighters:
+    first: *strong-attacker
+    second: *recipient
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control (Bard) takes the same face of one and is Knocked Down (no Step Aside die: he has no such
+# skill).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+  id: a-hireling-without-the-rule-is-knocked-down-by-the-same-result
+  fighters:
+    first: *strong-attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Countess's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain/skill.jump-up
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *strong-attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

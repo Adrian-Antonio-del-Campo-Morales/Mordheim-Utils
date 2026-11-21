@@ -55,6 +55,7 @@ def play(owner, enemy, state, *rolls, blocked=False):
     return result.state
 
 
+@pytest.mark.covers("rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist", "start-of-game-potion--scope--potion-characteristic-bonuses")
 def test_backley_retries_only_on_own_turn_and_stops_after_passing(precompiled):
     compiled = precompiled()
     owner, enemy = compiled.first, compiled.second
@@ -70,6 +71,7 @@ def test_backley_retries_only_on_own_turn_and_stops_after_passing(precompiled):
     assert (state.first.strength, state.first.initiative) == (3, 4)
 
 
+@pytest.mark.covers("rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist", "start-of-game-potion--scope--addiction-state")
 def test_addiction_six_releases_actions_and_grants_vigortia_once():
     owner = scientist("condition.alchemist-addicted")
     enemy, state = start(owner)
@@ -90,6 +92,7 @@ def test_addiction_six_releases_actions_and_grants_vigortia_once():
     assert (released.strength, released.toughness) == (4, 4)
 
 
+@pytest.mark.covers("rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist", "start-of-game-potion--scope--potion-characteristic-bonuses")
 def test_backley_at_the_stat_floor_does_not_award_a_free_point_on_recovery(precompiled):
     compiled = precompiled()
     owner, enemy = compiled.first, compiled.second

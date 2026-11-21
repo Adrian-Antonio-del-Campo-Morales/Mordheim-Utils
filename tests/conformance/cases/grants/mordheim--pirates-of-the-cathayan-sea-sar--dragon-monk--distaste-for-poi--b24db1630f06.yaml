@@ -1,0 +1,100 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--distaste-for-poison/compiler.forbid-item-categories
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/pirates-of-the-cathayan-sea-sar/special-rules.yaml
+#
+# AUTHORED: 3 scenarios.  Printed: 'Dragon Monks frown on this and may never use any kind of poison or venom.'
+#   The profile binding (grant: profile, applies_to dragon-monk) carries categories [poison] only.  A Dragon Monk
+#   with a poisoned sword (the Monk Equipment List offers the sword) is refused with
+#   `poisons are forbidden for pirates-of-the-cathayan-sea-sar/dragon-monk`.  Two controls bound the clause: the
+#   same Monk without poison constructs against a Deck Hand of the same band carrying the poison (the ban is the
+#   Monk's, not the band's), and a Deck Hand constructs against a Monk taking Crimson Shade (the parameter names
+#   poison, not drugs: the printed sentence frowns on 'various drugs' as colour but bans only poison and venom,
+#   which the KB binding records).  The Monk's other printed rules (Unarmed Mastery, Art of Silent Death, no
+#   armour suit) are construction grants that do not touch a poisoned sword.
+# authoring_progress: 3 authored scenario(s) in this file; the undivided identity is represented. REVIEWED requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# Family model (construction-equipment, B11, category ban): compiler.forbid-item-categories carries the printed
+#   categories as its parameter; the shared eligibility stage categoryProhibitions (index.ts, buildRestriction;
+#   mordheim_construction/restrictions.py calls it before the list gate) refuses a coated weapon when the
+#   categories include `poison` (`poisons are forbidden for <band>/<profile>`) and a drug preparation when they
+#   include `drug` (drugsForbidden == "category": `drugs are forbidden for <band>/<profile>`).  The
+#   lothern-sea-patrol-sar Honourable file is the authored precedent.  The control shows the same bearer without
+#   the item constructs while an unaffiliated fighter carrying it constructs too, so the refusal belongs to the rule,
+#   not to the item.  The opponent's Crimson Shade rolls its D3 at duel start (key `<side>.crimson-shade`, as in the
+#   authored precedent); the face is irrelevant to the construction asserted.
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--distaste-for-poison/compiler.forbid-item-categories
+  id: a-dragon-monk-with-a-poisoned-weapon-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: dragon-monk
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for pirates-of-the-cathayan-sea-sar/dragon-monk
+
+# Non-recipient face: the Deck Hand of the same band is not named by the profile grant and keeps the poison.
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--distaste-for-poison/compiler.forbid-item-categories
+  id: the-same-dragon-monk-without-poison-constructs-while-a-deck-hand-may-carry-it
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: dragon-monk
+      main_weapon_id: weapon.sword
+    second:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: deck-hands
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+# Parameter face: categories [poison] leave a drug preparation to the Monk; the same build is refused by a [poison, drug] band.
+- audit_id: rule/mordheim/pirates-of-the-cathayan-sea-sar/dragon-monk--distaste-for-poison/compiler.forbid-item-categories
+  id: a-dragon-monk-taking-a-drug-is-not-refused-by-the-poison-only-parameter
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: deck-hands
+      main_weapon_id: weapon.sword
+    second:
+      collection: mordheim
+      band_id: pirates-of-the-cathayan-sea-sar
+      profile_id: dragon-monk
+      main_weapon_id: weapon.sword
+      preparation_ids: [preparation.crimson-shade]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  rolls:
+    - {key: second.crimson-shade, sides: 3, value: 1}
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,0 +1,170 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (survival-saves-and-rerolls batch, 2026-11-18): the real
+#   Veskit compiles with natural_armour_save 3 (ordinary, not unmodifiable, no worn-armour save), the
+#   printed 3+ holds on a three and fails on a two against a Strength 3 hit, a Strength 4 hit worsens
+#   it to 4+ (the three fails, the four holds - the modification Daemonic Flesh is printed never to
+#   suffer, which Metallic Body is not), the Bard control compiles with no natural save and is offered
+#   no armour die, and the rule is refused on a hireling outside its printed profile.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/core.yaml
+#
+# --- Authored scenarios ---
+# Printed text (core.yaml, Metallic Body): "Veskit has a 3+ armour save from his mechanical body."
+# The rule binds trait.natural-armour-save with value 3 and nothing else: no unmodified flag, no
+# stacking, no worst-save cap, so the save is an ordinary armour save that the enemy's Strength
+# modifies like any other (Mordheim armour: -1 per point of Strength above 3).  Compiler: the trait
+# lands as natural_armour_save (compiler.py ~495) and is projected onto
+# CompiledFighter.natural_armour_save (~1434, ~1490) with natural_armour_unmodified False and the
+# compiled armour_save the empty 7 (Veskit's only printed item is the claws).  Engine: phases.py
+# armour_target (~621-634): a natural save that is not unmodified is worsened by max(0, S-3) (capped
+# by natural_armour_worst_save, 7 here) and the die round.<i>.<attacker>.attack.<n>.armour is asked
+# while the target is 6 or better.
+# Hireling family model (README, Hireling recipients): the recipient is the printed Veskit compiled
+# through the hireling route (hirelings.dramatis-personae.core / hireling.dramatis.veskit) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld8 stays) and his omitted main weapon, the kit's
+# integrated claws (sibling file ...bfe9c4f91d0b).  The claws parry and re-roll a failed parry, so
+# each enemy hit is followed by Veskit's parry die and its re-roll, both declared ones (a parry must
+# beat the hit die).  Unfeeling (psychology immunity) and No Pain add no die in an uncharged duel
+# where he keeps a Wound.  The opponent is the hand-built fixture (mace, WS3 T3 W3 I2 A1 Ld7) at
+# Strength 3 for the unmodified face and Strength 4 for the modified one (a mace is Strength as
+# user).  WS3 against WS3 hits on 4+; Strength 3 wounds Toughness 3 on 4+, Strength 4 on 3+; wound
+# dice are fours (never a six).  Veskit contributes no swing (initial_state).  The control is the
+# grade-1b Bard (dagger, nothing worn); the refusal selects this rule on the Bard.
+
+# The compiled Veskit carries the printed 3+ as an ordinary natural save; at Strength 3 the three holds.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: the-compiled-veskit-carries-the-printed-three-plus-and-the-three-holds
+  fighters:
+    first:
+      &attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &veskit
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.core
+      profile_id: hireling.dramatis.veskit
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: &uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # The integrated claws parry and re-roll a failed parry; both dice fail to beat the four.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+  expect_fighters:
+    second.natural_armour_save: 3
+    second.natural_armour_unmodified: False
+    second.armour_save: 7
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 3+ fails and the wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: one-face-below-the-printed-three-plus-lets-the-wound-through
+  fighters:
+    first: *attacker
+    second: *veskit
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 2}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Metallic Body is an ordinary save: a Strength 4 hit worsens the 3+ to 4+, so the same three fails.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: a-strength-four-hit-worsens-the-ordinary-three-plus-so-the-three-fails
+  fighters:
+    first:
+      &strong-attacker
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: *veskit
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The modified face itself: against the Strength 4 hit the four holds.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: against-the-strength-four-hit-the-four-holds
+  fighters:
+    first: *strong-attacker
+    second: *veskit
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard compiles with no natural save (7) and, wearing nothing, is offered no armour
+# die at all (his dagger parries nothing either).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: a-hireling-without-the-rule-has-no-natural-save-and-is-offered-no-die
+  fighters:
+    first: *attacker
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: *uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_fighters:
+    second.natural_armour_save: 7
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to Veskit's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.veskit.rule.metallic-body/trait.natural-armour-save
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *attacker
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.veskit.rule.metallic-body]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

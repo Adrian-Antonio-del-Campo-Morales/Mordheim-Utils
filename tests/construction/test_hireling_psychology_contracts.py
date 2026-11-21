@@ -1,8 +1,10 @@
-"""Construction contract: the hireling Fear projection keeps the ogre identities.
+"""Construction contract: the hireling identities come from the profiles.
 
-The ten trait rows are five profiles whose whole-profile row and individual trait
-row name the same Fear consequence; ``fear_carriers`` compiles every recipient so
-this file can read the identities the compilation projects.  It owns the
+``fear_carriers`` compiles the five profiles the retired hiring trait registry
+marked ``fear-causing``.  Their duel identity (Ogre species, the Bone Goliath's
+Undead nature) comes from each profile's own ``combat_traits`` and any Fear only
+from a printed Cause Fear rule, so this file reads the identities the
+compilation projects.  It owns the
 compiler, so it builds the carriers itself instead of loading engine fixtures.
 """
 from __future__ import annotations
@@ -18,8 +20,8 @@ def hireling(profile_id, band, **options):
         "mordheim", band_id=band, profile_id=profile_id, collection="mordheim", **options))
 
 
-# The ten trait rows are five profiles whose whole-profile row and individual
-# trait row name the same consequence; each must reach the operator exactly once.
+# The five profiles the retired hiring registry marked fear-causing; three print Cause Fear
+# (Ogre Slave Master, Bone Goliath, Ogre Bodyguard), the Dark Mage and Chaos Centaur do not.
 def fear_carriers():
     return (
         hireling("hireling.hired-sword.dark-mage", "hirelings.hired-sword.2a"),
@@ -39,6 +41,8 @@ def fear_carriers():
 def test_the_ogre_identities_survive_the_fear_projection():
     _, slave, goliath, _, bodyguard = fear_carriers()
     assert "species.ogre" in slave.global_effects.tags
-    assert "species.ogre" in goliath.global_effects.tags
     assert "species.ogre" in bodyguard.global_effects.tags
+    # The Bone Goliath is an Undead construct, not an Ogre.
+    assert "species.ogre" not in goliath.global_effects.tags
+    assert "nature.undead" in goliath.global_effects.tags
     assert "mechanic.undead-construct" in goliath.global_effects.tags

@@ -1,0 +1,149 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, operators-hirelings batch 2026-11-18): the
+#   printed Aksho'akhash's Daemon kind makes it immune to the Gaoler's grapple (the grapple decision is never offered
+#   against it) where the Bard control is offered it; its own attacks ignore a Foul Odour target's -1 to hit
+#   where the Bard's do not; the refusal.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires manual
+#   semantic review.
+# Semantic wrinkle (2026-11-18, recorded): this binding is the creature kind alone (trait.creature-kind
+#   daemon -> compiler.py:957-962 `nature.daemon`); the printed 5+ save, its unmodifiable flag and the magical
+#   attacks are the sibling bindings of the same rule and are declared in their own files.  The kind has no
+#   effect of its own: it is read by other rules' operators - the Gaoler's grapple immunity (modular/pools.py:
+#   317-321, modular/rounds.py:1280-1283), Foul Odour's living-attacker penalty (modular/contexts.py:586-588),
+#   Enchanting Beauty (rounds.py:1927), Sigmar's Sign (rounds.py:2073), the Hellblade bonus (contexts.py:558),
+#   Shallya's aura (contexts.py:605), the Lahmian powers and the Sea Shanty exclusions - of which two with
+#   authored grammars are used here (the Gaoler file ...29989605d298 shows the `torturer-grapple` decision).
+#   Aksho causes Fear and is a Coward King (mechanic.craven: he tests Fear against a Fear-causer despite causing it); neither the Gaoler nor the Foul Odour target causes Fear, so he is never tested here.  His innate weapon is his natural attacks (innate_weapon_id), so the observable chosen (a hit on a 4 whose wound die fails) needs no Strength or save term.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (README, Hireling recipients): the recipient is the printed Aksho'akhash compiled
+# through the hireling route (hirelings.dramatis-personae.2a / hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne),
+# its printed rule granted by the profile itself; fixture characteristics WS3 S3 T3 W2 I5 A1 (printed Ld10
+# stays); its hands are its own (no kit weapon is named).  Readers: the Gaoler (hirelings.hired-sword.1b /
+# hireling.hired-sword.gaoler, fixture, kit heavy chain) is offered `round.0.first.torturer-grapple` against
+# a living target and never against a Daemon; a hand-built Foul Odour target (skill_ids
+# mechanic.foul-odour, WS3 S3 T3 W3 I2 A1 Ld7, mace) imposes -1 to hit on living attackers only, so a
+# declared 4 hits for the Daemon (4+) and misses for the Bard (5+).  The recipient causes Fear, so a charging
+# Gaoler tests (1+1 passes) and a charged target tests (3+3 passes Ld7).  Every other swing is a declared
+# natural 1, and the Daemon's hitting four is followed by a wound die of 1 so no save or injury joins.
+
+# The Gaoler charges the Daemon: his Fear test passes, no grapple decision is offered, both swings miss.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+  id: the-gaolers-grapple-is-never-offered-against-the-daemon
+  fighters:
+    first:
+      &gaoler
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.gaoler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.grappled: false, state.first.grappling: false, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Gaoler charging the Bard (a living hireling) is offered the grapple, declines it and swings.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+  id: the-gaolers-grapple-is-offered-against-a-hireling-without-the-daemon-kind
+  fighters:
+    first:
+      <<: *gaoler
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.torturer-grapple, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.grappled: false, state.first.grappling: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Daemon charges a Foul Odour target: the target's Fear test passes, the Daemon's 4 hits (no -1 for a
+# non-living attacker); its wound die of 1 fails so nothing else is requested.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+  id: the-daemons-attack-ignores-a-foul-odour-targets-penalty
+  fighters:
+    first:
+      <<: *recipient
+    second:
+      &foul
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.foul-odour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 0, state.second.wounds: 3, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the Bard's same 4 against the same Foul Odour target misses under the living attacker's -1.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+  id: a-living-hirelings-same-face-misses-the-foul-odour-target
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *foul
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh/trait.creature-kind
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

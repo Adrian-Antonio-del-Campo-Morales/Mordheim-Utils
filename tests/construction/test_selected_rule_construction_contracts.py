@@ -55,10 +55,10 @@ def test_slayer_compound_rule_preserves_novice_and_rememberer_exceptions(profile
 
 def test_ogre_hunter_huuuuge_preserves_light_armour_but_refuses_heavy():
     # The Ogre Equipment List offers the Cleaver (which counts as an Axe);
-    # ``weapon.cleaver`` is the axe-profile weapon the list actually resolves.
-    assert canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.cleaver', armour_id='armour.light-armour').armour_save == 6
+    # the Cleaver items bind ``weapon.axe``, the weapon the list actually resolves.
+    assert canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.axe', armour_id='armour.light-armour').armour_save == 6
     with pytest.raises(ValueError, match='heavy armour'):
-        canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.cleaver', armour_id='armour.heavy-armour')
+        canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.axe', armour_id='armour.heavy-armour')
 
 def test_foul_odour_refuses_any_supplied_open_flame_through_shared_legality():
     rule = 'band--ostlander-special-skills-foul-odour'

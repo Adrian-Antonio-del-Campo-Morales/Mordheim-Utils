@@ -813,15 +813,15 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (campaign co
     const obligations = obligationsRegion();
     expect(obligations).toHaveTextContent(es("campaign.heading.mutations"));
     expect(obligations).toHaveTextContent("Miembro buccaneer");
-    // Only the published, priced ids are offered; the printed names the KB does
-    // not price are reported as missing data, never as a choice.
+    // Only the published, priced ids are offered. The KB consolidation priced
+    // the complete printed list, so no mutation is reported as missing data.
     const select = within(obligations).getByRole("combobox");
     const options = within(select).getAllByRole("option").map((option) => option.textContent ?? "");
     expect(options).toContain(`${NAMES.es.blackblood} · 30 co`);
     expect(options).toContain(`${NAMES.es.greatClaw} · 50 co`);
     expect(options).toContain(`${NAMES.es.tentacle} · 35 co`);
     expect(options.join(" ")).not.toContain("prehensile tail");
-    expect(obligations).toHaveTextContent(es("campaign.mutation.unpriced"));
+    expect(obligations).not.toHaveTextContent(es("campaign.mutation.unpriced"));
     expect(obligations).not.toHaveTextContent("campaign.mutation.grant.aquatic-mutants");
 
     const blackblood = within(select).getAllByRole("option").find((option) => option.textContent?.startsWith(NAMES.es.blackblood))!;

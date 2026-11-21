@@ -1,0 +1,65 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.hardy-constitution
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios derived from the printed rule and the recorded contract; they differ only in the D6 that the rule grants after a critical wound. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the 5+ that ignores the critical and resolves the wound normally (one point of damage, no critical) and a failure that keeps the critical (two points of damage, critical recorded).
+
+# --- Authored scenarios ---
+# The admitted clause resolves after the To Wound roll and before the critical
+# table: the defender rolls one D6 and on 5+ the critical is dropped, so neither
+# its armour-ignoring nor its two points of damage happen and the wound is
+# resolved as an ordinary one.  Both scenarios script the same To Wound six
+# (already a critical against this attacker) and differ only in that D6; the
+# no-armour defender means the drop changes no armour face.  The defender's own
+# attack is scripted as a miss in both.
+- audit_id: mechanic/skill.hardy-constitution
+  id: hardy-constitution-five-drops-the-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hardy-constitution]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A four is a failure, so the critical stands and the same attack deals its two
+# points of damage: the six is no longer resolved as an ordinary wound.
+- audit_id: mechanic/skill.hardy-constitution
+  id: hardy-constitution-four-keeps-the-critical
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hardy-constitution]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 4}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,105 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill/skill.hard-to-kill
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (hireling family model, injury-table face, see below): a five on
+#   the Injury chart only Stuns the recipient; the six still takes him out; the plain-hireling control is
+#   taken out by the same five; the grant is refused outside its profile.  REVIEWED still requires manual
+#   semantic review; execution_status stays UNEXECUTED until the suite runs.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/hired-swords/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17), injury-table face (survival-injury-and-immunity batch,
+# 2026-11-18).  The recipient is the printed hireling profile, compiled through the hireling route
+# (band_id hirelings.<kind>.<grade>, profile_id hireling.<kind>.<slug>); its printed rule is granted by
+# the profile itself, so the build selects nothing.  Its physical characteristics are supplied as
+# fixture facts (WS3 S3 T3 I5 A1) with wounds: 1 so the first wound reaches the Injury roll, while its
+# printed Leadership stays in place; the main weapon is omitted (the printed kit's own) and the bearer is
+# silenced with attacks: 0, so the tape holds only the opponent's dice.  The opponent is hand-built
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace) and charges so it strikes first; it declares the hit (WS3 on WS3: 4),
+# the wound (S3 on T3: 4, below the critical six) and the Injury die under test.  The control is a plain
+# hireling without any injury rule - the grade-1b Bard - compiled through the same route with the same
+# fixture, so the ordinary chart is shown without the rule.  The refusal selects the printed rule on
+# that control through special_rule_ids: a profile-granted rule is not available elsewhere.
+# Recipient's other printed rules: kit axe/dagger/crossbow/light armour (owned, not worn: no armour die); Hate Orcs and Goblins (an attacker's re-roll only, silenced here); Explorer and Elf Grudge are out of scope.
+
+# Printed chart with the rule (Dwarf Hard to Kill): 1-2 Knocked Down, 3-5 Stunned, 6 Out of Action; the
+# ordinary chart prints 5-6 Out of Action.  The five is the face the rule changes.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill/skill.hard-to-kill
+  id: a-five-on-the-injury-chart-only-stuns-the-dwarf-pathfinder
+  fighters:
+    first: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: &recipient
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.dwarf-pathfinder
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: &bearer-silent {second: {attacks: 0}}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The six is the one face of the printed chart that still takes the Dwarf out.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill/skill.hard-to-kill
+  id: only-a-six-takes-the-dwarf-pathfinder-out-of-action
+  fighters:
+    first: *opponent
+    second: *recipient
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control (Bard) takes the same five on the ordinary chart and is Out of Action.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill/skill.hard-to-kill
+  id: a-hireling-without-the-rule-is-taken-out-by-the-same-five
+  fighters:
+    first: *opponent
+    second: &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  initial_state: *bearer-silent
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/hired-swords/hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill/skill.hard-to-kill
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      special_rule_ids: [hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

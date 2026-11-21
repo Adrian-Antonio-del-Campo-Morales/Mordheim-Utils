@@ -1,0 +1,695 @@
+{
+  "schema": "mordheim-combat-benchmark/v1",
+  "generated_at": "2026-11-06T17:27:06.660691+00:00",
+  "environment": {
+    "python": "3.14.4",
+    "numpy": "2.5.4",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "processor": ""
+  },
+  "configuration": {
+    "simulations": 200000,
+    "batch_size": 100000,
+    "seed": 2026,
+    "warmups": 1,
+    "repeats": 3,
+    "processes": 1,
+    "start_method": null,
+    "backends": [
+      "numpy"
+    ]
+  },
+  "provenance": {
+    "revision": {
+      "commit": "bf433764aaaf6a55bcdc1ca8fdd6f3245a8e9d5c",
+      "branch": "hfi/ebe2a18e-4979-435c-ae86-6d3a5e8fa12f/elm",
+      "dirty": false,
+      "dirty_paths": []
+    },
+    "imported_from": {
+      "mordheim_combat": "/home/pholtergate/.cache/claude-hfi/-home-pholtergate-DEV-Mordheim-Utils/elm/packages/python/combat-engine/mordheim_combat",
+      "mordheim_core": "/home/pholtergate/.cache/claude-hfi/-home-pholtergate-DEV-Mordheim-Utils/elm/packages/python/core/mordheim_core"
+    },
+    "engine_digests": {
+      "numpy": "cd08479214200888d635b096fb55ae415e3106c888833acca0affc301ba2aaa4"
+    },
+    "native_build_sha256": null,
+    "warnings": [],
+    "cpu_count": 12,
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "numpy": "2.5.4"
+  },
+  "results": [
+    {
+      "scenario": "basic",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.1162084480019985,
+        1.0824508740042802,
+        1.1600943060038844
+      ],
+      "median_seconds": 1.1162084480019985,
+      "simulations_per_second": 179178.00242239513,
+      "warmup_seconds": 1.1996559569961391
+    },
+    {
+      "scenario": "multiattack-a3-t3",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8773428099957528,
+        0.8649525200016797,
+        0.8919517830072436
+      ],
+      "median_seconds": 0.8773428099957528,
+      "simulations_per_second": 227961.06347639437,
+      "warmup_seconds": 0.8948160069994628
+    },
+    {
+      "scenario": "multiattack-a2-t4",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.9578062629880151,
+        0.9574511160026304,
+        0.9758522629999788
+      ],
+      "median_seconds": 0.9578062629880151,
+      "simulations_per_second": 208810.49511627862,
+      "warmup_seconds": 0.9513250409945613
+    },
+    {
+      "scenario": "defences",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.3191921840043506,
+        1.316981620999286,
+        1.2419489410094684
+      ],
+      "median_seconds": 1.316981620999286,
+      "simulations_per_second": 151862.40780508844,
+      "warmup_seconds": 1.3201043940061936
+    },
+    {
+      "scenario": "stateful",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8340499519981677,
+        0.8348038560070563,
+        0.8271428449952509
+      ],
+      "median_seconds": 0.8340499519981677,
+      "simulations_per_second": 239793.7911522587,
+      "warmup_seconds": 0.8381718329910655
+    },
+    {
+      "scenario": "long",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        8.663468797007226,
+        8.618956823003828,
+        8.557231701997807
+      ],
+      "median_seconds": 8.618956823003828,
+      "simulations_per_second": 23204.66433550333,
+      "warmup_seconds": 8.635774527007015
+    },
+    {
+      "scenario": "elite-vs-durable",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        2.2391039420035668,
+        2.23529039999994,
+        2.2591974279930582
+      ],
+      "median_seconds": 2.2391039420035668,
+      "simulations_per_second": 89321.44517643005,
+      "warmup_seconds": 2.294179575997987
+    },
+    {
+      "scenario": "axes-vs-light",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.9571785019943491,
+        0.9503010129992617,
+        0.9751922449941048
+      ],
+      "median_seconds": 0.9571785019943491,
+      "simulations_per_second": 208947.44249195512,
+      "warmup_seconds": 0.9807953679992352
+    },
+    {
+      "scenario": "glass-vs-tank",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        2.1474472020054236,
+        2.1959945380076533,
+        2.2342105909920065
+      ],
+      "median_seconds": 2.1959945380076533,
+      "simulations_per_second": 91074.90776432112,
+      "warmup_seconds": 2.1469346079975367
+    },
+    {
+      "scenario": "two-weapons-vs-parry",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.0449099630059209,
+        1.0365955250017578,
+        1.0514604029885959
+      ],
+      "median_seconds": 1.0449099630059209,
+      "simulations_per_second": 191404.05114394217,
+      "warmup_seconds": 1.027464194005006
+    },
+    {
+      "scenario": "heavy-clash",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.1036726120073581,
+        1.115100656010327,
+        1.0855773040093482
+      ],
+      "median_seconds": 1.1036726120073581,
+      "simulations_per_second": 181213.1585255525,
+      "warmup_seconds": 1.1111469520110404
+    },
+    {
+      "scenario": "fencer-mirror",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8975635270035127,
+        0.9062526999914553,
+        0.9139503110054648
+      ],
+      "median_seconds": 0.9062526999914553,
+      "simulations_per_second": 220688.99767348083,
+      "warmup_seconds": 0.8917055280035129
+    },
+    {
+      "scenario": "brute-vs-fencer",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.9790535379870562,
+        0.9695869290007977,
+        0.968154540998512
+      ],
+      "median_seconds": 0.9695869290007977,
+      "simulations_per_second": 206273.40779656434,
+      "warmup_seconds": 0.9996800819935743
+    },
+    {
+      "scenario": "ithilmar-duel",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.2630227389890933,
+        1.2537927210069029,
+        1.2391157659876626
+      ],
+      "median_seconds": 1.2537927210069029,
+      "simulations_per_second": 159516.00025192593,
+      "warmup_seconds": 1.2452199969993671
+    },
+    {
+      "scenario": "sigmarite-vs-undead",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.7117509480012814,
+        0.7321206920023542,
+        0.750890759009053
+      ],
+      "median_seconds": 0.7321206920023542,
+      "simulations_per_second": 273179.0020208265,
+      "warmup_seconds": 0.7216148599982262
+    },
+    {
+      "scenario": "regen-vs-fire",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.6524394790030783,
+        0.6555970589979552,
+        0.6558997890097089
+      ],
+      "median_seconds": 0.6555970589979552,
+      "simulations_per_second": 305065.43196775357,
+      "warmup_seconds": 0.6491606439958559
+    },
+    {
+      "scenario": "natural-armour-vs-magic",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8519418260111706,
+        0.8496347969921771,
+        0.8055409719963791
+      ],
+      "median_seconds": 0.8496347969921771,
+      "simulations_per_second": 235395.25535915812,
+      "warmup_seconds": 0.8333456539985491
+    },
+    {
+      "scenario": "pistol-vs-parry",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.206163025010028,
+        1.1896765940036858,
+        1.210368940999615
+      ],
+      "median_seconds": 1.206163025010028,
+      "simulations_per_second": 165815.0646744765,
+      "warmup_seconds": 1.1993297299923142
+    },
+    {
+      "scenario": "concussion-vs-dwarf",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.675702866006759,
+        0.6727606219938025,
+        0.6732983629917726
+      ],
+      "median_seconds": 0.6732983629917726,
+      "simulations_per_second": 297045.1303509911,
+      "warmup_seconds": 0.6711698639992392
+    },
+    {
+      "scenario": "frenzy-vs-heavy",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5611314640118508,
+        0.5619720730028348,
+        0.5594401839916827
+      ],
+      "median_seconds": 0.5611314640118508,
+      "simulations_per_second": 356422.71522271313,
+      "warmup_seconds": 0.5680469759972766
+    },
+    {
+      "scenario": "paired-poison-vs-undead",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.6637294819956878,
+        0.6789015780086629,
+        0.6634037329931743
+      ],
+      "median_seconds": 0.6637294819956878,
+      "simulations_per_second": 301327.5821327753,
+      "warmup_seconds": 0.6947419569914928
+    },
+    {
+      "scenario": "great-weapon-vs-tank",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8506217179965461,
+        0.8460561359970598,
+        0.8373172099963995
+      ],
+      "median_seconds": 0.8460561359970598,
+      "simulations_per_second": 236390.93375796409,
+      "warmup_seconds": 0.8443258199986303
+    },
+    {
+      "scenario": "ward-vs-magic",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.6854639859957388,
+        0.6967493289994309,
+        0.6848447499942267
+      ],
+      "median_seconds": 0.6854639859957388,
+      "simulations_per_second": 291773.16983250424,
+      "warmup_seconds": 0.7000867790047778
+    },
+    {
+      "scenario": "unarmed-vs-steel",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.6579903259989806,
+        0.6545767679926939,
+        0.6717748879891587
+      ],
+      "median_seconds": 0.6579903259989806,
+      "simulations_per_second": 303955.8365791382,
+      "warmup_seconds": 0.6668514630000573
+    },
+    {
+      "scenario": "injury-profile-vs-death-knife",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5685815560136689,
+        0.5697827679978218,
+        0.582081914995797
+      ],
+      "median_seconds": 0.5697827679978218,
+      "simulations_per_second": 351010.966342114,
+      "warmup_seconds": 0.5841203329910059
+    },
+    {
+      "scenario": "entangle-vs-fencer",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.6991032439982519,
+        0.6843456009955844,
+        0.692731023998931
+      ],
+      "median_seconds": 0.692731023998931,
+      "simulations_per_second": 288712.34731982875,
+      "warmup_seconds": 0.6925707409973256
+    },
+    {
+      "scenario": "triple-weapon-vs-parry",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.7504488160047913,
+        0.7355830339947715,
+        0.743085843991139
+      ],
+      "median_seconds": 0.743085843991139,
+      "simulations_per_second": 269147.9074958464,
+      "warmup_seconds": 0.7424607720022323
+    },
+    {
+      "scenario": "a2-vs-w1-stun",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5399281769932713,
+        0.5244443939882331,
+        0.5302951409976231
+      ],
+      "median_seconds": 0.5302951409976231,
+      "simulations_per_second": 377148.4679715299,
+      "warmup_seconds": 0.5450402269925689
+    },
+    {
+      "scenario": "frenzy-vs-w2",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5780913979979232,
+        0.5917153939954005,
+        0.5814898509997874
+      ],
+      "median_seconds": 0.5814898509997874,
+      "simulations_per_second": 343944.0940476072,
+      "warmup_seconds": 0.5764658890111605
+    },
+    {
+      "scenario": "durable-vs-elite",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        2.418478388004587,
+        2.431180460989708,
+        2.420781310996972
+      ],
+      "median_seconds": 2.420781310996972,
+      "simulations_per_second": 82617.95441473903,
+      "warmup_seconds": 2.3881517559930217
+    },
+    {
+      "scenario": "heavy-grind",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        3.1854177539935336,
+        3.189412507999805,
+        3.1769825619994663
+      ],
+      "median_seconds": 3.1854177539935336,
+      "simulations_per_second": 62786.11329683887,
+      "warmup_seconds": 3.199701047997223
+    },
+    {
+      "scenario": "skills-vs-hitter",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8099965110013727,
+        0.8117734949919395,
+        0.8074180760013405
+      ],
+      "median_seconds": 0.8099965110013727,
+      "simulations_per_second": 246914.64380846088,
+      "warmup_seconds": 0.8123364460043376
+    },
+    {
+      "scenario": "helmet-vs-injury-profile-2",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5493998629972339,
+        0.5463280900003156,
+        0.5503708489995915
+      ],
+      "median_seconds": 0.5493998629972339,
+      "simulations_per_second": 364033.58185949706,
+      "warmup_seconds": 0.5490396099921782
+    },
+    {
+      "scenario": "cathayan-longsword-vs-sword",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8184096020122524,
+        0.8182340209896211,
+        0.8169685549946735
+      ],
+      "median_seconds": 0.8182340209896211,
+      "simulations_per_second": 244428.84904505446,
+      "warmup_seconds": 0.8303755950037157
+    },
+    {
+      "scenario": "blessed-vs-regen",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.9026542140054516,
+        0.9148519720038166,
+        0.9214965899882372
+      ],
+      "median_seconds": 0.9148519720038166,
+      "simulations_per_second": 218614.6022748756,
+      "warmup_seconds": 0.9093393980001565
+    },
+    {
+      "scenario": "injury-profile-3-vs-4",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.9345878430031007,
+        0.9108470860082889,
+        0.8936856369982706
+      ],
+      "median_seconds": 0.9108470860082889,
+      "simulations_per_second": 219575.82460573406,
+      "warmup_seconds": 0.9393503229948692
+    },
+    {
+      "scenario": "skill-stack-vs-hitter",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.5769023370085051,
+        0.5861888700019335,
+        0.5765193270053715
+      ],
+      "median_seconds": 0.5769023370085051,
+      "simulations_per_second": 346679.129498918,
+      "warmup_seconds": 0.5813644330046372
+    },
+    {
+      "scenario": "resilient-vs-high-strength",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8114218999980949,
+        0.8098163550021127,
+        0.8114616949897027
+      ],
+      "median_seconds": 0.8114218999980949,
+      "simulations_per_second": 246480.89976431444,
+      "warmup_seconds": 0.8310952019965043
+    },
+    {
+      "scenario": "charge-skills-vs-tank",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        2.3073954319988843,
+        2.2139636390056694,
+        2.2024662860058015
+      ],
+      "median_seconds": 2.2139636390056694,
+      "simulations_per_second": 90335.72027850628,
+      "warmup_seconds": 2.3243223409954226
+    },
+    {
+      "scenario": "first-round-opener",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.895727449998958,
+        0.8627190400002291,
+        0.8645473270007642
+      ],
+      "median_seconds": 0.8645473270007642,
+      "simulations_per_second": 231334.93535146076,
+      "warmup_seconds": 0.8592218999983743
+    },
+    {
+      "scenario": "random-characteristics-vs-stable",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        0.8700341610092437,
+        0.8615450390061596,
+        0.8654979860002641
+      ],
+      "median_seconds": 0.8654979860002641,
+      "simulations_per_second": 231080.838124491,
+      "warmup_seconds": 0.8541454079968389
+    },
+    {
+      "scenario": "trained-bear-vs-scarecrow",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.7344443960028002,
+        1.8155757380009163,
+        1.7535506669955794
+      ],
+      "median_seconds": 1.7535506669955794,
+      "simulations_per_second": 114054.30351360596,
+      "warmup_seconds": 1.711484516999917
+    },
+    {
+      "scenario": "silent-walker-vs-cold-one",
+      "backend": "numpy",
+      "simulations": 200000,
+      "batch_size": 100000,
+      "repeats": 3,
+      "samples_seconds": [
+        1.4274781650019577,
+        1.4189961400115862,
+        1.3981745750061236
+      ],
+      "median_seconds": 1.4189961400115862,
+      "simulations_per_second": 140944.71039108463,
+      "warmup_seconds": 1.4337288050010102
+    }
+  ],
+  "unavailable": [],
+  "elapsed_seconds": 216.45271696901182,
+  "engine_seconds": 159.5527826269972,
+  "warmup_seconds": 53.449962554950616
+}

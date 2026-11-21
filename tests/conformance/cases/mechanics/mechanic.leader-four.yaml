@@ -1,0 +1,93 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.leader-four
+# authoring_status: AUTHORED
+# authoring_progress: the undivided mechanic carries 2 authored scenarios derived from the printed
+#   Second in Command sentence ("the Big Boss gains the Leader rule with a 4\" range", Lustria
+#   p.100), through the real Savage Goblin profiles that carry it: the borrow succeeds at exactly
+#   four inches and is not offered at all at five, which the strict decision tape proves against the
+#   ordinary six-inch Leader default.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# AUTHORED: the flag narrows a Leader's printed radius to four inches.  The carrier is the real
+#   Lustria Savage Goblins Big Boss (Leadership 7); the borrower is the band's Trackers fixture
+#   (Leadership 6) with a supplied Stupidity test as the Leadership-test vehicle; no senior leader is
+#   supplied, so the conditional fallback of the same printed rule is admitted and only the radius is
+#   at the boundary.  Dice: 2d6 <= Leadership passes, so the declared 3+4=7 passes only the borrowed
+#   7 and fails the borrower's own 6.  At five inches a wrongly offered borrow (the six-inch default)
+#   would request an undeclared leader decision and fail the strict tape.
+
+# --- Authored scenarios ---
+# At exactly four inches the borrow is offered and accepted: the Big Boss's Leadership 7 is the one
+# tested and the declared seven passes, so the charge stands.
+- audit_id: mechanic/mechanic.leader-four
+  id: the-four-inch-radius-offers-the-borrow-at-four
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, big-boss, 4]]
+    nearby:
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.big-boss, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first_charged: true, state.engaged: true}
+  expect_final: {rounds_executed: 1}
+
+# One inch past the printed four the borrow is not offered at all - the ordinary Leader default of
+# six inches would still offer it here, which is what the strict tape discriminates - so the
+# borrower's own Leadership 6 fails the identical seven and the charge is cancelled.
+- audit_id: mechanic/mechanic.leader-four
+  id: at-five-inches-the-borrow-is-not-offered
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, big-boss, 5]]
+    nearby:
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

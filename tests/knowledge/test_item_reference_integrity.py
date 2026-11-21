@@ -83,6 +83,9 @@ PUBLISHED_NAME_COLLISIONS = {
     "thingcatcher": ("thingcatcher", "thing_catcher"),
     # The 2B variant vs the KB's own out-of-scope record.
     "wolfcloak": ("wolf_cloak", "wolfcloak"),
+    # Lustria/Trollheim Cat O' Nine Tails record vs the Relics of the Crusades
+    # slaver weapon: two printed entries sharing one name.
+    "scourge": ("scourge", "slaver_scourge"),
 }
 
 

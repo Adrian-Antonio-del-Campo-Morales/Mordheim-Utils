@@ -1,0 +1,75 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bullied-goblin--frustratingly-tiny/mechanic.frustratingly-tiny
+# authoring_status: AUTHORED
+# authoring_progress: the admitted minus-one-to-hit clause carries two authored scenarios derived
+# from the printed rule and the printed profile; the bearer is the printed Bullied Goblin profile
+# that prints the skill.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# Clause: minus-one-to-hit (scope: YES)
+# AUTHORED[minus-one-to-hit]: 2 scenarios separate the printed incoming melee modifier from the
+# ordinary to-hit table by one face: an attacker whose Weapon Skill is far higher needs a three, so
+# a declared three misses against the bearer that prints the -1 and hits a band-mate that does not.
+# The printed text is (Snotlings Only), and the band's own record of the skill names its recipients as
+# the BigSnotz, Scouts and Shaman profiles - the Bullied Goblin is explicitly NOT a Snotling (its own
+# record says so), so the bearer is the BigSnotz with the selectable skill chosen; the attacker's
+# Weapon Skill, Strength, Toughness and Initiative are hand-built fixture facts, not profile values,
+# and the control defender is the band's printed Snotling Mob profile, which carries no such modifier.
+# The Snotlings' printed Dodgy save is a 6+ ward, so the control tape declares the ward die one face
+# short of it and the declared hit alone decides the modifier under test.  The bearer and the control
+# both declare no attack of their own, so each tape holds only the attacker's dice.  The printed
+# Hidden/Initiative sentence is the out-of-scope clause of this same record and is retained as
+# context, not asserted.  REVIEWED still requires manual semantic review.
+#
+# Clause: hidden-detection (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profiles; no engine output was consulted.  A Weapon
+# Skill 10 attacker hits an equal-or-lower Weapon Skill defender on a three, so the declared three is
+# the face the printed -1 moves to four.
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--frustratingly-tiny/mechanic.frustratingly-tiny
+  id: the-same-face-of-three-misses-against-the-bearer
+  covers: [minus-one-to-hit]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: bigsnotz,
+             special_rule_ids: [bullied-goblin--frustratingly-tiny]}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the clause: the identical attacker and the identical declared three against a
+# band-mate that prints no such modifier, where the blow lands.
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--frustratingly-tiny/mechanic.frustratingly-tiny
+  id: the-same-face-of-three-hits-the-band-mate
+  covers: [minus-one-to-hit]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: snotling-mobs}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

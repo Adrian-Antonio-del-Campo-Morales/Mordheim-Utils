@@ -1,0 +1,151 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+# authoring_status: AUTHORED
+# authoring_progress: 6 authored scenarios (B12 construction-skills batch 2026-11-18): the Banshee's
+#   automatic profile grant is evidenced through its printed consequences on the attacks it receives
+#   (a club cannot harm her and consumes no wound die; a sword is at -1 to hit; a sword that still
+#   hits harms her normally; a magical weapon hits without the penalty), the -1 is contrasted on a
+#   hand-built fixture without the grant, and another profile of the band selecting the rule is
+#   refused.  Cold Steel has no separate mechanic identity, so the duel consequences are this file's
+#   content.  The missile clause ("Arrows/bolts/bullets are considered being iron tipped") is outside
+#   the duel.
+# AUTHORED: the four consequence scenarios, the fixture contrast and the refusal are declared below;
+#   REVIEWED still requires manual semantic review.
+# Semantic note (2026-11-18): the printed "Blessed ... weapons hit normally" half has no catalogue
+#   carrier of `attack.blessed` reachable by a hand-built attacker, so only the magical half is
+#   evidenced (the Hellblade carries `attack.magical`).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/necrarchs-mou/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed clause (Mousillon Necrarchs p.6): "Any attack made with a steel/iron weapon (ie. anything but
+# clubs, fists etc.) can harm it, but is at -1 to hit. Blessed and magic weapons ... hit normally."
+# Recorded contract: `grant: profile`, `applies_to.profile_ids: [banshee]`, compiler binding
+# `special-rule.banshee--cold-steel`; the compiled Banshee carries the tag `defence.cold-steel`, read
+# on the incoming attack's own weapon identity: `weapon.club`, `weapon.fist` and `weapon.natural-attacks`
+# cannot harm her (no wound die, no wound, no critical), every other weapon identity is metal and at -1
+# to hit, and `attack.magical` / `attack.blessed` lift the penalty.
+# Fixture facts: the attacker is hand-built with WS 4, S 3, T 3, W 3, I 5, A 1 (WS 4 against the
+# Banshee's printed WS 4 hits on 4+, so a declared 4 hits only without the penalty and a 5 hits with
+# it); S 3 against the Banshee's printed T 4 wounds on 5+, the Hellblade's S 4 on 4+.  The Banshee
+# (printed WS 4, S 3, T 4, W 1, A 1, no Initiative) carries no equipment and contributes no attacks;
+# the duel is uncharged so her Fear asks nothing of the attacker, and the attacker's Initiative orders
+# the blow.  Her Ethereal and Wailing rules are outside the admitted runtime and add no request.
+
+# A club is not steel: the hit lands but the attack cannot harm her, so no wound die is consumed and
+# she keeps her wound.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: a-club-hits-but-cannot-harm-the-banshee
+  fighters:
+    first:
+      main_weapon_id: weapon.club
+      characteristics: &cold-steel-attacker {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &cold-steel-banshee {collection: mordheim, band_id: necrarchs-mou, profile_id: banshee}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A sword is steel: the same declared 4 misses at -1 to hit.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: a-steel-weapon-is-at-minus-one-to-hit
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *cold-steel-attacker
+    second: *cold-steel-banshee
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The fixture contrast: the same sword and the same 4 hit a hand-built WS 4 fighter without the grant,
+# so the -1 is Cold Steel's.  The wound die is a natural 1 so nothing else is on the tape.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: the-same-sword-and-die-hit-a-fighter-without-cold-steel
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *cold-steel-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 1, initiative: 2, attacks: 1, leadership: 5}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A steel weapon that still hits can harm her: the 5 hits through the penalty, the 5 wounds T 4, and
+# her injury is treated normally (a 1 knocks her down).
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: a-steel-weapon-that-hits-harms-the-banshee-normally
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: *cold-steel-attacker
+    second: *cold-steel-banshee
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A magic weapon hits normally: the Hellblade (`attack.magical`, S +1, two-handed) hits on the declared
+# 4 and wounds T 4 on the declared 4.
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: a-magic-weapon-hits-the-banshee-without-the-penalty
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: *cold-steel-attacker
+    second: *cold-steel-banshee
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Cold Steel is the Banshee's own printed rule: another profile of the band selecting it is refused
+# (the rule applies to `profile_ids: [banshee]` and is not selectable).
+- audit_id: rule/mordheim/necrarchs-mou/banshee--cold-steel/special-rule.banshee--cold-steel
+  id: another-profile-of-the-band-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: skeleton
+      special_rule_ids: [banshee--cold-steel]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to necrarchs-mou"

@@ -1,0 +1,142 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, survival-saves-and-rerolls batch,
+#   2026-11-18): the printed Jester's chosen dodge trick saves a melee wound on a 4; fails on a 3;
+#   a round with every trick declined rolls no dodge die; the Bard control is offered no trick and
+#   takes the same wound; the rule is refused outside the Jester's profile.  REVIEWED still requires
+#   manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): the engine reads no `mechanic.dodge-sidestepper` tag (kernel.py
+#   lists it among "catalogue tags with no engine read"); the Jester's sibling Confound and Confuse
+#   (`mechanic.confound-and-confuse`) owns the per-round chooser that lights `dodge_trick_active`,
+#   which the special-save context reads (modular/contexts.py prepare_special_save_context, ward 4+
+#   in close combat).  Removing this binding alone leaves the printed Jester's dodge in place, so the
+#   removal probe will report the identity non-discriminating; the sibling binding is the executable
+#   carrier (the authored Babbling Banter file records the same shape).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-2a.yaml
+#
+# --- Authored scenarios ---
+# Rule (grade-2a.yaml, hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper, grant
+# profile): "May use the source 4+ special dodge" - binding skill.dodge-sidestepper (model
+# tests/conformance/cases/mechanics/skill.dodge-sidestepper.yaml).  Hireling family model (README,
+# Hireling recipients): the real Jester through the hireling route (hirelings.dramatis-personae.2a /
+# hireling.dramatis.the-dark-jester-in-mordheim) with the fixture facts (WS3 S3 T3 W2 I5 A1; printed
+# Ld7 stays) and his printed club; the chooser offers `round.<i>.<side>.jester-trick.dodge_trick_active`,
+# `.banter_trick_active`, `.trip_trick_active` in that order and stops at the first acceptance; the
+# dodge is the ward die `round.<i>.<attacking side>.attack.<n>.special.ward` at 4+ (the ruling "The
+# Starsword printed Dodge save is the ward save" keeps the printed dodge on the ward face).  His
+# Leap, Acrobat, Jump Up and Lightning Reflexes add no die in an uncharged duel; his Dodge skill is
+# a shooting save.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace, no armour): WS3
+# against WS3 hits on 4+, S3 wounds T3 on 4+; the Jester's own blow is a declared natural 1.  The
+# control is the grade-1b Bard; the refusal selects the printed rule on the Bard (the compiler's
+# band-only fragment, another package).
+
+# The chosen dodge trick saves the opponent's wound on the ward die 4 (the printed 4+).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+  id: the-jesters-chosen-dodge-trick-saves-a-melee-wound-on-four
+  fighters:
+    first:
+      &jester-sidestepper
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.2a
+      profile_id: hireling.dramatis.the-dark-jester-in-mordheim
+      main_weapon_id: weapon.club
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &jester-sidestepper-opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.special.ward, value: 4}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: true, attacks.1.wounded: true, attacks.1.saved: true, attacks.1.damage: 0, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed 4+: the ward die 3 fails and the wound lands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+  id: a-three-fails-the-jesters-dodge
+  fighters:
+    first: *jester-sidestepper
+    second: *jester-sidestepper-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.special.ward, value: 3}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: true, attacks.1.saved: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Every trick declined: no slot lights and the same wound rolls no dodge die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+  id: a-jester-who-declines-every-trick-rolls-no-dodge-die
+  fighters:
+    first: *jester-sidestepper
+    second: *jester-sidestepper-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.jester-trick.dodge_trick_active, value: false}
+    - {key: round.0.first.jester-trick.banter_trick_active, value: false}
+    - {key: round.0.first.jester-trick.trip_trick_active, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.dodge_trick_active: false, attacks.1.saved: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the grade-1b Bard is offered no trick (the strict tape declares none) and the same
+# wound lands with no dodge die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+  id: a-hireling-without-the-rule-is-offered-no-dodge
+  fighters:
+    first:
+      &jester-sidestepper-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *jester-sidestepper-opponent
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.saved: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed grant belongs to the Jester's profile; selecting it on a hireling of another package
+# is refused by the compiler (the fragment is the common refusal prefix).
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper/sidestepper
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *jester-sidestepper-control
+      special_rule_ids: [hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper]
+    second: *jester-sidestepper-opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

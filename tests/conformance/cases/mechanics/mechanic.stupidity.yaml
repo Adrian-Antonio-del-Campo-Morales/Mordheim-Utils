@@ -1,0 +1,63 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.stupidity
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the failed own-turn test removing every
+#   close-combat attack of that turn and the passed test keeping them, with the
+#   enemy dice unchanged in both.
+
+# --- Authored scenarios ---
+# The active duelist tests his own Leadership 6 at the start of his turn and the two
+# declared sixes fail it, so the round resolves no close-combat attack at all: the
+# voluntary charge is cancelled and the duel is no longer engaged.  No enemy roll is
+# changed anywhere in the tape.
+- audit_id: mechanic/mechanic.stupidity
+  id: a-failed-test-costs-the-turn-s-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False, state.engaged: False, state.failed_charges: ['first'], state.round_index: 1}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# The same test passed on a total of two: the charge stands, both warriors attack in
+# the ordinary order and the failure state stays false.
+- audit_id: mechanic/mechanic.stupidity
+  id: a-passed-test-keeps-the-charge-and-the-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.stupidity_failed: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

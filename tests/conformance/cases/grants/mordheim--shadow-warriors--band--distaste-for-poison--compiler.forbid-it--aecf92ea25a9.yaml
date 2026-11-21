@@ -1,0 +1,48 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shadow-warriors/band--distaste-for-poison/compiler.forbid-item-categories
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying poison.black-lotus in main_poison_id is refused with "poisons are forbidden for shadow-warriors/shadow-master", and the same recipient without the item is accepted at construction. The rule applies to the whole band (applies_to.band), so a canonical printed member of the band stands for the printed group named by the contract. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/shadow-warriors/band--distaste-for-poison/compiler.forbid-item-categories
+  id: shadow-master-with-compiler-forbid-item-categories-is-refused
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+      main_poison_id: poison.black-lotus
+  expect_error: poisons are forbidden for shadow-warriors/shadow-master
+
+- audit_id: rule/mordheim/shadow-warriors/band--distaste-for-poison/compiler.forbid-item-categories
+  id: shadow-master-without-compiler-forbid-item-categories-is-accepted-at-construction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+    second:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,0 +1,92 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.slaanesh-charge-test
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hatred-frenzy-and-charge-rages batch, 2026-11-18): the
+#   charger's Leadership gate against a Slaanesh bearer failed (the voluntary charge is cancelled), the
+#   same gate passed (the charge proceeds), and the control charged target without the mechanic owing
+#   no gate.  REVIEWED still requires manual semantic review; execution_status stays UNEXECUTED until
+#   the suite runs.
+# AUTHORED: the failed/passed gate pair and the unmarked control are declared below; REVIEWED still
+#   requires manual semantic review.
+# Semantic note (2026-11-18): the only KB binding of this mechanic is the Emissary of Chaos's selectable
+#   Patron Slaanesh (catalog/hirelings/hired-swords/grade-2a.yaml), delivered through
+#   `mechanic.emissary-slaanesh`, whose execution entry carries this tag beside identity.chaos-follower
+#   and the printed "-1 to hit" as incoming_hit_modifier.  The -1 to hit is therefore that composite's
+#   own face and is not evidenced here; this identity is the charge gate alone.  No band record binds
+#   the mechanic directly, so the bearer is hand-built with the mechanic injected.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed source (Emissary of Chaos, Fanatic Online 94 p.3, Patron Slaanesh): "All enemies must pass
+# Leadership to charge the Emissary."  Family model (charge gate): the bearer is hand-built with the
+# mechanic injected (WS3 S3 T3 W2 I2 A1 Ld7, mace) and is charged by a hand-built opponent (WS3 S3 T3 W2
+# I5 A1 Ld7, mace).  The gate is a 2D6 Leadership test keyed `round.0.<charger>.slaanesh-charge.{0,1}`
+# taken before contact: 5+4 fails Ld7 and the voluntary charge is cancelled (no attack, the duel ends
+# disengaged); 3+3 passes and the charge resolves as ordinary close combat (natural-1 strikes miss).
+# The control is the same charger against a target without the mechanic: no gate die exists.
+
+# The charger fails the gate: no combat dice, the charge is lost.
+- audit_id: mechanic/mechanic.slaanesh-charge-test
+  id: the-charger-who-fails-the-leadership-gate-cannot-close
+  fighters:
+    first:
+      &slaanesh-charger
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      &slaanesh-bearer
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.slaanesh-charge-test]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.slaanesh-charge.0, value: 5}
+    - {key: round.0.first.slaanesh-charge.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The same gate passed: the charge proceeds into ordinary close combat.
+- audit_id: mechanic/mechanic.slaanesh-charge-test
+  id: the-charger-who-passes-the-leadership-gate-closes-and-fights
+  fighters:
+    first:
+      <<: *slaanesh-charger
+    second:
+      <<: *slaanesh-bearer
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.slaanesh-charge.0, value: 3}
+    - {key: round.0.first.slaanesh-charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same charger against a target without the mechanic owes no gate.
+- audit_id: mechanic/mechanic.slaanesh-charge-test
+  id: a-charger-against-a-target-without-the-mechanic-owes-no-gate
+  fighters:
+    first:
+      <<: *slaanesh-charger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first_charged: True, state.engaged: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

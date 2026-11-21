@@ -1,0 +1,129 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/house-guard-sc/band--martial-finesse/skill.web-of-steel
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenarios (operators-band-rules batch, 2026-11-18): the printed House
+#   Fierezza Commander adds +1 to his critical hit roll - a chart die of four becomes a five (the +2 injury
+#   modifier turns a Knocked Down into a Stunned) and a two becomes a three (the armour save is ignored,
+#   so no armour die is asked); a Sergeant of the same house rolls the same dice without the bonus; the
+#   profile rule is refused when selected on the Sergeant.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios are declared below; REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/bands/mordheim/house-guard-sc/special-rules.yaml
+#
+# --- Authored scenarios ---
+# Printed carrier: House Guard, House Fierezza, Martial Finesse (band--martial-finesse, grant profile,
+# applies_to the commander): "The Commander starts with the 'Web of Steel' skill."  Web of Steel
+# (catalog/skills/general.yaml): "+1 on close-combat Critical Hit tables."  Consumer: modular/attacks.py
+# ~639-640 - `phases.resolve_critical(..., modifier=effect.critical_injury_bonus + int(has_tag(effect,
+# "skill.web-of-steel")))`; the basic chart (phases.py ~606-610) ignores armour on 3+ and adds +2 to the
+# Injury roll on 5+.  Build conventions follow the House Guard files (mechanic.relay-orders,
+# mechanic.dueling-pride): the house is the supplied fact trait_overrides: {house_guard_house: fierezza}.
+# The recipient is the printed Commander (fixture WS3 S3 T3 W2 I5 A1, the printed Ld8 stays; his Leader
+# lends only to a supplied comrade) with a mace from the Heroes list; the control is the printed Sergeant
+# of the same house with the same fixture.  The opponent is the mace fixture (WS3 S3 T3 I2 A1 Ld7),
+# silenced with attacks 0 (it carries a mace); a To Wound six against Toughness 3 is the critical.
+# Semantic wrinkle (2026-11-18): the KB row is gated on the commander profile, not on the house; a
+# Commander of another house would also compile with the skill.  Only the Fierezza build is declared.
+
+# The injury face: the Commander's critical chart die of four reads five with the +1, so the Injury roll
+# of one is taken at +2 (= 3) and the two-Wound fixture is Stunned instead of Knocked Down.
+- audit_id: rule/mordheim/house-guard-sc/band--martial-finesse/skill.web-of-steel
+  id: the-commanders-critical-chart-die-reads-one-higher-and-stuns
+  fighters:
+    first:
+      &commander
+      collection: mordheim
+      band_id: house-guard-sc
+      profile_id: commander
+      main_weapon_id: weapon.mace
+      trait_overrides: {house_guard_house: fierezza}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      # The Commander's Dueling Pride reads the opponent's explicit role.
+      trait_overrides: {fighter_kind: henchman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the injury face: a Sergeant of the same house rolls the same dice; the chart die stays
+# four, the Injury roll of one is unmodified and the fixture is Knocked Down.
+- audit_id: rule/mordheim/house-guard-sc/band--martial-finesse/skill.web-of-steel
+  id: a-sergeant-of-the-same-house-rolls-the-chart-without-the-bonus
+  fighters:
+    first:
+      &sergeant
+      collection: mordheim
+      band_id: house-guard-sc
+      profile_id: sergeants
+      main_weapon_id: weapon.mace
+      trait_overrides: {house_guard_house: fierezza}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      <<: *opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The armour face: against a light-armoured (6+) fixture the Commander's chart die of two reads three, so
+# the armour save is ignored and no armour die is asked; the three-Wound fixture takes the two damage.
+- audit_id: rule/mordheim/house-guard-sc/band--martial-finesse/skill.web-of-steel
+  id: a-chart-die-of-two-reads-three-and-ignores-the-armour-save
+  fighters:
+    first:
+      <<: *commander
+    second:
+      main_weapon_id: weapon.mace
+      # The Commander's Dueling Pride reads the opponent's explicit role.
+      trait_overrides: {fighter_kind: henchman}
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.saved: false, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Martial Finesse is the Commander's own printed rule: selecting it on a Sergeant is refused.
+- audit_id: rule/mordheim/house-guard-sc/band--martial-finesse/skill.web-of-steel
+  id: the-rule-is-refused-on-a-sergeant
+  fighters:
+    first:
+      collection: mordheim
+      band_id: house-guard-sc
+      profile_id: sergeants
+      main_weapon_id: weapon.mace
+      trait_overrides: {house_guard_house: fierezza}
+      special_rule_ids: [band--martial-finesse]
+    second:
+      <<: *opponent
+  expect_error: "special rule is not available to house-guard-sc/sergeants"

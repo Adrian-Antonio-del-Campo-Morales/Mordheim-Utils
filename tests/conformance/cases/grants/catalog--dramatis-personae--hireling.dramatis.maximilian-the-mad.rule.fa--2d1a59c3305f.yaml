@@ -1,0 +1,138 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+# authoring_status: AUTHORED
+# authoring_progress: 5 authored scenarios (hireling family model, see below): the charged Fear
+#   test passed with no Leadership request after his Frenzy has ended (the supplied state isolates
+#   this binding from Religious Fervour); a supplied non-psychology Leadership test (the Danse
+#   Macabre control test) passed without a die with Frenzy intact; the Bard control rolling and
+#   failing each of the two tests; the refusal outside the printed profile.  REVIEWED still
+#   requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# Discrimination note (2026-11-18): while Maximilian's Religious Fervour Frenzy is active it
+#   already waives Psychology tests, so the Fear scenario supplies the ended-Frenzy state (a
+#   knocked-down frenzied warrior loses Frenzy for the rest of the battle) and the Danse Macabre
+#   scenario uses a non-psychology Leadership test (the Eye Pendant ruling: an explicit
+#   automatic-Leadership ability still follows the shared Leadership contract) that Frenzy never
+#   touches; each isolates this binding.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Maximilian the Mad
+# compiled through the hireling route (hirelings.dramatis-personae.1b /
+# hireling.dramatis.maximilian-the-mad) with the fixture facts (WS3 S3 T3 W2 I5 A1; the printed
+# Ld10 stays); his printed Fanatical rule is granted by the profile itself, so the build selects
+# nothing.  His other printed rules are kept silent: he is silenced (attacks 0, which his Frenzy
+# doubles to nothing), his Fanatical Hatred reads a hated warband the hand-built opponent never
+# declares, and his own Fear only tests the opponent when he charges (he never does here).  The
+# opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and declares the one fact the rule reads
+# (causes_fear).  The control is the grade-1b Bard compiled through the same route, so the
+# requests the rule removes are shown present without it.  The refusal selects the printed rule on
+# that control.  A 2D6 Leadership test of 5+4 fails Ld7.
+
+# Charged by a Fear-causer after his Frenzy has ended (the supplied lasting state of a frenzied
+# warrior who was knocked down earlier in the battle), the bearer passes the required test before
+# any die: the tape declares no Leadership request at all.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+  id: maximilian-passes-the-charged-fear-test-without-a-die-after-frenzy-ends
+  fighters:
+    first:
+      &auto-recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.maximilian-the-mad
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0, frenzy: false}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: False, state.first.frenzy: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed automatic pass reaches beyond Psychology: a supplied Danse Macabre control state
+# demands a plain Leadership test at the start of his turn, and with his Frenzy intact (Frenzy
+# never touches a non-psychology test) it passes with no die - the bearer is freed.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+  id: a-non-psychology-leadership-test-also-passes-without-a-die
+  fighters:
+    first:
+      <<: *auto-recipient
+      condition_ids: [condition.danse-macabre-controlled]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: False, state.first.frenzy: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control (Bard, Ld7) is charged the same way: its two Leadership dice are requested and 9 fails.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+  id: a-hireling-without-the-rule-is-tested-for-fear-in-the-same-setup
+  fighters:
+    first:
+      &auto-control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same supplied Danse Macabre test on the control rolls its two dice and the failure stands.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+  id: the-control-rolls-the-non-psychology-leadership-test-and-stays-controlled
+  fighters:
+    first:
+      <<: *auto-control
+      condition_ids: [condition.danse-macabre-controlled]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.danse-macabre.0, value: 5}
+    - {key: round.0.first.danse-macabre.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.danse_macabre_controlled: True, state.engaged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed grant belongs to the recipient's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.fanatical/mechanic.automatic-leadership
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      <<: *auto-control
+      special_rule_ids: [hireling.dramatis.maximilian-the-mad.rule.fanatical]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

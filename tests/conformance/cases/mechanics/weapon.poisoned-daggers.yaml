@@ -1,0 +1,91 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.poisoned-daggers
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the paired attack and both branches of the Lotus rule. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 3 scenarios cover the paired extra attack and both branches of the Black Lotus natural-six rule (the declined automatic wound and the accepted critical attempt).
+
+# --- Authored scenarios ---
+# mechanic/weapon.poisoned-daggers - paired daggers coated with Black Lotus.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  A natural hit six is the Lotus trigger, and the printed
+# attempt is optional, so both answers are authored as separate scenarios.
+# The ordered tape carries two attack dice for the paired daggers.
+
+- audit_id: mechanic/weapon.poisoned-daggers
+  id: poisoned-daggers-grant-one-additional-attack
+  fighters:
+    first:
+      main_weapon_id: weapon.poisoned-daggers
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# A natural 6 with Black Lotus offers the optional critical attempt; declining it leaves the automatic wound, so no wound die is requested at all and the target loses a wound.
+
+- audit_id: mechanic/weapon.poisoned-daggers
+  id: a-natural-six-wounds-automatically-without-a-wound-die
+  fighters:
+    first:
+      main_weapon_id: weapon.poisoned-daggers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Taking the printed optional attempt substitutes the ordinary wound roll for the automatic wound, and a critical result doubles the damage.
+
+- audit_id: mechanic/weapon.poisoned-daggers
+  id: the-optional-critical-attempt-can-instead-raise-the-damage
+  fighters:
+    first:
+      main_weapon_id: weapon.poisoned-daggers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -13,8 +13,6 @@ rules:
         kind: mechanic
         id: mechanic.leader-six
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Master may use his Leadership instead of their own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -22,13 +20,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Maestro pueden usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - carnival-master
+  rule_ref: shared-rule.leader
 - id: carnival-master--wizard
   runtime:
     scope: 'NO'
@@ -38,8 +33,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.carnival-master.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: out-of-scope.magic
   name: Wizard
   effect: The Master is a wizard and uses Nurgle Rituals.
   source:
@@ -125,19 +119,16 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.plague-bearers.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
-  effect: >-
-    Plague Bearers are surrounded by a cloud of flies, which buzz around them and their combat
-    opponent. They do not affect the Plague Bearer but distract foes by buzzing into eyes, nostrils
-    and mouths. A Plague Bearer’s close combat opponent suffers a -1 to hit modifier on all attacks.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -145,15 +136,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Nube de Moscas
-  effect_i18n:
-    es: >-
-      Los Portadores de la Peste están rodeados por una nube de moscas, que zumban a su alrededor y
-      alrededor de su oponente de combate. No afectan al Portador de la Peste pero distraen a los
-      enemigos zumbando en ojos, fosas nasales y bocas. El oponente de combate de un Portador de la
-      Peste sufre un modificador de -1 para impactar en todos los ataques.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.cloud-of-flies
 - id: plague-bearers--stream-of-corruption
   runtime:
     scope: 'NO'
@@ -163,8 +149,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.stream-of-corruption
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: out-of-scope.shooting
   name: Stream of Corruption
   effect: >-
     Plague Bearers can spew forth a grotesque stream of maggots, entrails and filth. This is counted
@@ -193,8 +178,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.demonic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Demonic
   effect: >-
     Plague Bearers are Daemons of the lord of disease, Nurgle, and are not made of living flesh but
@@ -227,10 +211,12 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: disease-immunity
+        scope: 'NO'
   name: Immune to Poison
-  effect: >-
-    Plague Bearers are the Daemonic embodiment of disease and pestilence. They are totally immune to
-    all poisons and diseases.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -238,13 +224,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: >-
-      Los Portadores de la Peste son la encarnación demoníaca de la enfermedad y la pestilencia. Son
-      totalmente inmunes a todos los venenos y enfermedades.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.daemonic-immune-to-poison
 - id: plague-bearers--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -257,9 +240,6 @@ rules:
         kind: mechanic
         id: mechanic.automatic-leadership
   name: Immune to Psychology
-  effect: >-
-    Plague Bearers are Daemons and do not know the concept of fear. They automatically pass any
-    Leadership-based test they are required to take.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -267,13 +247,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Portadores de la Peste son Demonios y no conocen el concepto de miedo. Superan
-      automáticamente cualquier chequeo basado en Liderazgo que deban realizar.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.daemonic-immune-to-psychology
 - id: plague-bearers--cause-fear
   runtime:
     scope: 'YES'
@@ -314,6 +291,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-save
+        scope: 'YES'
+      - id: magic-negation
+        scope: 'YES'
+      - id: magical-attacks
+        scope: 'YES'
     - id: trait.natural-armour-negated-by-magic
       scope: 'YES'
       binding:
@@ -329,10 +313,6 @@ rules:
         parameters:
           value: true
   name: Daemonic Aura
-  effect: >-
-    Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is
-    modified by the Strength of the attack as normal and is completely negated by magic weapons and
-    spells. Plague Bearers’ attacks are considered as magical also.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -340,15 +320,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Aura Demoníaca
-  effect_i18n:
-    es: >-
-      Debido a la naturaleza mágica e intangible de los Demonios, tienen una salvación de armadura
-      especial de 5+. Esta se modifica por la Fuerza del ataque con normalidad y queda completamente
-      anulada por armas y hechizos mágicos. Los ataques de los Portadores de la Peste también se
-      consideran mágicos.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.daemonic-aura
 - id: plague-bearers--daemonic-instability
   runtime:
     scope: 'NO'
@@ -358,15 +333,8 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-bearers.daemonic-instability
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.
+      reason: out-of-scope.campaign
   name: Daemonic Instability
-  effect: >-
-    Plague Bearers are bound to the world by Dark Sorcery that is highly volatile and unstable. If
-    taken out of action a Plague Bearer is banished and effectively destroyed on a D6 roll of 1-3
-    (do not roll for injury). In addition, if the warband routs then every Plague Bearer in the
-    warband must take an immediate Leadership test. If this test is failed, then the Plague Bearer
-    counts as destroyed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -374,16 +342,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inestabilidad Demoníaca
-  effect_i18n:
-    es: >-
-      Los Portadores de la Peste están atados al mundo por una Hechicería Oscura muy volátil e
-      inestable. Si es puesto fuera de combate, un Portador de la Peste es desterrado y
-      efectivamente destruido con una tirada de D6 de 1-3 (no tire para la herida). Además, si la
-      banda huye, cada Portador de la Peste de la banda debe realizar un chequeo de Liderazgo
-      inmediato. Si este chequeo falla, el Portador de la Peste cuenta como destruido.
   applies_to:
     profile_ids:
     - plague-bearers
+  rule_ref: shared-rule.daemonic-instability
 - id: nurglings--cloud-of-flies
   runtime:
     scope: 'YES'
@@ -397,19 +359,16 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole
+        scope: 'YES'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.nurglings.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
-  effect: >-
-    Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent.
-    They do not affect the Nurglings but distract foes by buzzing into eyes, nostrils and mouths. A
-    Nurgling’s close combat opponent suffers a -1 to hit modifier on all attacks.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -417,15 +376,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Nube de Moscas
-  effect_i18n:
-    es: >-
-      Los Nurglins están rodeados por una nube de moscas, que zumban a su alrededor y alrededor de
-      su oponente de combate. No afectan a los Nurglins pero distraen a los enemigos zumbando en
-      ojos, fosas nasales y bocas. El oponente de combate de un Nurglin sufre un modificador de -1
-      para impactar en todos los ataques.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.cloud-of-flies
 - id: nurglings--swarm
   runtime:
     scope: 'NO'
@@ -435,8 +389,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.swarm
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Swarm
   effect: >-
     You may summon as many Nurglings as you wish (ie. you may have more than five Nurglings in a
@@ -464,8 +417,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.daemonic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Daemonic
   effect: >-
     Nurglings are Daemons of the diseased Lord Nurgle and are not made of living flesh but the
@@ -497,10 +449,12 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: disease-immunity
+        scope: 'NO'
   name: Immune to Poison
-  effect: >-
-    Nurglings are the Daemonic embodiment of disease and pestilence. They are totally immune to all
-    poisons and diseases.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -508,13 +462,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inmune al Veneno
-  effect_i18n:
-    es: >-
-      Los Nurglins son la encarnación demoníaca de la enfermedad y la pestilencia. Son totalmente
-      inmunes a todos los venenos y enfermedades.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.daemonic-immune-to-poison
 - id: nurglings--immune-to-psychology
   runtime:
     scope: 'YES'
@@ -527,9 +478,6 @@ rules:
         kind: mechanic
         id: mechanic.automatic-leadership
   name: Immune to Psychology
-  effect: >-
-    Nurglings are Daemons and do not know the concept of fear. They automatically pass any
-    Leadership-based test they are required to take.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -537,13 +485,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Los Nurglins son Demonios y no conocen el concepto de miedo. Superan automáticamente cualquier
-      chequeo basado en Liderazgo que deban realizar.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.daemonic-immune-to-psychology
 - id: nurglings--daemonic-aura
   runtime:
     scope: 'YES'
@@ -557,6 +502,13 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 5
+      clauses:
+      - id: five-plus-save
+        scope: 'YES'
+      - id: magic-negation
+        scope: 'YES'
+      - id: magical-attacks
+        scope: 'YES'
     - id: trait.natural-armour-negated-by-magic
       scope: 'YES'
       binding:
@@ -572,10 +524,6 @@ rules:
         parameters:
           value: true
   name: Daemonic Aura
-  effect: >-
-    Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is
-    modified by the Strength of the attack as normal and is completely negated by magic weapons and
-    spells. Nurglings’ attacks are also considered as magical.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -583,15 +531,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Aura Demoníaca
-  effect_i18n:
-    es: >-
-      Debido a la naturaleza mágica e intangible de los Demonios, tienen una salvación de armadura
-      especial de 5+. Esta se modifica por la Fuerza del ataque con normalidad y queda completamente
-      anulada por armas y hechizos mágicos. Los ataques de los Nurglins también se consideran
-      mágicos.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.daemonic-aura
 - id: nurglings--daemonic-instability
   runtime:
     scope: 'NO'
@@ -601,14 +544,8 @@ rules:
     - id: unimplemented.carnival-of-chaos.nurglings.daemonic-instability
       scope: 'NO'
       binding: null
-      reason: >-
-        Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.
+      reason: out-of-scope.campaign
   name: Daemonic Instability
-  effect: >-
-    Nurglings are bound to the world by Dark Sorcery that is highly volatile and unstable. If taken
-    out of action a Nurgling is banished and effectively destroyed on a D6 roll of 1-3 (do not roll
-    for injury). In addition, if the warband routs then every Nurgling in the warband must take an
-    immediate Leadership test. If this test is failed, then Nurgling counts as destroyed.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -616,16 +553,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Inestabilidad Demoníaca
-  effect_i18n:
-    es: >-
-      Los Nurglins están atados al mundo por una Hechicería Oscura muy volátil e inestable. Si es
-      puesto fuera de combate, un Nurglin es desterrado y efectivamente destruido con una tirada de
-      D6 de 1-3 (no tire para la herida). Además, si la banda huye, cada Nurglin de la banda debe
-      realizar un chequeo de Liderazgo inmediato. Si este chequeo falla, el Nurglin cuenta como
-      destruido.
   applies_to:
     profile_ids:
     - nurglings
+  rule_ref: shared-rule.daemonic-instability
 - id: plague-cart--plague-cart
   runtime:
     scope: 'NO'
@@ -635,16 +566,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-cart.plague-cart
       scope: 'NO'
       binding: null
-      reason: >-
-        Content exclusion, not a missing binding. The printed sentence raises the warband size (a
-        roster limit) and offsets the Daemonic Instability of the band's daemons: it re-rolls the
-        Leadership tests of Instability and adds +1 to the Injury tests of the Plague Bearers and
-        Nurglings taken out of action. Both daemon halves belong to the Instability subsystem the
-        source itself frames as offsetting that instability - the Rout Leadership test and the roll
-        taken after being taken out of action - and the resolved duel never reaches them; the band's
-        own daemonic-instability records and the shared daemon record are NO for the same reason. The
-        supplied facts stay caller-supplied, never simulated: no Plague Cart, no group and no table
-        distance is drawn or counted here.
+      reason: source-blocked
   name: Plague Cart
   effect: >-
     While the Plague Cart is in the warband, the maximum number of warriors is increased by 2.
@@ -674,8 +596,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.plague-cart.guardian
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: attacks.
+      reason: out-of-scope.non-duel
   name: Guardian
   effect: >-
     The Guardian is permanently part of the Cart and can never dismount. It cannot be injured
@@ -698,17 +619,14 @@ rules:
     - plague-cart
 - id: plague-cart--guardian-unarmed
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: mechanic.guardian-unarmed
-      scope: 'YES'
-      binding:
-        kind: trait
-        id: trait.guardian-unarmed
-        parameters:
-          value: true
+      scope: 'NO'
+      binding: null
+      reason: covered.elsewhere
   name: Guardian Unarmed
   effect: The Guardian suffers no penalties for fighting unarmed.
   source:
@@ -761,8 +679,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.band.dangerous-to-know
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Dangerous to Know
   effect: A Carnival of Chaos may never hire any type of Hired Sword.
   source:
@@ -785,8 +702,7 @@ rules:
     - id: unimplemented.carnival-of-chaos.band.tainted
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: out-of-scope.campaign
   name: Tainted
   effect: >-
     The Carnival counts as a Possessed warband for purposes of exploration and serious injuries.
@@ -812,12 +728,15 @@ rules:
       binding:
         kind: compiler
         id: compiler.blessings-of-nurgle
+      clauses:
+      - id: whole--scope--blessing-construction
+        scope: 'YES'
+      - id: whole--scope--blessing-price
+        scope: 'NO'
     - id: campaign.blessings-of-nurgle-purchase-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment timing, later purchases and escalating campaign costs require
-        roster history and an economy model.
+      reason: out-of-scope.campaign
   name: Blessings of Nurgle
   effect: >-
     Those that worship at the fetid altar of the Lord of Decay suffer from terrible diseases and
@@ -852,8 +771,7 @@ rules:
     - id: unimplemented.band-blessings-of-nurgle-stream-of-corruption
       scope: 'NO'
       binding: null
-      reason: >-
-        is a shooting attack
+      reason: out-of-scope.shooting
   name: Stream of Corruption
   effect: >-
     Cost: 25 Gold Crowns The Tainted One can spew forth a grotesque stream of maggots, entrails and
@@ -887,12 +805,17 @@ rules:
         id: trait.poison-immune
         parameters:
           value: true
+      clauses:
+      - id: poison-immunity
+        scope: 'YES'
+      - id: contagion
+        scope: 'NO'
+      - id: cost
+        scope: 'NO'
     - id: campaign.nurgles-rot-contagion
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: contagion, roster persistence, pre-battle Toughness tests and permanent
-        characteristic loss are campaign effects.
+      reason: out-of-scope.campaign
   name: Nurgle’s Rot
   effect: >-
     Cost: 50 Gold Crowns The Tainted One is infected with the deadly pestilence of its lord –
@@ -948,14 +871,17 @@ rules:
         id: trait.cloud-of-flies
         parameters:
           value: true
+      clauses:
+      - id: whole--scope--melee-hit-penalty
+        scope: 'YES'
+      - id: whole--scope--cost
+        scope: 'NO'
+      - id: dodgy-ranged-part
+        scope: 'NO'
     - id: unimplemented.carnival-of-chaos.band.dodgy-ranged-part
       scope: 'NO'
       binding: null
-      reason: >-
-        The claimed ranged part has no source support in this origin: the printed Cloud of Flies
-        sentence names only the close-combat opponent. Missile resolution is also outside the
-        isolated 1v1 duel, so the ranged half is recorded as excluded rather than folded into the
-        admitted close-combat modifier.
+      reason: out-of-scope.shooting
   name: Cloud of Flies
   effect: >-
     Cost: 25 Gold Crowns The Tainted One is surrounded by a cloud of flies, which buzz around him
@@ -1048,6 +974,11 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.causes-fear
+      clauses:
+      - id: cause-fear--scope--cause-fear
+        scope: 'YES'
+      - id: cause-fear--scope--cost
+        scope: 'NO'
   name: Hideous
   effect: >-
     Cost: 40 Gold Crowns The Tainted One is so disgusting that its flesh hangs in tatters from its
@@ -1082,8 +1013,6 @@ rules:
           - weapons
           - armour
   name: Equipment Restrictions
-  effect: >-
-    The Plague Cart and its Guardian cannot use weapons or wear armour.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -1091,9 +1020,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      El Carro de la Peste y su Guardián no pueden usar armas ni llevar armadura.
   applies_to:
     profile_ids:
     - plague-cart
+  rule_ref: shared-rule.no-weapons-or-armour

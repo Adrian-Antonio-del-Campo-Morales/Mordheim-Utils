@@ -3,17 +3,12 @@ band_id: khemri-mages
 rules:
 - id: archmage--leader
   name: Leader
-  effect: Any warband model within 6" of the Archmage may use his Leadership instead of its own.
   source:
     manual: khemri
     printed_page: 62
     section: Heroes / 1 Archmage / Leader
   name_i18n:
     es: Líder
-  effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Arquimago puede usar su Liderazgo en lugar del suyo
-      propio.
   applies_to:
     profile_ids:
     - archmage
@@ -27,6 +22,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.leader-six
+  rule_ref: shared-rule.leader
 - id: archmage--spellcaster
   name: Spellcaster
   effect: >-
@@ -56,8 +52,7 @@ rules:
     - id: unimplemented.khemri-mages.archmage.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: mage--spellcaster
   name: Spellcaster
   effect: >-
@@ -87,8 +82,7 @@ rules:
     - id: unimplemented.khemri-mages.mage.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: witch--spellcaster
   name: Spellcaster
   effect: >-
@@ -116,8 +110,7 @@ rules:
     - id: unimplemented.khemri-mages.witch.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: pupil--minor-trick
   name: Minor Trick
   effect: >-
@@ -144,8 +137,7 @@ rules:
     - id: unimplemented.khemri-mages.pupil.minor-trick
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: pupil--experience
   name: Experience
   effect: >-
@@ -173,8 +165,7 @@ rules:
     - id: unimplemented.khemri-mages.pupil.experience
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: mechanical-beast--mechanical-armour
   runtime:
     scope: 'YES'
@@ -203,17 +194,12 @@ rules:
     - mechanical-beast
 - id: mechanical-beast--immune-to-psychology
   name: Immune to Psychology
-  effect: Mechanical Beasts are immune to Psychology and never leave combat because of Psychology.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / 0-5 Mechanical Beasts / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
-  effect_i18n:
-    es: >-
-      Las Bestias Mecánicas son inmunes a la Psicología y nunca abandonan el combate por causa de la
-      Psicología.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -227,6 +213,7 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.psychology-immunity
+  rule_ref: shared-rule.immune-to-psychology
 - id: mechanical-beast--immune-to-poison
   runtime:
     scope: 'YES'
@@ -275,8 +262,7 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
 - id: mechanical-beast--do-not-eat
   name: Do Not Eat
   effect: Mechanical Beasts do not need water.
@@ -299,19 +285,15 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.do-not-eat
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
 - id: mechanical-beast--may-not-run
   name: May Not Run
-  effect: Mechanical Beasts may not run, but may charge normally.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / 0-5 Mechanical Beasts / May Not Run
   name_i18n:
     es: No Pueden Correr
-  effect_i18n:
-    es: Las Bestias Mecánicas no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -323,8 +305,8 @@ rules:
     - id: unimplemented.khemri-mages.mechanical-beast.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.movement
+  rule_ref: shared-rule.may-not-run
 - id: band--pupil-limit
   name: Pupil Limit
   effect: >-
@@ -352,8 +334,7 @@ rules:
     - id: unimplemented.khemri-mages.band.pupil-limit
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.construction
 - id: band--mage-special-skills-dispel-magic
   kind: warband_skill
   name: Dispel Magic
@@ -386,8 +367,7 @@ rules:
     - id: unimplemented.khemri-mages.band.mage-special-skills-dispel-magic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--mage-special-skills-store-spell
   kind: warband_skill
   name: Store Spell
@@ -421,8 +401,7 @@ rules:
     - id: unimplemented.khemri-mages.band.mage-special-skills-store-spell
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.magic
 - id: band--mage-special-skills-mechanic
   kind: warband_skill
   name: Mechanic
@@ -455,8 +434,7 @@ rules:
     - id: unimplemented.khemri-mages.band.mage-special-skills-mechanic
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: out-of-scope.campaign
 
 - id: archmage--equipment-restrictions
   runtime:
@@ -483,7 +461,7 @@ rules:
     es: Restricciones de Equipo
   effect_i18n:
     es: >-
-      es
+      La Honda es solo para los Aprendices.
   applies_to:
     profile_ids:
     - archmage
@@ -501,24 +479,21 @@ rules:
         parameters:
           forbids:
           - sling
+    - id: mage--equipment-restrictions.no-familiar-at-creation
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.construction
   name: Equipment Restrictions
-  effect: >-
-    Sling is Pupils only. A Familiar cannot be bought by this profile during warband creation; after
-    creation it may be acquired through Trading because this profile is a spellcaster.
   source:
     manual: khemri
     printed_page: 62
     section: "0-2 Mages"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      La Honda es solo para Pupilos. Este perfil no puede comprar un Familiar durante la creación de
-      la banda; después de la creación puede adquirirse mediante Comercio, ya que este perfil es
-      lanzador de conjuros.
   applies_to:
     profile_ids:
     - mage
+  rule_ref: shared-rule.khemri-mages-equipment-restrictions
 - id: witch--equipment-restrictions
   runtime:
     scope: 'YES'
@@ -533,21 +508,18 @@ rules:
         parameters:
           forbids:
           - sling
+    - id: witch--equipment-restrictions.no-familiar-at-creation
+      scope: 'NO'
+      binding: null
+      reason: out-of-scope.construction
   name: Equipment Restrictions
-  effect: >-
-    Sling is Pupils only. A Familiar cannot be bought by this profile during warband creation; after
-    creation it may be acquired through Trading because this profile is a spellcaster.
   source:
     manual: khemri
     printed_page: 62
     section: "0-1 Witch"
   name_i18n:
     es: Restricciones de Equipo
-  effect_i18n:
-    es: >-
-      La Honda es solo para Pupilos. Este perfil no puede comprar un Familiar durante la creación de
-      la banda; después de la creación puede adquirirse mediante Comercio, ya que este perfil es
-      lanzador de conjuros.
   applies_to:
     profile_ids:
     - witch
+  rule_ref: shared-rule.khemri-mages-equipment-restrictions

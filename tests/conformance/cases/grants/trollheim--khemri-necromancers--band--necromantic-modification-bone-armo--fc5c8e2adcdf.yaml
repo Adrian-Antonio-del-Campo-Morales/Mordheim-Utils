@@ -1,0 +1,75 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-bone-armour/profile.characteristics
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed rule
+#   and the recorded contract: with the band row band--necromantic-modification-bone-armour selected the
+#   Abomination's Toughness is one higher than its fixture base, so an unmodified wound roll of four against
+#   Strength 3 no longer wounds, while the identical blow without the row takes the Wound.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 2 scenarios cover the printed +1 Toughness.  Toughness 3 is supplied as the bearer's
+#   fixture base so the printed bonus alone can move the wound target from four to five against the
+#   hand-built Strength 3 striker, and the declared four is the single face that separates the two builds.
+#   The bearer is charged, so no charge test is needed, and its own pool is declared empty so the tape holds
+#   only the striker's dice.  REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the band row the audit id names; no engine
+# output was consulted.  The striker is hand-built (Weapon Skill 3, Strength 3) and hits at equal Weapon
+# Skill four-or-better, so the declared four is a hit in both scenarios and only the wound step differs.
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-bone-armour/profile.characteristics
+  id: the-selected-modification-raises-the-bearers-toughness
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-bone-armour]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-bone-armour/profile.characteristics
+  id: without-the-selected-modification-the-same-roll-wounds
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -9,11 +9,11 @@ from mordheim_combat.modular.equipment import equipment_for_state
 from mordheim_combat.modular.state import FighterState
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
-from mordheim_combat_lab.cli.scenarios import deep_test_scenarios
+from mordheim_combat_lab.cli.scenarios import select_scenarios
 
 
 def _fighters():
-    for scenario in deep_test_scenarios("full"):
+    for scenario in select_scenarios(("big",)):
         yield from compile_benchmark_fighters(scenario)
 
 
@@ -54,7 +54,7 @@ def test_equipment_shortcut_is_refused_when_state_touches_equipment():
 
 def test_equipment_projection_still_drops_a_spent_pistol():
     pistol_bearer = next(
-        fighter for scenario in deep_test_scenarios("full")
+        fighter for scenario in select_scenarios(("big",))
         for fighter in compile_benchmark_fighters(scenario)
         if any("pistol" in tag for tag in fighter.main_weapon.tags))
     state = FighterState(wounds=1)

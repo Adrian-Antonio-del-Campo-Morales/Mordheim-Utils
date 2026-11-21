@@ -1,0 +1,120 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/rule.bear-hug-unarmed
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (operators-band-rules batch, 2026-11-18): with the unarmed
+#   marker two mace hits are offered no Bear Hug, two fist hits are offered it and the tie takes one
+#   automatic wound, and without the marker the same two mace hits are offered the hug.  REVIEWED
+#   still requires manual semantic review.
+# AUTHORED: the scenarios listed in authoring_progress are declared below; REVIEWED still requires
+#   manual semantic review.
+# Semantic wrinkle (2026-11-18): an unarmed fighter is capped to one fist attack unless a printed
+#   clause lifts the cap (phases.py unarmed_attack_cap_applies), so the fist scenario injects the
+#   Domnu's own Prize-fighter operator (skill.unarmed-fighting: cap lifted, +1 Attack, no fist
+#   Strength penalty) beside the two Bear Hug mechanics, exactly the combination the printed Domnu
+#   carries; a mixed fist-and-blade pair is recorded, not asserted (the gate reads the first two
+#   allocated attacks and the allocation order of a mixed pair is not a printed fact).
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+#
+# --- Authored scenarios ---
+# Printed text (channel-rats-mim special-rules.yaml, Domnu / Bear Hug): "If the Domnu hits the same
+# enemy warrior with both of his unarmed attacks in the same round of combat, the player may choose to
+# make a single Bear Hug attack instead of resolving the attacks normally".  This marker is the
+# "unarmed" word: modular/pools.py ~489-491 offers the hug only when the bearer lacks the marker or
+# both of the first two allocated attacks carry weapon.fist.  Fixture: hand-built bearer (WS3 S4 T3 W2
+# I5 A2, skill_ids [mechanic.bear-hug, rule.bear-hug-unarmed]) against a silenced hand-built opponent
+# (WS3 S3 T3 W3 I2 A1 Ld7, mace); nobody charges.  WS3 against WS3 hits on 4+; S4 wounds T3 on 3+
+# (a declared 1 never wounds).
+
+# Armed: two mace hits with the marker are offered no hug (the strict decision tape holds none) and
+# resolve through their own wound dice.
+- audit_id: mechanic/rule.bear-hug-unarmed
+  id: two-mace-hits-are-not-offered-the-hug
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-hug, rule.bear-hug-unarmed]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second: &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.1.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Unarmed: the bearer fights with fists (Prize-fighter lifts the one-attack cap and adds one attack,
+# so A2 becomes three fist attacks); the first two hit, the third misses, the hug is offered and the
+# tie 3+4 against 3+3 takes one automatic wound.
+- audit_id: mechanic/rule.bear-hug-unarmed
+  id: two-fist-hits-are-offered-the-hug
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [mechanic.bear-hug, rule.bear-hug-unarmed, skill.unarmed-fighting]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second: *opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.first.bear-hug.attacker, value: 3}
+    - {key: round.0.first.bear-hug.defender, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.2.hit, sides: 6, value: 1}
+    - {kind: decision, key: round.0.first.bear-hug, value: true}
+    - {kind: roll, key: round.0.first.bear-hug.attacker, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.bear-hug.defender, sides: 6, value: 3}
+
+# The marker's own control: without it the same two mace hits are offered the hug (declined here so
+# the tape shows the offer and nothing else changes).
+- audit_id: mechanic/rule.bear-hug-unarmed
+  id: without-the-marker-two-mace-hits-are-offered-the-hug
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bear-hug]
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second: *opponent
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.1.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 5}
+    - {kind: decision, key: round.0.first.bear-hug, value: false}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.wound, sides: 6, value: 1}

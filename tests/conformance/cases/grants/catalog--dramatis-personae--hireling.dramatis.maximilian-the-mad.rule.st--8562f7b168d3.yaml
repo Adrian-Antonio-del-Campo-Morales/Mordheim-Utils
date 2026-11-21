@@ -1,0 +1,114 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.strongman/skill.strongman
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (hireling family model, operators-hirelings batch, 2026-11-18):
+#   the real Maximilian's two-handed holy weapon strikes in the ordinary Initiative order (his I5 blow
+#   before the I2 opponent's, shown by the event order); a same-route control without Strongman - the
+#   Troll Slayer with his kit great weapon - strikes last with the same weapon class; the rule is
+#   refused outside its printed profile.  REVIEWED still requires manual semantic review.
+# AUTHORED: the scenarios of the hireling family model are declared below (see authoring_progress);
+#   REVIEWED still requires manual semantic review.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# --- Authored scenarios ---
+# Printed text (grade-1b.yaml, Maximilian the Mad / Strongman): "Uses Strongman-equivalent rule" - the
+# Strength skill Strongman: a double-handed weapon does not strike last.  The grant is profile and
+# binds the shared mechanic skill.strongman; its execution entry sets strongman true, read by
+# packages/python/combat-engine/mordheim_combat/phases.py (~246): a weapon's negative strike priority
+# is lifted for the bearer, so the two-handed weapon stands in the ordinary Initiative tier.  The model
+# is the authored mechanics file cases/mechanics/skill.strongman.yaml.
+#
+# Hireling family model (P0, 2026-11-17).  The recipient is the printed Maximilian compiled through the
+# hireling route (hirelings.dramatis-personae.1b / hireling.dramatis.maximilian-the-mad) with the
+# fixture facts (WS3 S3 T3 W2 I5 A1; the printed Ld10 stays); his omitted main weapon is his kit's
+# Double-Handed Holy Weapon, the canonical double-handed weapon (Strength +2, two-handed, strikes
+# last), so S5 wounds T3 on 2+.  His other printed rules on this tape: Religious Fervour is Frenzy,
+# which would double his pool, so the supplied lasting state of a frenzied warrior whose Frenzy has
+# ended (initial_state attacks 1, frenzy false; the B04 file ...2d1a59c3305f uses the same
+# disposition) keeps one attack; his Fear tests only a charging opponent and nobody charges; his
+# Fanatical Hatred reads a hated warband the hand-built opponent never declares; his automatic
+# Leadership meets no test.  Nobody charges, so the strike order is Initiative: I5 before I2 unless
+# the weapon strikes last.  The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace); his blow is a
+# natural 1.  The control for the strike order is a hireling compiled through the same route with the
+# same weapon class and no Strongman: the Troll Slayer taking his kit's great-weapon option
+# (main_weapon_id weapon.double-handed-weapon), whose other printed rules request nothing here.  The
+# grade-1b Bard cannot carry a two-handed weapon (not in his printed kit), so he serves only as the
+# refusal.  Dice: WS3 against WS3 hits on 4+; wounds of 2 (no critical die).
+
+# Strongman: the two-handed weapon does not strike last, so Maximilian's I5 blow resolves first and the
+# event order shows his hit and wound before the opponent's die.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.strongman/skill.strongman
+  id: maximilian-s-two-handed-weapon-keeps-the-ordinary-initiative-order
+  fighters:
+    first:
+      &maximilian
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.maximilian-the-mad
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {first: {attacks: 1, frenzy: false}}
+  duel_context: &nobody-charges {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, attacks.1.hit: False, state.first.frenzy: False,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 2}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The same-route control: the Troll Slayer with his kit great weapon and no Strongman strikes last
+# despite his I5, so the I2 opponent's die comes first and the Slayer's blow is the ledger's second.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.strongman/skill.strongman
+  id: a-hireling-without-the-rule-strikes-last-with-the-same-weapon-class
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.core
+      profile_id: hireling.hired-sword.dwarf-troll-slayer
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: *opponent
+  duel_context: *nobody-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 2}
+
+# The printed grant belongs to Maximilian's profile; selecting it on another hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.maximilian-the-mad.rule.strongman/skill.strongman
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first:
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      special_rule_ids: [hireling.dramatis.maximilian-the-mad.rule.strongman]
+    second: *opponent
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"

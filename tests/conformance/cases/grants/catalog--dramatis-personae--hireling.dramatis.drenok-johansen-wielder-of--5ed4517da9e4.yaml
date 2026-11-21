@@ -1,0 +1,147 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+# authoring_status: AUTHORED
+# authoring_progress: 5 scenarios (hireling family model, see below): the real Drenok
+#   wearing his printed hide saves on the armour die 6 and takes the wound on the 5
+#   (the compiled armour_save observed alongside); the Bard control is asked no save
+#   die; the rule is refused on another hireling and the unique hide is refused on
+#   another hireling by the kit resolver.  The printed 5+ missile face is out of scope
+#   (shooting).  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/hirelings/dramatis-personae/grade-1b.yaml
+#
+# AUTHORED: the scenarios of the hireling family model are declared below (see
+#   authoring_progress); REVIEWED still requires manual semantic review.
+
+# --- Authored scenarios ---
+# Hireling family model (P0, 2026-11-17; equipment batch 2026-11-18).  The recipient is
+# the printed hireling profile compiled through the hireling route (band_id
+# hirelings.dramatis-personae.1b, profile_id hireling.dramatis.drenok-johansen-wielder-
+# of-the-great-axe); the printed item rule is granted by the profile itself, so the
+# build selects nothing.  Kit armour is owned, not worn: the hide is worn by declaring
+# its mechanic id in defence_ids (design ruling 2026-10-15: gear effects belong to the
+# actual active pieces).  The axe is wielded by its mechanic id.  Physical
+# characteristics are the fixture facts (WS3 S3 T3 W2 I5 A1); the printed Ld8 stays.
+# The opponent is hand-built (WS3 S3 T3 W3 I2 A1 Ld7, mace) and charges him.  The
+# control is the grade-1b Bard with his kit dagger and no armour.
+#
+# Printed rule: "Worn hide grants a 6+ save in close combat; its 5+ missile save is
+# excluded."  The ruling makes it ordinary 6+ melee armour: with no other armour the
+# compiled save is 6 and the armour die 6 is the boundary (the attacker's S3 adds no
+# modifier).
+#
+# Companion printed rules, declared by name: Fearsome makes the charger test for Fear
+# (3+3 passes Ld7); Step Aside asks its 5+ special save only once a wound is through
+# the armour (`.special.ward`, declared as a failing 4 in the second scenario);
+# Strongman and Combat Master request nothing here.
+
+# The printed save on its own face: Fear passed, hit, wound, and the armour die 6
+# turns the wound.  Drenok's own attack follows.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+  id: drenoks-worn-hide-saves-on-six
+  fighters:
+    first:
+      &opponent
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      &recipient
+      collection: mordheim
+      band_id: hirelings.dramatis-personae.1b
+      profile_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+      main_weapon_id: weapon.icefang-axe
+      defence_ids: [defence.sabertooth-hide]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: &opponent-charges {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    # Fearsome: the charger's Fear test, passed.
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_fighters:
+    second.armour_save: 6
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the 5 is not a 6+; Step Aside then asks its 5+
+# special save, which the 4 fails, and the wound is taken.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+  id: one-face-below-the-hide-lets-the-wound-through
+  fighters:
+    first: *opponent
+    second: *recipient
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    # Drenok's Icefang parries: the 1 does not beat the hit.
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    # Step Aside: the 5+ special save, failed.
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control (Bard, no armour) takes the same hit: no Fear test and no save die are
+# asked, and the wound is taken outright.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+  id: a-hireling-without-the-hide-is-asked-no-save-die
+  fighters:
+    first: *opponent
+    second:
+      &control
+      collection: mordheim
+      band_id: hirelings.hired-sword.1b
+      profile_id: hireling.hired-sword.bard
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: *opponent-charges
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed item rule belongs to the recipient's profile; selecting it on another
+# hireling is refused.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+  id: the-rule-is-refused-on-a-hireling-outside-its-printed-profile
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      special_rule_ids: [hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide]
+  expect_error: "special rule is not available to hirelings.hired-sword.1b"
+
+# The unique hide itself is not part of any other printed kit: another hireling
+# wearing it is refused by the kit resolver.
+- audit_id: rule/catalog/dramatis-personae/hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide/defence.sabertooth-hide
+  id: the-unique-hide-is-refused-on-another-hireling
+  fighters:
+    first: *opponent
+    second:
+      <<: *control
+      defence_ids: [defence.sabertooth-hide]
+  expect_error: "do not form a complete legal printed kit"

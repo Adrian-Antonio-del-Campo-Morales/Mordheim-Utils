@@ -1,0 +1,169 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.sigmar-s-sign
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries four authored scenarios: the
+#   first-round reduction of an Undead attacker's pool, the same for a Possessed attacker,
+#   the printed floor ("down to a minimum of 1") on a one-Attack Undead attacker, and a
+#   Daemon (neither Undead nor Possessed) outside the printed scope keeping both attacks.
+#   Corrected 2026-11-16: the earlier PARTIAL reason (the floor untestable) was wrong, since
+#   an unfloored reduction leaves a one-Attack attacker with no attack die at all, which the
+#   strict tape separates from the floored single die; and the Daemon is not a "printed
+#   exception" but simply outside "Possessed or Undead".  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+#
+# AUTHORED: 4 scenarios (see authoring_progress).  Printed: "Undead and Possessed enemies
+#   lose one attack in the first round" (catalog/skills/warband.yaml) and the Sisters of
+#   Sigmar print "Possessed or Undead opponents lose their first attack against the
+#   Priestess in the first round of hand-to-hand combat (down to a minimum of 1)".
+
+# --- Authored scenarios ---
+# The Undead attacker has two Attacks and the defender carries the Sign, so the first
+# round reduces its pool to one: the tape declares that single attack die, and an
+# unreduced pool would have requested the second one.  The attack is read against the
+# defender's own profile and wounds him.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: the-undead-attacker-loses-one-attack-in-the-first-round
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.wounded: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Scope control: a Daemon is neither Undead nor Possessed (the print names no Daemon
+# rule at all), so it keeps its whole pool and the tape carries both attack dice.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: a-daemon-attacker-keeps-its-attacks
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "Possessed" half: a Possessed attacker with two Attacks also loses one in the
+# first round, so the tape declares a single attack die for it.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: a-possessed-attacker-loses-one-attack-in-the-first-round
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: possessed}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed floor, "down to a minimum of 1": a one-Attack Undead attacker would lose its
+# only attack without the floor; with it, its single attack die is still requested and
+# the hit wounds the bearer.
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: a-one-attack-undead-attacker-keeps-the-minimum-of-one
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.wounded: true, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Migrated 2026-11-16 from the retired catalogue-skill identity
+# rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign (the record is the printed definition of this mechanic, so it is no
+# longer a separate identity).
+- audit_id: mechanic/skill.sigmar-s-sign
+  id: the-printed-floor-keeps-the-attack-of-a-single-attack-undead-attacker
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.sigmar-s-sign
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides:
+        creature_kind: undead
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 2
+        attacks: 1
+  duel_context:
+    charging:
+    - first
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+  - key: round.0.first.attack.0.hit
+    value: 4
+  - key: round.0.first.attack.0.wound
+    value: 4
+  - key: round.0.second.attack.0.hit
+    value: 4
+  - key: round.0.second.attack.0.wound
+    value: 4
+  expect_rounds:
+    0:
+      attacks.0.hit: true
+      attacks.1.hit: true
+      state.first.wounds: 2
+  expect_final:
+    rounds_executed: 1
+    termination_reason: horizon

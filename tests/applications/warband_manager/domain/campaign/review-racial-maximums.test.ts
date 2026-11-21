@@ -204,7 +204,6 @@ describe.skipIf(!ARTEFACT_PATH)("Review: racial maxima by stable identity", () =
     // The very same statline raised one point above the printed profile is an
     // unprinted increase and is still refused, with the row that bounds it.
     const sample = above[0]!;
-    const profile = artefact.profiles.find((row) => row.band_id === sample.band_id && row.id === sample.profile_id)!;
     const facts = profileFactsOf(reader, sample.band_id, sample.profile_id)!;
     const bound = racialMaximumResolutionFor(reader, sample.band_id, sample.profile_id, rows).row!;
     const printed = facts.characteristics[sample.stat];

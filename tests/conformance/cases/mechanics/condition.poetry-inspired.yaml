@@ -1,0 +1,102 @@
+# Conformance authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/condition.poetry-inspired
+# authoring_status: AUTHORED
+# authoring_progress: 3 authored scenarios (supplied-condition batch, 2026-11-18): the inspired
+#   warrior fights the initial player turn at +1 Weapon Skill with one extra Attack and is back to its
+#   supplied values in the next round; the control without the inspiration swings once at its own
+#   Weapon Skill; the compiled statline is untouched (the inspiration is a turn-scoped duel effect, not
+#   a compile-time change).  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Record: sources/knowledge/catalog/mechanics/close-combat.yaml
+# Condition row: sources/knowledge/catalog/rules/conditions.yaml (condition.poetry-inspired): "The
+#   supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1 Attack for
+#   this initial player turn only.  Prior victory is not required for this separate inspiration."
+#   Source: Relics of the Crusades pt 2 (broheim.net) p4, Scholar / Field of Scholarship / Poetry:
+#   "for one turn during a scenario the poet grants any friendly model within 6" +1 WS and +1 A".
+# AUTHORED: the condition is a supplied current fact declared through condition_ids (the documented
+#   supplied-condition channel, as condition.impetuous-charge does); the Poet, the turn choice and the
+#   six inches are outside the duel and supplied.  Consumers: modular/state.py adds +1 to the initial
+#   Weapon Skill and marks the `poetry-inspiration-active` resource; modular/rounds.py adds one Attack
+#   while round_index is 0 and, from round 1 on, takes the Weapon Skill point back and spends the
+#   resource.  The compiler has no recipient gate for this condition (grep of compiler.py finds only
+#   the victorious-leader gate), so the bearer is a hand-built fixture and no refusal is authorable;
+#   recorded as a semantic wrinkle (the printed "friendly model within 6" of the poet" is not gated).
+#   Hit arithmetic: WS4 against WS3 hits on 3+, WS3 against WS3 on 4+; S3 wounds T3 on 4+.  The
+#   opponent's pool is silenced (initial_state attacks 0 on a mace-armed fixture) so the tape reads the
+#   bearer's swings only; a strict tape is itself the attack-count assertion.
+
+# --- Authored scenarios ---
+
+# The inspiration: in round 0 (the initial player turn) the bearer fights at Weapon Skill 4 - its 3
+# hits (3+) and wounds on a 4 - and swings a second time; in round 1 it is back to Weapon Skill 3, so
+# the same 3 misses (4+) and only one swing is requested.
+- audit_id: mechanic/condition.poetry-inspired
+  id: the-inspired-warrior-gains-a-weapon-skill-and-an-attack-for-the-initial-turn-only
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.poetry-inspired]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    # Both hits of the inspired warrior roll before his wound (README tape order).
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {state.first.weapon_skill: 4, attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
+    1: {state.first.weapon_skill: 3, attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: the identical fixture without the supplied inspiration fights at its own Weapon Skill
+# 3 - the same 3 misses (4+) - and swings once, so both differences above belong to the condition.
+- audit_id: mechanic/condition.poetry-inspired
+  id: without-the-inspiration-the-same-warrior-swings-once-at-its-own-weapon-skill
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+  expect_rounds:
+    0: {state.first.weapon_skill: 3, attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The inspiration is a turn of the duel, not a change of the warrior: the compiled statline keeps
+# the supplied Weapon Skill 3 and Attacks 1.
+- audit_id: mechanic/condition.poetry-inspired
+  id: the-compiled-statline-is-untouched-by-the-inspiration
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.poetry-inspired]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+  # Construction is the observation: no charge is declared and the bearer is out of
+  # action before the first phase, so no die (not even duel.charge) is requested.
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_fighters:
+    first.characteristics.weapon_skill: 3
+    first.characteristics.attacks: 1

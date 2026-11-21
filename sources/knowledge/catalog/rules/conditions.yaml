@@ -23,7 +23,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.unseen-charge}
 - id: condition.summoned-this-turn
-  name: Summoned this turn
+  name: Summoned This Turn
   name_i18n: {es: Invocado este turno}
   effect: >-
     Supplied individual fact that this Malignant Spirit was released from the Requilary on the
@@ -203,10 +203,7 @@ conditions:
     - id: rule.fear
       scope: 'NO'
       binding: null
-      reason: >-
-        General Fear rule text, consumed by psychology.resolve_fear and
-        psychology.causes_fear. It is not a per-warrior condition: supply
-        campaign.condition.causes-fear to make a warrior cause Fear.
+      reason: out-of-scope.campaign
 - id: condition.terror
   name: Terror
   effect: >-
@@ -346,10 +343,11 @@ conditions:
 - id: condition.petru-debilitating
   name: Debilitating Draught
   name_i18n:
-    es: Debilitating Draught
+    es: Brebaje Debilitante
   effect: -1 Toughness until a 6 in own recovery clears the draught.
   effect_i18n:
-    es: -1 Toughness until a 6 in own recovery clears the draught.
+    es: >-
+      -1 a la Resistencia hasta que un 6 en su propia fase de recuperación elimine el brebaje.
   source_refs:
   - &id001
     manual: broheim.net
@@ -369,10 +367,11 @@ conditions:
 - id: condition.petru-strength
   name: Strength Draught
   name_i18n:
-    es: Strength Draught
+    es: Brebaje de Fuerza
   effect: +1 Strength until a 1 in own recovery ends the draught.
   effect_i18n:
-    es: +1 Strength until a 1 in own recovery ends the draught.
+    es: >-
+      +1 a la Fuerza hasta que un 1 en su propia fase de recuperación ponga fin al brebaje.
   source_refs:
   - *id001
   runtime:
@@ -388,10 +387,11 @@ conditions:
 - id: condition.petru-resilience
   name: Resilience Draught
   name_i18n:
-    es: Resilience Draught
+    es: Brebaje de Resistencia
   effect: +1 Toughness until a 1 in own recovery ends the draught.
   effect_i18n:
-    es: +1 Toughness until a 1 in own recovery ends the draught.
+    es: >-
+      +1 a la Resistencia hasta que un 1 en su propia fase de recuperación ponga fin al brebaje.
   source_refs:
   - *id001
   runtime:
@@ -407,10 +407,11 @@ conditions:
 - id: condition.petru-fortitude
   name: Fortitude Draught
   name_i18n:
-    es: Fortitude Draught
+    es: Brebaje de Fortaleza
   effect: One extra Wound for this battle; once lost it cannot be restored.
   effect_i18n:
-    es: One extra Wound for this battle; once lost it cannot be restored.
+    es: >-
+      Una Herida adicional durante esta batalla; una vez perdida, no puede recuperarse.
   source_refs:
   - *id001
   runtime:
@@ -426,10 +427,11 @@ conditions:
 - id: condition.alchemist-resilience
   name: Potion of Resilience
   name_i18n:
-    es: "Potion Of Resilience"
+    es: Poción de Resistencia
   effect: +1 Toughness for the duration of the battle.
   effect_i18n:
-    es: +1 Toughness for the duration of the battle.
+    es: >-
+      +1 a la Resistencia durante toda la batalla.
   source_refs:
   - &id002
     manual: sylvania-supplement
@@ -449,10 +451,11 @@ conditions:
 - id: condition.alchemist-strength
   name: Brew of Strength
   name_i18n:
-    es: "Brew Of Strength"
+    es: Brebaje de Fuerza
   effect: +1 Strength for the duration of the battle.
   effect_i18n:
-    es: +1 Strength for the duration of the battle.
+    es: >-
+      +1 a la Fuerza durante toda la batalla.
   source_refs:
   - *id002
   runtime:
@@ -472,7 +475,9 @@ conditions:
   effect: >-
     +1 Strength and +1 Toughness for the battle. Post-battle addiction acquisition is excluded.
   effect_i18n:
-    es: +1 Strength and +1 Toughness for the battle. Post-battle addiction acquisition is excluded.
+    es: >-
+      +1 a la Fuerza y +1 a la Resistencia durante la batalla. Se excluye la adquisición de la
+      adicción después de la batalla.
   source_refs:
   - *id002
   runtime:
@@ -488,7 +493,7 @@ conditions:
 - id: condition.alchemist-backleys-brew
   name: Backley's Brew
   name_i18n:
-    es: Backley's Brew
+    es: Brebaje de Backley
   effect: >-
     -1 Strength and -1 Initiative until a Toughness test is passed. By project ruling, test once at
     the start of each own turn until recovery; the source does not specify the timing.
@@ -511,7 +516,7 @@ conditions:
 - id: condition.alchemist-addicted
   name: Alchemist Addiction
   name_i18n:
-    es: Alchemist Addiction
+    es: Adicción del Alquimista
   effect: >-
     The supplied addicted Scientist cannot act until he rolls a 6 while brewing Aberrantius
     Vigortia. By project ruling, a standing Scientist attempts once at the start of each own turn;
@@ -536,16 +541,17 @@ conditions:
 - id: condition.danse-macabre-controlled
   name: Danse Macabre Controlled
   name_i18n:
-    es: Danse Macabre Controlled
+    es: Controlado por la Danse Macabre
   effect: >-
     The supplied cursed target may not attack the controlling Piper and takes a Leadership test in
     its own recovery; success clears the effect. Shooting activation, distances, movement and
     retargeting external models are excluded.
   effect_i18n:
     es: >-
-      The supplied cursed target may not attack the controlling Piper and takes a Leadership test in
-      its own recovery; success clears the effect. Shooting activation, distances, movement and
-      retargeting external models are excluded.
+      El objetivo maldito indicado no puede atacar al Flautista que lo controla y realiza un chequeo
+      de Liderazgo en su propia fase de recuperación; si lo supera, el efecto desaparece. Se
+      excluyen la activación en la fase de disparo, las distancias, el movimiento y el cambio de
+      objetivo de miniaturas externas.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -565,10 +571,11 @@ conditions:
 - id: condition.fungus-brew-rowdy
   name: Rowdy Fungus Brew
   name_i18n:
-    es: Rowdy Fungus Brew
+    es: 'Brebaje de Hongos: Alborotador'
   effect: Animosity applies on a 1 or 2.
   effect_i18n:
-    es: Animosity applies on a 1 or 2.
+    es: >-
+      El Rencor se aplica con un resultado de 1 o 2.
   source_refs:
   - &fungus_brew_source
     manual: mordheimer.net
@@ -588,10 +595,11 @@ conditions:
 - id: condition.fungus-brew-dizzy
   name: Dizzy Fungus Brew
   name_i18n:
-    es: Dizzy Fungus Brew
+    es: 'Brebaje de Hongos: Mareado'
   effect: Initiative is reduced by one for the battle.
   effect_i18n:
-    es: Initiative is reduced by one for the battle.
+    es: >-
+      La Iniciativa se reduce en uno durante la batalla.
   source_refs:
   - *fungus_brew_source
   runtime:
@@ -607,10 +615,11 @@ conditions:
 - id: condition.fungus-brew-fearless
   name: Fearless Fungus Brew
   name_i18n:
-    es: Fearless Fungus Brew
+    es: 'Brebaje de Hongos: Intrépido'
   effect: Immune to Fear; All Alone is excluded.
   effect_i18n:
-    es: Immune to Fear; All Alone is excluded.
+    es: >-
+      Inmune al Miedo; se excluye la regla de Todo Solo.
   source_refs:
   - *fungus_brew_source
   runtime:
@@ -626,10 +635,11 @@ conditions:
 - id: condition.fungus-brew-numbed
   name: Numbed Fungus Brew
   name_i18n:
-    es: Numbed Fungus Brew
+    es: 'Brebaje de Hongos: Insensible'
   effect: Adds one point to armour save and that save cannot be reduced below 6+.
   effect_i18n:
-    es: Adds one point to armour save and that save cannot be reduced below 6+.
+    es: >-
+      Añade un punto a la tirada de salvación por armadura y esa salvación no puede reducirse por debajo de 6+.
   source_refs:
   - *fungus_brew_source
   runtime:
@@ -645,10 +655,11 @@ conditions:
 - id: condition.fungus-brew-belligerent
   name: Belligerent Fungus Brew
   name_i18n:
-    es: Belligerent Fungus Brew
+    es: 'Brebaje de Hongos: Belicoso'
   effect: Hatred against the opposing warband.
   effect_i18n:
-    es: Hatred against the opposing warband.
+    es: >-
+      Odio contra la banda rival.
   source_refs:
   - *fungus_brew_source
   runtime:
@@ -664,10 +675,11 @@ conditions:
 - id: condition.fungus-brew-loony
   name: Loony Fungus Brew
   name_i18n:
-    es: Loony Fungus Brew
+    es: 'Brebaje de Hongos: Chiflado'
   effect: Frenzy followed by Stupidity after Frenzy is lost through Knocked Down or Stunned.
   effect_i18n:
-    es: Frenzy followed by Stupidity after Frenzy is lost through Knocked Down or Stunned.
+    es: >-
+      Frenesí, seguido de Estupidez cuando el Frenesí se pierde al quedar Derribado o Aturdido.
   source_refs:
   - *fungus_brew_source
   runtime:
@@ -681,16 +693,16 @@ conditions:
         kind: mechanic
         id: condition.fungus-brew-loony
 - id: condition.impetuous-charge
-  name: Compelled Impetuous charge
+  name: Compelled Impetuous Charge
   name_i18n:
-    es: Compelled Impetuous charge
+    es: Carga Impetuosa Obligada
   effect: >-
     Supplied compelled charge automatically passes psychology tests that would prevent that charge;
     choosing movement or retargeting is excluded.
   effect_i18n:
     es: >-
-      Supplied compelled charge automatically passes psychology tests that would prevent that
-      charge; choosing movement or retargeting is excluded.
+      La carga obligada indicada supera automáticamente los chequeos de psicología que impedirían
+      esa carga; se excluyen la elección del movimiento y el cambio de objetivo.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -707,16 +719,16 @@ conditions:
         kind: mechanic
         id: condition.impetuous-charge
 - id: condition.executioners-hood
-  name: Executioner’s Hood worn
+  name: Executioner’s Hood Worn
   name_i18n:
-    es: Executioner’s Hood worn
+    es: Lleva la Capucha del Verdugo
   effect: >-
     Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape and
     multi-target movement are excluded.
   effect_i18n:
     es: >-
-      Always frenzied even if knocked down or stunned; +1 Strength in close combat. Combat escape
-      and multi-target movement are excluded.
+      Siempre sufre Frenesí, incluso si queda derribado o aturdido; +1 a la Fuerza en combate cuerpo
+      a cuerpo. Se excluyen la huida del combate y el movimiento contra varios objetivos.
   source_refs:
   - manual: mordheim-rulebook
     printed_page: 145
@@ -732,9 +744,9 @@ conditions:
         kind: mechanic
         id: condition.executioners-hood
 - id: condition.rememberer-kaz-support
-  name: Rememberer support dwarf-slayers-kaz
+  name: Rememberer Support Dwarf-Slayers-Kaz
   name_i18n:
-    es: Rememberer support dwarf-slayers-kaz
+    es: Apoyo del Memoralista (Dwarf-Slayers-Kaz)
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
     slayers will fight even harder to make their death more honourable. Once per game, any Slayer
@@ -763,9 +775,9 @@ conditions:
         kind: mechanic
         id: condition.rememberer-kaz-support
 - id: condition.rememberer-web-support
-  name: Rememberer support dwarf-slayer-cult-web
+  name: Rememberer Support Dwarf-Slayer-Cult-Web
   name_i18n:
-    es: Rememberer support dwarf-slayer-cult-web
+    es: Apoyo del Memoralista (Dwarf-Slayer-Cult-Web)
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
     slayers will fight even harder to make their death more honourable. Once per game, any Slayer
@@ -857,16 +869,16 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.active-weapon-restrictions, parameters: {forbids: [two-handed-weapons]}}
 - id: condition.tomb-robber-dodge-known
-  name: Tomb Robber knows Dodge
+  name: Tomb Robber Knows Dodge
   name_i18n:
-    es: Tomb Robber knows Dodge
+    es: El Ladrón de Tumbas Conoce Esquivar
   effect: >-
     This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
     shooting action of Dodge is excluded.
   effect_i18n:
     es: >-
-      This Tomb Robber has learned Dodge; Excellent Reflexes improves to 4+ against attacks. The
-      shooting action of Dodge is excluded.
+      Este Ladrón de Tumbas ha aprendido Esquivar; Reflejos Excelentes mejora a 4+ contra los
+      ataques. Se excluye la acción de disparo de Esquivar.
   source_refs:
   - manual: town-cryer-19
     printed_page: 21
@@ -883,16 +895,16 @@ conditions:
         kind: mechanic
         id: condition.tomb-robber-dodge-known
 - id: condition.witch-finder-charge
-  name: Compulsory Witch-finder charge
+  name: Compulsory Witch-Finder Charge
   name_i18n:
-    es: Compulsory Witch-finder charge
+    es: Carga Obligatoria del Cazador de Brujas
   effect: >-
     The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
     eligible reachable opponent.
   effect_i18n:
     es: >-
-      The selected Solkan Witch-finder is making the actual compulsory charge against the supplied
-      eligible reachable opponent.
+      El Cazador de Brujas de Solkan seleccionado está realizando la carga obligatoria real contra
+      el oponente apto y alcanzable indicado.
   source_refs:
   - manual: mutiny-in-marienburg
     printed_page: 224
@@ -909,9 +921,9 @@ conditions:
         kind: mechanic
         id: condition.witch-finder-charge
 - id: condition.rune-iron
-  name: Rune of Iron (already inscribed)
+  name: Rune of Iron (Already Inscribed)
   name_i18n:
-    es: Runa de Hierro (ya grabada)
+    es: Runa de Hierro (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Iron grants a 6+ ward save from the specified eligible armour
     item, for this battle. One Rune per item. per item. No inscription roll, manufacturing failure,
@@ -942,9 +954,9 @@ conditions:
             tags: []
             ward_save: 6
 - id: condition.rune-stone
-  name: Rune of Stone (already inscribed)
+  name: Rune of Stone (Already Inscribed)
   name_i18n:
-    es: Runa de Piedra (ya grabada)
+    es: Runa de Piedra (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Stone improves the specified eligible armour item's armour save
     by 1, for this battle. One Rune per item. is simulated.
@@ -973,9 +985,9 @@ conditions:
             tags: []
             armour_save_bonus: 1
 - id: condition.rune-fury
-  name: Rune of Fury (already inscribed)
+  name: Rune of Fury (Already Inscribed)
   name_i18n:
-    es: Runa de Furia (ya grabada)
+    es: Runa de Furia (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Fury grants one additional Attack with the specified eligible
     weapon, for this battle. One Rune per item. is simulated.
@@ -1004,9 +1016,9 @@ conditions:
             tags: []
             attacks_bonus: 1
 - id: condition.rune-striking
-  name: Rune of Striking (already inscribed)
+  name: Rune of Striking (Already Inscribed)
   name_i18n:
-    es: Runa de Golpeo (ya grabada)
+    es: Runa de Golpeo (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Striking grants +1 Weapon Skill for attacks with the specified
     eligible weapon, for this battle. One Rune per item. is simulated.
@@ -1035,9 +1047,9 @@ conditions:
             tags: []
             weapon_skill_bonus: 1
 - id: condition.rune-speed
-  name: Rune of Speed (already inscribed)
+  name: Rune of Speed (Already Inscribed)
   name_i18n:
-    es: Runa de Velocidad (ya grabada)
+    es: Runa de Velocidad (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Speed grants +1 Initiative with the specified eligible weapon,
     for this battle. One Rune per item. is simulated.
@@ -1066,9 +1078,9 @@ conditions:
             tags: []
             initiative_bonus: 1
 - id: condition.rune-cleaving
-  name: Rune of Cleaving (already inscribed)
+  name: Rune of Cleaving (Already Inscribed)
   name_i18n:
-    es: Runa de Corte (ya grabada)
+    es: Runa de Corte (Ya Grabada)
   effect: >-
     A previously inscribed Rune of Cleaving grants +1 Strength with the specified eligible weapon,
     for this battle. One Rune per item. is simulated.
@@ -1100,14 +1112,14 @@ conditions:
 - id: condition.bear-handler-nearby
   name: Nearby Bear Tamer
   name_i18n:
-    es: Nearby Bear Tamer
+    es: Domador de Osos Cercano
   effect: >-
     The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity; an
     Out of Action Tamer does not qualify.
   effect_i18n:
     es: >-
-      The Trained Bear has its actual friendly Bear Tamer within 6 inches. This exempts Stupidity;
-      an Out of Action Tamer does not qualify.
+      El Oso Entrenado tiene a su Domador de Osos aliado real a 6 pulgadas o menos. Esto lo exime de
+      Estupidez; un Domador que esté Fuera de Combate no cuenta.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1124,18 +1136,18 @@ conditions:
         kind: mechanic
         id: condition.bear-handler-nearby
 - id: condition.stupidity-exempt
-  name: Nearby exempting hero
+  name: Nearby Exempting Hero
   name_i18n:
-    es: Nearby exempting hero
+    es: Héroe Cercano que Exime
   effect: >-
     The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
     exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
     neither simulates the surrounding warband nor measures table positions.
   effect_i18n:
     es: >-
-      The Rat Ogre has its actual qualifying Skaven Hero within 6 inches, so the printed Stupidity
-      exemption applies and no Stupidity test is taken. The caller supplies the exemption; the duel
-      neither simulates the surrounding warband nor measures table positions.
+      El Ogro Rata tiene a su Héroe skaven apto real a 6 pulgadas o menos, así que se aplica la
+      exención impresa de Estupidez y no realiza ningún chequeo de Estupidez. Quien llama indica la
+      exención; el duelo no simula el resto de la banda ni mide posiciones en la mesa.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1152,9 +1164,9 @@ conditions:
         kind: mechanic
         id: condition.stupidity-exempt
 - id: condition.current-warband-leader
-  name: Current warband leader
+  name: Current Warband Leader
   name_i18n:
-    es: Líder actual de la banda
+    es: Líder Actual de la Banda
   effect: >-
     The caller supplies that this warrior is its warband's actual current leader. The position itself
     carries the printed Leader rule, so any warband warrior within 6 inches may use this warrior's
@@ -1186,16 +1198,16 @@ conditions:
         kind: mechanic
         id: condition.current-warband-leader
 - id: condition.adventurer-barbarian-leader
-  name: Barbarian chosen as Leader
+  name: Barbarian Chosen as Leader
   name_i18n:
-    es: Barbarian chosen as Leader
+    es: Bárbaro Elegido Como Líder
   effect: >-
     This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes only
     his Leadership lent to friends within 6 inches, not his own Leadership.
   effect_i18n:
     es: >-
-      This native Adventurer Barbarian is the actual chosen warband Leader. Dim-witted changes only
-      his Leadership lent to friends within 6 inches, not his own Leadership.
+      Este Bárbaro Aventurero nativo es el Líder real elegido de la banda. Cabezacuadrado solo
+      cambia el Liderazgo que presta a los aliados a 6 pulgadas o menos, no su propio Liderazgo.
   source_refs:
   - manual: broheim.net
     printed_page: 22
@@ -1212,18 +1224,18 @@ conditions:
         kind: mechanic
         id: condition.adventurer-barbarian-leader
 - id: condition.poetry-victorious-leader
-  name: Victorious Leader praised in Poetry
+  name: Victorious Leader Praised in Poetry
   name_i18n:
-    es: Victorious Leader praised in Poetry
+    es: Líder Victorioso Alabado en Poesía
   effect: >-
     The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives +1
     Leadership for its first actual Leadership test this scenario. Rerolls use that same threshold;
     this is not a bonus to Leadership lent to friends.
   effect_i18n:
     es: >-
-      The actual Leader of this Ghutani, Muzil or Turjuk band won its previous battle and receives
-      +1 Leadership for its first actual Leadership test this scenario. Rerolls use that same
-      threshold; this is not a bonus to Leadership lent to friends.
+      El Líder real de esta banda Ghutani, Muzil o Turjuk ganó su batalla anterior y recibe +1 al
+      Liderazgo en su primer chequeo de Liderazgo real de este escenario. Las repeticiones usan ese
+      mismo umbral; no es una bonificación al Liderazgo que presta a los aliados.
   source_refs:
   - manual: broheim.net
     printed_page: 4
@@ -1242,16 +1254,16 @@ conditions:
 - id: condition.poetry-inspired
   name: Inspired by Poetry
   name_i18n:
-    es: Inspired by Poetry
+    es: Inspirado por la Poesía
   effect: >-
     The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1
     Attack for this initial player turn only. Prior victory is not required for this separate
     inspiration.
   effect_i18n:
     es: >-
-      The supplied friendly recipient within 6 inches of its Poet receives +1 Weapon Skill and +1
-      Attack for this initial player turn only. Prior victory is not required for this separate
-      inspiration.
+      El receptor aliado indicado, a 6 pulgadas o menos de su Poeta, recibe +1 a la Habilidad de
+      Armas y +1 Ataque solo durante este turno inicial del jugador. Esta inspiración independiente
+      no requiere una victoria previa.
   source_refs:
   - manual: broheim.net
     printed_page: 4
@@ -1268,18 +1280,19 @@ conditions:
         kind: mechanic
         id: condition.poetry-inspired
 - id: condition.command.raise-our-insignia
-  name: Raise Our Insignia active
+  name: Raise Our Insignia Active
   name_i18n:
-    es: Raise Our Insignia active
+    es: 'Alzad Nuestra Insignia: Activa'
   effect: >-
     The supplied eligible friendly recipient may reroll Leadership during the current
     Recovery/Movement period. This command expires at the beginning of the next Shooting phase,
     before the ensuing close combat. The command/casting and other models are not produced.
   effect_i18n:
     es: >-
-      The supplied eligible friendly recipient may reroll Leadership during the current
-      Recovery/Movement period. This command expires at the beginning of the next Shooting phase,
-      before the ensuing close combat. The command/casting and other models are not produced.
+      El receptor aliado apto indicado puede repetir los chequeos de Liderazgo durante el periodo
+      actual de Recuperación/Movimiento. Esta orden expira al comienzo de la siguiente fase de
+      Disparo, antes del combate cuerpo a cuerpo que sigue. No se generan la orden ni su
+      lanzamiento, ni otras miniaturas.
   source_refs:
   - manual: mazzalupo
     printed_page: 0
@@ -1296,9 +1309,9 @@ conditions:
         kind: mechanic
         id: condition.command.raise-our-insignia
 - id: condition.netted
-  name: Caught in a net
+  name: Caught in a Net
   name_i18n:
-    es: Caught in a net
+    es: Atrapado en una Red
   effect: >-
     The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
     the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action, it
@@ -1306,10 +1319,11 @@ conditions:
     producer is simulated.
   effect_i18n:
     es: >-
-      The supplied victim caught in a net counts as Knocked Down and is hit automatically in combat;
-      the attacker must still wound. In its next own Recovery, unless Stunned or Out of Action, it
-      cuts free, performs no other action and strikes last as if it stood up. No shooting or charge
-      producer is simulated.
+      La víctima indicada, atrapada en una red, cuenta como Derribada y es impactada automáticamente
+      en combate; el atacante aún debe herir. En su siguiente fase de Recuperación, salvo que esté
+      Aturdida o Fuera de Combate, se libera cortando la red, no realiza ninguna otra acción y
+      golpea en último lugar como si se hubiera levantado. No se simula ningún productor de disparo
+      ni de carga.
   source_refs:
   - manual: night-goblin-special-skills
     printed_page: 0
@@ -1325,19 +1339,48 @@ conditions:
       binding:
         kind: mechanic
         id: condition.netted
-- id: condition.nuttaz-charge
-  name: Required Nuttaz charge
+- id: condition.mouth-sewn
+  name: Supplied Sewn Mouth
   name_i18n:
-    es: Required Nuttaz charge
+    es: Boca Cosida Aportada
+  effect: >-
+    The supplied model's mouth was sewn shut by Needle and Thread: a Leader carrying it cannot use
+    his leader ability for the remainder of the battle, so no nearby warrior may borrow his
+    Leadership. The printed bar on casting spells is out of scope (magic) and is not simulated.
+  effect_i18n:
+    es: >-
+      La boca de la miniatura indicada fue cosida con Aguja e Hilo: un Líder que la tenga no puede
+      usar su capacidad de líder durante el resto de la batalla, así que ningún guerrero cercano
+      puede tomar prestado su Liderazgo. La prohibición impresa de lanzar hechizos queda fuera de
+      alcance (magia) y no se simula.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Crow Master, The
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.mouth-sewn
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: condition.mouth-sewn
+- id: condition.nuttaz-charge
+  name: Required Nuttaz Charge
+  name_i18n:
+    es: Carga Obligatoria de los Nuttaz
   effect: >-
     This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
     visible reachable enemy. The caller supplies target qualification; no movement, visibility
     search or run is produced.
   effect_i18n:
     es: >-
-      This native Orc Nuttaz is making its actual compulsory charge against the supplied nearest
-      visible reachable enemy. The caller supplies target qualification; no movement, visibility
-      search or run is produced.
+      Este Orco Nuttaz nativo está realizando su carga obligatoria real contra el enemigo visible y
+      alcanzable más cercano indicado. Quien llama indica la idoneidad del objetivo; no se generan
+      movimiento, búsqueda de visibilidad ni carrera.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1354,16 +1397,17 @@ conditions:
         kind: mechanic
         id: condition.nuttaz-charge
 - id: condition.goading-charge
-  name: Charge caused by Goading
+  name: Charge Caused by Goading
   name_i18n:
-    es: Charge caused by Goading
+    es: Carga Provocada por Azuzamiento
   effect: >-
     This supplied Moulder beast is actually charging as the result of successful Goading. Such a
     charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
   effect_i18n:
     es: >-
-      This supplied Moulder beast is actually charging as the result of successful Goading. Such a
-      charge bypasses Hypnotic Musk. Goading rolls, movement and other results are not produced.
+      Esta bestia Moulder indicada está cargando realmente como resultado de un Azuzamiento con
+      éxito. Esa carga ignora el Almizcle Hipnótico. No se generan las tiradas de Azuzamiento, el
+      movimiento ni otros resultados.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1534,7 +1578,7 @@ conditions:
         parameters: {maintenance_result: 6}
 
 - id: condition.witch-debilitating
-  name: Witch Potion (debilitating)
+  name: Witch Potion (Debilitating)
   name_i18n: {es: 'Poción de la Bruja (debilitating)'}
   effect: >-
     Minus one Toughness until a 6 in own recovery clears the draught. Supplied potion result for one
@@ -1556,7 +1600,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-debilitating}
 
 - id: condition.witch-strength
-  name: Witch Potion (strength)
+  name: Witch Potion (Strength)
   name_i18n: {es: 'Poción de la Bruja (strength)'}
   effect: >-
     Plus one Strength until a 1 in own recovery ends the draught. Supplied potion result for one
@@ -1578,7 +1622,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-strength}
 
 - id: condition.witch-resilience
-  name: Witch Potion (resilience)
+  name: Witch Potion (Resilience)
   name_i18n: {es: 'Poción de la Bruja (resilience)'}
   effect: >-
     Plus one Toughness until a 1 in own recovery ends the draught. Supplied potion result for one
@@ -1600,7 +1644,7 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-resilience}
 
 - id: condition.witch-fortitude
-  name: Witch Potion (fortitude)
+  name: Witch Potion (Fortitude)
   name_i18n: {es: 'Poción de la Bruja (fortitude)'}
   effect: >-
     One extra Wound for this battle; once lost it cannot be restored. Supplied potion result for one
@@ -1622,8 +1666,8 @@ conditions:
       binding: {kind: mechanic, id: condition.petru-fortitude}
 
 - id: condition.ye-give-way-refused
-  name: Ye Give Way (refused)
-  name_i18n: {es: 'Ye Give Way (refused)'}
+  name: Ye Give Way (Refused)
+  name_i18n: {es: '¡Ceded el Paso! (Rechazado)'}
   effect: >-
     The Hero who refused a prior challenge has -1 to hit in melee until the end of the game,
     non-cumulative. Supplied prior result; no challenge or group combat is simulated.
@@ -1644,8 +1688,8 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.ye-give-way-refused}
 - id: condition.ye-give-way-victorious
-  name: Ye Give Way (victorious)
-  name_i18n: {es: 'Ye Give Way (victorious)'}
+  name: Ye Give Way (Victorious)
+  name_i18n: {es: '¡Ceded el Paso! (Victorioso)'}
   effect: >-
     A Fallen Noble who put the challenged opponent Out of Action has +1 to hit in melee and +1
     Strength until the end of the game, non-cumulative. Supplied prior result; no challenge or group
@@ -1671,7 +1715,7 @@ conditions:
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {strength: 1}}}
 
 - id: condition.disability-1
-  name: Disability result 1
+  name: Disability Result 1
   name_i18n: {es: 'Discapacidad: resultado 1'}
   effect: >-
     Lame and arthritic: minus one Movement and Initiative. Permanent supplied result; no group
@@ -1693,7 +1737,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"movement": -1, "initiative": -1}}}
 - id: condition.disability-2
-  name: Disability result 2
+  name: Disability Result 2
   name_i18n: {es: 'Discapacidad: resultado 2'}
   effect: >-
     Parkinson: minus one Weapon Skill; cannot use two weapons or a weapon and shield. Permanent
@@ -1720,7 +1764,7 @@ conditions:
       binding: {kind: profile, id: profile.equipment-restrictions, parameters: {max_active_one_handed_weapons: 1,
                    forbids: [defence.shield, defence.kite-shield]}}
 - id: condition.disability-3
-  name: Disability result 3
+  name: Disability Result 3
   name_i18n: {es: 'Discapacidad: resultado 3'}
   effect: >-
     Poor eyesight: minus one Ballistic Skill; no shooting action is simulated. Permanent supplied
@@ -1740,7 +1784,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.disability-3}
 - id: condition.disability-4
-  name: Disability result 4
+  name: Disability Result 4
   name_i18n: {es: 'Discapacidad: resultado 4'}
   effect: >-
     Sickly: minus one Toughness. Permanent supplied result; no group creation or reroll.
@@ -1761,7 +1805,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"toughness": -1}}}
 - id: condition.disability-5
-  name: Disability result 5
+  name: Disability Result 5
   name_i18n: {es: 'Discapacidad: resultado 5'}
   effect: >-
     Weakness: minus one Strength. Permanent supplied result; no group creation or reroll.
@@ -1782,7 +1826,7 @@ conditions:
       scope: 'YES'
       binding: {kind: profile, id: profile.characteristics, parameters: {bonuses: {"strength": -1}}}
 - id: condition.disability-6
-  name: Disability result 6
+  name: Disability Result 6
   name_i18n: {es: 'Discapacidad: resultado 6'}
   effect: >-
     Head injury: Stupidity unless within six inches of a Hero. Permanent supplied result; no group
@@ -1801,7 +1845,7 @@ conditions:
       scope: 'YES'
       binding: {kind: mechanic, id: condition.disability-6}
 - id: condition.disability-hero-nearby
-  name: Cripple within six inches of a Hero
+  name: Cripple Within Six Inches of a Hero
   name_i18n: {es: Lisiado a seis pulgadas de un Heroe}
   effect: >-
     Qualified current nearby Hero fact exempts Head Injury Stupidity; not a permanent cure.
